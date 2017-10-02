@@ -1,0 +1,28 @@
+<v-ons-page data-page="home">
+  <custom-bar title="ホーム" menu="true"></custom-bar>
+  <div>
+    <div id="youHave">
+      <div class="label">あなたが今持っているのは</div>
+      <div id="balanceWrap">
+        <span id="balance">{{balanceToShow}}</span>
+        <span id="unit" v-show="unitToShow=='mona_easy'">もにゃ</span>
+        <span id="unit" v-show="unitToShow=='mona'">MONA</span>
+        <span id="unit" v-show="unitToShow=='jpy'">円</span>
+      </div>
+    </div>
+    <div id="transactions">
+      <v-ons-list>
+        <v-ons-list-header>最近の取引</v-ons-list-header>
+        <v-ons-list-item modifier="tappable">
+          <div class="center">
+            受け取り
+          </div>
+          <div class="right">10モナ</div>
+        </v-ons-list-item>
+        <v-ons-list-item modifier="chevron tappable">
+          <div class="left">詳しく</div>
+        </v-ons-list-item>
+      </v-ons-list>
+    </div>
+  </div>
+</v-ons-page>

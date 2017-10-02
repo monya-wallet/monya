@@ -1,0 +1,47 @@
+[data-page="home"]{
+  #youHave{
+    width:100%;
+    background-color: #fff85e;
+    padding: 2% 0%;
+    color:#7c5702;
+    background-image:url(../img/monacoin.png);
+    background-repeat:no-repeat;
+    background-position:bottom right;
+    .label{
+      color: #7b7442;
+    }
+    #balanceWrap{
+      margin:5% 0;
+      text-align: center;
+      #balance{
+        font-size:3em;
+      }
+      #unit{
+        font-size: 1.1em;
+      }
+    }
+  }
+}
+[data-page="receive"]{
+  text-align:center;
+  #simple{
+    .label{
+      margin:10px;
+      color: #888;
+    }
+    #qrArea{
+      
+      #qrcode{
+        width: 250px;
+        height: 250px;
+        background-color:#aaa;
+        display:inline-block;
+        margin:10px;
+        padding:10px;
+      }
+      .address{
+        display: block;
+      }
+    }
+  }
+}
