@@ -7,8 +7,7 @@ require('onsenui/css/onsen-css-components.css')
 Vue.use(VueOnsen)
 
 Vue.component('custom-bar', require("../component/customBar.js"))
-
-const vm=window.vm = exports.vm= new Vue({
+exports.vm= new Vue({
   el:"#app",
   data(){
     return {}
