@@ -13,7 +13,8 @@ exports.vm= new Vue({
     return {}
   },
   components:{
-    navigator:require("../component/navigator.js")
+    navigator:require("../component/navigator.js"),
+    first:require("../component/first.js")
   },
 
 })

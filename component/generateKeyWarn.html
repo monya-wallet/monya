@@ -1,0 +1,27 @@
+<v-ons-page data-page="generateKeyWarn">
+  <custom-bar title="ご確認ください"></custom-bar>
+  <div class="wrap">
+    <p>秘密鍵を作成します。以下の注意事項をよく読んで、チェックをしてください</p>
+    <ul>
+      <li>秘密鍵は所有するモナコインにアクセスする権利そのものです。</li>
+      <li>13個の英単語を正確に、紙に手書きしてください。</li>
+      <li>英単語のスクリーンショットを撮影・コピーしないでください。</li>
+      <li>これを紛失すると、モナコインを使うことはできなくなります。</li>
+      <li>他人に知れ渡ると、モナコインを盗まれる可能性があります。</li>
+      <li>管理が不十分だったことによる損失を誰も一切保証しません。</li>
+    </ul>
+    <div class="check">
+      <input name="" type="checkbox" value="" v-model="check1"/>
+      <label for="">秘密鍵の重要性を理解しました。</label>
+    </div>
+    <div class="check">
+      <input name="" type="checkbox" value="" v-model="check2"/>
+      <label for="">画面を誰にも・どのソフトにも見られたり盗聴されていません。</label>
+    </div>
+    <div class="check">
+      <input name="" type="checkbox" value="" v-model="check3"/>
+      <label for="">秘密鍵の管理は自己責任であることを理解しました。</label>
+    </div>
+    <v-ons-button :disabled="!check1||!check2||!check3" @click="next" modifier="large">次へ</v-ons-button>
+  </div>
+</v-ons-page>

@@ -8,5 +8,5 @@ module.exports=require("./customBar.html")({
     }
   },
 
-  props:["title","menu"]
+  props:["title","menu","modifier"]
 })

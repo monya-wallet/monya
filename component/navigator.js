@@ -2,7 +2,7 @@
 module.exports=require("./navigator.html")({
   data(){
     return {
-      pageStack:[require("./home.js")],
+      pageStack:[require("./first.js")],
       openSide:false,
     }
   },

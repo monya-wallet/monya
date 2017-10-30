@@ -1,6 +1,6 @@
-const bitcoin = require('bitcoinjs-lib')
+const bcLib = require('bitcoinjs-lib')
 
-exports.monacoinNetwork={
+let monacoinNetwork=exports.monacoinNetwork={
   messagePrefix: '\x19Monacoin Signed Message:\n',
   bip32: {
     public: 0x0488b21e,
@@ -13,8 +13,8 @@ exports.monacoinNetwork={
 }
 
 exports.getAddressForTesting=()=>{
-  let keyPair = bitcoin.ECPair.makeRandom({
-    network:exports.monacoinNetwork
+  let keyPair = bcLib.ECPair.makeRandom({
+    network:monacoinNetwork
   })
   let address = keyPair.getAddress()
   return address;

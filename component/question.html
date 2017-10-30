@@ -1,0 +1,12 @@
+<v-ons-page data-page="question">
+  <v-ons-carousel fullscreen auto-scroll :index="questionNumber">
+    <!--    v-ons-carousel-item.questionItem*5>(.questionText+.answers>.answer*2)-->
+    <v-ons-carousel-item class="questionItem" v-for="qq in questions">
+      <div class="questionText">{{qq.text}}</div>
+      <div class="answers" v-for="(ans,ind) in qq.answers">
+        <div class="answer" @click="answer(ans)">{{ans.label}}</div>
+      </div>
+    </v-ons-carousel-item>
+    
+  </v-ons-carousel>
+</v-ons-page>

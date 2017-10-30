@@ -1,4 +1,3 @@
-
 module.exports=require("./home.html")({
   data(){
     return {

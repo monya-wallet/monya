@@ -1,9 +1,11 @@
+$baseColor:#fff85e;
+$baseTextColor:#7c5702;
 [data-page="home"]{
   #youHave{
     width:100%;
-    background-color: #fff85e;
+    background-color: $baseColor;
     padding: 2% 0%;
-    color:#7c5702;
+    color:$baseTextColor;
     background-image:url(../img/monacoin.png);
     background-repeat:no-repeat;
     background-position:bottom right;
@@ -43,5 +45,91 @@
         display: block;
       }
     }
+  }
+}
+
+$iconSize:100px;
+[data-page="first"]{
+  .wrap{
+    width:100%;
+    height:100%;
+    background-color:$baseColor;
+    .logo{
+      position: absolute;
+      top:30%;
+      width:100%;
+      text-align:center;
+      .icon{
+        display: inline-block;
+        background-image:url(../img/monacoin.png);
+        background-position:center center;
+        background-repeat:no-repeat;
+        background-size:contain;
+        width:$iconSize;
+        height:$iconSize;
+      }
+      .appName{
+        font-size:2em;
+        color: $baseTextColor;
+      }
+      .label{
+        color:$baseTextColor;
+        opacity:0.5;
+      }
+    }
+
+    .buttons{
+      margin:80px auto;
+      width:60%;
+      ons-button{
+        margin:10px 0;
+        width:100%;
+      }
+    }
+    
+  }
+}
+
+[data-page="question"]{
+  .questionItem{
+    text-align:center;
+    padding:5%;
+    .questionText{
+      padding:100px;
+      border-radius:8px;
+      border:1px solid $baseTextColor;
+      color:$baseTextColor;
+      background-color:white;
+    }
+    .answers{
+      .answer{
+        border-radius:6px;
+        background-color:$baseColor;
+        color:$baseTextColor;
+        margin:10px 0;
+        padding:10px;
+      }
+    }
+  }
+}
+[data-page="generateKeyWarn"]{
+  .wrap{
+    padding:10px;
+    .check{
+      padding:12px;
+      input{
+        font-size:1.5em;
+      }
+    }
+  }
+}
+[data-page="generateKey"]{
+  .touchArea{
+    height:50%;
+    background:#50aba0;
+    color:white;
+    font-size:2em;
+    text-align:center;
+    padding:30% 10%
   }
 }
