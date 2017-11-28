@@ -1,6 +1,6 @@
 require("../scss/index.scss")
-require('onsenui/css/onsenui.css')
-require('onsenui/css/onsen-css-components.css')
+require('../dist/onsenui/css/onsenui.css')
+require('../dist/onsenui/css/onsen-css-components.css')
 //const Vue = require("vue/dist/vue")
 //const VueOnsen = require("vue-onsenui")
 
