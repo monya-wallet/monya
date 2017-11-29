@@ -11,7 +11,7 @@
 
 # プロダクト名
 金光碧氏がもにゃもにゃ仰っていたので
-[https://twitter.com/KanemitsuMidori/status/914803980856827904](https://twitter.com/KanemitsuMidori/status/91480398085682790400)
+[https://twitter.com/KanemitsuMidori/status/914803980856827904](https://twitter.com/KanemitsuMidori/status/914803980856827904)
 
 
 # License
