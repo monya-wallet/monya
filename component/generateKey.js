@@ -1,6 +1,3 @@
-// i used English words list instead of Japanese one because of surrogate pair
-// 日本語で 保存するなり 秘密鍵 英語に変えさす サロゲートペア
-
 function loadWordList() {
   return Promise.resolve(require("../img/bip39en.json"));
 }
