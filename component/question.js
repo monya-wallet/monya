@@ -43,26 +43,26 @@ module.exports=require("./question.html")({
 })
 
 const qList=[{//0
-  text:"初期設定と、ユーザーの暗号通貨に対する知識を測るためにいくつかの質問に答えてください。",
-  answers:[{
-    label:"わかりました。",
-    value:0,
-    to:1
-  },{
-    label:"自分で設定するので答えません。",
-    value:1,
-    to:-2
-  }]
-},{//1
   text:"以前にこのアプリケーションを利用したことがありますか？",
   answers:[{
     label:"ないです",
-    value:0,
-    to:2
+    value:false,
+    to:1
   },{
     label:"ありますあります",
-    value:1,
+    value:true,
     to:-3
+  }]
+},{//1
+  text:"初期設定と、ユーザーの暗号通貨に対する知識を測るためにいくつかの質問に答えてください。",
+  answers:[{
+    label:"わかりました。",
+    value:true,
+    to:2
+  },{
+    label:"自分で設定するので答えません。",
+    value:false,
+    to:-2
   }]
 },{//2
   text:"「モナコイン」といえば",

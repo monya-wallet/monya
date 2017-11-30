@@ -6,7 +6,7 @@ $baseTextColor:#7c5702;
     background-color: $baseColor;
     padding: 2% 0%;
     color:$baseTextColor;
-    background-image:url(../img/monacoin.png);
+    background-image:url(../res/monacoin.png);
     background-repeat:no-repeat;
     background-position:bottom right;
     .label{
@@ -61,7 +61,7 @@ $iconSize:100px;
       text-align:center;
       .icon{
         display: inline-block;
-        background-image:url(../img/monacoin.png);
+        background-image:url(../res/monacoin.png);
         background-position:center center;
         background-repeat:no-repeat;
         background-size:contain;

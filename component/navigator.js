@@ -4,6 +4,7 @@ module.exports=require("./navigator.html")({
     return {
       pageStack:[require("./first.js")],
       openSide:false,
+      pageParam:null
     }
   },
   methods:{

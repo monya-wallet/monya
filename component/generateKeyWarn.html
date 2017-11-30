@@ -8,20 +8,29 @@
       <li>英単語のスクリーンショットを撮影・コピーしないでください。</li>
       <li>これを紛失すると、モナコインを使うことはできなくなります。</li>
       <li>他人に知れ渡ると、モナコインを盗まれる可能性があります。</li>
-      <li>管理が不十分だったことによる損失を誰も一切保証しません。</li>
+      <li>管理が不十分だったことによる責任は利用者自身が負い、他の誰も負いません。</li>
     </ul>
-    <div class="check">
-      <input name="" type="checkbox" value="" v-model="check1"/>
-      <label for="">秘密鍵の重要性を理解しました。</label>
-    </div>
-    <div class="check">
-      <input name="" type="checkbox" value="" v-model="check2"/>
-      <label for="">画面を誰にも・どのソフトにも見られたり盗聴されていません。</label>
-    </div>
-    <div class="check">
-      <input name="" type="checkbox" value="" v-model="check3"/>
-      <label for="">秘密鍵の管理は自己責任であることを理解しました。</label>
-    </div>
-    <v-ons-button :disabled="!check1||!check2||!check3" @click="next" modifier="large">次へ</v-ons-button>
   </div>
+  <v-ons-list>
+    <v-ons-list-item>
+      <label class="left">
+        <v-ons-checkbox input-id="check1" v-model="check1"></v-ons-checkbox>
+      </label>
+      <label class="center" for="check1">秘密鍵の重要性を理解しました。</label>
+    </v-ons-list-item>
+    <v-ons-list-item>
+      <label class="left">
+        <v-ons-checkbox input-id="check2" v-model="check2"></v-ons-checkbox>
+      </label>
+      <label class="center" for="check2">画面を誰にも・どのソフトにも見られたり盗聴されていません。</label>
+    </v-ons-list-item>
+    <v-ons-list-item>
+      <label class="left">
+        <v-ons-checkbox input-id="check3" v-model="check3"></v-ons-checkbox>
+      </label>
+      <label class="center" for="check3">秘密鍵の管理は自己責任であることを理解しました。</label>
+    </v-ons-list-item>
+    <v-ons-list-item><v-ons-button :disabled="!check1||!check2||!check3" @click="next" modifier="large">次へ</v-ons-button></v-ons-list-item>
+  </v-ons-list>
+  
 </v-ons-page>
