@@ -1,4 +1,6 @@
-const securityManager = require("../js/securityManager")
+const coin = require("../js/coin.js")
+const crypto = require('crypto');
+const storage = require("../js/storage.js")
 module.exports=require("./setPassword.html")({
   data(){
     return {
@@ -7,20 +9,25 @@ module.exports=require("./setPassword.html")({
       password2:""
     }
   },
+  store:require("../js/store.js"),
   methods:{
     next(){
-      //this.$emit("push",require("./generateKey.js"))
+      if(!this.password||this.password!==this.password2){
+        return;
+      }
+      coin.makeEncryptedPriv({
+        entropy:this.$store.state.entropy,
+        password:this.password
+      }).then((encrypted)=>storage.set("encryptedPriv",encrypted))
+        .then(()=>{
+          this.$store.commit("setFinishNextPage",{page:require("./login.js"),infoId:"createdWallet"})
+          this.$emit("replace",require("./finished.js"))
+      })
     }
     
   },
   mounted(){
-    this.$emit("getParam",param => {
-      securityManager.getWordsFromArray(param.keyArray).then(words=>{
-        this.words=words;
-        
-      })
-      
-    })
+   
   },
   components:{
     

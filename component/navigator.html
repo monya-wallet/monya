@@ -48,9 +48,8 @@
       :options="{animation:'slide'}"
       @push="pageStack = [...pageStack, $event]"
       @reset="pageStack = [pageStack[0]]"
+      @replace="pageStack=[$event]"
       @pop="pageStack.pop()"
-      @setParam="pageParam=$event"
-      @getParam="$event(pageParam);pageParam=null"
       >
     </v-ons-navigator>
   </v-ons-splitter-content>

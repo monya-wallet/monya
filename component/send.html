@@ -1,6 +1,55 @@
 <v-ons-page data-page="send">
   <custom-bar title="送る" menu="true"></custom-bar>
   <div>
-   
+    <v-ons-list>
+      
+      <v-ons-list-header>送金先</v-ons-list-header>
+      <v-ons-list-item>
+        <div class="center">
+          <v-ons-list-item><v-ons-input v-model="address" placeholder="送金先アドレス"></v-ons-input></v-ons-list-item>
+        </div>
+        <div class="right">
+          <v-ons-icon icon="fa-address-card"></v-ons-icon>
+        </div>
+      </v-ons-list-item>
+
+      <v-ons-list-header>相手に送金するMONA</v-ons-list-header>
+      <v-ons-list-item>
+        <div class="center">
+          <v-ons-list-item><v-ons-input type="number" v-model="mona" placeholder="MONA"></v-ons-input></v-ons-list-item>
+        </div>
+        <div class="right">
+          MONA
+        </div>
+      </v-ons-list-item>
+      <v-ons-list-header>日本円換算</v-ons-list-header>
+      <v-ons-list-item>
+        <div class="center">
+          <v-ons-list-item><v-ons-input type="number" v-model="jpy" placeholder="日本円"></v-ons-input></v-ons-list-item>
+        </div>
+        <div class="right">
+          JPY
+        </div>
+      </v-ons-list-item>
+      <v-ons-list-header>送金手数料</v-ons-list-header>
+      <v-ons-list-item>
+        <div class="center">
+          <v-ons-list-item><v-ons-input type="number" v-model="fee" placeholder="送金手数料(MONA)"></v-ons-input></v-ons-list-item>
+        </div>
+        <div class="right">
+          MONA
+        </div>
+      </v-ons-list-item>
+      <v-ons-list-header>メッセージ</v-ons-list-header>
+      <v-ons-list-item>
+        <div class="center">
+          <v-ons-list-item><v-ons-input v-model="message" placeholder="80Byteまで"></v-ons-input></v-ons-list-item>
+        </div>
+        <div class="right">
+          <v-ons-icon icon="comment"></v-ons-icon>
+        </div>
+      </v-ons-list-item>
+      <v-ons-list-item><v-ons-button modifier="large" @click="confirm" :disabled="!this.address||!this.mona||!this.fee">確認画面へ</v-ons-button></v-ons-list-item>
+    </v-ons-list>
   </div>
 </v-ons-page>

@@ -1,4 +1,4 @@
-const securityManager = require("../js/securityManager")
+const bip39 = require("bip39")
 module.exports=require("./showPassphrase.html")({
   data(){
     return {
@@ -6,6 +6,7 @@ module.exports=require("./showPassphrase.html")({
       words:[]
     }
   },
+  store:require("../js/store.js"),
   methods:{
     next(){
       this.$emit("push",require("./setPassword.js"))
@@ -13,25 +14,9 @@ module.exports=require("./showPassphrase.html")({
     
   },
   mounted(){
-    this.$emit("getParam",param => {
-      securityManager.getWordsFromArray(param.keyArray).then(words=>{
-        this.words=words;
-        this.$emit("setParam",{keyArray:param.keyArray})
-      })
-      
-    })
+    this.words=bip39.entropyToMnemonic(this.$store.state.entropy).split(" ");
   },
   components:{
     
   }
 })
-
-
-
-
-
-
-
-
-
-

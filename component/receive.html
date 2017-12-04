@@ -4,30 +4,26 @@
     <div id="simple">
       <div class="label">とりあえず送ってもらう</div>
       <div id="qrArea">
-        <div id="qrcode">a</div>
+        <div id="qrcode">
+          <img :src="qrDataUrl" alt="QR code" />
+        </div>
         <div class="address">{{mainAddress||"読み込み中"}}</div>
       </div>
-      <v-ons-button>
-        <v-ons-icon icon="fa-clipboard"></v-ons-icon>
-        アドレスコピー
-      </v-ons-button>
-      <v-ons-button>
-        <v-ons-icon icon="fa-share"></v-ons-icon>共有
-      </v-ons-button>
+      <div v-if="isNative">
+        <v-ons-button>
+          <v-ons-icon icon="fa-clipboard"></v-ons-icon>
+          アドレスコピー
+        </v-ons-button>
+        <v-ons-button>
+          <v-ons-icon icon="fa-share"></v-ons-icon>共有
+        </v-ons-button>
+      </div>
       
     </div>
     <div id="addresses">
       <v-ons-list>
         <v-ons-list-header>他のアドレスで請求書をつくる</v-ons-list-header>
-        <v-ons-list-item>
-          <div class="center">メイン</div>
-          <div class="right">4544モナ</div>
-        </v-ons-list-item>
-        <v-ons-list-item>
-          <div class="center">さぶ</div>
-          <div class="right">1モナ</div>
-        </v-ons-list-item>
-        <v-ons-list-item modifier="tappable chevron">新たにアドレスを作成</v-ons-list-item>
+        <v-ons-list-item modifier="tappable chevron">Coming soon</v-ons-list-item>
       </v-ons-list>
     </div>
   </div>

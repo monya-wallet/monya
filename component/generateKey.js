@@ -1,20 +1,23 @@
-const param = require("../js/param.js")
+
+
 module.exports=require("./generateKey.html")({
   data(){
     return {
       cnt:0,
-      wordCount:param.normalPassphraseWords,
+      wordCount:16,
       next:false,
       keyArray:[],
       sensorAvailable:false
       
     }
   },
+  store:require("../js/store.js"),
   methods:{
     complete(){
       if(!this.next){
         this.next=true;
-        this.$emit("setParam",{keyArray:this.keyArray})
+        
+        this.$store.commit("setEntropy",this.keyArray.map(v=>("0"+v.toString(16)).slice(-2)).join(""))
         this.$emit("push",require("./showPassphrase"))
       }
     }
@@ -46,7 +49,7 @@ module.exports=require("./generateKey.html")({
         for(let i=arr.length-1;i>=0;i--){
           sum+=arr[i];
         }
-        this.keyArray.push(sum%2048);
+        this.keyArray.push(sum%256);
         if(++this.cnt>=this.wordCount){
           detecting = false
           setInterval(()=>{this.complete()},300);
@@ -64,7 +67,7 @@ module.exports=require("./generateKey.html")({
         let a=((e.acceleration.x+e.acceleration.y+e.rotationRate.alpha+e.rotationRate.beta+e.rotationRate.gamma)*810893)|0;
         a=a>0?a:-a
         if(a>30){
-          this.keyArray.push(a%2048)
+          this.keyArray.push(a%256)
           if(++this.cnt>=this.wordCount){
             detecting = false
             setInterval(()=>{this.complete()},300);

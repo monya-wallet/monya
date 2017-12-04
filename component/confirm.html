@@ -1,0 +1,39 @@
+<v-ons-page data-page="confirm">
+  <custom-bar title="送る" menu="true"></custom-bar>
+  <div class="wrap">
+    <v-ons-list>
+      <v-ons-list-item>
+        <p>{{myAddress}}</p>
+        <p><v-ons-icon icon="fa-arrow-down"></v-ons-icon></p>
+        <p>{{address}}</p>
+      </v-ons-list-item>
+      <v-ons-list-item>
+        <div class="center">送金先アドレスは</div>
+        <div class="right" v-show="destHasUsed">使われた事があります</div>
+        <div class="right" v-show="!destHasUsed">初めて使用されます</div>
+      </v-ons-list-item>
+      <v-ons-list-item>
+        <div class="center">送金額</div>
+        <div class="right">{{mona}}MONA</div>
+      </v-ons-list-item>
+      <v-ons-list-item>
+        <div class="center"></div>
+        <div class="right">(約{{jpy}}円)</div>
+      </v-ons-list-item>
+      <v-ons-list-item>
+        <div class="center">送金手数料</div>
+        <div class="right">{{fee}}MONA</div>
+      </v-ons-list-item>
+      <v-ons-list-item>
+        <div class="center">メッセージ</div>
+        <div class="right">{{message}}</div>
+      </v-ons-list-item>
+      <v-ons-list-item>
+        <div class="center">あなたの送金後の残高</div>
+        <div class="right">{{myBalanceBeforeSending-mona-fee}}MONA</div>
+      </v-ons-list-item>
+      <v-ons-list-header>送金したあとは元に戻すことはできません。</v-ons-list-header>
+      <v-ons-list-item><v-ons-button modifier="large" @click="next">送金</v-ons-button></v-ons-list-item>
+    </v-ons-list>
+  </div>
+</v-ons-page>

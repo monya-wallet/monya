@@ -4,8 +4,12 @@
   "description": "",
   "main": "dist/dist.js",
   "dependencies": {
+    "axios": "^0.17.1",
+    "bip39": "^2.4.0",
     "bitcoinjs-lib": "^3.2.0",
-    "vue": "^2.4.4"
+    "qrcode": "^1.0.0",
+    "vue": "^2.4.4",
+    "vuex": "^3.0.1"
   },
   "devDependencies": {
     "babel-core": "^6.26.0",

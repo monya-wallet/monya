@@ -1,8 +1,8 @@
-
+const storage = require("../js/storage.js")
 module.exports=require("./navigator.html")({
   data(){
     return {
-      pageStack:[require("./first.js")],
+      pageStack:[],
       openSide:false,
       pageParam:null
     }
@@ -27,7 +27,13 @@ module.exports=require("./navigator.html")({
       this.openSide=false;this.$set(this,"pageStack",[require("./help.js")])
     }
   },
-  mounted(){
-    
+  created(){
+    storage.get("encryptedPriv").then((data)=>{
+      if(data){
+      this.pageStack.push(require("./login.js"))
+      }else{
+        this.pageStack.push(require("./first.js"))
+      }
+    })
   }
 })
