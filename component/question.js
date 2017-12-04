@@ -87,7 +87,7 @@ const qList=[{//0
     value:4,
     to:4
   },{
-    label:"scriptHash=0x05",
+    label:"脇山珠美ちゃんかわいい！",
     value:5,
     to:5
   }/*,{
