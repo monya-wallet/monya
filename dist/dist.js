@@ -78,8 +78,8 @@
 
 
 
-var base64 = __webpack_require__(173)
-var ieee754 = __webpack_require__(174)
+var base64 = __webpack_require__(171)
+var ieee754 = __webpack_require__(172)
 var isArray = __webpack_require__(77)
 
 exports.Buffer = Buffer
@@ -7425,11 +7425,13 @@ function toComment(sourceMap) {
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
+/* WEBPACK VAR INJECTION */(function(Buffer) {
 
-
-var bcLib = __webpack_require__(171);
+var bcLib = __webpack_require__(173);
 var bip39 = __webpack_require__(93);
 var crypto = __webpack_require__(97);
+var param = __webpack_require__(307);
+var api = __webpack_require__(43);
 
 var monacoinNetwork = exports.monacoinNetwork = {
   messagePrefix: '\x19Monacoin Signed Message:\n',
@@ -7443,7 +7445,7 @@ var monacoinNetwork = exports.monacoinNetwork = {
   wif: 0xb2,
   bech32: "mona"
 };
-var currentKeyPair = void 0;
+var currentKeyPairs = {};
 
 exports.makeEncryptedPriv = function (option) {
   return new Promise(function (resolve, reject) {
@@ -7469,14 +7471,81 @@ exports.decryptAndRestore = function (cipher, password) {
     var decipher = crypto.createDecipher('aes256', password);
     var decrypted = decipher.update(cipher, 'hex', 'utf8');
     decrypted += decipher.final('utf8');
-
-    currentKeyPair = bcLib.HDNode.fromBase58(decrypted, monacoinNetwork);
+    for (var coinId in param.coins) {
+      currentKeyPairs[coinId] = bcLib.HDNode.fromBase58(decrypted, param.coins[coinId].network);
+    }
     resolve();
   });
 };
 exports.getMonaAddress = function (index) {
-  return currentKeyPair.derivePath("m/44'/22'/0'/0/" + (index || 0)).getAddress(); //BIP 44
+  return currentKeyPairs["mona"].derivePath("m/44'/22'/0'/0/" + (index || 0)).getAddress(); //BIP 44
 };
+exports.getAddress = function (coinId) {
+  var index = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+
+  return currentKeyPairs[coinId].deriveHardened(44).deriveHardened(param.coins[coinId].bip44CoinType).deriveHardened(0).derive(0).derive(index).getAddress(); //BIP 44
+};
+
+exports.isValidAddress = function (addr) {
+  try {
+    bcLib.address.fromBase58Check(addr);
+    return true;
+  } catch (e) {
+    return false;
+  }
+};
+
+exports.selectUtxos = function (addr, amt2Wd) {
+  return new Promise(function (resolve, reject) {
+    api.getAddressProp(addr, "utxo").then(function (res) {
+      var utxos = [];
+      var amount = 0;
+      var i = 0;
+      res.sort(function (a, b) {
+        return b.balance - a.balance;
+      });
+
+      while (amount <= amt2Wd && res[i]) {
+        amount += res[i].amount;
+        utxos.push(res[i]);
+        i++;
+      }
+      resolve(utxos);
+    });
+  });
+};
+
+exports.buildTransaction = function (payload) {
+  return new Promise(function (resolve, reject) {
+    debugger;
+    var txb = new bcLib.TransactionBuilder(param.coins[payload.coinId].network);
+    if (payload.message) {
+      txb.addOutput(bcLib.script.nullData.output.encode(Buffer.from(payload.message, 'utf8')), 0);
+    } else if (payload.messageBuffer) {
+      txb.addOutput(bcLib.script.nullData.output.encode(payload.messageBuffer), 0);
+    }
+
+    var utxos = payload.utxos;
+    var uBalance = 0;
+    for (var i = 0; i < utxos.length; i++) {
+      uBalance += utxos[i].amount;
+      txb.addInput(utxos[i].txid, utxos[i].vout);
+    }
+    if (uBalance >= payload.fee + payload.amount) {
+      txb.addOutput(payload.address, payload.amount * 100000000);
+      var change = uBalance - payload.amount - payload.fee;
+      if (change <= 0) {
+        txb.addOutput(payload.changeAddress, change * 100000000);
+      }
+    } else {
+      throw new Error("Insufficient fund");
+    }
+    txb.sign(0, currentKeyPairs[payload.coinId].deriveHardened(44).deriveHardened(param.coins[payload.coinId].bip44CoinType).deriveHardened(0).derive(0).derive(payload.keyIndex).keyPair);
+
+    resolve(txb.build().toHex());
+  });
+};
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0).Buffer))
 
 /***/ }),
 /* 23 */
@@ -9496,7 +9565,7 @@ exports.set = function (key, value) {
 
 var api = __webpack_require__(43);
 var coin = __webpack_require__(22);
-module.exports = __webpack_require__(307)({
+module.exports = __webpack_require__(308)({
   data: function data() {
     return {
       balanceToShow: 0,
@@ -9545,17 +9614,44 @@ exports.getAddressProp = function (addr, propName) {
     }); //according to insight api,balance,totalReceived,totalSent,unconfirmedBalance,utxo available.Unit will be satoshis/watanabes
   });
 };
+var cache = {};
+exports.getAddressBal = function (address) {
+  var cacheable = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+  return new Promise(function (resolve, reject) {
+    //Unit is not satoshis,one unit(MONA)
+    if (cacheable && cache[address] && cache[address].time + 1000 * 60 * 2 > Date.now()) {
+      resolve(cache[address].balance);
+    } else {
+      exports.getAddressProp(address, "balance").then(function (res) {
+        resolve(res / 100000000);
+        cache[address] = {
+          time: Date.now(),
+          balance: res / 100000000
+        };
+      });
+    }
+  });
+};
+var priceCache = 0;
+var lastPriceTime = 0;
+
 exports.getPrice = function (curTicker, fiatTicker) {
   return new Promise(function (resolve, reject) {
     if (curTicker.toLowerCase() !== "mona" || fiatTicker.toLowerCase() !== "jpy") {
       throw new Error("This pair is not supported in this version. Now MONA/JPY(bitbank)is supported");
     }
-    axios({
-      url: "https://public.bitbank.cc/mona_jpy/ticker",
-      json: true,
-      method: "GET" }).then(function (res) {
-      resolve(parseFloat(res.data.data.last));
-    });
+    if (lastPriceTime + 1000 * 60 < Date.now()) {
+      axios({
+        url: "https://public.bitbank.cc/mona_jpy/ticker",
+        json: true,
+        method: "GET" }).then(function (res) {
+        priceCache = parseFloat(res.data.data.last);
+        lastPriceTime = Date.now();
+        resolve(priceCache);
+      }).catch(reject);
+    } else {
+      resolve(priceCache);
+    }
   });
 };
 
@@ -20737,7 +20833,7 @@ module.exports = withPublic;
 
 var api = __webpack_require__(43);
 var coin = __webpack_require__(22);
-module.exports = __webpack_require__(308)({
+module.exports = __webpack_require__(309)({
   data: function data() {
     return {
       address: "",
@@ -20753,7 +20849,9 @@ module.exports = __webpack_require__(308)({
   store: __webpack_require__(25),
   methods: {
     confirm: function confirm() {
-      if (!this.address || !this.mona || !this.fee) {
+      if (!this.address || !this.mona || !this.fee || !coin.isValidAddress(this.address)) {
+
+        this.$ons.notification.alert("正しく入力してね！");
         return;
       }
       this.$store.commit("setConfirmation", {
@@ -20763,7 +20861,7 @@ module.exports = __webpack_require__(308)({
         fee: this.fee,
         message: this.message
       });
-      this.$emit("push", __webpack_require__(309));
+      this.$emit("push", __webpack_require__(310));
     }
   },
   watch: {
@@ -20777,8 +20875,8 @@ module.exports = __webpack_require__(308)({
   mounted: function mounted() {
     var _this = this;
 
-    api.getAddressProp(coin.getMonaAddress(0), "balance").then(function (res) {
-      _this.balance = res / 1000000000;
+    api.getAddressBal(coin.getAddress("mona", 0), true).then(function (res) {
+      _this.balance = res;
     });
     api.getPrice("mona", "jpy").then(function (res) {
       _this.monaPrice = res;
@@ -20793,7 +20891,7 @@ module.exports = __webpack_require__(308)({
 "use strict";
 
 
-module.exports = __webpack_require__(311)({
+module.exports = __webpack_require__(312)({
   data: function data() {
     return {};
   },
@@ -21259,7 +21357,7 @@ exports.qrToImageData = function qrToImageData (imgData, qr, margin, scale, colo
 
 var coin = __webpack_require__(22);
 var storage = __webpack_require__(41);
-module.exports = __webpack_require__(339)({
+module.exports = __webpack_require__(340)({
   data: function data() {
     return {
       showPassword: false,
@@ -21734,19 +21832,19 @@ module.exports = __webpack_require__(151)({
       this.openSide = false;this.$set(this, "pageStack", [__webpack_require__(42)]);
     },
     receive: function receive() {
-      this.openSide = false;this.$set(this, "pageStack", [__webpack_require__(312)]);
+      this.openSide = false;this.$set(this, "pageStack", [__webpack_require__(313)]);
     },
     send: function send() {
       this.openSide = false;this.$set(this, "pageStack", [__webpack_require__(118)]);
     },
     history: function history() {
-      this.openSide = false;this.$set(this, "pageStack", [__webpack_require__(333)]);
+      this.openSide = false;this.$set(this, "pageStack", [__webpack_require__(334)]);
     },
     settings: function settings() {
-      this.openSide = false;this.$set(this, "pageStack", [__webpack_require__(335)]);
+      this.openSide = false;this.$set(this, "pageStack", [__webpack_require__(336)]);
     },
     help: function help() {
-      this.openSide = false;this.$set(this, "pageStack", [__webpack_require__(337)]);
+      this.openSide = false;this.$set(this, "pageStack", [__webpack_require__(338)]);
     }
   },
   created: function created() {
@@ -21756,7 +21854,7 @@ module.exports = __webpack_require__(151)({
       if (data) {
         _this.pageStack.push(__webpack_require__(124));
       } else {
-        _this.pageStack.push(__webpack_require__(340));
+        _this.pageStack.push(__webpack_require__(341));
       }
     });
   }
@@ -22685,8 +22783,219 @@ module.exports = function spread(callback) {
 /* 171 */
 /***/ (function(module, exports, __webpack_require__) {
 
+"use strict";
+
+
+exports.byteLength = byteLength
+exports.toByteArray = toByteArray
+exports.fromByteArray = fromByteArray
+
+var lookup = []
+var revLookup = []
+var Arr = typeof Uint8Array !== 'undefined' ? Uint8Array : Array
+
+var code = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
+for (var i = 0, len = code.length; i < len; ++i) {
+  lookup[i] = code[i]
+  revLookup[code.charCodeAt(i)] = i
+}
+
+revLookup['-'.charCodeAt(0)] = 62
+revLookup['_'.charCodeAt(0)] = 63
+
+function placeHoldersCount (b64) {
+  var len = b64.length
+  if (len % 4 > 0) {
+    throw new Error('Invalid string. Length must be a multiple of 4')
+  }
+
+  // the number of equal signs (place holders)
+  // if there are two placeholders, than the two characters before it
+  // represent one byte
+  // if there is only one, then the three characters before it represent 2 bytes
+  // this is just a cheap hack to not do indexOf twice
+  return b64[len - 2] === '=' ? 2 : b64[len - 1] === '=' ? 1 : 0
+}
+
+function byteLength (b64) {
+  // base64 is 4/3 + up to two characters of the original data
+  return (b64.length * 3 / 4) - placeHoldersCount(b64)
+}
+
+function toByteArray (b64) {
+  var i, l, tmp, placeHolders, arr
+  var len = b64.length
+  placeHolders = placeHoldersCount(b64)
+
+  arr = new Arr((len * 3 / 4) - placeHolders)
+
+  // if there are placeholders, only get up to the last complete 4 chars
+  l = placeHolders > 0 ? len - 4 : len
+
+  var L = 0
+
+  for (i = 0; i < l; i += 4) {
+    tmp = (revLookup[b64.charCodeAt(i)] << 18) | (revLookup[b64.charCodeAt(i + 1)] << 12) | (revLookup[b64.charCodeAt(i + 2)] << 6) | revLookup[b64.charCodeAt(i + 3)]
+    arr[L++] = (tmp >> 16) & 0xFF
+    arr[L++] = (tmp >> 8) & 0xFF
+    arr[L++] = tmp & 0xFF
+  }
+
+  if (placeHolders === 2) {
+    tmp = (revLookup[b64.charCodeAt(i)] << 2) | (revLookup[b64.charCodeAt(i + 1)] >> 4)
+    arr[L++] = tmp & 0xFF
+  } else if (placeHolders === 1) {
+    tmp = (revLookup[b64.charCodeAt(i)] << 10) | (revLookup[b64.charCodeAt(i + 1)] << 4) | (revLookup[b64.charCodeAt(i + 2)] >> 2)
+    arr[L++] = (tmp >> 8) & 0xFF
+    arr[L++] = tmp & 0xFF
+  }
+
+  return arr
+}
+
+function tripletToBase64 (num) {
+  return lookup[num >> 18 & 0x3F] + lookup[num >> 12 & 0x3F] + lookup[num >> 6 & 0x3F] + lookup[num & 0x3F]
+}
+
+function encodeChunk (uint8, start, end) {
+  var tmp
+  var output = []
+  for (var i = start; i < end; i += 3) {
+    tmp = (uint8[i] << 16) + (uint8[i + 1] << 8) + (uint8[i + 2])
+    output.push(tripletToBase64(tmp))
+  }
+  return output.join('')
+}
+
+function fromByteArray (uint8) {
+  var tmp
+  var len = uint8.length
+  var extraBytes = len % 3 // if we have 1 byte left, pad 2 bytes
+  var output = ''
+  var parts = []
+  var maxChunkLength = 16383 // must be multiple of 3
+
+  // go through the array every three bytes, we'll deal with trailing stuff later
+  for (var i = 0, len2 = len - extraBytes; i < len2; i += maxChunkLength) {
+    parts.push(encodeChunk(uint8, i, (i + maxChunkLength) > len2 ? len2 : (i + maxChunkLength)))
+  }
+
+  // pad the end with zeros, but make sure to not forget the extra bytes
+  if (extraBytes === 1) {
+    tmp = uint8[len - 1]
+    output += lookup[tmp >> 2]
+    output += lookup[(tmp << 4) & 0x3F]
+    output += '=='
+  } else if (extraBytes === 2) {
+    tmp = (uint8[len - 2] << 8) + (uint8[len - 1])
+    output += lookup[tmp >> 10]
+    output += lookup[(tmp >> 4) & 0x3F]
+    output += lookup[(tmp << 2) & 0x3F]
+    output += '='
+  }
+
+  parts.push(output)
+
+  return parts.join('')
+}
+
+
+/***/ }),
+/* 172 */
+/***/ (function(module, exports) {
+
+exports.read = function (buffer, offset, isLE, mLen, nBytes) {
+  var e, m
+  var eLen = nBytes * 8 - mLen - 1
+  var eMax = (1 << eLen) - 1
+  var eBias = eMax >> 1
+  var nBits = -7
+  var i = isLE ? (nBytes - 1) : 0
+  var d = isLE ? -1 : 1
+  var s = buffer[offset + i]
+
+  i += d
+
+  e = s & ((1 << (-nBits)) - 1)
+  s >>= (-nBits)
+  nBits += eLen
+  for (; nBits > 0; e = e * 256 + buffer[offset + i], i += d, nBits -= 8) {}
+
+  m = e & ((1 << (-nBits)) - 1)
+  e >>= (-nBits)
+  nBits += mLen
+  for (; nBits > 0; m = m * 256 + buffer[offset + i], i += d, nBits -= 8) {}
+
+  if (e === 0) {
+    e = 1 - eBias
+  } else if (e === eMax) {
+    return m ? NaN : ((s ? -1 : 1) * Infinity)
+  } else {
+    m = m + Math.pow(2, mLen)
+    e = e - eBias
+  }
+  return (s ? -1 : 1) * m * Math.pow(2, e - mLen)
+}
+
+exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
+  var e, m, c
+  var eLen = nBytes * 8 - mLen - 1
+  var eMax = (1 << eLen) - 1
+  var eBias = eMax >> 1
+  var rt = (mLen === 23 ? Math.pow(2, -24) - Math.pow(2, -77) : 0)
+  var i = isLE ? 0 : (nBytes - 1)
+  var d = isLE ? 1 : -1
+  var s = value < 0 || (value === 0 && 1 / value < 0) ? 1 : 0
+
+  value = Math.abs(value)
+
+  if (isNaN(value) || value === Infinity) {
+    m = isNaN(value) ? 1 : 0
+    e = eMax
+  } else {
+    e = Math.floor(Math.log(value) / Math.LN2)
+    if (value * (c = Math.pow(2, -e)) < 1) {
+      e--
+      c *= 2
+    }
+    if (e + eBias >= 1) {
+      value += rt / c
+    } else {
+      value += rt * Math.pow(2, 1 - eBias)
+    }
+    if (value * c >= 2) {
+      e++
+      c /= 2
+    }
+
+    if (e + eBias >= eMax) {
+      m = 0
+      e = eMax
+    } else if (e + eBias >= 1) {
+      m = (value * c - 1) * Math.pow(2, mLen)
+      e = e + eBias
+    } else {
+      m = value * Math.pow(2, eBias - 1) * Math.pow(2, mLen)
+      e = 0
+    }
+  }
+
+  for (; mLen >= 8; buffer[offset + i] = m & 0xff, i += d, m /= 256, mLen -= 8) {}
+
+  e = (e << mLen) | m
+  eLen += mLen
+  for (; eLen > 0; buffer[offset + i] = e & 0xff, i += d, e /= 256, eLen -= 8) {}
+
+  buffer[offset + i - d] |= s * 128
+}
+
+
+/***/ }),
+/* 173 */
+/***/ (function(module, exports, __webpack_require__) {
+
 module.exports = {
-  Block: __webpack_require__(172),
+  Block: __webpack_require__(174),
   ECPair: __webpack_require__(55),
   ECSignature: __webpack_require__(59),
   HDNode: __webpack_require__(228),
@@ -22703,7 +23012,7 @@ module.exports = {
 
 
 /***/ }),
-/* 172 */
+/* 174 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var Buffer = __webpack_require__(2).Buffer
@@ -22883,217 +23192,6 @@ Block.prototype.checkProofOfWork = function () {
 }
 
 module.exports = Block
-
-
-/***/ }),
-/* 173 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-exports.byteLength = byteLength
-exports.toByteArray = toByteArray
-exports.fromByteArray = fromByteArray
-
-var lookup = []
-var revLookup = []
-var Arr = typeof Uint8Array !== 'undefined' ? Uint8Array : Array
-
-var code = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
-for (var i = 0, len = code.length; i < len; ++i) {
-  lookup[i] = code[i]
-  revLookup[code.charCodeAt(i)] = i
-}
-
-revLookup['-'.charCodeAt(0)] = 62
-revLookup['_'.charCodeAt(0)] = 63
-
-function placeHoldersCount (b64) {
-  var len = b64.length
-  if (len % 4 > 0) {
-    throw new Error('Invalid string. Length must be a multiple of 4')
-  }
-
-  // the number of equal signs (place holders)
-  // if there are two placeholders, than the two characters before it
-  // represent one byte
-  // if there is only one, then the three characters before it represent 2 bytes
-  // this is just a cheap hack to not do indexOf twice
-  return b64[len - 2] === '=' ? 2 : b64[len - 1] === '=' ? 1 : 0
-}
-
-function byteLength (b64) {
-  // base64 is 4/3 + up to two characters of the original data
-  return (b64.length * 3 / 4) - placeHoldersCount(b64)
-}
-
-function toByteArray (b64) {
-  var i, l, tmp, placeHolders, arr
-  var len = b64.length
-  placeHolders = placeHoldersCount(b64)
-
-  arr = new Arr((len * 3 / 4) - placeHolders)
-
-  // if there are placeholders, only get up to the last complete 4 chars
-  l = placeHolders > 0 ? len - 4 : len
-
-  var L = 0
-
-  for (i = 0; i < l; i += 4) {
-    tmp = (revLookup[b64.charCodeAt(i)] << 18) | (revLookup[b64.charCodeAt(i + 1)] << 12) | (revLookup[b64.charCodeAt(i + 2)] << 6) | revLookup[b64.charCodeAt(i + 3)]
-    arr[L++] = (tmp >> 16) & 0xFF
-    arr[L++] = (tmp >> 8) & 0xFF
-    arr[L++] = tmp & 0xFF
-  }
-
-  if (placeHolders === 2) {
-    tmp = (revLookup[b64.charCodeAt(i)] << 2) | (revLookup[b64.charCodeAt(i + 1)] >> 4)
-    arr[L++] = tmp & 0xFF
-  } else if (placeHolders === 1) {
-    tmp = (revLookup[b64.charCodeAt(i)] << 10) | (revLookup[b64.charCodeAt(i + 1)] << 4) | (revLookup[b64.charCodeAt(i + 2)] >> 2)
-    arr[L++] = (tmp >> 8) & 0xFF
-    arr[L++] = tmp & 0xFF
-  }
-
-  return arr
-}
-
-function tripletToBase64 (num) {
-  return lookup[num >> 18 & 0x3F] + lookup[num >> 12 & 0x3F] + lookup[num >> 6 & 0x3F] + lookup[num & 0x3F]
-}
-
-function encodeChunk (uint8, start, end) {
-  var tmp
-  var output = []
-  for (var i = start; i < end; i += 3) {
-    tmp = (uint8[i] << 16) + (uint8[i + 1] << 8) + (uint8[i + 2])
-    output.push(tripletToBase64(tmp))
-  }
-  return output.join('')
-}
-
-function fromByteArray (uint8) {
-  var tmp
-  var len = uint8.length
-  var extraBytes = len % 3 // if we have 1 byte left, pad 2 bytes
-  var output = ''
-  var parts = []
-  var maxChunkLength = 16383 // must be multiple of 3
-
-  // go through the array every three bytes, we'll deal with trailing stuff later
-  for (var i = 0, len2 = len - extraBytes; i < len2; i += maxChunkLength) {
-    parts.push(encodeChunk(uint8, i, (i + maxChunkLength) > len2 ? len2 : (i + maxChunkLength)))
-  }
-
-  // pad the end with zeros, but make sure to not forget the extra bytes
-  if (extraBytes === 1) {
-    tmp = uint8[len - 1]
-    output += lookup[tmp >> 2]
-    output += lookup[(tmp << 4) & 0x3F]
-    output += '=='
-  } else if (extraBytes === 2) {
-    tmp = (uint8[len - 2] << 8) + (uint8[len - 1])
-    output += lookup[tmp >> 10]
-    output += lookup[(tmp >> 4) & 0x3F]
-    output += lookup[(tmp << 2) & 0x3F]
-    output += '='
-  }
-
-  parts.push(output)
-
-  return parts.join('')
-}
-
-
-/***/ }),
-/* 174 */
-/***/ (function(module, exports) {
-
-exports.read = function (buffer, offset, isLE, mLen, nBytes) {
-  var e, m
-  var eLen = nBytes * 8 - mLen - 1
-  var eMax = (1 << eLen) - 1
-  var eBias = eMax >> 1
-  var nBits = -7
-  var i = isLE ? (nBytes - 1) : 0
-  var d = isLE ? -1 : 1
-  var s = buffer[offset + i]
-
-  i += d
-
-  e = s & ((1 << (-nBits)) - 1)
-  s >>= (-nBits)
-  nBits += eLen
-  for (; nBits > 0; e = e * 256 + buffer[offset + i], i += d, nBits -= 8) {}
-
-  m = e & ((1 << (-nBits)) - 1)
-  e >>= (-nBits)
-  nBits += mLen
-  for (; nBits > 0; m = m * 256 + buffer[offset + i], i += d, nBits -= 8) {}
-
-  if (e === 0) {
-    e = 1 - eBias
-  } else if (e === eMax) {
-    return m ? NaN : ((s ? -1 : 1) * Infinity)
-  } else {
-    m = m + Math.pow(2, mLen)
-    e = e - eBias
-  }
-  return (s ? -1 : 1) * m * Math.pow(2, e - mLen)
-}
-
-exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
-  var e, m, c
-  var eLen = nBytes * 8 - mLen - 1
-  var eMax = (1 << eLen) - 1
-  var eBias = eMax >> 1
-  var rt = (mLen === 23 ? Math.pow(2, -24) - Math.pow(2, -77) : 0)
-  var i = isLE ? 0 : (nBytes - 1)
-  var d = isLE ? 1 : -1
-  var s = value < 0 || (value === 0 && 1 / value < 0) ? 1 : 0
-
-  value = Math.abs(value)
-
-  if (isNaN(value) || value === Infinity) {
-    m = isNaN(value) ? 1 : 0
-    e = eMax
-  } else {
-    e = Math.floor(Math.log(value) / Math.LN2)
-    if (value * (c = Math.pow(2, -e)) < 1) {
-      e--
-      c *= 2
-    }
-    if (e + eBias >= 1) {
-      value += rt / c
-    } else {
-      value += rt * Math.pow(2, 1 - eBias)
-    }
-    if (value * c >= 2) {
-      e++
-      c /= 2
-    }
-
-    if (e + eBias >= eMax) {
-      m = 0
-      e = eMax
-    } else if (e + eBias >= 1) {
-      m = (value * c - 1) * Math.pow(2, mLen)
-      e = e + eBias
-    } else {
-      m = value * Math.pow(2, eBias - 1) * Math.pow(2, mLen)
-      e = 0
-    }
-  }
-
-  for (; mLen >= 8; buffer[offset + i] = m & 0xff, i += d, m /= 256, mLen -= 8) {}
-
-  e = (e << mLen) | m
-  eLen += mLen
-  for (; eLen > 0; buffer[offset + i] = e & 0xff, i += d, e /= 256, eLen -= 8) {}
-
-  buffer[offset + i - d] |= s * 128
-}
 
 
 /***/ }),
@@ -36340,6 +36438,54 @@ function compare(a, b){
 /* 307 */
 /***/ (function(module, exports, __webpack_require__) {
 
+"use strict";
+
+
+module.exports = {
+  coins: {
+    mona: { //key = coinId that is lowercase ticker symbol
+      coinScreenName: "モナコイン",
+      unit: "MONA",
+      unitEasy: "モナ",
+      bip44CoinType: 22, //from slip44
+      network: {
+        messagePrefix: '\x19Monacoin Signed Message:\n',
+        bip32: {
+          public: 0x0488b21e,
+
+          private: 0x0488ade4
+        },
+        pubKeyHash: 0x32,
+        scriptHash: 0x05,
+        wif: 0xb2,
+        bech32: "mona"
+      }
+    },
+    zny: {
+      coinScreenName: "BitZeny",
+      unit: "ZNY",
+      unitEasy: "銭",
+      bip44CoinType: 123, //from slip44
+      network: {
+        messagePrefix: '\x19BitZeny Signed Message:\n',
+        bip32: {
+          public: 0x0488b21e,
+
+          private: 0x0488ade4
+        },
+        pubKeyHash: 0x32,
+        scriptHash: 0x05,
+        wif: 0xb2,
+        bech32: "mona"
+      }
+    }
+  }
+};
+
+/***/ }),
+/* 308 */
+/***/ (function(module, exports, __webpack_require__) {
+
 var render = function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('v-ons-page',{attrs:{"data-page":"home"}},[_c('custom-bar',{attrs:{"title":"ホーム","menu":"true"}}),_vm._v(" "),_c('div',[_c('div',{attrs:{"id":"youHave"}},[_c('div',{staticClass:"label"},[_vm._v("あなたが今持っているのは")]),_vm._v(" "),_c('div',{attrs:{"id":"balanceWrap"}},[_c('span',{attrs:{"id":"balance"}},[_vm._v(_vm._s(_vm.balanceToShow))]),_vm._v(" "),_c('span',{directives:[{name:"show",rawName:"v-show",value:(_vm.unitToShow=='mona_easy'),expression:"unitToShow=='mona_easy'"}],attrs:{"id":"unit"}},[_vm._v("もにゃ")]),_vm._v(" "),_c('span',{directives:[{name:"show",rawName:"v-show",value:(_vm.unitToShow=='mona'),expression:"unitToShow=='mona'"}],attrs:{"id":"unit"}},[_vm._v("MONA")]),_vm._v(" "),_c('span',{directives:[{name:"show",rawName:"v-show",value:(_vm.unitToShow=='jpy'),expression:"unitToShow=='jpy'"}],attrs:{"id":"unit"}},[_vm._v("円")]),_vm._v(" "),_c('p',[_vm._v(_vm._s(_vm.balanceToShow*_vm.monaPrice)+"円,未承認:"+_vm._s(_vm.unconfirmedBalance)+"MONA")])])]),_vm._v(" "),_c('div',{attrs:{"id":"transactions"}},[_c('v-ons-list',[_c('v-ons-list-header',[_vm._v("最近の取引")]),_vm._v(" "),_c('v-ons-list-item',{attrs:{"modifier":"chevron tappable"}},[_c('div',{staticClass:"left"},[_vm._v("詳しく")])])],1)],1)])],1)}
 var staticRenderFns = []
 module.exports = function (_exports) {
@@ -36366,7 +36512,7 @@ if (false) {(function () {
 
 
 /***/ }),
-/* 308 */
+/* 309 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('v-ons-page',{attrs:{"data-page":"send"}},[_c('custom-bar',{attrs:{"title":"送る","menu":"true"}}),_vm._v(" "),_c('div',[_c('v-ons-list',[_c('v-ons-list-header',[_vm._v("送金先")]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_c('v-ons-list-item',[_c('v-ons-input',{attrs:{"placeholder":"送金先アドレス"},model:{value:(_vm.address),callback:function ($$v) {_vm.address=$$v},expression:"address"}})],1)],1),_vm._v(" "),_c('div',{staticClass:"right"},[_c('v-ons-icon',{attrs:{"icon":"fa-address-card"}})],1)]),_vm._v(" "),_c('v-ons-list-header',[_vm._v("相手に送金するMONA")]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_c('v-ons-list-item',[_c('v-ons-input',{attrs:{"type":"number","placeholder":"MONA"},model:{value:(_vm.mona),callback:function ($$v) {_vm.mona=$$v},expression:"mona"}})],1)],1),_vm._v(" "),_c('div',{staticClass:"right"},[_vm._v("\n          MONA\n        ")])]),_vm._v(" "),_c('v-ons-list-header',[_vm._v("日本円換算")]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_c('v-ons-list-item',[_c('v-ons-input',{attrs:{"type":"number","placeholder":"日本円"},model:{value:(_vm.jpy),callback:function ($$v) {_vm.jpy=$$v},expression:"jpy"}})],1)],1),_vm._v(" "),_c('div',{staticClass:"right"},[_vm._v("\n          JPY\n        ")])]),_vm._v(" "),_c('v-ons-list-header',[_vm._v("送金手数料")]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_c('v-ons-list-item',[_c('v-ons-input',{attrs:{"type":"number","placeholder":"送金手数料(MONA)"},model:{value:(_vm.fee),callback:function ($$v) {_vm.fee=$$v},expression:"fee"}})],1)],1),_vm._v(" "),_c('div',{staticClass:"right"},[_vm._v("\n          MONA\n        ")])]),_vm._v(" "),_c('v-ons-list-header',[_vm._v("メッセージ")]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_c('v-ons-list-item',[_c('v-ons-input',{attrs:{"placeholder":"80Byteまで"},model:{value:(_vm.message),callback:function ($$v) {_vm.message=$$v},expression:"message"}})],1)],1),_vm._v(" "),_c('div',{staticClass:"right"},[_c('v-ons-icon',{attrs:{"icon":"comment"}})],1)]),_vm._v(" "),_c('v-ons-list-item',[_c('v-ons-button',{attrs:{"modifier":"large","disabled":!this.address||!this.mona||!this.fee},on:{"click":_vm.confirm}},[_vm._v("確認画面へ")])],1)],1)],1)],1)}
@@ -36395,7 +36541,7 @@ if (false) {(function () {
 
 
 /***/ }),
-/* 309 */
+/* 310 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -36403,7 +36549,7 @@ if (false) {(function () {
 
 var api = __webpack_require__(43);
 var coin = __webpack_require__(22);
-module.exports = __webpack_require__(310)({
+module.exports = __webpack_require__(311)({
   data: function data() {
     return {
       address: "",
@@ -36411,7 +36557,11 @@ module.exports = __webpack_require__(310)({
       jpy: "",
       fee: 0,
       destHasUsed: false,
-      message: ""
+      message: "",
+      myBalanceBeforeSending: 0,
+      showDetail: false,
+      utxosToShow: null,
+      signedHex: null
     };
   },
 
@@ -36422,18 +36572,43 @@ module.exports = __webpack_require__(310)({
     ["address", "mona", "jpy", "fee", "message"].forEach(function (v) {
       _this[v] = _this.$store.state.confPayload[v];
     });
-    this.myAddress = coin.getMonaAddress(0);
+    this.myAddress = coin.getAddress("mona", 0);
     api.getAddressProp(this.address, "totalReceived").then(function (res) {
       _this.destHasUsed = !!res;
     });
-    api.getAddressProp(this.myAddress, "balance").then(function (res) {
+    api.getAddressBal(this.myAddress, false).then(function (res) {
       _this.myBalanceBeforeSending = res;
+      var amt2Wd = _this.fee + _this.mona;
+      if (amt2Wd <= res) {
+        return coin.selectUtxos(_this.myAddress, amt2Wd);
+      } else {
+        throw new Error("Insufficient fund");
+      }
+    }).then(function (utxos) {
+      _this.utxosToShow = utxos;
+      return coin.buildTransaction({
+        coinId: "mona",
+        keyIndex: 0,
+        message: _this.message,
+        amount: _this.mona,
+        fee: _this.fee,
+        address: _this.address,
+        changeAddress: _this.myAddress,
+        utxos: utxos
+      });
+    }).then(function (hex) {
+      _this.signedHex = hex;
     });
   },
 
+  computed: {
+    afterSent: function afterSent() {
+      return (this.myBalanceBeforeSending * 100000000 - this.mona * 100000000 - this.fee * 100000000) / 100000000;
+    }
+  },
   methods: {
     next: function next() {
-      //送金処理
+
       this.$store.commit("setFinishNextPage", { page: __webpack_require__(42), infoId: "sent" });
       this.$emit("replace", __webpack_require__(119));
     }
@@ -36441,10 +36616,10 @@ module.exports = __webpack_require__(310)({
 });
 
 /***/ }),
-/* 310 */
+/* 311 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var render = function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('v-ons-page',{attrs:{"data-page":"confirm"}},[_c('custom-bar',{attrs:{"title":"送る","menu":"true"}}),_vm._v(" "),_c('div',{staticClass:"wrap"},[_c('v-ons-list',[_c('v-ons-list-item',[_c('p',[_vm._v(_vm._s(_vm.myAddress))]),_vm._v(" "),_c('p',[_c('v-ons-icon',{attrs:{"icon":"fa-arrow-down"}})],1),_vm._v(" "),_c('p',[_vm._v(_vm._s(_vm.address))])]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_vm._v("送金先アドレスは")]),_vm._v(" "),_c('div',{directives:[{name:"show",rawName:"v-show",value:(_vm.destHasUsed),expression:"destHasUsed"}],staticClass:"right"},[_vm._v("使われた事があります")]),_vm._v(" "),_c('div',{directives:[{name:"show",rawName:"v-show",value:(!_vm.destHasUsed),expression:"!destHasUsed"}],staticClass:"right"},[_vm._v("初めて使用されます")])]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_vm._v("送金額")]),_vm._v(" "),_c('div',{staticClass:"right"},[_vm._v(_vm._s(_vm.mona)+"MONA")])]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"}),_vm._v(" "),_c('div',{staticClass:"right"},[_vm._v("(約"+_vm._s(_vm.jpy)+"円)")])]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_vm._v("送金手数料")]),_vm._v(" "),_c('div',{staticClass:"right"},[_vm._v(_vm._s(_vm.fee)+"MONA")])]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_vm._v("メッセージ")]),_vm._v(" "),_c('div',{staticClass:"right"},[_vm._v(_vm._s(_vm.message))])]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_vm._v("あなたの送金後の残高")]),_vm._v(" "),_c('div',{staticClass:"right"},[_vm._v(_vm._s(_vm.myBalanceBeforeSending-_vm.mona-_vm.fee)+"MONA")])]),_vm._v(" "),_c('v-ons-list-header',[_vm._v("送金したあとは元に戻すことはできません。")]),_vm._v(" "),_c('v-ons-list-item',[_c('v-ons-button',{attrs:{"modifier":"large"},on:{"click":_vm.next}},[_vm._v("送金")])],1)],1)],1)],1)}
+var render = function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('v-ons-page',{attrs:{"data-page":"confirm"}},[_c('custom-bar',{attrs:{"title":"送る","menu":"true"}}),_vm._v(" "),_c('div',{staticClass:"wrap"},[_c('v-ons-list',[_c('v-ons-list-item',[_c('p',[_vm._v(_vm._s(_vm.myAddress))]),_vm._v(" "),_c('p',[_c('v-ons-icon',{attrs:{"icon":"fa-arrow-down"}})],1),_vm._v(" "),_c('p',[_vm._v(_vm._s(_vm.address))])]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_vm._v("送金先アドレスは")]),_vm._v(" "),_c('div',{directives:[{name:"show",rawName:"v-show",value:(_vm.destHasUsed),expression:"destHasUsed"}],staticClass:"right"},[_vm._v("使われた事があります")]),_vm._v(" "),_c('div',{directives:[{name:"show",rawName:"v-show",value:(!_vm.destHasUsed),expression:"!destHasUsed"}],staticClass:"right"},[_vm._v("初めて使用されます")])]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_vm._v("送金額")]),_vm._v(" "),_c('div',{staticClass:"right"},[_vm._v(_vm._s(_vm.mona)+"MONA")])]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"}),_vm._v(" "),_c('div',{staticClass:"right"},[_vm._v("(約"+_vm._s(_vm.jpy)+"円)")])]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_vm._v("送金手数料")]),_vm._v(" "),_c('div',{staticClass:"right"},[_vm._v(_vm._s(_vm.fee)+"MONA")])]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_vm._v("メッセージ")]),_vm._v(" "),_c('div',{staticClass:"right"},[_vm._v(_vm._s(_vm.message))])]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_vm._v("あなたの送金後の残高")]),_vm._v(" "),_c('div',{staticClass:"right"},[_vm._v(_vm._s(_vm.afterSent)+"MONA")])]),_vm._v(" "),_c('v-ons-list-header',[_vm._v("送金したあとは元に戻すことはできません。")]),_vm._v(" "),_c('v-ons-list-item',[_c('v-ons-button',{attrs:{"modifier":"large"},on:{"click":_vm.next}},[_vm._v("送金")])],1),_vm._v(" "),_c('v-ons-list-item',{on:{"click":function($event){_vm.showDetail=!_vm.showDetail}}},[_vm._v("\n        詳細情報を開閉\n      ")]),_vm._v(" "),_c('div',{directives:[{name:"show",rawName:"v-show",value:(_vm.showDetail),expression:"showDetail"}]},[_c('v-ons-list-item',[_c('textarea',{domProps:{"value":_vm.signedHex}})]),_vm._v(" "),_c('v-ons-list-header',[_vm._v("UTXO")]),_vm._v(" "),_vm._l((_vm.utxosToShow),function(u){return _c('v-ons-list-item',[_vm._v("\n        "+_vm._s(u.txid)+"\n      ")])})],2)],1)],1)],1)}
 var staticRenderFns = []
 module.exports = function (_exports) {
   var options = typeof _exports === 'function'
@@ -36470,7 +36645,7 @@ if (false) {(function () {
 
 
 /***/ }),
-/* 311 */
+/* 312 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('v-ons-page',{attrs:{"data-page":"finished"}},[_c('div',{staticClass:"wrap"},[_c('img',{staticClass:"succeeded",attrs:{"alt":"Succeeded!","src":"../res/vtc.png"}}),_vm._v(" "),(_vm.infoId==='createdWallet')?_c('p',[_vm._v("ウォレットを作成しました！")]):_vm._e(),_vm._v(" "),(_vm.infoId==='sent')?_c('p',[_vm._v("送金しました！")]):_vm._e(),_vm._v(" "),_c('v-ons-button',{attrs:{"modifier":"large"},on:{"click":_vm.start}},[_vm._v("OK")])],1)])}
@@ -36499,15 +36674,15 @@ if (false) {(function () {
 
 
 /***/ }),
-/* 312 */
+/* 313 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 var coin = __webpack_require__(22);
-var qrcode = __webpack_require__(313);
-module.exports = __webpack_require__(332)({
+var qrcode = __webpack_require__(314);
+module.exports = __webpack_require__(333)({
   data: function data() {
     return {
       mainAddress: "",
@@ -36520,7 +36695,7 @@ module.exports = __webpack_require__(332)({
     getMainAddress: function getMainAddress() {
       var _this = this;
 
-      this.mainAddress = coin.getMonaAddress(0);
+      this.mainAddress = coin.getAddress("mona", 0);
       qrcode.toDataURL("monacoin:" + this.mainAddress, {
         errorCorrectionLevel: 'M',
         type: 'image/png'
@@ -36536,12 +36711,12 @@ module.exports = __webpack_require__(332)({
 });
 
 /***/ }),
-/* 313 */
+/* 314 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var QRCode = __webpack_require__(314)
-var CanvasRenderer = __webpack_require__(330)
-var SvgRenderer = __webpack_require__(331)
+var QRCode = __webpack_require__(315)
+var CanvasRenderer = __webpack_require__(331)
+var SvgRenderer = __webpack_require__(332)
 
 function renderCanvas (renderFunc, canvas, text, opts, cb) {
   var argsNum = arguments.length - 1
@@ -36588,23 +36763,23 @@ exports.toString = renderCanvas.bind(null, function (data, _, opts) {
 
 
 /***/ }),
-/* 314 */
+/* 315 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var Buffer = __webpack_require__(26)
 var Utils = __webpack_require__(19)
 var ECLevel = __webpack_require__(68)
-var BitBuffer = __webpack_require__(315)
-var BitMatrix = __webpack_require__(316)
-var AlignmentPattern = __webpack_require__(317)
-var FinderPattern = __webpack_require__(318)
-var MaskPattern = __webpack_require__(319)
+var BitBuffer = __webpack_require__(316)
+var BitMatrix = __webpack_require__(317)
+var AlignmentPattern = __webpack_require__(318)
+var FinderPattern = __webpack_require__(319)
+var MaskPattern = __webpack_require__(320)
 var ECCode = __webpack_require__(120)
-var ReedSolomonEncoder = __webpack_require__(320)
+var ReedSolomonEncoder = __webpack_require__(321)
 var Version = __webpack_require__(121)
-var FormatInfo = __webpack_require__(323)
+var FormatInfo = __webpack_require__(324)
 var Mode = __webpack_require__(20)
-var Segments = __webpack_require__(324)
+var Segments = __webpack_require__(325)
 var isArray = __webpack_require__(67)
 
 /**
@@ -37093,7 +37268,7 @@ exports.create = function create (data, options) {
 
 
 /***/ }),
-/* 315 */
+/* 316 */
 /***/ (function(module, exports) {
 
 function BitBuffer () {
@@ -37136,7 +37311,7 @@ module.exports = BitBuffer
 
 
 /***/ }),
-/* 316 */
+/* 317 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var Buffer = __webpack_require__(26)
@@ -37211,7 +37386,7 @@ module.exports = BitMatrix
 
 
 /***/ }),
-/* 317 */
+/* 318 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -37300,7 +37475,7 @@ exports.getPositions = function getPositions (version) {
 
 
 /***/ }),
-/* 318 */
+/* 319 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var getSymbolSize = __webpack_require__(19).getSymbolSize
@@ -37328,7 +37503,7 @@ exports.getPositions = function getPositions (version) {
 
 
 /***/ }),
-/* 319 */
+/* 320 */
 /***/ (function(module, exports) {
 
 /**
@@ -37568,11 +37743,11 @@ exports.getBestMask = function getBestMask (data, setupFormatFunc) {
 
 
 /***/ }),
-/* 320 */
+/* 321 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var Buffer = __webpack_require__(26)
-var Polynomial = __webpack_require__(321)
+var Polynomial = __webpack_require__(322)
 
 function ReedSolomonEncoder (degree) {
   this.genPoly = undefined
@@ -37633,11 +37808,11 @@ module.exports = ReedSolomonEncoder
 
 
 /***/ }),
-/* 321 */
+/* 322 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var Buffer = __webpack_require__(26)
-var GF = __webpack_require__(322)
+var GF = __webpack_require__(323)
 
 /**
  * Multiplies two polynomials inside Galois Field
@@ -37703,7 +37878,7 @@ exports.generateECPolynomial = function generateECPolynomial (degree) {
 
 
 /***/ }),
-/* 322 */
+/* 323 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var Buffer = __webpack_require__(26)
@@ -37781,7 +37956,7 @@ exports.mul = function mul (x, y) {
 
 
 /***/ }),
-/* 323 */
+/* 324 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var Utils = __webpack_require__(19)
@@ -37816,17 +37991,17 @@ exports.getEncodedBits = function getEncodedBits (errorCorrectionLevel, mask) {
 
 
 /***/ }),
-/* 324 */
+/* 325 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var Mode = __webpack_require__(20)
-var NumericData = __webpack_require__(325)
-var AlphanumericData = __webpack_require__(326)
-var ByteData = __webpack_require__(327)
-var KanjiData = __webpack_require__(328)
+var NumericData = __webpack_require__(326)
+var AlphanumericData = __webpack_require__(327)
+var ByteData = __webpack_require__(328)
+var KanjiData = __webpack_require__(329)
 var Regex = __webpack_require__(122)
 var Utils = __webpack_require__(19)
-var dijkstra = __webpack_require__(329)
+var dijkstra = __webpack_require__(330)
 
 /**
  * Returns UTF8 byte length
@@ -38152,7 +38327,7 @@ exports.rawSplit = function rawSplit (data) {
 
 
 /***/ }),
-/* 325 */
+/* 326 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var Mode = __webpack_require__(20)
@@ -38201,7 +38376,7 @@ module.exports = NumericData
 
 
 /***/ }),
-/* 326 */
+/* 327 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var Mode = __webpack_require__(20)
@@ -38266,7 +38441,7 @@ module.exports = AlphanumericData
 
 
 /***/ }),
-/* 327 */
+/* 328 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var Buffer = __webpack_require__(26)
@@ -38299,7 +38474,7 @@ module.exports = ByteData
 
 
 /***/ }),
-/* 328 */
+/* 329 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var Mode = __webpack_require__(20)
@@ -38359,7 +38534,7 @@ module.exports = KanjiData
 
 
 /***/ }),
-/* 329 */
+/* 330 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -38531,7 +38706,7 @@ if (true) {
 
 
 /***/ }),
-/* 330 */
+/* 331 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var Utils = __webpack_require__(123)
@@ -38600,7 +38775,7 @@ exports.renderToDataURL = function renderToDataURL (qrData, canvas, options) {
 
 
 /***/ }),
-/* 331 */
+/* 332 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var Utils = __webpack_require__(123)
@@ -38648,7 +38823,7 @@ exports.render = function render (qrData, options) {
 
 
 /***/ }),
-/* 332 */
+/* 333 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('v-ons-page',{attrs:{"data-page":"receive"}},[_c('custom-bar',{attrs:{"title":"受け取り","menu":"true"}}),_vm._v(" "),_c('div',[_c('div',{attrs:{"id":"simple"}},[_c('div',{staticClass:"label"},[_vm._v("とりあえず送ってもらう")]),_vm._v(" "),_c('div',{attrs:{"id":"qrArea"}},[_c('div',{attrs:{"id":"qrcode"}},[_c('img',{attrs:{"src":_vm.qrDataUrl,"alt":"QR code"}})]),_vm._v(" "),_c('div',{staticClass:"address"},[_vm._v(_vm._s(_vm.mainAddress||"読み込み中"))])]),_vm._v(" "),(_vm.isNative)?_c('div',[_c('v-ons-button',[_c('v-ons-icon',{attrs:{"icon":"fa-clipboard"}}),_vm._v("\n          アドレスコピー\n        ")],1),_vm._v(" "),_c('v-ons-button',[_c('v-ons-icon',{attrs:{"icon":"fa-share"}}),_vm._v("共有\n        ")],1)],1):_vm._e()]),_vm._v(" "),_c('div',{attrs:{"id":"addresses"}},[_c('v-ons-list',[_c('v-ons-list-header',[_vm._v("他のアドレスで請求書をつくる")]),_vm._v(" "),_c('v-ons-list-item',{attrs:{"modifier":"tappable chevron"}},[_vm._v("Coming soon")])],1)],1)])],1)}
@@ -38677,13 +38852,13 @@ if (false) {(function () {
 
 
 /***/ }),
-/* 333 */
+/* 334 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-module.exports = __webpack_require__(334)({
+module.exports = __webpack_require__(335)({
   data: function data() {
     return {};
   },
@@ -38693,7 +38868,7 @@ module.exports = __webpack_require__(334)({
 });
 
 /***/ }),
-/* 334 */
+/* 335 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('v-ons-page',{attrs:{"data-page":"history"}},[_c('custom-bar',{attrs:{"title":"履歴","menu":"true"}}),_vm._v(" "),_c('div')],1)}
@@ -38722,13 +38897,13 @@ if (false) {(function () {
 
 
 /***/ }),
-/* 335 */
+/* 336 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-module.exports = __webpack_require__(336)({
+module.exports = __webpack_require__(337)({
   data: function data() {
     return {};
   },
@@ -38738,7 +38913,7 @@ module.exports = __webpack_require__(336)({
 });
 
 /***/ }),
-/* 336 */
+/* 337 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('v-ons-page',{attrs:{"data-page":"settings"}},[_c('custom-bar',{attrs:{"title":"設定","menu":"true"}}),_vm._v(" "),_c('div',[_c('v-ons-list',[_c('v-ons-list-header'),_vm._v(" "),_c('v-ons-list-item')],1)],1)],1)}
@@ -38767,13 +38942,13 @@ if (false) {(function () {
 
 
 /***/ }),
-/* 337 */
+/* 338 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-module.exports = __webpack_require__(338)({
+module.exports = __webpack_require__(339)({
   data: function data() {
     return {};
   },
@@ -38783,7 +38958,7 @@ module.exports = __webpack_require__(338)({
 });
 
 /***/ }),
-/* 338 */
+/* 339 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('v-ons-page',{attrs:{"data-page":"help"}},[_c('custom-bar',{attrs:{"title":"ヘルプ","menu":"true"}}),_vm._v(" "),_c('div',[_c('v-ons-list',[_c('v-ons-list-header',[_vm._v("使い方")]),_vm._v(" "),_c('v-ons-list-item'),_vm._v(" "),_c('v-ons-list-header',[_vm._v("暗号通貨解説")]),_vm._v(" "),_c('v-ons-list-header',[_vm._v("用語集")]),_vm._v(" "),_c('v-ons-list-header',[_vm._v("その他")]),_vm._v(" "),_c('v-ons-list-item',[_vm._v("このアプリについて")])],1)],1)],1)}
@@ -38812,7 +38987,7 @@ if (false) {(function () {
 
 
 /***/ }),
-/* 339 */
+/* 340 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('v-ons-page',{attrs:{"data-page":"login"}},[_c('div',{staticClass:"wrap"},[_c('p',[_vm._v("パスワードを入力して下さい。")]),_vm._v(" "),_c('div',{class:{passwordBox:true,incorrect:_vm.incorrect}},[_c('input',{attrs:{"name":"","type":_vm.showPassword?'text':'password',"id":"password"},on:{"input":function($event){_vm.password=$event.target.value},"change":_vm.start}}),_vm._v(" "),_c('v-ons-button',{attrs:{"modifier":"quiet"}},[_c('v-ons-icon',{attrs:{"icon":_vm.showPassword?'eye-slash':'eye'},on:{"click":function($event){_vm.showPassword=!_vm.showPassword}}})],1)],1),_vm._v(" "),_c('v-ons-button',{attrs:{"modifier":"large"},on:{"click":_vm.start}},[_vm._v("はじめる")])],1)])}
@@ -38841,27 +39016,27 @@ if (false) {(function () {
 
 
 /***/ }),
-/* 340 */
+/* 341 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-module.exports = __webpack_require__(341)({
+module.exports = __webpack_require__(342)({
   data: function data() {
     return {};
   },
 
   methods: {
     start: function start() {
-      this.$emit("push", __webpack_require__(342));
+      this.$emit("push", __webpack_require__(343));
     }
   },
   mounted: function mounted() {}
 });
 
 /***/ }),
-/* 341 */
+/* 342 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('v-ons-page',{attrs:{"data-page":"first"}},[_c('div',{staticClass:"wrap"},[_c('div',{staticClass:"logo"},[_c('div',{staticClass:"icon"}),_vm._v(" "),_c('div',{staticClass:"appName"},[_vm._v("もにゃ")]),_vm._v(" "),_c('div',{staticClass:"label"},[_vm._v("The easiest Monacoin Wallet")]),_vm._v(" "),_c('div',{staticClass:"buttons"},[_c('v-ons-button',{on:{"click":_vm.start}},[_vm._v("Start!")])],1)])])])}
@@ -38890,13 +39065,13 @@ if (false) {(function () {
 
 
 /***/ }),
-/* 342 */
+/* 343 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-module.exports = __webpack_require__(343)({
+module.exports = __webpack_require__(344)({
   data: function data() {
     return {
       questionNumber: 0,
@@ -38922,7 +39097,7 @@ module.exports = __webpack_require__(343)({
         case -2:
           //decline--set for advanced user
 
-          this.$emit("push", __webpack_require__(344));
+          this.$emit("push", __webpack_require__(345));
           break;
         case -3:
           //go to keyinput
@@ -39131,7 +39306,7 @@ var qList = [{ //0
 }];
 
 /***/ }),
-/* 343 */
+/* 344 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('v-ons-page',{attrs:{"data-page":"question"}},[_c('v-ons-carousel',{attrs:{"fullscreen":"","auto-scroll":"","index":_vm.questionNumber}},_vm._l((_vm.questions),function(qq){return _c('v-ons-carousel-item',{staticClass:"questionItem"},[_c('div',{staticClass:"questionText"},[_vm._v(_vm._s(qq.text))]),_vm._v(" "),_vm._l((qq.answers),function(ans,ind){return _c('div',{staticClass:"answers"},[_c('div',{staticClass:"answer",on:{"click":function($event){_vm.answer(ans)}}},[_vm._v(_vm._s(ans.label))])])})],2)}))],1)}
@@ -39160,13 +39335,13 @@ if (false) {(function () {
 
 
 /***/ }),
-/* 344 */
+/* 345 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-module.exports = __webpack_require__(345)({
+module.exports = __webpack_require__(346)({
   data: function data() {
     return {
       check1: false, check2: false, check3: false
@@ -39175,7 +39350,7 @@ module.exports = __webpack_require__(345)({
 
   methods: {
     next: function next() {
-      this.$emit("push", __webpack_require__(346));
+      this.$emit("push", __webpack_require__(347));
     }
   },
   mounted: function mounted() {},
@@ -39184,7 +39359,7 @@ module.exports = __webpack_require__(345)({
 });
 
 /***/ }),
-/* 345 */
+/* 346 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('v-ons-page',{attrs:{"data-page":"generateKeyWarn"}},[_c('custom-bar',{attrs:{"title":"ご確認ください"}}),_vm._v(" "),_c('div',{staticClass:"wrap"},[_c('p',[_vm._v("秘密鍵を作成します。以下の注意事項をよく読んで、チェックをしてください")]),_vm._v(" "),_c('ul',[_c('li',[_vm._v("秘密鍵は所有するモナコインにアクセスする権利そのものです。")]),_vm._v(" "),_c('li',[_vm._v("13個の英単語を正確に、紙に手書きしてください。")]),_vm._v(" "),_c('li',[_vm._v("英単語のスクリーンショットを撮影・コピーしないでください。")]),_vm._v(" "),_c('li',[_vm._v("これを紛失すると、モナコインを使うことはできなくなります。")]),_vm._v(" "),_c('li',[_vm._v("他人に知れ渡ると、モナコインを盗まれる可能性があります。")]),_vm._v(" "),_c('li',[_vm._v("管理が不十分だったことによる責任は利用者自身が負い、他の誰も負いません。")])])]),_vm._v(" "),_c('v-ons-list',[_c('v-ons-list-item',[_c('label',{staticClass:"left"},[_c('v-ons-checkbox',{attrs:{"input-id":"check1"},model:{value:(_vm.check1),callback:function ($$v) {_vm.check1=$$v},expression:"check1"}})],1),_vm._v(" "),_c('label',{staticClass:"center",attrs:{"for":"check1"}},[_vm._v("秘密鍵の重要性を理解しました。")])]),_vm._v(" "),_c('v-ons-list-item',[_c('label',{staticClass:"left"},[_c('v-ons-checkbox',{attrs:{"input-id":"check2"},model:{value:(_vm.check2),callback:function ($$v) {_vm.check2=$$v},expression:"check2"}})],1),_vm._v(" "),_c('label',{staticClass:"center",attrs:{"for":"check2"}},[_vm._v("画面を誰にも・どのソフトにも見られたり盗聴されていません。")])]),_vm._v(" "),_c('v-ons-list-item',[_c('label',{staticClass:"left"},[_c('v-ons-checkbox',{attrs:{"input-id":"check3"},model:{value:(_vm.check3),callback:function ($$v) {_vm.check3=$$v},expression:"check3"}})],1),_vm._v(" "),_c('label',{staticClass:"center",attrs:{"for":"check3"}},[_vm._v("秘密鍵の管理は自己責任であることを理解しました。")])]),_vm._v(" "),_c('v-ons-list-item',[_c('v-ons-button',{attrs:{"disabled":!_vm.check1||!_vm.check2||!_vm.check3,"modifier":"large"},on:{"click":_vm.next}},[_vm._v("次へ")])],1)],1)],1)}
@@ -39213,13 +39388,13 @@ if (false) {(function () {
 
 
 /***/ }),
-/* 346 */
+/* 347 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-module.exports = __webpack_require__(347)({
+module.exports = __webpack_require__(348)({
   data: function data() {
     return {
       cnt: 0,
@@ -39240,7 +39415,7 @@ module.exports = __webpack_require__(347)({
         this.$store.commit("setEntropy", this.keyArray.map(function (v) {
           return ("0" + v.toString(16)).slice(-2);
         }).join(""));
-        this.$emit("push", __webpack_require__(348));
+        this.$emit("push", __webpack_require__(349));
       }
     }
   },
@@ -39316,7 +39491,7 @@ module.exports = __webpack_require__(347)({
 });
 
 /***/ }),
-/* 347 */
+/* 348 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('v-ons-page',{attrs:{"data-page":"generateKey"}},[_c('custom-bar',{attrs:{"title":"秘密鍵を生成","modifier":"transparent"}}),_vm._v(" "),_c('div',{ref:"touchArea",staticClass:"touchArea"},[_c('p',{directives:[{name:"show",rawName:"v-show",value:(_vm.cnt<_vm.wordCount),expression:"cnt<wordCount"}]},[_vm._v("\n      ここをスワイプしたりドラッグしたりしてセキュリティを高めましょう"),_c('br'),_vm._v(" "),_c('small',{directives:[{name:"show",rawName:"v-show",value:(_vm.sensorAvailable),expression:"sensorAvailable"}]},[_vm._v("または端末を振ってください。")]),_c('br'),_vm._v("\n      "+_vm._s(_vm.cnt)),_c('small',[_vm._v("/"+_vm._s(_vm.wordCount))])]),_vm._v(" "),_c('p',{directives:[{name:"show",rawName:"v-show",value:(_vm.cnt>=_vm.wordCount),expression:"cnt>=wordCount"}]},[_vm._v("計算中"),_c('br'),_c('small',[_vm._v("数分かかる場合があります。")])]),_vm._v(" "),_c('v-ons-progress-bar',{attrs:{"value":_vm.cnt/_vm.wordCount*100}})],1)],1)}
@@ -39345,14 +39520,14 @@ if (false) {(function () {
 
 
 /***/ }),
-/* 348 */
+/* 349 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 var bip39 = __webpack_require__(93);
-module.exports = __webpack_require__(349)({
+module.exports = __webpack_require__(350)({
   data: function data() {
     return {
       keyArray: null,
@@ -39363,7 +39538,7 @@ module.exports = __webpack_require__(349)({
   store: __webpack_require__(25),
   methods: {
     next: function next() {
-      this.$emit("push", __webpack_require__(350));
+      this.$emit("push", __webpack_require__(351));
     }
   },
   mounted: function mounted() {
@@ -39374,7 +39549,7 @@ module.exports = __webpack_require__(349)({
 });
 
 /***/ }),
-/* 349 */
+/* 350 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('v-ons-page',{attrs:{"data-page":"showPassphrase"}},[_c('custom-bar',{attrs:{"title":"パスフレーズ"}}),_vm._v(" "),_c('div',{staticClass:"wrap"},[_c('ul',[_c('li',[_vm._v("英単語を正確に、紙に手書きしてください。")]),_vm._v(" "),_c('li',[_vm._v("英単語のスクリーンショットを撮影・コピーしないでください。")]),_vm._v(" "),_c('li',[_vm._v("他人に知れ渡ると、モナコインを盗まれる可能性があります。")]),_vm._v(" "),_c('li',[_vm._v("チェックボックスは確認のためにお使いください。")])]),_vm._v(" "),_c('v-ons-list',[_vm._l((_vm.words),function(word,index){return _c('v-ons-list-item',[_c('label',{staticClass:"left"},[_vm._v("\n          "+_vm._s(index+1)+"\n        ")]),_vm._v(" "),_c('label',{staticClass:"center"},[_vm._v(_vm._s(word))]),_vm._v(" "),_c('label',{staticClass:"right"},[_c('v-ons-checkbox')],1)])}),_vm._v(" "),_c('v-ons-list-item',[_c('v-ons-button',{attrs:{"modifier":"large","disable":!_vm.words.length},on:{"click":_vm.next}},[_vm._v("次へ")])],1)],2)],1)],1)}
@@ -39403,7 +39578,7 @@ if (false) {(function () {
 
 
 /***/ }),
-/* 350 */
+/* 351 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -39412,7 +39587,7 @@ if (false) {(function () {
 var coin = __webpack_require__(22);
 var crypto = __webpack_require__(97);
 var storage = __webpack_require__(41);
-module.exports = __webpack_require__(351)({
+module.exports = __webpack_require__(352)({
   data: function data() {
     return {
       passwordType: "password",
@@ -39446,7 +39621,7 @@ module.exports = __webpack_require__(351)({
 });
 
 /***/ }),
-/* 351 */
+/* 352 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('v-ons-page',{attrs:{"data-page":"setPassword"}},[_c('custom-bar',{attrs:{"title":"パスワード設定"}}),_vm._v(" "),_c('div',{staticClass:"wrap"},[_c('ul',[_c('li',[_vm._v("パスワードを設定します。")]),_vm._v(" "),_c('li',[_vm._v("6文字以上")]),_vm._v(" "),_c('li',[_vm._v("秘密鍵を保護するために使用されます。")]),_vm._v(" "),_c('li',[_vm._v("他人に知れ渡ると、勝手にアプリケーションを利用される可能性があります。")])]),_vm._v(" "),_c('v-ons-list',[_c('v-ons-list-header',[_vm._v("パスワードの種類")]),_vm._v(" "),_c('v-ons-list-item',[_c('label',{staticClass:"left"},[_c('v-ons-radio',{attrs:{"input-id":"pin","value":"pin"},model:{value:(_vm.passwordType),callback:function ($$v) {_vm.passwordType=$$v},expression:"passwordType"}})],1),_vm._v(" "),_c('label',{staticClass:"center",attrs:{"for":"pin"}},[_vm._v("数字のみのPINコード")])]),_vm._v(" "),_c('v-ons-list-item',[_c('label',{staticClass:"left"},[_c('v-ons-radio',{attrs:{"input-id":"password","value":"password"},model:{value:(_vm.passwordType),callback:function ($$v) {_vm.passwordType=$$v},expression:"passwordType"}})],1),_vm._v(" "),_c('label',{staticClass:"center",attrs:{"for":"password"}},[_vm._v("半角英数字のパスワード")])]),_vm._v(" "),_c('div',{directives:[{name:"show",rawName:"v-show",value:(_vm.passwordType==='password'),expression:"passwordType==='password'"}]},[_c('v-ons-list-header',[_vm._v("パスワード")]),_vm._v(" "),_c('v-ons-list-item',[_c('v-ons-input',{attrs:{"placeholder":"Password"},model:{value:(_vm.password),callback:function ($$v) {_vm.password=$$v},expression:"password"}})],1),_vm._v(" "),_c('v-ons-list-item',[_c('v-ons-input',{attrs:{"placeholder":"Retype Password"},model:{value:(_vm.password2),callback:function ($$v) {_vm.password2=$$v},expression:"password2"}})],1),_vm._v(" "),_c('v-ons-list-item',[_c('v-ons-button',{attrs:{"modifier":"large","disabled":!_vm.password||_vm.password!==_vm.password2},on:{"click":_vm.next}},[_vm._v("次へ")])],1)],1),_vm._v(" "),_c('div',{directives:[{name:"show",rawName:"v-show",value:(_vm.passwordType==='pin'),expression:"passwordType==='pin'"}]},[_c('v-ons-list',[_c('v-ons-list-header',[_vm._v("PINコード")]),_vm._v(" "),_c('v-ons-list',[_vm._v("Coming soon...")])],1)],1)],1)],1)],1)}

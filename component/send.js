@@ -15,7 +15,9 @@ module.exports=require("./send.html")({
   store:require("../js/store.js"),
   methods:{
     confirm(){
-      if(!this.address||!this.mona||!this.fee){
+      if(!this.address||!this.mona||!this.fee||!coin.isValidAddress(this.address)){
+        
+        this.$ons.notification.alert("正しく入力してね！")
         return;
       }
       this.$store.commit("setConfirmation",{
@@ -38,8 +40,8 @@ module.exports=require("./send.html")({
     }
   },
   mounted(){
-    api.getAddressProp(coin.getMonaAddress(0),"balance").then(res=>{
-      this.balance=res/1000000000
+    api.getAddressBal(coin.getAddress("mona",0),true).then(res=>{
+      this.balance=res
     })
     api.getPrice("mona","jpy").then(res=>{
       this.monaPrice=res

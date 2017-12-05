@@ -10,7 +10,7 @@ module.exports=require("./receive.html")({
   },
   methods:{
     getMainAddress(){
-      this.mainAddress=coin.getMonaAddress(0)
+      this.mainAddress=coin.getAddress("mona",0)
       qrcode.toDataURL("monacoin:"+this.mainAddress,{
   errorCorrectionLevel: 'M',
   type: 'image/png'
