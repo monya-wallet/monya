@@ -5,6 +5,7 @@ module.exports={
       unit:"MONA",
       unitEasy:"モナ",
       bip44CoinType:22,//from slip44
+      defaultAPIEndtpoint:"https://mona.chainsight.info/api",
       network:{
         messagePrefix: '\x19Monacoin Signed Message:\n',
         bip32: {

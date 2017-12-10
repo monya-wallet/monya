@@ -15,10 +15,10 @@ module.exports=require("./setPassword.html")({
       if(!this.password||this.password!==this.password2){
         return;
       }
-      coin.makeEncryptedPriv({
+      coin.makePairsAndEncrypt({
         entropy:this.$store.state.entropy,
         password:this.password
-      }).then((encrypted)=>storage.set("encryptedPriv",encrypted))
+      }).then((data)=>storage.set("keyPairs",data))
         .then(()=>{
           this.$store.commit("setFinishNextPage",{page:require("./login.js"),infoId:"createdWallet"})
           this.$emit("replace",require("./finished.js"))

@@ -9,6 +9,7 @@ Vue.use(VueOnsen)
 Vue.use(Vuex)
 
 Vue.component('custom-bar', require("../component/customBar.js"))
+Vue.component('currency-set', require("../component/currencySet.js"))
 exports.vm= new Vue({
   el:"#app",
   data(){

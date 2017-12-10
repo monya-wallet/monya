@@ -1,10 +1,9 @@
 const axios = require('axios');
+const param = require("./param")
 
-exports.apiEndpoint="https://mona.chainsight.info/api"
-
-exports.getAddressProp = (addr,propName)=> new Promise((resolve, reject) => {
+exports.getAddressProp = (addr,propName,endpoint)=> new Promise((resolve, reject) => {
   axios({
-    url:exports.apiEndpoint+"/addr/"+addr+"/"+propName,
+    url:endpoint+"/addr/"+addr+"/"+propName,
     json:true,
     method:"GET"}).then(res=>{
       resolve(res.data)

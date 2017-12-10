@@ -1,5 +1,6 @@
 const api=require("../js/api")
-const coin=require("../js/coin")
+const Currency=require("../js/currency")
+const currencyList=require("../js/currencyList")
 module.exports=require("./send.html")({
   data(){
     return {
@@ -9,13 +10,15 @@ module.exports=require("./send.html")({
       fee:0.0006,
       message:"",
       balance:0,
-      monaPrice:0
+      monaPrice:0,
+      coinType:"",
+      isEasy:false
     }
   },
   store:require("../js/store.js"),
   methods:{
     confirm(){
-      if(!this.address||!this.mona||!this.fee||!coin.isValidAddress(this.address)){
+      if(!this.address||!this.mona||!this.fee||!Currency.isValidAddress(this.address)){
         
         this.$ons.notification.alert("正しく入力してね！")
         return;
@@ -37,14 +40,22 @@ module.exports=require("./send.html")({
     },
     mona(){
       this.jpy=this.mona*this.monaPrice
+    },
+    address(){
+      const possibility=[]
+      for(let coinId in currencyList){
+        if(currencyList[coinId].prefixes.indexOf(this.address[0])>=0){
+          possibility.push(coinId)
+        }
+      }
+      if(possibility.length===1){
+        this.coinType=possibility[0]
+      }else if(possibility.length===0){
+
+      }else{}
     }
   },
   mounted(){
-    api.getAddressBal(coin.getAddress("mona",0),true).then(res=>{
-      this.balance=res
-    })
-    api.getPrice("mona","jpy").then(res=>{
-      this.monaPrice=res
-    })
+    
   }
 })

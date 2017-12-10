@@ -1,6 +1,11 @@
 <v-ons-page data-page="receive">
   <custom-bar title="受け取り" menu="true"></custom-bar>
   <div>
+    <div id="currencySelector">
+      <v-ons-carousel swipeable centered overscrollable auto-scroll direction="horizontal" item-height="50px" item-width="50px" :index.sync="currencyIndex">
+        <v-ons-carousel-item v-for="crc in currency" class="currencyIcon" :style="{'background-image':crc.icon}"></v-ons-carousel-item>
+      </v-ons-carousel>
+    </div>
     <div id="simple">
       <div class="label">とりあえず送ってもらう</div>
       <div id="qrArea">

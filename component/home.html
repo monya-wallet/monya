@@ -4,11 +4,11 @@
     <div id="youHave">
       <div class="label">あなたが今持っているのは</div>
       <div id="balanceWrap">
-        <span id="balance">{{balanceToShow}}</span>
-        <span id="unit" v-show="unitToShow=='mona_easy'">もにゃ</span>
-        <span id="unit" v-show="unitToShow=='mona'">MONA</span>
-        <span id="unit" v-show="unitToShow=='jpy'">円</span>
-        <p>{{balanceToShow*monaPrice}}円,未承認:{{unconfirmedBalance}}MONA</p>
+        <currency-set v-for="i in balances" :amount="i[1]" :ticker="i[0]" :easy="isEasy"></currency-set>
+        <currency-set :amount="jpyConv" ticker="jpy" :easy="isEasy"></currency-set>
+        
+        
+        
       </div>
     </div>
     <div id="transactions">

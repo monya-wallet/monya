@@ -13,13 +13,13 @@
         </div>
       </v-ons-list-item>
 
-      <v-ons-list-header>相手に送金するMONA</v-ons-list-header>
+      <v-ons-list-header>相手に送金する金額</v-ons-list-header>
       <v-ons-list-item>
         <div class="center">
           <v-ons-list-item><v-ons-input type="number" v-model="mona" placeholder="MONA"></v-ons-input></v-ons-list-item>
         </div>
         <div class="right">
-          MONA
+          <currency-set :ticker="coinType" :easy="isEasy"></currency-set>
         </div>
       </v-ons-list-item>
       <v-ons-list-header>日本円換算</v-ons-list-header>
@@ -28,7 +28,7 @@
           <v-ons-list-item><v-ons-input type="number" v-model="jpy" placeholder="日本円"></v-ons-input></v-ons-list-item>
         </div>
         <div class="right">
-          JPY
+          <currency-set ticker="jpy" :easy="isEasy"></currency-set>
         </div>
       </v-ons-list-item>
       <v-ons-list-header>送金手数料</v-ons-list-header>
@@ -37,7 +37,7 @@
           <v-ons-list-item><v-ons-input type="number" v-model="fee" placeholder="送金手数料(MONA)"></v-ons-input></v-ons-list-item>
         </div>
         <div class="right">
-          MONA
+          <currency-set :ticker="coinType" :easy="isEasy"></currency-set>
         </div>
       </v-ons-list-item>
       <v-ons-list-header>メッセージ</v-ons-list-header>

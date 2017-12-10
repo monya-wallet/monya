@@ -9,23 +9,35 @@ $baseTextColor:#7c5702;
     background-image:url(../res/monacoin.png);
     background-repeat:no-repeat;
     background-position:bottom right;
+    text-align: center;
     .label{
       color: #7b7442;
     }
-    #balanceWrap{
+    .currencySet{
       margin:5% 0;
-      text-align: center;
-      #balance{
-        font-size:3em;
+      
+      display: inline-block;
+      .amount{
+        font-size:1.6em;
+        margin:3px;
       }
-      #unit{
-        font-size: 1.1em;
+      .ticker{
+        font-size: 0.9em;
       }
     }
   }
 }
 [data-page="receive"]{
   text-align:center;
+  #currencySelector{
+    width:100%;
+    margin:none;
+    padding:none;
+    .currencyIcon{
+      width:50px;
+      height:50px;
+    }
+  }
   #simple{
     .label{
       margin:10px;

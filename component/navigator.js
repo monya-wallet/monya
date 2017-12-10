@@ -1,4 +1,5 @@
 const storage = require("../js/storage.js")
+
 module.exports=require("./navigator.html")({
   data(){
     return {
@@ -28,9 +29,10 @@ module.exports=require("./navigator.html")({
     }
   },
   created(){
-    storage.get("encryptedPriv").then((data)=>{
+    storage.get("keyPairs").then((data)=>{
       if(data){
-      this.pageStack.push(require("./login.js"))
+        
+        this.pageStack.push(require("./login.js"))
       }else{
         this.pageStack.push(require("./first.js"))
       }
