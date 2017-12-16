@@ -18,15 +18,15 @@ module.exports=require("./question.html")({
         return
       }
       switch(ans.to){
-        case -1:
-          //exit
+        case -1://User seems to be a great Monacoiner.
         case -2:
-          //decline--set for advanced user
+          //User declined.Go to key generation
 
           this.$emit("push",require("./generateKeyWarn.js"))
           break;
         case -3:
-          //go to keyinput
+          //User has passphrase so start recover
+          this.$emit("push",require("./restorePassphrase.js"))
           break;
         default:
           this.questionNumber=ans.to|0;
@@ -158,7 +158,7 @@ const qList=[{//0
   answers:[{
     label:"次へ",
     value:1,
-    to:-2
+    to:-1
   }]
 },{//6
   text:`暗号通貨とは、「暗号」のトリックを利用し、

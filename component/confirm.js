@@ -1,64 +1,94 @@
-const api=require("../js/api")
-const coin = require("../js/coin.js")
+const storage = require("../js/storage.js")
+const coinUtil=require("../js/coinUtil")
+const currencyList = require("../js/currencyList")
+const bcLib = require('bitcoinjs-lib')
+const errors = require("../js/errors")
 module.exports=require("./confirm.html")({
   data(){
     return {
       address:"",
-      mona:"",
-      jpy:"",
+      amount:"",
+      fiat:"",
+      feePerByte:0,
       fee:0,
       destHasUsed:false,
       message:"",
-      myBalanceBeforeSending:0,
+      myBalanceBeforeSendingSat:0,
       showDetail:false,
       utxosToShow:null,
-      signedHex:null
+      signedHex:null,
+      isEasy:false,
+      coinType:"",
+      ready:false,
+      txb:null,
+      addressPath:null,
+      password:"",
+      cur:null
     }
   },
   store:require("../js/store.js"),
   mounted(){
-    ["address","mona","jpy","fee","message"].forEach(v=>{
+    ["address","amount","fiat","feePerByte","message","coinType"].forEach(v=>{
       this[v]=this.$store.state.confPayload[v]
     })
-    this.myAddress=coin.getAddress("mona",0)
-    api.getAddressProp(this.address,"totalReceived").then(res=>{
-      this.destHasUsed=!!res
-    })
-    api.getAddressBal(this.myAddress,false).then(res=>{
-      this.myBalanceBeforeSending=res
-      let amt2Wd = this.fee+this.mona
-      if(amt2Wd<=res){
-        return coin.selectUtxos(this.myAddress,amt2Wd)
-      }else{
-        throw new Error("Insufficient fund")
-      }
-    }).then(utxos=>{
-      this.utxosToShow=utxos;
-      return coin.buildTransaction({
-        coinId:"mona",
-        keyIndex:0,
-        message:this.message,
-        amount:this.mona,
-        fee:this.fee,
-        address:this.address,
-        changeAddress:this.myAddress,
-        utxos
+    
+    const cur =this.cur=currencyList.get(this.coinType)
+    const targets = [{
+      address:this.address,
+      value:this.amount*100000000
+    }];
+    if(this.message){
+      targets.push({
+        address:bcLib.script.nullData.output.encode(Buffer.from(this.message, 'utf8')),
+        value:0
       })
-    }).then(hex=>{
-      this.signedHex=hex
+    }
+    cur.buildTransaction({
+      targets,
+      feeRate:this.feePerByte
+    }).then(d=>{
+      this.fee=d.fee/100000000
+      this.utxosToShow=d.utxos
+      this.path=d.path
+      this.myBalanceBeforeSendingSat=d.balance
+      this.txb=d.txBuilder
+      this.ready=true
+    }).catch(e=>{
+      this.ready=false
+      if(e instanceof errors.NoSolutionError){
+        this.insufficientFund=true
+      }
     })
   },
   computed:{
     afterSent(){
-      return (this.myBalanceBeforeSending*100000000-this.mona*100000000-this.fee*100000000)/100000000
+      return (this.myBalanceBeforeSendingSat-this.amount*100000000-this.fee*100000000)/100000000
+    },
+    utxosJson(){
+      return JSON.stringify(this.utxosToShow)
     }
   },
   methods:{
     next(){
+      const cur=this.cur
+      this.ready=false
+      storage.get("keyPairs").then((cipher)=>{
+        const finalTx=cur.signTx({
+          entropyCipher:cipher.entropy,
+          password:this.password,
+          txBuilder:this.txb,
+          path:this.path
+        })
+        return cur.pushTx(finalTx.toHex())
+      }).then((res)=>{
+        debugger
+        this.$store.commit("setFinishNextPage",{page:require("./home.js"),infoId:"sent",payload:{
+          txId:res.txid
+        }})
+        this.$emit("replace",require("./finished.js"))
+      })
       
       
-      this.$store.commit("setFinishNextPage",{page:require("./home.js"),infoId:"sent"})
-      this.$emit("replace",require("./finished.js"))
     }
   }
 })

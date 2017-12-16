@@ -11,12 +11,8 @@ module.exports=require("./showPassphrase.html")({
     next(){
       this.$emit("push",require("./setPassword.js"))
     }
-    
   },
   mounted(){
     this.words=bip39.entropyToMnemonic(this.$store.state.entropy).split(" ");
-  },
-  components:{
-    
   }
 })

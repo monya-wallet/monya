@@ -34,7 +34,7 @@
     "accessor-pairs": 1,
     "no-floating-decimal": 1,
     "no-useless-call": 1,
-    "no-unused-vars": 1,
+    "no-unused-vars": 0,
     "no-extra-semi": 2,
     "no-var": 2,
     "global-require": 0,

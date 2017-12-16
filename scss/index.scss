@@ -1,5 +1,8 @@
 $baseColor:#fff85e;
 $baseTextColor:#7c5702;
+$currencySelectorHeight:50px;
+$qrCurIconPercent:20%;
+$homeCurIconSize:38px;
 [data-page="home"]{
   #youHave{
     width:100%;
@@ -26,16 +29,58 @@ $baseTextColor:#7c5702;
       }
     }
   }
+
+  #coins{
+    .w_right{
+      margin-left:auto;
+      .fiatConv{
+        color:#555;
+        font-size:0.76em;
+      }
+      .amount .ticker{
+        font-size:0.8em;
+      }
+    }
+    .price{
+      font-size:0.85em;
+      .ticker{
+        color:#555;
+        font-size:0.85em;
+      }
+    }
+    .left{
+      img{
+        width:$homeCurIconSize;
+        height:$homeCurIconSize;
+      }
+    }
+  }
 }
-[data-page="receive"]{
+
+[data-page="showLabel"],[data-page="receive"]{
   text-align:center;
   #currencySelector{
     width:100%;
     margin:none;
     padding:none;
     .currencyIcon{
-      width:50px;
-      height:50px;
+      margin:3px;
+      width:$currencySelectorHeight - 3px;
+      height:$currencySelectorHeight - 3px;
+      background-position:center center;
+      background-size:contain;
+      background-repeat:no-repeat;
+      .checked{
+        position:absolute;
+        bottom:0;
+        right:0;
+        width:$currencySelectorHeight/2;
+        height:$currencySelectorHeight/2;
+        background-position:center center;
+        background-size:contain;
+        background-repeat:no-repeat;
+        background-image:url(../res/success_wo_mona.png);
+      }
     }
   }
   #simple{
@@ -51,9 +96,22 @@ $baseTextColor:#7c5702;
         background-color:#aaa;
         display:inline-block;
         margin:10px;
-        img{
+        position:relative;
+        #qrcodeImage{
           width:100%;
           height:100%;
+        }
+        #currentCurIcon{
+          position:absolute;
+          width:$qrCurIconPercent;
+          height:$qrCurIconPercent;
+          top:50%;
+          left:50%;
+          margin-left:-$qrCurIconPercent / 2;
+          margin-top:-$qrCurIconPercent / 2;
+          background-position:center center;
+          background-size:contain;
+          background-repeat:no-repeat;
         }
       }
       .address{

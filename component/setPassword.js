@@ -1,4 +1,4 @@
-const coin = require("../js/coin.js")
+const coinUtil = require("../js/coinUtil.js")
 const crypto = require('crypto');
 const storage = require("../js/storage.js")
 module.exports=require("./setPassword.html")({
@@ -15,9 +15,10 @@ module.exports=require("./setPassword.html")({
       if(!this.password||this.password!==this.password2){
         return;
       }
-      coin.makePairsAndEncrypt({
+      coinUtil.makePairsAndEncrypt({
         entropy:this.$store.state.entropy,
-        password:this.password
+        password:this.password,
+        makeCur:["mona","btc"]
       }).then((data)=>storage.set("keyPairs",data))
         .then(()=>{
           this.$store.commit("setFinishNextPage",{page:require("./login.js"),infoId:"createdWallet"})

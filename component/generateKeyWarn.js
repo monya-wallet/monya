@@ -8,12 +8,5 @@ module.exports=require("./generateKeyWarn.html")({
     next(){
       this.$emit("push",require("./generateKey.js"))
     }
-    
-  },
-  mounted(){
-    
-  },
-  components:{
-    
   }
 })

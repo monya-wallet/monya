@@ -2,15 +2,18 @@
   <custom-bar title="受け取り" menu="true"></custom-bar>
   <div>
     <div id="currencySelector">
-      <v-ons-carousel swipeable centered overscrollable auto-scroll direction="horizontal" item-height="50px" item-width="50px" :index.sync="currencyIndex">
-        <v-ons-carousel-item v-for="crc in currency" class="currencyIcon" :style="{'background-image':crc.icon}"></v-ons-carousel-item>
+      <v-ons-carousel swipeable overscrollable direction="horizontal" item-height="50px" item-width="50px" :index="currencyIndex">
+        <v-ons-carousel-item v-for="(crc,i) in currency" class="currencyIcon" :style="{'background-image':'url('+crc.icon+')'}" @click="currencyIndex=i">
+          <div class="checked" v-show="currencyIndex==i"></div>
+        </v-ons-carousel-item>
       </v-ons-carousel>
     </div>
     <div id="simple">
       <div class="label">とりあえず送ってもらう</div>
       <div id="qrArea">
         <div id="qrcode">
-          <img :src="qrDataUrl" alt="QR code" />
+          <img :src="qrDataUrl" alt="QR code" id="qrcodeImage"/>
+          <div id="currentCurIcon" :style="{'background-image':'url('+currentCurIcon+')'}"></div>
         </div>
         <div class="address">{{mainAddress||"読み込み中"}}</div>
       </div>
@@ -27,9 +30,26 @@
     </div>
     <div id="addresses">
       <v-ons-list>
-        <v-ons-list-header>他のアドレスで請求書をつくる</v-ons-list-header>
-        <v-ons-list-item modifier="tappable chevron">Coming soon</v-ons-list-item>
+        <v-ons-list-header>ラベル付きアドレス</v-ons-list-header>
+        <v-ons-list-item modifier="tappable chevron" v-for="(l,index) in labels" @click="showLabel(currency[currencyIndex].coinId,l,0,index)">
+          {{l}}
+        </v-ons-list-item>
+        <v-ons-list-item modifier="tappable chevron" @click="dialogVisible=true" v-show="labels.length<=maxLabel">
+          <div class="left"><v-ons-icon icon="fa-plus"></v-ons-icon></div>
+          <div class="center">ラベル追加</div>
+        </v-ons-list-item>
       </v-ons-list>
     </div>
+    <v-ons-alert-dialog modifier="rowfooter"
+      :visible.sync="dialogVisible"
+    >
+      <span slot="title">ラベルを追加</span>
+      <p>ラベルをつけて下さい。derive/<i>change</i>/<i>index</i> フォーマットを入力すると、アドレスを導出します</p>
+      <v-ons-input placeholder="ラベル" v-model="labelInput"></v-ons-input>
+      <template slot="footer">
+        <div class="alert-dialog-button" @click="dialogVisible = false">やめる</div>
+        <div class="alert-dialog-button" @click="createLabel">追加</div>
+      </template>
+    </v-ons-alert-dialog>
   </div>
 </v-ons-page>

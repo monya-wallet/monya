@@ -1,0 +1,15 @@
+<v-ons-page data-page="restorePassphrase">
+  <custom-bar title="ウォレットの復元"></custom-bar>
+  <div>
+    <p>単語を入力してください。最初の4文字を入力すると、確定します</p>
+    <div id="wordArea">
+      <div class="word" v-for="(w,i) in words">
+        <span class="deleteBtn" @click="remove(i)"><v-ons-icon icon="ion-close"></v-ons-icon></span>
+        <span v-if="!w.editing">{{w.word}}</span>
+        <input v-if="w.editing" type="text" v-model="w.word"
+               v-focus @input="input"
+               :class="{noMatch:noMatch}" @keydown.delete="removeEvt"/>
+      </div>
+    </div>
+  </div>
+</v-ons-page>

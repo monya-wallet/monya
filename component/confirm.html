@@ -3,9 +3,7 @@
   <div class="wrap">
     <v-ons-list>
       <v-ons-list-item>
-        <p>{{myAddress}}</p>
-        <p><v-ons-icon icon="fa-arrow-down"></v-ons-icon></p>
-        <p>{{address}}</p>
+        {{address}}
       </v-ons-list-item>
       <v-ons-list-item>
         <div class="center">送金先アドレスは</div>
@@ -14,15 +12,15 @@
       </v-ons-list-item>
       <v-ons-list-item>
         <div class="center">送金額</div>
-        <div class="right">{{mona}}MONA</div>
+        <div class="right"><currency-set :ticker="coinType" :amount="amount" :easy="isEasy"></currency-set></div>
       </v-ons-list-item>
       <v-ons-list-item>
         <div class="center"></div>
-        <div class="right">(約{{jpy}}円)</div>
+        <div class="right">(<currency-set :ticker="$store.state.fiat" :amount="fiat" :about="true" :easy="isEasy"></currency-set>)</div>
       </v-ons-list-item>
       <v-ons-list-item>
         <div class="center">送金手数料</div>
-        <div class="right">{{fee}}MONA</div>
+        <div class="right"><currency-set :ticker="coinType" :amount="fee" :easy="isEasy"></currency-set></div>
       </v-ons-list-item>
       <v-ons-list-item>
         <div class="center">メッセージ</div>
@@ -30,22 +28,25 @@
       </v-ons-list-item>
       <v-ons-list-item>
         <div class="center">あなたの送金後の残高</div>
-        <div class="right">{{afterSent}}MONA</div>
+        <div class="right" :style="{'color':insufficientFund?'red':'black'}"><currency-set :ticker="coinType" :amount="afterSent" :easy="isEasy"></currency-set></div>
       </v-ons-list-item>
       <v-ons-list-header>送金したあとは元に戻すことはできません。</v-ons-list-header>
-      <v-ons-list-item><v-ons-button modifier="large" @click="next">送金</v-ons-button></v-ons-list-item>
-      <v-ons-list-item @click="showDetail=!showDetail">
-        詳細情報を開閉
+      <v-ons-list-item>
+        <v-ons-input placeholder="パスワード" v-model="password"></v-ons-input>
+      </v-ons-list-item>
+      <v-ons-list-item>
+        <v-ons-button modifier="large" @click="next" :disabled="!ready||!password">送金</v-ons-button>
+      </v-ons-list-item>
+      <!--<v-ons-list-item @click="showDetail=true" v-show="showDetail">
+          <div class="left"><v-ons-icon icon="fa-caret-down"></v-ons-icon></div>
+          <div class="center">詳細情報</div>
       </v-ons-list-item>
       <div v-show="showDetail">
-      <v-ons-list-item>
-        <textarea :value="signedHex"></textarea>
-      </v-ons-list-item>
-      <v-ons-list-header>UTXO</v-ons-list-header>
-      <v-ons-list-item v-for="u in utxosToShow">
-        {{u.txid}}
-      </v-ons-list-item>
-      </div>
+        <v-ons-list-header>UTXO</v-ons-list-header>
+        <v-ons-list-item>
+          <textarea :value="utxosJson"></textarea>
+        </v-ons-list-item>
+      </div>-->
     </v-ons-list>
   </div>
 </v-ons-page>

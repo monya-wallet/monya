@@ -14,6 +14,9 @@ module.exports=require("./finished.html")({
   computed:{
     infoId(){
       return this.$store.state.finishNextPage.infoId
+    },
+    payload(){
+      return this.$store.state.finishNextPage.payload
     }
   }
 })

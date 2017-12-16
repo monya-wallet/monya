@@ -12,11 +12,28 @@
           <v-ons-icon icon="fa-address-card"></v-ons-icon>
         </div>
       </v-ons-list-item>
-
+      <v-ons-list-header>コイン種類</v-ons-list-header>
+      <v-ons-list-item v-for="co in possibility">
+        <div class="left">
+          <v-ons-radio
+            :input-id="'coinType-'+co.coinId"
+            :value="co.coinId" v-model="coinType"
+            ></v-ons-radio></div>
+        <label class="center" :for="'coinType-'+co.coinId">
+          {{co.name}}
+        </label>
+        <div class="right">
+          <currency-set :ticker="co.coinId" :easy="isEasy"></currency-set>
+        </div>
+      </v-ons-list-item>
+      <v-ons-list-item v-show="possibility.length<=0">
+        <div class="left"></div>
+        <label class="center">まずは出金先アドレスを指定してください。</label>
+      </v-ons-list-item>
       <v-ons-list-header>相手に送金する金額</v-ons-list-header>
       <v-ons-list-item>
         <div class="center">
-          <v-ons-list-item><v-ons-input type="number" v-model="mona" placeholder="MONA"></v-ons-input></v-ons-list-item>
+          <v-ons-input type="number" v-model="amount" placeholder="相手に送金する金額" :disabled="!address||!coinType"></v-ons-input>
         </div>
         <div class="right">
           <currency-set :ticker="coinType" :easy="isEasy"></currency-set>
@@ -25,31 +42,41 @@
       <v-ons-list-header>日本円換算</v-ons-list-header>
       <v-ons-list-item>
         <div class="center">
-          <v-ons-list-item><v-ons-input type="number" v-model="jpy" placeholder="日本円"></v-ons-input></v-ons-list-item>
+          <v-ons-input type="number" v-model="fiat" placeholder="日本円" :disabled="!address||!coinType"></v-ons-input>
         </div>
         <div class="right">
           <currency-set ticker="jpy" :easy="isEasy"></currency-set>
         </div>
       </v-ons-list-item>
-      <v-ons-list-header>送金手数料</v-ons-list-header>
-      <v-ons-list-item>
-        <div class="center">
-          <v-ons-list-item><v-ons-input type="number" v-model="fee" placeholder="送金手数料(MONA)"></v-ons-input></v-ons-list-item>
-        </div>
-        <div class="right">
-          <currency-set :ticker="coinType" :easy="isEasy"></currency-set>
-        </div>
+      
+      <v-ons-list-item><v-ons-button modifier="large" @click="confirm" :disabled="!address||!amount||!feePerByte">確認画面へ</v-ons-button></v-ons-list-item>
+      
+      <v-ons-list-item v-show="!advanced" @click="advanced=true">
+        <div class="left"><v-ons-icon icon="fa-caret-down"></v-ons-icon></div>
+        <div class="right">詳細オプション</div>
       </v-ons-list-item>
-      <v-ons-list-header>メッセージ</v-ons-list-header>
-      <v-ons-list-item>
-        <div class="center">
-          <v-ons-list-item><v-ons-input v-model="message" placeholder="80Byteまで"></v-ons-input></v-ons-list-item>
-        </div>
-        <div class="right">
-          <v-ons-icon icon="comment"></v-ons-icon>
-        </div>
-      </v-ons-list-item>
-      <v-ons-list-item><v-ons-button modifier="large" @click="confirm" :disabled="!this.address||!this.mona||!this.fee">確認画面へ</v-ons-button></v-ons-list-item>
+      
+      <div v-show="advanced">
+        <v-ons-list-header>送金手数料(sat/Byte)</v-ons-list-header>
+        <v-ons-list-item>
+          <div class="center">
+            <v-ons-input type="number" v-model="feePerByte" placeholder="送金手数料(satoshi/Byte)" :disabled="!address||!coinType"></v-ons-input>
+          </div>
+          <div class="right">
+            <currency-set ticker="satByte" :easy="isEasy"></currency-set>
+          </div>
+        </v-ons-list-item>
+        <v-ons-list-header>メッセージ</v-ons-list-header>
+        <v-ons-list-item>
+          <div class="center">
+            <v-ons-input v-model="message" placeholder="80Byteまで"></v-ons-input>
+          </div>
+          <div class="right">
+            <v-ons-icon icon="comment"></v-ons-icon>
+          </div>
+        </v-ons-list-item>
+      </div>
     </v-ons-list>
+    
   </div>
 </v-ons-page>

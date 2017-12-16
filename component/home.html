@@ -4,24 +4,26 @@
     <div id="youHave">
       <div class="label">あなたが今持っているのは</div>
       <div id="balanceWrap">
-        <currency-set v-for="i in balances" :amount="i[1]" :ticker="i[0]" :easy="isEasy"></currency-set>
-        <currency-set :amount="jpyConv" ticker="jpy" :easy="isEasy"></currency-set>
-        
-        
-        
+        <currency-set :amount="fiatConv" :ticker="fiat" :easy="isEasy"></currency-set>
       </div>
     </div>
-    <div id="transactions">
+    <div id="coins">
       <v-ons-list>
-        <v-ons-list-header>最近の取引</v-ons-list-header>
-        <!--<v-ons-list-item modifier="tappable">
-          <div class="center">
-            受け取り
+        
+        <v-ons-list-item modifier="tappable" v-for="c in curs">
+          <div class="left">
+            <img :src="c.icon"/>
           </div>
-          <div class="right">10モナ</div>
-        </v-ons-list-item>-->
-        <v-ons-list-item modifier="chevron tappable">
-          <div class="left">詳しく</div>
+          <div >
+            <div class="screenName">{{c.screenName}}</div>
+            <div class="price">
+              <currency-set :amount="c.price" :ticker="c.coinId" :fiatTicker="fiat" :easy="isEasy"></currency-set>
+            </div>
+          </div>
+          <div class="w_right">
+            <div class="amount"><currency-set :amount="c.balance" :ticker="c.coinId" :easy="isEasy"></currency-set></div>
+            <div class="fiatConv"><currency-set :amount="c.balance*c.price" :ticker="fiat" :easy="isEasy"></currency-set></div>
+          </div>
         </v-ons-list-item>
       </v-ons-list>
     </div>

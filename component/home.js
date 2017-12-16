@@ -1,12 +1,12 @@
-const api=require("../js/api")
 const currencyList = require("../js/currencyList")
-const coin=require("../js/coin")
+const coinUtil = require("../js/coinUtil")
 module.exports=require("./home.html")({
   data(){
     return {
-      balances:[],
+      curs:[],
       isEasy:true,
-      jpyConv:0
+      fiatConv:0,
+      fiat:this.$store.state.fiat
     }
   },
   methods:{
@@ -14,11 +14,25 @@ module.exports=require("./home.html")({
       this.$emit("push",require("./send.js"))
     }
   },
+  store:require("../js/store.js"),
   mounted(){
-    for(let coinId in currencyList){
-      currencyList[coinId].getWholeBalanceOfThisAccount().then(res=>{
-        this.balances.push([coinId,res/100000000])
-      })
-    }
+    currencyList.eachWithPub(cur=>{
+      let bal=0;
+      cur.getWholeBalanceOfThisAccount()
+        .then(res=>{
+          bal=res.balance
+          return coinUtil.getPrice(cur.coinId,this.$store.state.fiat)
+        })
+        .then(res=>{
+          this.fiatConv += res*bal/100000000
+          this.curs.push({
+            coinId:cur.coinId,
+            balance:bal/100000000,
+            screenName:cur.coinScreenName,
+            price:res,
+            icon:cur.icon,
+          })
+        })
+    })
   }
 })

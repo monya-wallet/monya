@@ -75,8 +75,5 @@ module.exports=require("./generateKey.html")({
         }
       }
     }, true);
-  },
-  components:{
-    
   }
 })

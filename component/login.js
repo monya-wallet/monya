@@ -1,6 +1,6 @@
-const coin = require("../js/coin.js")
 const storage = require("../js/storage.js")
 const currencyList = require("../js/currencyList")
+const coinUtil = require("../js/coinUtil.js")
 module.exports=require("./login.html")({
   data(){
     return {
@@ -14,8 +14,18 @@ module.exports=require("./login.html")({
     start(){
       this.loading=true
       storage.get("keyPairs").then((cipher)=>{
-        //return coin.decryptAndRestore(cipher,this.password)
-      }).then(()=>{
+        return coinUtil.decryptKeys({
+          entropyCipher:cipher.entropy,
+          password:this.password,
+          makeCur:["mona","btc"]
+        })
+      }).then((pubs)=>{
+        for(let coinId in pubs){
+          if(currencyList[coinId]){
+            currencyList.get(coinId).setPubSeedB58(pubs[coinId].public)
+          }
+        }
+        
         this.$emit("replace",require("./home.js"))
       }).catch(()=>{
         this.loading=false
@@ -28,10 +38,10 @@ module.exports=require("./login.html")({
   },
   mounted(){
     storage.get("keyPairs").then((data)=>{
-      if(typeof data !=="string"){
-        for(let coinId in currencyList){
-          if(data[coinId]){
-            currencyList[coinId].setPubSeedB58(data[coinId].public)
+      if(data&&data.pubs){
+        for(let coinId in data.pubs){
+          if(currencyList.get(coinId)){
+            currencyList.get(coinId).setPubSeedB58(data.pubs[coinId])
           }
         }
         this.$emit("replace",require("./home.js"))
@@ -41,3 +51,14 @@ module.exports=require("./login.html")({
     })
   }
 })
+
+
+
+
+
+
+
+
+
+
+

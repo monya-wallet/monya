@@ -10,6 +10,12 @@ Vue.use(Vuex)
 
 Vue.component('custom-bar', require("../component/customBar.js"))
 Vue.component('currency-set', require("../component/currencySet.js"))
+
+Vue.directive('focus', {
+  inserted: function (el,binding) {
+    el.focus()
+  }
+})
 exports.vm= new Vue({
   el:"#app",
   data(){
