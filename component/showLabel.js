@@ -9,7 +9,8 @@ module.exports=require("./showLabel.html")({
       qrDataUrl:"",
       isNative:false,
       label:"",
-      edit:false
+      edit:false,
+      balance:0
     }
   },
   store:require("../js/store.js"),
@@ -43,6 +44,10 @@ module.exports=require("./showLabel.html")({
     })
 
     this.currentCurIcon=cur.icon
+
+    cur.getAddressProp("balance",this.address).then(res=>{
+      this.balance=res/100000000
+    })
   }
 })
 

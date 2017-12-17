@@ -6738,6 +6738,9 @@ module.exports = new Vuex.Store({
     setEntropy: function setEntropy(state, ent) {
       state.entropy = ent;
     },
+    deleteEntropy: function deleteEntropy(state) {
+      state.entropy = null;
+    },
     setConfirmation: function setConfirmation(state, payload) {
       state.confPayload = {
         address: payload.address,
@@ -7122,7 +7125,7 @@ exports.makePairsAndEncrypt = function (option) {
       };
       for (var i = 0; i < option.makeCur.length; i++) {
         var coinId = option.makeCur[i];
-        var pub = currencyList[coinId].seedToPubB58(seed);
+        var pub = currencyList.get(coinId).seedToPubB58(seed);
         ret.pubs[coinId] = pub;
       }
 
@@ -9515,15 +9518,17 @@ module.exports = __webpack_require__(319)({
     var _this = this;
 
     currencyList.eachWithPub(function (cur) {
-      var bal = 0;
+      var bal = null;
       cur.getWholeBalanceOfThisAccount().then(function (res) {
-        bal = res.balance;
+        bal = res;
+
         return coinUtil.getPrice(cur.coinId, _this.$store.state.fiat);
       }).then(function (res) {
-        _this.fiatConv += res * bal / 100000000;
+        _this.fiatConv += res * bal.balance / 100000000;
         _this.curs.push({
           coinId: cur.coinId,
-          balance: bal / 100000000,
+          balance: bal.balance / 100000000,
+          unconfirmed: bal.unconfirmed / 100000000,
           screenName: cur.coinScreenName,
           price: res,
           icon: cur.icon
@@ -14583,7 +14588,7 @@ module.exports = function () {
     value: function getWholeBalanceOfThisAccount() {
       var _this = this;
 
-      var getBalance = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
+      var gb = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
 
       if (this.dummy) {
         return Promise.resolve();
@@ -14594,9 +14599,9 @@ module.exports = function () {
         }
         _this.wholeBalanceSat = 0;
         _this.wholeUnconfirmedSat = 0;
-        _this._getBalance(0, 0, getBalance, function (index) {
+        _this._getBalance(0, 0, gb, function (index) {
           _this.receiveIndex = index;
-          _this._getBalance(1, 0, getBalance, function (index2) {
+          _this._getBalance(1, 0, gb, function (index2) {
             _this.changeIndex = index2;
             resolve({ balance: _this.wholeBalanceSat, unconfirmed: _this.unconfirmedBalanceSat });
           });
@@ -14605,29 +14610,29 @@ module.exports = function () {
     }
   }, {
     key: '_getBalance',
-    value: function _getBalance(change, index, getBalance, cb) {
+    value: function _getBalance(change, index, gb, cb) {
       var _this2 = this;
 
       if (this.dummy) {
         return Promise.resolve();
       }
       return new Promise(function (resolve, reject) {
-        _this2.getAddressProp(getBalance ? "" : "totalReceived", _this2.getAddress(change, index)).then(function (res) {
+        _this2.getAddressProp(gb ? "" : "totalReceived", _this2.getAddress(change, index)).then(function (res) {
           if (!change) {
             if (index > module.exports.maxLabel) {
               cb(index);
             } else {
               _this2.wholeBalanceSat += res.balanceSat;
               _this2.wholeUnconfirmedSat += res.unconfirmedBalanceSat;
-              _this2._getBalance(change, ++index, getBalance, cb);
+              _this2._getBalance(change, ++index, gb, cb);
             }
           } else {
-            if (getBalance && res.totalReceived) {
+            if (gb && res.totalReceived) {
               _this2.wholeBalanceSat += res.balanceSat;
               _this2.wholeUnconfirmedSat += res.unconfirmedBalanceSat;
-              _this2._getBalance(change, ++index, cb);
-            } else if (!getBalance && parseInt(res, 10)) {
-              _this2._getBalance(change, ++index, getBalance, cb);
+              _this2._getBalance(change, ++index, gb, cb);
+            } else if (!gb && parseInt(res, 10)) {
+              _this2._getBalance(change, ++index, gb, cb);
             } else {
               cb(index);
             }
@@ -22068,10 +22073,11 @@ module.exports = __webpack_require__(363)({
       coinUtil.makePairsAndEncrypt({
         entropy: this.$store.state.entropy,
         password: this.password,
-        makeCur: ["mona", "btc"]
+        makeCur: ["mona"]
       }).then(function (data) {
         return storage.set("keyPairs", data);
       }).then(function () {
+        _this.$store.commit("deleteEntropy");
         _this.$store.commit("setFinishNextPage", { page: __webpack_require__(130), infoId: "createdWallet" });
         _this.$emit("replace", __webpack_require__(124));
       });
@@ -22158,7 +22164,7 @@ exports = module.exports = __webpack_require__(25)(undefined);
 
 
 // module
-exports.push([module.i, "[data-page=\"home\"] #youHave {\n  width: 100%;\n  background-color: #fff85e;\n  padding: 2% 0%;\n  color: #7c5702;\n  background-image: url(" + __webpack_require__(73) + ");\n  background-repeat: no-repeat;\n  background-position: bottom right;\n  text-align: center; }\n  [data-page=\"home\"] #youHave .label {\n    color: #7b7442; }\n  [data-page=\"home\"] #youHave .currencySet {\n    margin: 5% 0;\n    display: inline-block; }\n    [data-page=\"home\"] #youHave .currencySet .amount {\n      font-size: 1.6em;\n      margin: 3px; }\n    [data-page=\"home\"] #youHave .currencySet .ticker {\n      font-size: 0.9em; }\n\n[data-page=\"home\"] #coins .w_right {\n  margin-left: auto; }\n  [data-page=\"home\"] #coins .w_right .fiatConv {\n    color: #555;\n    font-size: 0.76em; }\n  [data-page=\"home\"] #coins .w_right .amount .ticker {\n    font-size: 0.8em; }\n\n[data-page=\"home\"] #coins .price {\n  font-size: 0.85em; }\n  [data-page=\"home\"] #coins .price .ticker {\n    color: #555;\n    font-size: 0.85em; }\n\n[data-page=\"home\"] #coins .left img {\n  width: 38px;\n  height: 38px; }\n\n[data-page=\"showLabel\"], [data-page=\"receive\"] {\n  text-align: center; }\n  [data-page=\"showLabel\"] #currencySelector, [data-page=\"receive\"] #currencySelector {\n    width: 100%;\n    margin: none;\n    padding: none; }\n    [data-page=\"showLabel\"] #currencySelector .currencyIcon, [data-page=\"receive\"] #currencySelector .currencyIcon {\n      margin: 3px;\n      width: 47px;\n      height: 47px;\n      background-position: center center;\n      background-size: contain;\n      background-repeat: no-repeat; }\n      [data-page=\"showLabel\"] #currencySelector .currencyIcon .checked, [data-page=\"receive\"] #currencySelector .currencyIcon .checked {\n        position: absolute;\n        bottom: 0;\n        right: 0;\n        width: 25px;\n        height: 25px;\n        background-position: center center;\n        background-size: contain;\n        background-repeat: no-repeat;\n        background-image: url(" + __webpack_require__(135) + "); }\n  [data-page=\"showLabel\"] #simple .label, [data-page=\"receive\"] #simple .label {\n    margin: 10px;\n    color: #888; }\n  [data-page=\"showLabel\"] #simple #qrArea #qrcode, [data-page=\"receive\"] #simple #qrArea #qrcode {\n    width: 250px;\n    height: 250px;\n    background-color: #aaa;\n    display: inline-block;\n    margin: 10px;\n    position: relative; }\n    [data-page=\"showLabel\"] #simple #qrArea #qrcode #qrcodeImage, [data-page=\"receive\"] #simple #qrArea #qrcode #qrcodeImage {\n      width: 100%;\n      height: 100%; }\n    [data-page=\"showLabel\"] #simple #qrArea #qrcode #currentCurIcon, [data-page=\"receive\"] #simple #qrArea #qrcode #currentCurIcon {\n      position: absolute;\n      width: 20%;\n      height: 20%;\n      top: 50%;\n      left: 50%;\n      margin-left: -10%;\n      margin-top: -10%;\n      background-position: center center;\n      background-size: contain;\n      background-repeat: no-repeat; }\n  [data-page=\"showLabel\"] #simple #qrArea .address, [data-page=\"receive\"] #simple #qrArea .address {\n    display: block;\n    user-select: text;\n    -webkit-user-select: text;\n    -moz-user-select: text;\n    -ms-user-select: text; }\n\n[data-page=\"first\"] .wrap {\n  width: 100%;\n  height: 100%;\n  background-color: #fff85e; }\n  [data-page=\"first\"] .wrap .logo {\n    position: absolute;\n    top: 30%;\n    width: 100%;\n    text-align: center; }\n    [data-page=\"first\"] .wrap .logo .icon {\n      display: inline-block;\n      background-image: url(" + __webpack_require__(73) + ");\n      background-position: center center;\n      background-repeat: no-repeat;\n      background-size: contain;\n      width: 100px;\n      height: 100px; }\n    [data-page=\"first\"] .wrap .logo .appName {\n      font-size: 2em;\n      color: #7c5702; }\n    [data-page=\"first\"] .wrap .logo .label {\n      color: #7c5702;\n      opacity: 0.5; }\n  [data-page=\"first\"] .wrap .buttons {\n    margin: 80px auto;\n    width: 60%; }\n    [data-page=\"first\"] .wrap .buttons ons-button {\n      margin: 10px 0;\n      width: 100%; }\n\n[data-page=\"question\"] .questionItem {\n  text-align: center;\n  padding: 5%; }\n  [data-page=\"question\"] .questionItem .questionText {\n    padding: 10%;\n    border-radius: 8px;\n    border: 1px solid #7c5702;\n    color: #7c5702;\n    background-color: white; }\n  [data-page=\"question\"] .questionItem .answers .answer {\n    border-radius: 6px;\n    background-color: #fff85e;\n    color: #7c5702;\n    margin: 10px 0;\n    padding: 10px; }\n\n[data-page=\"generateKeyWarn\"] .wrap {\n  padding: 10px; }\n  [data-page=\"generateKeyWarn\"] .wrap .check {\n    padding: 12px; }\n    [data-page=\"generateKeyWarn\"] .wrap .check input {\n      font-size: 1.5em; }\n\n[data-page=\"generateKey\"] .touchArea {\n  height: 50%;\n  background: #50aba0;\n  color: white;\n  font-size: 2em;\n  text-align: center;\n  padding: 30% 10%; }\n\n[data-page=\"send\"] ons-list-item ons-input {\n  width: 100%;\n  display: block; }\n\n[data-page=\"finished\"] img.succeeded {\n  max-width: 500px;\n  width: 100%;\n  margin: 50px 0; }\n\n[data-page=\"finished\"] .wrap {\n  padding: 40px;\n  text-align: center; }\n\n[data-page=\"login\"] .wrap {\n  padding: 40px;\n  text-align: center; }\n  [data-page=\"login\"] .wrap .passwordBox {\n    line-height: 35px;\n    font-size: 35px;\n    display: grid;\n    grid-template-columns: 1fr 35px;\n    background: white;\n    border-radius: 8px;\n    padding: 5px;\n    margin: 50px 5px; }\n    [data-page=\"login\"] .wrap .passwordBox input {\n      font-size: 35px;\n      background: transparent;\n      border: none; }\n    [data-page=\"login\"] .wrap .passwordBox ons-button {\n      line-height: 35px; }\n    [data-page=\"login\"] .wrap .passwordBox.incorrect {\n      animation: shake 0.72s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;\n      transform: translate3d(0, 0, 0); }\n\n@keyframes shake {\n  10%, 90% {\n    transform: translate3d(-1px, 0, 0); }\n  20%, 80% {\n    transform: translate3d(2px, 0, 0); }\n  30%, 50%, 70% {\n    transform: translate3d(-4px, 0, 0); }\n  40%, 60% {\n    transform: translate3d(4px, 0, 0); } }\n", ""]);
+exports.push([module.i, "[data-page=\"home\"] #youHave {\n  width: 100%;\n  background-color: #fff85e;\n  padding: 2% 0%;\n  color: #7c5702;\n  background-image: url(" + __webpack_require__(73) + ");\n  background-repeat: no-repeat;\n  background-position: bottom right;\n  text-align: center; }\n  [data-page=\"home\"] #youHave .label {\n    color: #7b7442; }\n  [data-page=\"home\"] #youHave .currencySet {\n    margin: 5% 0;\n    display: inline-block; }\n    [data-page=\"home\"] #youHave .currencySet .amount {\n      font-size: 1.6em;\n      margin: 3px; }\n    [data-page=\"home\"] #youHave .currencySet .ticker {\n      font-size: 0.9em; }\n\n[data-page=\"home\"] #coins .w_right {\n  margin-left: auto; }\n  [data-page=\"home\"] #coins .w_right .fiatConv {\n    color: #555;\n    font-size: 0.76em; }\n  [data-page=\"home\"] #coins .w_right .amount .ticker {\n    font-size: 0.8em; }\n  [data-page=\"home\"] #coins .w_right .unconfirmed {\n    color: red; }\n\n[data-page=\"home\"] #coins .price {\n  font-size: 0.85em; }\n  [data-page=\"home\"] #coins .price .ticker {\n    color: #555;\n    font-size: 0.85em; }\n\n[data-page=\"home\"] #coins .left img {\n  width: 38px;\n  height: 38px; }\n\n[data-page=\"showLabel\"], [data-page=\"receive\"] {\n  text-align: center; }\n  [data-page=\"showLabel\"] #currencySelector, [data-page=\"receive\"] #currencySelector {\n    width: 100%;\n    margin: none;\n    padding: none; }\n    [data-page=\"showLabel\"] #currencySelector .currencyIcon, [data-page=\"receive\"] #currencySelector .currencyIcon {\n      margin: 3px;\n      width: 47px;\n      height: 47px;\n      background-position: center center;\n      background-size: contain;\n      background-repeat: no-repeat; }\n      [data-page=\"showLabel\"] #currencySelector .currencyIcon .checked, [data-page=\"receive\"] #currencySelector .currencyIcon .checked {\n        position: absolute;\n        bottom: 0;\n        right: 0;\n        width: 25px;\n        height: 25px;\n        background-position: center center;\n        background-size: contain;\n        background-repeat: no-repeat;\n        background-image: url(" + __webpack_require__(135) + "); }\n  [data-page=\"showLabel\"] #simple .label, [data-page=\"receive\"] #simple .label {\n    margin: 10px;\n    color: #888; }\n  [data-page=\"showLabel\"] #simple #qrArea #qrcode, [data-page=\"receive\"] #simple #qrArea #qrcode {\n    width: 250px;\n    height: 250px;\n    background-color: #aaa;\n    display: inline-block;\n    margin: 10px;\n    position: relative; }\n    [data-page=\"showLabel\"] #simple #qrArea #qrcode #qrcodeImage, [data-page=\"receive\"] #simple #qrArea #qrcode #qrcodeImage {\n      width: 100%;\n      height: 100%; }\n    [data-page=\"showLabel\"] #simple #qrArea #qrcode #currentCurIcon, [data-page=\"receive\"] #simple #qrArea #qrcode #currentCurIcon {\n      position: absolute;\n      width: 20%;\n      height: 20%;\n      top: 50%;\n      left: 50%;\n      margin-left: -10%;\n      margin-top: -10%;\n      background-position: center center;\n      background-size: contain;\n      background-repeat: no-repeat; }\n  [data-page=\"showLabel\"] #simple #qrArea .address, [data-page=\"receive\"] #simple #qrArea .address {\n    display: block;\n    user-select: text;\n    -webkit-user-select: text;\n    -moz-user-select: text;\n    -ms-user-select: text; }\n\n[data-page=\"first\"] .wrap {\n  width: 100%;\n  height: 100%;\n  background-color: #fff85e; }\n  [data-page=\"first\"] .wrap .logo {\n    position: absolute;\n    top: 30%;\n    width: 100%;\n    text-align: center; }\n    [data-page=\"first\"] .wrap .logo .icon {\n      display: inline-block;\n      background-image: url(" + __webpack_require__(73) + ");\n      background-position: center center;\n      background-repeat: no-repeat;\n      background-size: contain;\n      width: 100px;\n      height: 100px; }\n    [data-page=\"first\"] .wrap .logo .appName {\n      font-size: 2em;\n      color: #7c5702; }\n    [data-page=\"first\"] .wrap .logo .label {\n      color: #7c5702;\n      opacity: 0.5; }\n  [data-page=\"first\"] .wrap .buttons {\n    margin: 80px auto;\n    width: 60%; }\n    [data-page=\"first\"] .wrap .buttons ons-button {\n      margin: 10px 0;\n      width: 100%; }\n\n[data-page=\"restorePassphrase\"] #wordArea {\n  background-color: white;\n  width: 100%; }\n  [data-page=\"restorePassphrase\"] #wordArea .word {\n    display: inline-block;\n    margin: 5px;\n    padding: 4px;\n    border: #ddd 1px solid;\n    border-radius: 3.5px; }\n    [data-page=\"restorePassphrase\"] #wordArea .word .wd {\n      color: black; }\n    [data-page=\"restorePassphrase\"] #wordArea .word .deleteBtn {\n      color: #aaa; }\n    [data-page=\"restorePassphrase\"] #wordArea .word input {\n      border: none;\n      background: transparent;\n      font-size: 1em;\n      width: 5em;\n      margin: 0px;\n      padding: 0px; }\n    [data-page=\"restorePassphrase\"] #wordArea .word.noMatch {\n      background-color: #fdc; }\n\n[data-page=\"restorePassphrase\"] #suggestion {\n  position: fixed;\n  bottom: 0;\n  width: 100%;\n  background-color: white;\n  border-top: #c3c3c8 1px solid; }\n  [data-page=\"restorePassphrase\"] #suggestion .sgst {\n    display: inline-block;\n    padding: 9px;\n    border-right: #c3c3c8 1px solid; }\n\n[data-page=\"restorePassphrase\"] #nextWrap {\n  padding: 10px; }\n\n[data-page=\"question\"] .questionItem {\n  text-align: center;\n  padding: 5%; }\n  [data-page=\"question\"] .questionItem .questionText {\n    padding: 10%;\n    border-radius: 8px;\n    border: 1px solid #7c5702;\n    color: #7c5702;\n    background-color: white; }\n  [data-page=\"question\"] .questionItem .answers .answer {\n    border-radius: 6px;\n    background-color: #fff85e;\n    color: #7c5702;\n    margin: 10px 0;\n    padding: 10px; }\n\n[data-page=\"generateKeyWarn\"] .wrap {\n  padding: 10px; }\n  [data-page=\"generateKeyWarn\"] .wrap .check {\n    padding: 12px; }\n    [data-page=\"generateKeyWarn\"] .wrap .check input {\n      font-size: 1.5em; }\n\n[data-page=\"generateKey\"] .touchArea {\n  height: 50%;\n  background: #50aba0;\n  color: white;\n  font-size: 2em;\n  text-align: center;\n  padding: 30% 10%; }\n\n[data-page=\"send\"] ons-list-item ons-input {\n  width: 100%;\n  display: block; }\n\n[data-page=\"finished\"] img.succeeded {\n  max-width: 500px;\n  width: 100%;\n  margin: 50px 0; }\n\n[data-page=\"finished\"] .wrap {\n  padding: 40px;\n  text-align: center; }\n\n[data-page=\"login\"] .wrap {\n  padding: 40px;\n  text-align: center; }\n  [data-page=\"login\"] .wrap .passwordBox {\n    line-height: 35px;\n    font-size: 35px;\n    display: grid;\n    grid-template-columns: 1fr 35px;\n    background: white;\n    border-radius: 8px;\n    padding: 5px;\n    margin: 50px 5px; }\n    [data-page=\"login\"] .wrap .passwordBox input {\n      font-size: 35px;\n      background: transparent;\n      border: none; }\n    [data-page=\"login\"] .wrap .passwordBox ons-button {\n      line-height: 35px; }\n    [data-page=\"login\"] .wrap .passwordBox.incorrect {\n      animation: shake 0.72s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;\n      transform: translate3d(0, 0, 0); }\n\n@keyframes shake {\n  10%, 90% {\n    transform: translate3d(-1px, 0, 0); }\n  20%, 80% {\n    transform: translate3d(2px, 0, 0); }\n  30%, 50%, 70% {\n    transform: translate3d(-4px, 0, 0); }\n  40%, 60% {\n    transform: translate3d(4px, 0, 0); } }\n", ""]);
 
 // exports
 
@@ -37306,7 +37312,7 @@ if (false) {(function () {
 /* 319 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var render = function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('v-ons-page',{attrs:{"data-page":"home"}},[_c('custom-bar',{attrs:{"title":"ホーム","menu":"true"}}),_vm._v(" "),_c('div',[_c('div',{attrs:{"id":"youHave"}},[_c('div',{staticClass:"label"},[_vm._v("あなたが今持っているのは")]),_vm._v(" "),_c('div',{attrs:{"id":"balanceWrap"}},[_c('currency-set',{attrs:{"amount":_vm.fiatConv,"ticker":_vm.fiat,"easy":_vm.isEasy}})],1)]),_vm._v(" "),_c('div',{attrs:{"id":"coins"}},[_c('v-ons-list',_vm._l((_vm.curs),function(c){return _c('v-ons-list-item',{attrs:{"modifier":"tappable"}},[_c('div',{staticClass:"left"},[_c('img',{attrs:{"src":c.icon}})]),_vm._v(" "),_c('div',[_c('div',{staticClass:"screenName"},[_vm._v(_vm._s(c.screenName))]),_vm._v(" "),_c('div',{staticClass:"price"},[_c('currency-set',{attrs:{"amount":c.price,"ticker":c.coinId,"fiatTicker":_vm.fiat,"easy":_vm.isEasy}})],1)]),_vm._v(" "),_c('div',{staticClass:"w_right"},[_c('div',{staticClass:"amount"},[_c('currency-set',{attrs:{"amount":c.balance,"ticker":c.coinId,"easy":_vm.isEasy}})],1),_vm._v(" "),_c('div',{staticClass:"fiatConv"},[_c('currency-set',{attrs:{"amount":c.balance*c.price,"ticker":_vm.fiat,"easy":_vm.isEasy}})],1)])])}))],1)])],1)}
+var render = function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('v-ons-page',{attrs:{"data-page":"home"}},[_c('custom-bar',{attrs:{"title":"ホーム","menu":"true"}}),_vm._v(" "),_c('div',[_c('div',{attrs:{"id":"youHave"}},[_c('div',{staticClass:"label"},[_vm._v("あなたが今持っているのは")]),_vm._v(" "),_c('div',{attrs:{"id":"balanceWrap"}},[_c('currency-set',{attrs:{"amount":_vm.fiatConv,"ticker":_vm.fiat,"easy":_vm.isEasy,"about":"true"}})],1)]),_vm._v(" "),_c('div',{attrs:{"id":"coins"}},[_c('v-ons-list',_vm._l((_vm.curs),function(c){return _c('v-ons-list-item',{attrs:{"modifier":"tappable"}},[_c('div',{staticClass:"left"},[_c('img',{attrs:{"src":c.icon}})]),_vm._v(" "),_c('div',[_c('div',{staticClass:"screenName"},[_vm._v(_vm._s(c.screenName))]),_vm._v(" "),_c('div',{staticClass:"price"},[_c('currency-set',{attrs:{"amount":c.price,"ticker":c.coinId,"fiatTicker":_vm.fiat,"easy":_vm.isEasy}})],1)]),_vm._v(" "),_c('div',{staticClass:"w_right"},[_c('div',{staticClass:"amount",class:{unconfirmed:c.unconfirmed}},[_c('currency-set',{attrs:{"amount":c.balance,"ticker":c.coinId,"easy":_vm.isEasy}})],1),_vm._v(" "),_c('div',{staticClass:"fiatConv"},[_c('currency-set',{attrs:{"amount":c.balance*c.price,"ticker":_vm.fiat,"easy":_vm.isEasy}})],1)])])}))],1)])],1)}
 var staticRenderFns = []
 module.exports = function (_exports) {
   var options = typeof _exports === 'function'
@@ -37456,11 +37462,12 @@ module.exports = __webpack_require__(322)({
         });
         return cur.pushTx(finalTx.toHex());
       }).then(function (res) {
-        debugger;
         _this2.$store.commit("setFinishNextPage", { page: __webpack_require__(43), infoId: "sent", payload: {
             txId: res.txid
           } });
         _this2.$emit("replace", __webpack_require__(124));
+      }).catch(function (e) {
+        _this2.$ons.notification.alert(e.request.responseText);
       });
     }
   }
@@ -39728,7 +39735,8 @@ module.exports = __webpack_require__(345)({
       qrDataUrl: "",
       isNative: false,
       label: "",
-      edit: false
+      edit: false,
+      balance: 0
     };
   },
 
@@ -39765,6 +39773,10 @@ module.exports = __webpack_require__(345)({
     });
 
     this.currentCurIcon = cur.icon;
+
+    cur.getAddressProp("balance", this.address).then(function (res) {
+      _this2.balance = res / 100000000;
+    });
   }
 });
 
@@ -39772,7 +39784,7 @@ module.exports = __webpack_require__(345)({
 /* 345 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var render = function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('v-ons-page',{attrs:{"data-page":"showLabel"}},[_c('custom-bar',{attrs:{"title":_vm.label,"menu":"true"}},[_c('v-ons-toolbar-button',{on:{"click":function($event){_vm.edit=true}}},[_c('v-ons-icon',{attrs:{"icon":"ion-edit"}})],1)],1),_vm._v(" "),_c('div',[_c('div',{attrs:{"id":"simple"}},[_c('div',{attrs:{"id":"qrArea"}},[_c('div',{attrs:{"id":"qrcode"}},[_c('img',{attrs:{"src":_vm.qrDataUrl,"alt":"QR code","id":"qrcodeImage"}}),_vm._v(" "),_c('div',{style:({'background-image':'url('+_vm.currentCurIcon+')'}),attrs:{"id":"currentCurIcon"}})]),_vm._v(" "),_c('div',{staticClass:"address"},[_vm._v(_vm._s(_vm.address||_vm.hdPath))])]),_vm._v(" "),(_vm.isNative)?_c('div',[_c('v-ons-button',[_c('v-ons-icon',{attrs:{"icon":"fa-clipboard"}}),_vm._v("\n          アドレスコピー\n        ")],1),_vm._v(" "),_c('v-ons-button',[_c('v-ons-icon',{attrs:{"icon":"fa-share"}}),_vm._v("共有\n        ")],1)],1):_vm._e(),_vm._v(" "),_c('v-ons-list',[_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_vm._v("HD Node Derivation Path")]),_vm._v(" "),_c('div',{staticClass:"right"},[_vm._v(_vm._s(_vm.hdPath))])])],1)],1)]),_vm._v(" "),_c('v-ons-alert-dialog',{attrs:{"modifier":"rowfooter","visible":_vm.edit},on:{"update:visible":function($event){_vm.edit=$event}}},[_c('span',{attrs:{"slot":"title"},slot:"title"},[_vm._v("ラベルを編集")]),_vm._v(" "),_c('p',[_vm._v("ラベルを変更してください")]),_vm._v(" "),_c('v-ons-input',{attrs:{"placeholder":"ラベル"},model:{value:(_vm.labelInput),callback:function ($$v) {_vm.labelInput=$$v},expression:"labelInput"}}),_vm._v(" "),_c('template',{attrs:{"slot":"footer"},slot:"footer"},[_c('div',{staticClass:"alert-dialog-button",on:{"click":function($event){_vm.edit = false}}},[_vm._v("やめる")]),_vm._v(" "),_c('div',{staticClass:"alert-dialog-button",on:{"click":_vm.update}},[_vm._v("追加")])])],2)],1)}
+var render = function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('v-ons-page',{attrs:{"data-page":"showLabel"}},[_c('custom-bar',{attrs:{"title":_vm.label,"menu":"true"}},[_c('v-ons-toolbar-button',{on:{"click":function($event){_vm.edit=true}}},[_c('v-ons-icon',{attrs:{"icon":"ion-edit"}})],1)],1),_vm._v(" "),_c('div',[_c('div',{attrs:{"id":"simple"}},[_c('div',{attrs:{"id":"qrArea"}},[_c('div',{attrs:{"id":"qrcode"}},[_c('img',{attrs:{"src":_vm.qrDataUrl,"alt":"QR code","id":"qrcodeImage"}}),_vm._v(" "),_c('div',{style:({'background-image':'url('+_vm.currentCurIcon+')'}),attrs:{"id":"currentCurIcon"}})]),_vm._v(" "),_c('div',{staticClass:"address"},[_vm._v(_vm._s(_vm.address||_vm.hdPath))])]),_vm._v(" "),(_vm.isNative)?_c('div',[_c('v-ons-button',[_c('v-ons-icon',{attrs:{"icon":"fa-clipboard"}}),_vm._v("\n          アドレスコピー\n        ")],1),_vm._v(" "),_c('v-ons-button',[_c('v-ons-icon',{attrs:{"icon":"fa-share"}}),_vm._v("共有\n        ")],1)],1):_vm._e(),_vm._v(" "),_c('v-ons-list',[_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_vm._v("HD Node Derivation Path")]),_vm._v(" "),_c('div',{staticClass:"right"},[_vm._v(_vm._s(_vm.hdPath))])]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_vm._v("残高")]),_vm._v(" "),_c('div',{staticClass:"right"},[_vm._v(_vm._s(_vm.balance))])])],1)],1)]),_vm._v(" "),_c('v-ons-alert-dialog',{attrs:{"modifier":"rowfooter","visible":_vm.edit},on:{"update:visible":function($event){_vm.edit=$event}}},[_c('span',{attrs:{"slot":"title"},slot:"title"},[_vm._v("ラベルを編集")]),_vm._v(" "),_c('p',[_vm._v("ラベルを変更してください")]),_vm._v(" "),_c('v-ons-input',{attrs:{"placeholder":"ラベル"},model:{value:(_vm.labelInput),callback:function ($$v) {_vm.labelInput=$$v},expression:"labelInput"}}),_vm._v(" "),_c('template',{attrs:{"slot":"footer"},slot:"footer"},[_c('div',{staticClass:"alert-dialog-button",on:{"click":function($event){_vm.edit = false}}},[_vm._v("やめる")]),_vm._v(" "),_c('div',{staticClass:"alert-dialog-button",on:{"click":_vm.update}},[_vm._v("追加")])])],2)],1)}
 var staticRenderFns = []
 module.exports = function (_exports) {
   var options = typeof _exports === 'function'
@@ -39854,7 +39866,11 @@ module.exports = __webpack_require__(349)({
     return {};
   },
 
-  methods: {},
+  methods: {
+    goToShowPassphrase: function goToShowPassphrase() {
+      this.$emit("push", __webpack_require__(361));
+    }
+  },
   mounted: function mounted() {}
 });
 
@@ -39862,7 +39878,7 @@ module.exports = __webpack_require__(349)({
 /* 349 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var render = function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('v-ons-page',{attrs:{"data-page":"settings"}},[_c('custom-bar',{attrs:{"title":"設定","menu":"true"}}),_vm._v(" "),_c('div',[_c('v-ons-list',[_c('v-ons-list-header'),_vm._v(" "),_c('v-ons-list-item')],1)],1)],1)}
+var render = function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('v-ons-page',{attrs:{"data-page":"settings"}},[_c('custom-bar',{attrs:{"title":"設定","menu":"true"}}),_vm._v(" "),_c('div',[_c('v-ons-list',[_c('v-ons-list-item',{attrs:{"modifier":"tappable chevron"},on:{"click":_vm.goToShowPassphrase}},[_c('div',{staticClass:"center"},[_vm._v("パスフレーズの表示")])]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_vm._v("Zaif Payment")]),_vm._v(" "),_c('div',{staticClass:"right"},[_c('v-ons-switch',{model:{value:(_vm.zaifPayment),callback:function ($$v) {_vm.zaifPayment=$$v},expression:"zaifPayment"}})],1)]),_vm._v(" "),_c('v-ons-list-header'),_vm._v(" "),_c('v-ons-list-item')],1)],1)],1)}
 var staticRenderFns = []
 module.exports = function (_exports) {
   var options = typeof _exports === 'function'
@@ -40468,11 +40484,16 @@ if (false) {(function () {
 
 
 var bip39 = __webpack_require__(38);
+var storage = __webpack_require__(22);
+var coinUtil = __webpack_require__(18);
 module.exports = __webpack_require__(362)({
   data: function data() {
     return {
       keyArray: null,
-      words: []
+      words: [],
+      password: "",
+      requirePassword: false,
+      showNext: true
     };
   },
 
@@ -40480,10 +40501,27 @@ module.exports = __webpack_require__(362)({
   methods: {
     next: function next() {
       this.$emit("push", __webpack_require__(131));
+    },
+    render: function render(entropy) {
+      this.words = bip39.entropyToMnemonic(entropy).split(" ");
+    },
+    decrypt: function decrypt() {
+      var _this = this;
+
+      storage.get("keyPairs").then(function (cipher) {
+        _this.render(coinUtil.decrypt(cipher.entropy, _this.password));
+        _this.requirePassword = false;
+        _this.password = "";
+      });
     }
   },
   mounted: function mounted() {
-    this.words = bip39.entropyToMnemonic(this.$store.state.entropy).split(" ");
+    if (this.$store.state.entropy) {
+      this.render(this.$store.state.entropy);
+    } else {
+      this.requirePassword = true;
+      this.showNext = false;
+    }
   }
 });
 
@@ -40491,7 +40529,7 @@ module.exports = __webpack_require__(362)({
 /* 362 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var render = function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('v-ons-page',{attrs:{"data-page":"showPassphrase"}},[_c('custom-bar',{attrs:{"title":"パスフレーズ"}}),_vm._v(" "),_c('div',{staticClass:"wrap"},[_c('ul',[_c('li',[_vm._v("英単語を正確に、紙に手書きしてください。")]),_vm._v(" "),_c('li',[_vm._v("英単語のスクリーンショットを撮影・コピーしないでください。")]),_vm._v(" "),_c('li',[_vm._v("他人に知れ渡ると、モナコインを盗まれる可能性があります。")]),_vm._v(" "),_c('li',[_vm._v("チェックボックスは確認のためにお使いください。")])]),_vm._v(" "),_c('v-ons-list',[_vm._l((_vm.words),function(word,index){return _c('v-ons-list-item',[_c('label',{staticClass:"left"},[_vm._v("\n          "+_vm._s(index+1)+"\n        ")]),_vm._v(" "),_c('label',{staticClass:"center"},[_vm._v(_vm._s(word))]),_vm._v(" "),_c('label',{staticClass:"right"},[_c('v-ons-checkbox')],1)])}),_vm._v(" "),_c('v-ons-list-item',[_c('v-ons-button',{attrs:{"modifier":"large","disable":!_vm.words.length},on:{"click":_vm.next}},[_vm._v("次へ")])],1)],2)],1)],1)}
+var render = function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('v-ons-page',{attrs:{"data-page":"showPassphrase"}},[_c('custom-bar',{attrs:{"title":"パスフレーズ"}}),_vm._v(" "),_c('div',{staticClass:"wrap"},[_c('ul',[_c('li',[_vm._v("英単語を正確に、紙に手書きしてください。")]),_vm._v(" "),_c('li',[_vm._v("英単語のスクリーンショットを撮影・コピーしないでください。")]),_vm._v(" "),_c('li',[_vm._v("他人に知れ渡ると、モナコインを盗まれる可能性があります。")]),_vm._v(" "),_c('li',[_vm._v("チェックボックスは確認のためにお使いください。")])]),_vm._v(" "),_c('v-ons-list',[_vm._l((_vm.words),function(word,index){return _c('v-ons-list-item',[_c('label',{staticClass:"left"},[_vm._v("\n          "+_vm._s(index+1)+"\n        ")]),_vm._v(" "),_c('label',{staticClass:"center"},[_vm._v(_vm._s(word))]),_vm._v(" "),_c('label',{staticClass:"right"},[_c('v-ons-checkbox')],1)])}),_vm._v(" "),_c('v-ons-list-item',{directives:[{name:"show",rawName:"v-show",value:(_vm.showNext),expression:"showNext"}]},[_c('v-ons-button',{attrs:{"modifier":"large","disable":!_vm.words.length},on:{"click":_vm.next}},[_vm._v("次へ")])],1)],2),_vm._v(" "),_c('v-ons-alert-dialog',{attrs:{"modifier":"rowfooter","visible":_vm.requirePassword},on:{"update:visible":function($event){_vm.requirePassword=$event}}},[_c('span',{attrs:{"slot":"title"},slot:"title"},[_vm._v("パスワード")]),_vm._v(" "),_c('p',[_vm._v("パスワードを入力してください")]),_vm._v(" "),_c('v-ons-input',{attrs:{"placeholder":"パスワード"},model:{value:(_vm.password),callback:function ($$v) {_vm.password=$$v},expression:"password"}}),_vm._v(" "),_c('template',{attrs:{"slot":"footer"},slot:"footer"},[_c('div',{staticClass:"alert-dialog-button",on:{"click":function($event){_vm.$emit('pop')}}},[_vm._v("やめる")]),_vm._v(" "),_c('div',{staticClass:"alert-dialog-button",on:{"click":_vm.decrypt}},[_vm._v("追加")])])],2)],1)],1)}
 var staticRenderFns = []
 module.exports = function (_exports) {
   var options = typeof _exports === 'function'
@@ -40558,8 +40596,7 @@ module.exports = __webpack_require__(365)({
     return {
       keyArray: null,
       words: [{
-        word: "",
-        editing: true
+        word: ""
       }],
       suggestion: [],
       noMatch: false,
@@ -40571,47 +40608,66 @@ module.exports = __webpack_require__(365)({
   store: __webpack_require__(13),
   methods: {
     next: function next() {
+      this.remove(this.words.length - 1);
+      var mnemonic = this.words.reduce(function (p, v) {
+        return (p ? p + " " : "") + v.word;
+      }, null);
+      this.$store.commit("setEntropy", bip39.mnemonicToEntropy(mnemonic));
       this.$emit("push", __webpack_require__(131));
     },
     addWord: function addWord() {
       this.words.push({
-        word: "",
-        editing: true
+        word: ""
       });
     },
     input: function input() {
       var wd = this.words[this.words.length - 1];
-      if (this.lastWdCnt < wd.word) {
-
-        var suggest = this.suggest(wd.word);
-        if (suggest.length === 1) {
-          wd.editing = false;
-          wd.word = suggest[0];
-          this.addWord();
-          this.noMatch = true;
-        } else if (suggest.length === 0) {
-          this.suggestion = suggest; //Is Reactive?
-          this.noMatch = true;
-        } else {
-          this.noMatch = true;
-        }
+      if (this.lastWdCnt < wd.word.length) {
+        this.insert();
       }
-      this.lastWdCnt = wd.word;
+      this.lastWdCnt = wd.word.length;
+    },
+    insert: function insert() {
+      var wd = this.words[this.words.length - 1];
+      var suggest = this.suggest(wd.word);
+      if (suggest.length === 1) {
+        wd.word = suggest[0];
+        this.addWord();
+        this.noMatch = false;
+      } else if (suggest.length === 0) {
+        this.noMatch = true;
+      } else {
+        this.suggestion = suggest; //Is Reactive?
+        this.noMatch = false;
+      }
     },
     remove: function remove(i) {
-      this.words.splice(i, 1);
-      this.words[this.words.length - 1].editing = true;
+      if (this.wdLength !== 1) {
+        this.words.splice(i, 1);
+      }
       this.deleteFlag = false;
+      this.suggestion = [];
     },
     removeEvt: function removeEvt() {
       var index = this.words.length - 1;
+      this.noMatch = false;
       if (!this.words[index].word && index !== 0) {
         if (this.deleteFlag) {
-          this.delete(index);
+          this.remove(index);
         } else {
           this.deleteFlag = true;
         }
       }
+    },
+    reset: function reset() {
+      this.words = [{
+        word: ""
+      }];
+    },
+    apply: function apply(s) {
+      this.words[this.words.length - 1].word = s;
+      this.addWord();
+      this.suggestion = [];
     },
     suggest: function suggest(word) {
       var ret = [];
@@ -40625,14 +40681,18 @@ module.exports = __webpack_require__(365)({
       return ret;
     }
   },
-  mounted: function mounted() {}
+  computed: {
+    wdLength: function wdLength() {
+      return this.words.length;
+    }
+  }
 });
 
 /***/ }),
 /* 365 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var render = function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('v-ons-page',{attrs:{"data-page":"restorePassphrase"}},[_c('custom-bar',{attrs:{"title":"ウォレットの復元"}}),_vm._v(" "),_c('div',[_c('p',[_vm._v("単語を入力してください。最初の4文字を入力すると、確定します")]),_vm._v(" "),_c('div',{attrs:{"id":"wordArea"}},_vm._l((_vm.words),function(w,i){return _c('div',{staticClass:"word"},[_c('span',{staticClass:"deleteBtn",on:{"click":function($event){_vm.remove(i)}}},[_c('v-ons-icon',{attrs:{"icon":"ion-close"}})],1),_vm._v(" "),(!w.editing)?_c('span',[_vm._v(_vm._s(w.word))]):_vm._e(),_vm._v(" "),(w.editing)?_c('input',{directives:[{name:"model",rawName:"v-model",value:(w.word),expression:"w.word"},{name:"focus",rawName:"v-focus"}],class:{noMatch:_vm.noMatch},attrs:{"type":"text"},domProps:{"value":(w.word)},on:{"input":[function($event){if($event.target.composing){ return; }w.word=$event.target.value},_vm.input],"keydown":function($event){if(!('button' in $event)&&_vm._k($event.keyCode,"delete",[8,46])){ return null; }_vm.removeEvt($event)}}}):_vm._e()])}))])],1)}
+var render = function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('v-ons-page',{attrs:{"data-page":"restorePassphrase"}},[_c('custom-bar',{attrs:{"title":"ウォレットの復元"}}),_vm._v(" "),_c('div',[_c('p',[_vm._v("単語を入力してください。候補を絞り込めた場合、確定します。")]),_vm._v(" "),_c('v-ons-button',{attrs:{"modifier":"quiet"},on:{"click":_vm.reset}},[_c('v-ons-icon',{attrs:{"icon":"fa-erase"}}),_vm._v("\n        単語をリセット\n      ")],1),_vm._v(" "),_c('div',{attrs:{"id":"wordArea"}},_vm._l((_vm.words),function(w,i){return _c('div',{staticClass:"word",class:{noMatch:_vm.noMatch&&i===_vm.wdLength-1}},[_c('span',{directives:[{name:"show",rawName:"v-show",value:(i!==_vm.wdLength-1),expression:"i!==wdLength-1"}],staticClass:"deleteBtn",on:{"click":function($event){_vm.remove(i)}}},[_c('v-ons-icon',{attrs:{"icon":"ion-close"}})],1),_vm._v(" "),(i!==_vm.wdLength-1)?_c('span',{staticClass:"wd"},[_vm._v(_vm._s(w.word))]):_vm._e(),_vm._v(" "),(i===_vm.wdLength-1)?_c('input',{directives:[{name:"model",rawName:"v-model",value:(w.word),expression:"w.word"},{name:"focus",rawName:"v-focus"}],attrs:{"type":"text"},domProps:{"value":(w.word)},on:{"input":[function($event){if($event.target.composing){ return; }w.word=$event.target.value},_vm.input],"keydown":[function($event){if(!('button' in $event)&&_vm._k($event.keyCode,"delete",[8,46])){ return null; }_vm.removeEvt($event)},function($event){if(!('button' in $event)&&_vm._k($event.keyCode,"enter",13)){ return null; }_vm.insert($event)}]}}):_vm._e()])})),_vm._v(" "),_c('div',{attrs:{"id":"nextWrap"}},[_c('v-ons-button',{attrs:{"modifier":"large","disabled":_vm.wdLength<=12},on:{"click":_vm.next}},[_vm._v("次へ")])],1),_vm._v(" "),_c('div',{attrs:{"id":"suggestion"}},_vm._l((_vm.suggestion),function(s){return _c('div',{staticClass:"sgst",on:{"click":function($event){_vm.apply(s)}}},[_vm._v(_vm._s(s))])}))],1)],1)}
 var staticRenderFns = []
 module.exports = function (_exports) {
   var options = typeof _exports === 'function'

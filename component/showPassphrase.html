@@ -17,9 +17,20 @@
           <v-ons-checkbox></v-ons-checkbox>
         </label>
       </v-ons-list-item>
-      <v-ons-list-item>
+      <v-ons-list-item v-show="showNext">
         <v-ons-button @click="next" modifier="large" :disable="!words.length">次へ</v-ons-button>
       </v-ons-list-item>
     </v-ons-list>
+    <v-ons-alert-dialog modifier="rowfooter"
+                        :visible.sync="requirePassword"
+                        >
+      <span slot="title">パスワード</span>
+      <p>パスワードを入力してください</p>
+      <v-ons-input placeholder="パスワード" v-model="password"></v-ons-input>
+      <template slot="footer">
+        <div class="alert-dialog-button" @click="$emit('pop')">やめる</div>
+        <div class="alert-dialog-button" @click="decrypt">追加</div>
+      </template>
+    </v-ons-alert-dialog>
   </div>
 </v-ons-page>

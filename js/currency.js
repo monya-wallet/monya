@@ -43,15 +43,15 @@ module.exports=class{
       })
 
   }
-  getWholeBalanceOfThisAccount(getBalance=true){
+  getWholeBalanceOfThisAccount(gb=true){
     if(this.dummy){return Promise.resolve()}
     return new Promise((resolve, reject) => {
       if(!this.hdPubNode){throw new Error("HDNode isn't specified.")}
       this.wholeBalanceSat=0;
       this.wholeUnconfirmedSat=0;
-      this._getBalance(0,0,getBalance,(index)=>{
+      this._getBalance(0,0,gb,(index)=>{
         this.receiveIndex=index;
-        this._getBalance(1,0,getBalance,(index2)=>{
+        this._getBalance(1,0,gb,(index2)=>{
           this.changeIndex=index2;
           resolve({balance:this.wholeBalanceSat,unconfirmed:this.unconfirmedBalanceSat})
         })
@@ -59,25 +59,25 @@ module.exports=class{
     })
     
   }
-  _getBalance(change,index,getBalance,cb){
+  _getBalance(change,index,gb,cb){
     if(this.dummy){return Promise.resolve()}
     return new Promise((resolve, reject) => {
-      this.getAddressProp(getBalance?"":"totalReceived",this.getAddress(change,index)).then(res=>{
+      this.getAddressProp(gb?"":"totalReceived",this.getAddress(change,index)).then(res=>{
         if(!change){
           if(index>module.exports.maxLabel){
             cb(index)
           }else{
             this.wholeBalanceSat+=res.balanceSat
             this.wholeUnconfirmedSat+=res.unconfirmedBalanceSat
-            this._getBalance(change,++index,getBalance,cb)
+            this._getBalance(change,++index,gb,cb)
           }
         }else{
-          if(getBalance&&res.totalReceived){
+          if(gb&&res.totalReceived){
             this.wholeBalanceSat+=res.balanceSat
             this.wholeUnconfirmedSat+=res.unconfirmedBalanceSat
-            this._getBalance(change,++index,cb)
-          }else if(!getBalance&&parseInt(res,10)){
-            this._getBalance(change,++index,getBalance,cb)
+            this._getBalance(change,++index,gb,cb)
+          }else if(!gb&&parseInt(res,10)){
+            this._getBalance(change,++index,gb,cb)
           }else{
             cb(index)
           }

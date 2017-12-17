@@ -17,17 +17,19 @@ module.exports=require("./home.html")({
   store:require("../js/store.js"),
   mounted(){
     currencyList.eachWithPub(cur=>{
-      let bal=0;
+      let bal=null;
       cur.getWholeBalanceOfThisAccount()
         .then(res=>{
-          bal=res.balance
+          bal=res
+          
           return coinUtil.getPrice(cur.coinId,this.$store.state.fiat)
         })
         .then(res=>{
-          this.fiatConv += res*bal/100000000
+          this.fiatConv += res*bal.balance/100000000
           this.curs.push({
             coinId:cur.coinId,
-            balance:bal/100000000,
+            balance:bal.balance/100000000,
+            unconfirmed:bal.unconfirmed/100000000,
             screenName:cur.coinScreenName,
             price:res,
             icon:cur.icon,

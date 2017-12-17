@@ -81,11 +81,12 @@ module.exports=require("./confirm.html")({
         })
         return cur.pushTx(finalTx.toHex())
       }).then((res)=>{
-        debugger
         this.$store.commit("setFinishNextPage",{page:require("./home.js"),infoId:"sent",payload:{
           txId:res.txid
         }})
         this.$emit("replace",require("./finished.js"))
+      }).catch(e=>{
+        this.$ons.notification.alert(e.request.responseText)
       })
       
       

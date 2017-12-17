@@ -61,7 +61,7 @@ exports.makePairsAndEncrypt=(option)=>new Promise((resolve, reject) => {
     }
     for(let i=0;i<option.makeCur.length;i++){
       let coinId = option.makeCur[i]
-      let pub =currencyList[coinId].seedToPubB58(seed)
+      let pub =currencyList.get(coinId).seedToPubB58(seed)
       ret.pubs[coinId]=pub
     }
     

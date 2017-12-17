@@ -4,7 +4,7 @@
     <div id="youHave">
       <div class="label">あなたが今持っているのは</div>
       <div id="balanceWrap">
-        <currency-set :amount="fiatConv" :ticker="fiat" :easy="isEasy"></currency-set>
+        <currency-set :amount="fiatConv" :ticker="fiat" :easy="isEasy" about="true"></currency-set>
       </div>
     </div>
     <div id="coins">
@@ -21,7 +21,7 @@
             </div>
           </div>
           <div class="w_right">
-            <div class="amount"><currency-set :amount="c.balance" :ticker="c.coinId" :easy="isEasy"></currency-set></div>
+            <div class="amount" :class='{unconfirmed:c.unconfirmed}'><currency-set :amount="c.balance" :ticker="c.coinId" :easy="isEasy"></currency-set></div>
             <div class="fiatConv"><currency-set :amount="c.balance*c.price" :ticker="fiat" :easy="isEasy"></currency-set></div>
           </div>
         </v-ons-list-item>

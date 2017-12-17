@@ -12,6 +12,9 @@ module.exports = new Vuex.Store({
     setEntropy(state,ent) {
       state.entropy=ent;
     },
+    deleteEntropy(state){
+      state.entropy=null
+    },
     setConfirmation(state,payload){
       state.confPayload={
         address:payload.address,

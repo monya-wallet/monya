@@ -18,9 +18,10 @@ module.exports=require("./setPassword.html")({
       coinUtil.makePairsAndEncrypt({
         entropy:this.$store.state.entropy,
         password:this.password,
-        makeCur:["mona","btc"]
+        makeCur:["mona"]
       }).then((data)=>storage.set("keyPairs",data))
         .then(()=>{
+          this.$store.commit("deleteEntropy")
           this.$store.commit("setFinishNextPage",{page:require("./login.js"),infoId:"createdWallet"})
           this.$emit("replace",require("./finished.js"))
       })

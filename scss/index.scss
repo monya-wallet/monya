@@ -40,6 +40,9 @@ $homeCurIconSize:38px;
       .amount .ticker{
         font-size:0.8em;
       }
+      .unconfirmed{
+        color:red;
+      }
     }
     .price{
       font-size:0.85em;
@@ -166,7 +169,53 @@ $iconSize:100px;
     
   }
 }
-
+[data-page="restorePassphrase"]{
+  #wordArea{
+    background-color: white;
+    width:100%;
+    .word{
+      display:inline-block;
+      margin:5px;
+      padding:4px;
+      border:#ddd 1px solid;
+      
+      border-radius:3.5px;
+      .wd{
+        color:black;
+      }
+      .deleteBtn{
+        color:#aaa;
+      }
+      input{
+        border:none;
+        background:transparent;
+        font-size:1em;
+        width:5em;
+        margin:0px;
+        padding:0px;
+      }
+      &.noMatch{
+        background-color:#fdc;
+      }
+    }
+  }
+  #suggestion{
+    position:fixed;
+    bottom: 0;
+    width:100%;
+    background-color:white;
+    border-top: #c3c3c8 1px solid;
+    .sgst{
+      display:inline-block;
+      padding: 9px;
+      border-right: #c3c3c8 1px solid;
+    }
+    
+  }
+  #nextWrap{
+    padding:10px;
+  }
+}
 [data-page="question"]{
   .questionItem{
     text-align:center;

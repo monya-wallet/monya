@@ -4,8 +4,7 @@ module.exports=require("./restorePassphrase.html")({
     return {
       keyArray:null,
       words:[{
-        word:"",
-        editing:true
+        word:""
       }],
       suggestion:[],
       noMatch:false,
@@ -16,47 +15,66 @@ module.exports=require("./restorePassphrase.html")({
   store:require("../js/store.js"),
   methods:{
     next(){
+      this.remove(this.words.length-1)
+      const mnemonic=this.words.reduce((p,v)=>{
+        return (p?p+" ":"")+v.word
+      },null)
+      this.$store.commit("setEntropy",bip39.mnemonicToEntropy(mnemonic))
       this.$emit("push",require("./setPassword.js"))
     },
     addWord(){
       this.words.push({
-        word:"",
-        editing:true
+        word:""
       })
     },
     input(){
       const wd =this.words[this.words.length-1]
-      if(this.lastWdCnt<wd.word){
-        
-        const suggest = this.suggest(wd.word)
-        if(suggest.length===1){
-          wd.editing=false
-          wd.word=suggest[0]
-          this.addWord()
-          this.noMatch=true;
-        }else if(suggest.length===0){
-          this.suggestion = suggest;//Is Reactive?
-          this.noMatch=true;
-        }else{
-          this.noMatch=true;
-        }
+      if(this.lastWdCnt<wd.word.length){
+        this.insert()
       }
-      this.lastWdCnt = wd.word
+      this.lastWdCnt = wd.word.length
+    },
+    insert(){
+      const wd =this.words[this.words.length-1]
+      const suggest = this.suggest(wd.word)
+      if(suggest.length===1){
+        wd.word=suggest[0]
+        this.addWord()
+        this.noMatch=false;
+      }else if(suggest.length===0){
+        this.noMatch=true;
+      }else{
+        this.suggestion = suggest;//Is Reactive?
+        this.noMatch=false;
+      }
     },
     remove(i){
-      this.words.splice(i,1)
-      this.words[this.words.length-1].editing=true
+      if(this.wdLength!==1){
+        this.words.splice(i,1)
+      }
       this.deleteFlag=false
+      this.suggestion=[]
     },
     removeEvt(){
       const index = this.words.length-1
+      this.noMatch=false;
       if(!this.words[index].word&&index!==0){
         if(this.deleteFlag){
-          this.delete(index)
+          this.remove(index)
         }else{
           this.deleteFlag=true
         }
       }
+    },
+    reset(){
+      this.words=[{
+        word:""
+      }]
+    },
+    apply(s){
+      this.words[this.words.length-1].word=s
+      this.addWord()
+      this.suggestion=[]
     },
     suggest(word){
       const ret=[]
@@ -70,7 +88,9 @@ module.exports=require("./restorePassphrase.html")({
       return ret
     }
   },
-  mounted(){
-    
+  computed:{
+    wdLength(){
+      return this.words.length
+    }
   }
 })
