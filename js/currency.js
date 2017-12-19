@@ -5,7 +5,6 @@ const errors = require("./errors")
 const bip39 = require("bip39")
 const coinUtil = require("./coinUtil")
 module.exports=class{
-  static get maxLabel(){return 10}
   
   constructor(opt){
     this.coinId = opt.coinId;
@@ -13,7 +12,7 @@ module.exports=class{
     this.unit = opt.unit;
     this.unitEasy = opt.unitEasy;
     this.bip44 = opt.bip44;
-    this.defaultAPIEndpoint = opt.defaultAPIEndpoint;
+    this.apiEndpoint = opt.defaultAPIEndpoint;
     this.network = opt.network;
     this.price = opt.price;
     this.dummy=!!opt.dummy
@@ -28,6 +27,7 @@ module.exports=class{
     this.wholeBalanceSat = 0;
     this.receiveIndex=0;
     this.changeIndex=-1;
+    this.addresses={}
   }
   setPubSeedB58(seed){
     if(this.dummy){return}
@@ -36,11 +36,21 @@ module.exports=class{
   getAddressProp(propName,address){
     if(this.dummy){return Promise.resolve()}
     return axios({
-      url:this.defaultAPIEndpoint+"/addr/"+address+"/"+propName,
+      url:this.apiEndpoint+"/addr/"+address+"/"+propName,
       json:true,
       method:"GET"}).then(res=>{
         return res.data
       })
+  }
+  getBalanceOfReceiveAddr(limit){
+    if(!limit){
+      limit=coinUtil.LABEL_MAX_INDEX
+    }
+    const adrss=[]
+    for(let i=0;i<=limit;i++){
+      adrss.push(this.getAddress(0,i))
+    }
+    adrss.join(",")
 
   }
   getWholeBalanceOfThisAccount(gb=true){
@@ -64,7 +74,7 @@ module.exports=class{
     return new Promise((resolve, reject) => {
       this.getAddressProp(gb?"":"totalReceived",this.getAddress(change,index)).then(res=>{
         if(!change){
-          if(index>module.exports.maxLabel){
+          if(index>coinUtil.LABEL_MAX_INDEX){
             cb(index)
           }else{
             this.wholeBalanceSat+=res.balanceSat
@@ -130,11 +140,16 @@ module.exports=class{
   getAddress(change,index){
     if(this.dummy){return}
     if(!this.hdPubNode){throw new Error("HDNode isn't specified.")}
-
+    
     if(typeof index !=="number"){
-      index=this.receiveIndex
+      throw new Error("Please specify index")
     }
-    return this.hdPubNode.derive(change).derive(index).getAddress()
+    const addrKey = (change|0).toString()+","+(index|0).toString()
+    if(this.addresses[addrKey]){
+      return this.addresses[addrKey]
+    }else{
+      return (this.addrKey[addrKey]=this.hdPubNode.derive(change).derive(index).getAddress())
+    }
   }
   getSegwitAddress(change,index){
     if(this.dummy){return}
@@ -250,7 +265,7 @@ module.exports=class{
   pushTx(hex){
     if(this.dummy){return Promise.resolve()}
     return axios({
-      url:this.defaultAPIEndpoint+"/tx/send",
+      url:this.apiEndpoint+"/tx/send",
       data:{rawtx:hex},
       method:"POST"}).then(res=>{
         return res.data

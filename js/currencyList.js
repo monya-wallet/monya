@@ -12,9 +12,9 @@ const coins={
       account:0
     },
     bip21:"monacoin",
-    defaultFeeSatPerByte:150,//will implement dynamic fee
+    defaultFeeSatPerByte:200,//will implement dynamic fee
     icon:require("../res/coins/mona.png"),
-    defaultAPIEndpoint:"https://mona.chainsight.info/api",
+    defaultAPIEndpoint:"https://mona.insight.monaco-ex.org/insight-api-monacoin/",
     network:{
       messagePrefix: '\x19Monacoin Signed Message:\n',
       bip32: {

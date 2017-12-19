@@ -10,7 +10,8 @@ module.exports=require("./showLabel.html")({
       isNative:false,
       label:"",
       edit:false,
-      balance:0
+      balance:0,
+      labelInput:""
     }
   },
   store:require("../js/store.js"),
@@ -35,6 +36,7 @@ module.exports=require("./showLabel.html")({
     const cur =currencyList.get(p.coinId)
     this.hdPath="m/44'/"+cur.bip44.coinType+"'/"+cur.bip44.account+"'/"+p.change+"/"+p.index
     this.label = p.name
+    this.labelInput=p.name
     this.address=cur.getAddress(p.change,p.index)
     qrcode.toDataURL(cur.bip21+":"+this.address,{
       errorCorrectionLevel: 'M',

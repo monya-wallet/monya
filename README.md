@@ -9,7 +9,7 @@
 * Monapartyトークンも扱え
 * 業務用モナコイン決済ツールとしても使える
 
-モナコイン・Monapartyウォレット
+ことを目標にしたモナコイン・Monapartyウォレット
 
 # プロダクト名
 金光碧氏がもにゃもにゃ仰っていたので
@@ -17,6 +17,10 @@
 
 
 # License
-MIT
 
-UIのドラフトは組んでおいたので、フォークなりプルリクなりしてください。
+GPLv3
+
+Copyright (C) 2017 ゆき@モナコインJK
+This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details You should have received a copy of the GNU General Public License along with this program.  If not, see <https://www.gnu.org/licenses/>.

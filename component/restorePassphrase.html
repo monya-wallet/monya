@@ -21,5 +21,14 @@
       <v-ons-button @click="next" modifier="large" :disabled="wdLength<=12">次へ</v-ons-button>
     </div>
     <div id="suggestion"><div class="sgst" v-for="s in suggestion" @click="apply(s)">{{s}}</div></div>
+    <v-ons-alert-dialog modifier="rowfooter"
+                        :visible.sync="error"
+                        >
+      <span slot="title">Error</span>
+      <p>エラーが発生しました。単語の順番、スペルが間違っていないかを確認して、もう一度お試しください。</p>
+      <template slot="footer">
+        <div class="alert-dialog-button" @click="error = false">やり直す</div>
+      </template>
+    </v-ons-alert-dialog>
   </div>
 </v-ons-page>

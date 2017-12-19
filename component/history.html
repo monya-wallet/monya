@@ -1,6 +1,47 @@
 <v-ons-page data-page="history">
-  <custom-bar title="履歴" menu="true"></custom-bar>
+  <custom-bar title="履歴" menu="true">
+    <v-ons-toolbar-button @click="filterDlg=true">
+      <v-ons-icon icon="fa-filter"></v-ons-icon>
+    </v-ons-toolbar-button>
+  </custom-bar>
   <div>
-    
+    <v-ons-list>
+      
+      <v-ons-list-item modifier="tappable" @click="">
+        <div>
+          
+          
+          <div class="label">(名称未設定)</div>
+          <div class="destAddress">MWBaWdcgNVdcemqA2c2TkNV8ndYenVPAEY</div>
+          
+          
+        </div>
+        <div class="w_right">
+          <span class="date">1日前</span>
+          <span class="symbols">
+            <v-ons-icon icon="fa-comment" class="hasMsg"></v-ons-icon>
+            <v-ons-icon icon="fa-bell" class="unread"></v-ons-icon>
+          </span>
+          <currency-set amount="0.001" ticker="mona" isEasy="false"></currency-set>
+        </div>
+      </v-ons-list-item>
+    </v-ons-list>
+    <v-ons-alert-dialog modifier="rowfooter"
+      :visible.sync="filterDlg"
+    >
+      <span slot="title">絞り込み</span>
+      <v-ons-select v-model="curFilter">
+        <option value="all">全て</option>
+        <option value="mona">モナコイン</option>
+      </v-ons-select>
+      <v-ons-select v-model="dirFilter">
+        <option value="all">全て</option>
+        <option value="send">送金</option>
+        <option value="receive">受け取り</option>
+      </v-ons-select>
+      <template slot="footer">
+        <div class="alert-dialog-button" @click="setFilter">閉じる</div>
+      </template>
+    </v-ons-alert-dialog>
   </div>
 </v-ons-page>

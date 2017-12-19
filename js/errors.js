@@ -1,6 +1,6 @@
 function createError(errorName){
-  const e=(message)=> {
-    this.message = message;
+  const e=function(message) {
+    this.message = message||(errorName+" has occured.");
     const last_part = new Error().stack.match(/[^\s]+$/);
     this.stack = `${this.name} at ${last_part}`;
   }

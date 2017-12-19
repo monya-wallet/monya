@@ -9,18 +9,24 @@ module.exports=require("./restorePassphrase.html")({
       suggestion:[],
       noMatch:false,
       deleteFlag:false,
-      lastWdCnt:0
+      lastWdCnt:0,
+      error:false
+
     }
   },
   store:require("../js/store.js"),
   methods:{
     next(){
-      this.remove(this.words.length-1)
-      const mnemonic=this.words.reduce((p,v)=>{
-        return (p?p+" ":"")+v.word
-      },null)
-      this.$store.commit("setEntropy",bip39.mnemonicToEntropy(mnemonic))
-      this.$emit("push",require("./setPassword.js"))
+      try{
+        this.remove(this.words.length-1)
+        const mnemonic=this.words.reduce((p,v)=>{
+          return (p?p+" ":"")+v.word
+        },null)
+        this.$store.commit("setEntropy",bip39.mnemonicToEntropy(mnemonic))
+        this.$emit("push",require("./setPassword.js"))
+      }catch(e){
+        this.error=true
+      }
     },
     addWord(){
       this.words.push({

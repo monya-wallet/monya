@@ -17,7 +17,7 @@ module.exports=require("./receive.html")({
       labels:[coinUtil.DEFAULT_LABEL_NAME],
       dialogVisible:false,
       labelInput:"",
-      maxLabel:Currency.maxLabel
+      maxLabel:coinUtil.LABEL_MAX_INDEX
     }
   },
   store:require("../js/store.js"),
@@ -47,7 +47,7 @@ module.exports=require("./receive.html")({
       const cId = this.currency[this.currencyIndex].coinId
       const derivation = this.labelInput.split("/")
       if(derivation.length===3&&derivation[0]==="derive"){
-        this.showLabel(cId,this.labelInput,derivation[1]|0,derivation[2]|0)
+        this.showLabel(cId,null,derivation[1]|0,derivation[2]|0)
         this.labelInput=""
       }else{
         coinUtil.createLabel(cId,this.labelInput).then(()=>{

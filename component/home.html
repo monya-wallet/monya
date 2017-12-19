@@ -2,10 +2,13 @@
   <custom-bar title="ホーム" menu="true"></custom-bar>
   <div>
     <div id="youHave">
-      <div class="label">あなたが今持っているのは</div>
-      <div id="balanceWrap">
-        <currency-set :amount="fiatConv" :ticker="fiat" :easy="isEasy" about="true"></currency-set>
+      <div v-show="!loading">
+        <div class="label">あなたが今持っているのは</div>
+        <div id="balanceWrap">
+          <currency-set :amount="fiatConv" :ticker="fiat" :easy="isEasy" about="true"></currency-set>
+        </div>
       </div>
+      <div v-show="loading" class="spinner"></div>
     </div>
     <div id="coins">
       <v-ons-list>

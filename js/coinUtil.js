@@ -7,6 +7,7 @@ const errors=require("./errors")
 
 
 exports.DEFAULT_LABEL_NAME = "Default"
+exports.LABEL_MAX_INDEX=10
 
 exports.isValidAddress=(addr)=>{
   try{
@@ -94,6 +95,9 @@ exports.createLabel=(cId,name)=>storage.get("labels").then(res=>{
   }
   if(!res[cId]){
     res[cId]=[exports.DEFAULT_LABEL_NAME]
+  }
+  if(res[cId].length>exports.LABEL_MAX_INDEX){
+    throw new errors.TooManyLabelsError()
   }
   if(res[cId].indexOf(name)<=0){
     res[cId].push()
