@@ -3,7 +3,7 @@ $baseTextColor:#7c5702;
 $currencySelectorHeight:50px;
 $qrCurIconPercent:20%;
 $homeCurIconSize:38px;
-$spinnerSize:50px;
+$spinnerSize:90px;
 .spinner {
   width: $spinnerSize;
   height: $spinnerSize;
@@ -16,6 +16,13 @@ $spinnerSize:50px;
   background-position:center center;
   background-size:contain;
   display:inline-block;
+}
+.list-item--small{
+  .list-item--small__left,.list-item--small__center,.list-item--small__right{
+    min-height:0px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+  }
 }
 
 [data-page="home"]{
@@ -75,6 +82,11 @@ $spinnerSize:50px;
     }
   }
 }
+[data-page="txDetail"]{
+  .list--inset{
+    margin-top:10px;
+  }
+}
 [data-page="history"]{
   ons-list-item{
     .w_right{
@@ -95,7 +107,33 @@ $spinnerSize:50px;
     }
   }
 }
-[data-page="showLabel"],[data-page="receive"]{
+[data-page="showLabel"],[data-page="receive"],[data-page="history"]{
+  #currencySelector{
+    width:100%;
+    margin:none;
+    padding:none;
+    .currencyIcon{
+      margin:3px;
+      width:$currencySelectorHeight - 3px;
+      height:$currencySelectorHeight - 3px;
+      background-position:center center;
+      background-size:contain;
+      background-repeat:no-repeat;
+      .checked{
+        position:absolute;
+        bottom:0;
+        right:0;
+        width:$currencySelectorHeight/2;
+        height:$currencySelectorHeight/2;
+        background-position:center center;
+        background-size:contain;
+        background-repeat:no-repeat;
+        background-image:url(../res/success_wo_mona.png);
+      }
+    }
+  }
+}
+[data-page="showLabel"],[data-page="invoice"],[data-page="receive"]{
   text-align:center;
   #currencySelector{
     width:100%;
@@ -308,10 +346,8 @@ $iconSize:100px;
 }
 [data-page="finished"]{
   .succeeded{
-    max-width:500px;
-    width:100%;
-    max-height:500px;
-    height:100%;
+    
+    height:300px;
     margin:50px 0;
     
     background-repeat:no-repeat no-repeat;
@@ -332,6 +368,7 @@ $iconSize:100px;
     text-align:center;
   }
 }
+
 $passwordHeight:35px;
 [data-page="login"]{
   .wrap{
@@ -359,6 +396,19 @@ $passwordHeight:35px;
         transform: translate3d(0, 0, 0);
       }
     }
+  }
+}
+$zaifPayLogoSize:200px;
+[data-page="zaifPay"]{
+  text-align:center;
+  .logo{
+    display: inline-block;
+    width: $zaifPayLogoSize;
+    height: $zaifPayLogoSize;
+    background-image:url(../res/zaifpay.png);
+    background-repeat:no-repeat;
+    background-size:contain;
+    background-position:center center;
   }
 }
 @keyframes shake {

@@ -6,7 +6,10 @@ module.exports = new Vuex.Store({
     finishNextPage:null,
     easyUnit:false,
     fiat:"jpy",
-    showLabelPayload:{}
+    showLabelPayload:{},
+    tsMode:"relative",
+    detail:{},
+    zaifPayEnabled:true
   },
   mutations: {
     setEntropy(state,ent) {
@@ -42,6 +45,10 @@ module.exports = new Vuex.Store({
         index:param.index,
         change:param.change
       }
+    },
+    setTxDetail(state,d){
+      state.detail.coinId=d.coinId
+      state.detail.txId=d.txId
     }
   }
 })

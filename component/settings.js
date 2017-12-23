@@ -7,6 +7,9 @@ module.exports=require("./settings.html")({
   methods:{
     goToShowPassphrase(){
       this.$emit("push",require("./showPassphrase.js"))
+    },
+     goToSetPassword(){
+      this.$emit("push",require("./setPassword.js"))
     }
     
   },

@@ -1,0 +1,55 @@
+<v-ons-page data-page="txDetail">
+  <custom-bar title="取引詳細" menu="true"></custom-bar>
+  <div>
+    <div v-if="res">
+      <v-ons-list>
+        <v-ons-list-item modifier="small">
+          <div class="center">ブロックに取り込まれた時間</div>
+          <div class="right"><timestamp :timestamp="res.blocktime"></timestamp></div>
+        </v-ons-list-item>
+        <v-ons-list-item modifier="small">
+          <div class="center">承認された回数</div>
+          <div class="right">{{res.confirmations}}</div>
+        </v-ons-list-item>
+        <v-ons-list-item modifier="small">
+          <div class="center">入力総量</div>
+          <div class="right">{{res.valueIn}}</div>
+        </v-ons-list-item>
+        <v-ons-list-item modifier="small">
+          <div class="center">出力総量</div>
+          <div class="right">{{res.valueOut}}</div>
+        </v-ons-list-item>
+        <v-ons-list-item modifier="small">
+          <div class="center">トランザクションID</div>
+          <div class="right"><v-ons-input :value="res.txid"></v-ons-input></div>
+        </v-ons-list-item>
+        <v-ons-list-item modifier="">
+          <div class="center">メッセージ</div>
+          <div class="right" v-if="message">{{message}}</div>
+          <div class="right" v-if="!message">(メッセージ無し)</div>
+        </v-ons-list-item>
+      </v-ons-list>
+      <v-ons-list modifier="inset">
+        <v-ons-list-title>入力</v-ons-list-title>
+        <v-ons-list-item v-for="v in res.vin" modifier="tappable chevron" @click="txDetail(v.txid)">
+          <div class="center">{{v.addr}}</div>
+          <div class="right">
+            <currency-set :amount="v.value" :ticker="coinId"></currency-set>
+          </div>
+        </v-ons-list-item>
+      </v-ons-list>
+      <v-ons-list modifier="inset">
+        <v-ons-list-title>出力</v-ons-list-title>
+        <v-ons-list-item v-for="vo in res.vout" @click="txDetail(vo.spentTxId)">
+          <div class="center">
+            <span v-for="addr in vo.scriptPubKey.addresses">{{addr}}</span>
+          </div>
+          <div class="right">
+            <currency-set :amount="vo.value" :ticker="coinId"></currency-set>
+          </div>
+        </v-ons-list-item>
+      </v-ons-list>
+    </div>
+    <div class="spinner" v-show="!res"></div>
+  </div>
+</v-ons-page>

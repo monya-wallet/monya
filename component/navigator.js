@@ -8,6 +8,7 @@ module.exports=require("./navigator.html")({
       pageParam:null
     }
   },
+  store:require("../js/store.js"),
   methods:{
     home(){
       this.openSide=false;this.$set(this,"pageStack",[require("./home.js")])
@@ -26,7 +27,10 @@ module.exports=require("./navigator.html")({
     },
     help(){
       this.openSide=false;this.$set(this,"pageStack",[require("./help.js")])
-    }
+    },
+    zaifPay(){
+      this.openSide=false;this.$set(this,"pageStack",[require("./zaifPay.js")])
+    },
   },
   created(){
     storage.get("keyPairs").then((data)=>{

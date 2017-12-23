@@ -4,7 +4,6 @@ const storage = require("../js/storage")
 const Currency = require("../js/currency")
 const coinUtil = require("../js/coinUtil")
 
-
 module.exports=require("./receive.html")({
   data(){
     return {
@@ -17,7 +16,8 @@ module.exports=require("./receive.html")({
       labels:[coinUtil.DEFAULT_LABEL_NAME],
       dialogVisible:false,
       labelInput:"",
-      maxLabel:coinUtil.LABEL_MAX_INDEX
+      maxLabel:coinUtil.GAP_LIMIT,
+      state:"initial"
     }
   },
   store:require("../js/store.js"),
@@ -35,7 +35,7 @@ module.exports=require("./receive.html")({
       this.currentCurIcon=cur.icon
     },
     copyAddress(){
-      
+      coinUtil.copy(currencyList.get(this.currency[this.currencyIndex].coinId).bip21+":"+this.mainAddress)
     },
     getLabels(){
       coinUtil.getLabels(this.currency[this.currencyIndex].coinId).then(res=>{
@@ -59,6 +59,9 @@ module.exports=require("./receive.html")({
     showLabel(coinId,name,change,index){
       this.$store.commit("setLabelToShow",{coinId,name,index,change})
       this.$emit("push",require("./showLabel.js"))
+    },
+    createInvoice(){
+      this.$emit("push",require("./invoice.js"))
     }
   },
   watch:{

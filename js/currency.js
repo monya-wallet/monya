@@ -20,13 +20,13 @@ module.exports=class{
     this.prefixes=opt.prefixes;
     this.bip21=opt.bip21;
     this.defaultFeeSatPerByte = opt.defaultFeeSatPerByte;
+    this.confirmations=opt.confirmations||6
     
     this.hdPubNode=null;
     this.lastPriceTime=0;
     this.priceCache=0;
-    this.wholeBalanceSat = 0;
-    this.receiveIndex=0;
     this.changeIndex=-1;
+    this.changeBalance=0;
     this.addresses={}
   }
   setPubSeedB58(seed){
@@ -43,98 +43,105 @@ module.exports=class{
       })
   }
   getBalanceOfReceiveAddr(limit){
+    return this.getUtxos(this.getReceiveAddr(limit)).then(v=>{
+      return v.balance
+    })
+  }
+  getReceiveAddr(limit){
     if(!limit){
-      limit=coinUtil.LABEL_MAX_INDEX
+      limit=coinUtil.GAP_LIMIT
     }
     const adrss=[]
     for(let i=0;i<=limit;i++){
       adrss.push(this.getAddress(0,i))
     }
-    adrss.join(",")
-
+    return adrss
   }
-  getWholeBalanceOfThisAccount(gb=true){
-    if(this.dummy){return Promise.resolve()}
-    return new Promise((resolve, reject) => {
-      if(!this.hdPubNode){throw new Error("HDNode isn't specified.")}
-      this.wholeBalanceSat=0;
-      this.wholeUnconfirmedSat=0;
-      this._getBalance(0,0,gb,(index)=>{
-        this.receiveIndex=index;
-        this._getBalance(1,0,gb,(index2)=>{
-          this.changeIndex=index2;
-          resolve({balance:this.wholeBalanceSat,unconfirmed:this.unconfirmedBalanceSat})
-        })
-      })
-    })
-    
+  getChangeAddr(limit){
+    if(!limit){
+      limit=coinUtil.GAP_LIMIT_FOR_CHANGE
+    }
+    const adrss=[]
+    for(let i=0;i<=limit;i++){
+      adrss.push(this.getAddress(1,i))
+    }
+    return adrss
   }
-  _getBalance(change,index,gb,cb){
-    if(this.dummy){return Promise.resolve()}
-    return new Promise((resolve, reject) => {
-      this.getAddressProp(gb?"":"totalReceived",this.getAddress(change,index)).then(res=>{
-        if(!change){
-          if(index>coinUtil.LABEL_MAX_INDEX){
-            cb(index)
-          }else{
-            this.wholeBalanceSat+=res.balanceSat
-            this.wholeUnconfirmedSat+=res.unconfirmedBalanceSat
-            this._getBalance(change,++index,gb,cb)
-          }
-        }else{
-          if(gb&&res.totalReceived){
-            this.wholeBalanceSat+=res.balanceSat
-            this.wholeUnconfirmedSat+=res.unconfirmedBalanceSat
-            this._getBalance(change,++index,gb,cb)
-          }else if(!gb&&parseInt(res,10)){
-            this._getBalance(change,++index,gb,cb)
-          }else{
-            cb(index)
-          }
+  getIndexFromAddress(addr){
+    for(let p in this.addresses){
+      if(this.addresses[p]===addr){
+        return p.split(",")
+      }
+    }
+    return false
+  }
+  getReceiveBalance(){
+    return this.getUtxos(this.getReceiveAddr())
+  }
+  getChangeBalance(){
+    return this.getUtxos(this.getChangeAddr()).then(res=>{
+      let newestCnf=Infinity
+      let newestAddr=""
+      let bal=0
+      let unconfirmed=0
+      for(let i=0;i<res.length;i++){
+        if(res[i].confirmations<newestCnf){
+          newestCnf=res[i].confirmations
+          newestAddr=res[i].address
         }
-      })
-    })
-  }
-  getUtxos(){
-    const receivePromises=[]
-    const changePromises=[]
-    const addressPath = {}
-    const utxos=[];
-    let balance=0
-    for(let i=0;i<this.receiveIndex;i++){
-      const ad =this.getAddress(0,i)
-      receivePromises.push(
-        this.getAddressProp("utxo",ad)
-      )
-      addressPath[ad]=[0,i]
-    }
-    for(let i=0;i<this.changeIndex;i++){
-      const ad =this.getAddress(1,i)
-      changePromises.push(
-        this.getAddressProp("utxo",ad)
-      )
-      addressPath[ad]=[1,i]
-    }
-    return Promise.all(receivePromises.concat(changePromises)).then(vals=>{
-      for(let i=0;i<vals.length;i++){
-        for(let j=0;j<vals[i].length;j++){
-          let u=vals[i][j];
-          balance+=u.amount*100000000
-          utxos.push({
-            value:u.amount*100000000,
-            txId:u.txid,
-            vout:u.vout,
-            address:u.address,
-            change:addressPath[u.address][0],
-            index:addressPath[u.address][1],
-          })
+        if(res[i].confirmations===0){
+          unconfirmed+=res[i].amount
+        }else{
+          bal+=res[i].amount
         }
       }
+      this.changeIndex=newestAddr?
+        this.getIndexFromAddress(newestAddr)[1]%coinUtil.GAP_LIMIT_FOR_CHANGE
+      :-1
       return {
-        utxos,
-        balance:balance
-      };
+        balance:bal,
+        unconfirmed 
+      }
     })
+  }
+  
+  getWholeBalanceOfThisAccount(){
+    if(this.dummy){return Promise.resolve()}
+    return Promise.all([this.getReceiveBalance(),this.getChangeBalance()]).then(vals=>({
+      balance:vals[0].balance+vals[1].balance,
+      unconfirmed:vals[0].unconfirmed+vals[1].unconfirmed
+    }))
+  }
+  
+  getUtxos(addressList){
+    return axios({
+      url:this.apiEndpoint+"/addrs/"+addressList.join(",")+"/utxo",
+      json:true,
+      method:"GET"}).then(res=>{
+        const v=res.data
+        const utxos=[]
+        let bal=0;
+        let unconfirmed=0;
+        for(let i=0;i<v.length;i++){
+          bal+=v[i].amount
+          const u=v[i]
+          if(u.confirmations!==0){//avoid spending unconfimed fund
+            utxos.push({
+              value:u.amount*100000000,
+              txId:u.txid,
+              vout:u.vout,
+              address:u.address
+            })
+          }else{
+            unconfirmed+=u.amount
+          }
+        }
+        return {
+          balance:bal,
+          utxos,
+          unconfirmed
+        }
+      })
   }
   
   getAddress(change,index){
@@ -148,7 +155,7 @@ module.exports=class{
     if(this.addresses[addrKey]){
       return this.addresses[addrKey]
     }else{
-      return (this.addrKey[addrKey]=this.hdPubNode.derive(change).derive(index).getAddress())
+      return (this.addresses[addrKey]=this.hdPubNode.derive(change).derive(index).getAddress())
     }
   }
   getSegwitAddress(change,index){
@@ -211,24 +218,28 @@ module.exports=class{
     });
   }
   buildTransaction(option){
-    //if(this.dummy){return}
-    if(!this.hdPubNode){throw new Error("HDNode isn't specified.")}
+    if(this.dummy){return null;}
+    if(!this.hdPubNode){throw new Error("HDNode isn't specified.");}
     return new Promise((resolve, reject) => {
       const targets = option.targets
       const feeRate = option.feeRate
 
       const txb = new bcLib.TransactionBuilder(this.network)
-      this.getUtxos().then(res=>{
+
+      
+      this.getUtxos(this.getReceiveAddr().concat(this.getChangeAddr())).then(res=>{
         const path=[]
         const { inputs, outputs, fee } = coinSelect(res.utxos, targets, feeRate)
         if (!inputs || !outputs) throw new errors.NoSolutionError()
         inputs.forEach(input => {
           txb.addInput(input.txId, input.vout)
-          path.push([input.change,input.index])
+          
+          path.push(this.getIndexFromAddress(input.address))
+          
         })
         outputs.forEach(output => {
           if (!output.address) {
-            output.address = this.getAddress(1,this.changeIndex)
+            output.address = this.getAddress(1,this.changeIndex+1)
           }
 
           txb.addOutput(output.address, output.value)
@@ -256,8 +267,8 @@ module.exports=class{
                .deriveHardened(44)
                .deriveHardened(this.bip44.coinType)
                .deriveHardened(this.bip44.account)
-               .derive(path[i][0])
-               .derive(path[i][1]).keyPair
+               .derive(path[i][0]|0)
+               .derive(path[i][1]|0).keyPair
               )
     }
     return txb.build()
@@ -272,12 +283,32 @@ module.exports=class{
       })
   }
 
+
+  getTxs(from,to){
+    if(this.dummy){return Promise.resolve()}
+    return axios({
+      url:this.apiEndpoint+"/addrs/txs",
+      data:{
+        noAsm:1,
+        noScriptSig:1,
+        noSpent:0,
+        from,to,
+        addrs:this.getReceiveAddr().concat(this.getChangeAddr()).join(",")
+      },
+      method:"POST"}).then(res=>{
+        return res.data
+      })
+  }
+  getTx(txId){
+    if(this.dummy){return Promise.resolve()}
+    return axios({
+      url:this.apiEndpoint+"/tx/"+txId,
+      
+      method:"GET"}).then(res=>{
+        return res.data
+      })
+  }
 }
-
-
-
-
-
 
 
 

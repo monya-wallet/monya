@@ -1,5 +1,9 @@
 <v-ons-page data-page="home">
-  <custom-bar title="ホーム" menu="true"></custom-bar>
+  <custom-bar title="ホーム" menu="true">
+    <v-ons-toolbar-button @click="load">
+      <v-ons-icon icon="ion-ios-reload"></v-ons-icon>
+    </v-ons-toolbar-button>
+  </custom-bar>
   <div>
     <div id="youHave">
       <div v-show="!loading">
@@ -24,7 +28,7 @@
             </div>
           </div>
           <div class="w_right">
-            <div class="amount" :class='{unconfirmed:c.unconfirmed}'><currency-set :amount="c.balance" :ticker="c.coinId" :easy="isEasy"></currency-set></div>
+            <div class="amount" :class='{unconfirmed:c.unconfirmed}'><currency-set :amount="c.balance" :ticker="c.coinId" :easy="isEasy"></currency-set><span v-show="c.unconfirmed">+{{c.unconfirmed}}待機中</span></div>
             <div class="fiatConv"><currency-set :amount="c.balance*c.price" :ticker="fiat" :easy="isEasy"></currency-set></div>
           </div>
         </v-ons-list-item>

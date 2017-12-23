@@ -15,6 +15,8 @@ module.exports=require("./home.html")({
       this.$emit("push",require("./send.js"))
     },
     load(){
+      this.curs=[]
+      this.fiatConv=0
       currencyList.eachWithPub(cur=>{
         this.loading=true;
         let bal=null;
@@ -25,11 +27,11 @@ module.exports=require("./home.html")({
             return coinUtil.getPrice(cur.coinId,this.$store.state.fiat)
           })
           .then(res=>{
-            this.fiatConv += res*bal.balance/100000000
+            this.fiatConv += res*bal.balance
             this.curs.push({
               coinId:cur.coinId,
-              balance:bal.balance/100000000,
-              unconfirmed:bal.unconfirmed/100000000,
+              balance:bal.balance,
+              unconfirmed:bal.unconfirmed,
               screenName:cur.coinScreenName,
               price:res,
               icon:cur.icon,

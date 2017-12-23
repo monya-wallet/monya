@@ -1,0 +1,61 @@
+<v-ons-page data-page="invoice">
+  <custom-bar :title="請求する" menu="true">
+    <v-ons-toolbar-button @click="goToZaifPay">
+      Zaif
+      
+    </v-ons-toolbar-button>
+  </custom-bar>
+  <div>
+    <div id="currencySelector">
+      <v-ons-carousel swipeable overscrollable direction="horizontal" item-height="50px" item-width="50px" :index="currencyIndex">
+        <v-ons-carousel-item v-for="(crc,i) in currency" class="currencyIcon" :style="{'background-image':'url('+crc.icon+')'}" @click="currencyIndex=i">
+          <div class="checked" v-show="currencyIndex==i"></div>
+        </v-ons-carousel-item>
+      </v-ons-carousel>
+    </div>
+    <div id="simple">
+      <div id="qrArea">
+        <div id="qrcode">
+          <img :src="qrDataUrl||''" alt="QR code" id="qrcodeImage"/>
+          <div id="currentCurIcon" :style="{'background-image':'url('+currentCurIcon+')'}"></div>
+        </div>
+        <div class="address">{{url}}</div>
+      </div>
+      <div v-if="isNative">
+        <v-ons-button>
+          <v-ons-icon icon="fa-clipboard"></v-ons-icon>
+          アドレスコピー
+        </v-ons-button>
+        <v-ons-button>
+          <v-ons-icon icon="fa-share"></v-ons-icon>共有
+        </v-ons-button>
+      </div>
+      <v-ons-list>
+        <v-ons-list-item>
+          <div class="center">受信アドレスのラベル</div>
+          <div class="right">
+            <v-ons-select v-model="addressIndex" @change="generateQR">
+              <option v-for="(l,i) in labels" :value="i">{{l}}</option>
+            </v-ons-select>
+          </div>
+        </v-ons-list-item>
+        <v-ons-list-item>
+          <div class="center">請求額</div>
+          <div class="right"><v-ons-input v-model="amount" placeholder="金額" @change="generateQR"></v-ons-input></div>
+        </v-ons-list-item>
+        <v-ons-list-item>
+          <div class="center">相手に表示する文</div>
+          <div class="right"><v-ons-input v-model="message" placeholder="メッセージ" @change="generateQR"></v-ons-input></div>
+        </v-ons-list-item>
+        <v-ons-list-item>
+          <div class="center">ブロックに書き込んでもらうメッセージ(対応ウォレットのみ)</div>
+          <div class="right"><v-ons-input v-model="messageOpRet" placeholder="OP_RETURN" @change="generateQR"></v-ons-input></div>
+        </v-ons-list-item>
+        <v-ons-list-item>
+          <v-ons-button modifier="large" @click="generateQR">QRコードを生成</v-ons-button>
+        </v-ons-list-item>
+      </v-ons-list>
+    </div>
+  </div>
+  
+</v-ons-page>

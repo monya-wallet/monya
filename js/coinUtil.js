@@ -7,7 +7,8 @@ const errors=require("./errors")
 
 
 exports.DEFAULT_LABEL_NAME = "Default"
-exports.LABEL_MAX_INDEX=10
+exports.GAP_LIMIT=10
+exports.GAP_LIMIT_FOR_CHANGE=10
 
 exports.isValidAddress=(addr)=>{
   try{
@@ -96,7 +97,7 @@ exports.createLabel=(cId,name)=>storage.get("labels").then(res=>{
   if(!res[cId]){
     res[cId]=[exports.DEFAULT_LABEL_NAME]
   }
-  if(res[cId].length>exports.LABEL_MAX_INDEX){
+  if(res[cId].length>exports.GAP_LIMIT){
     throw new errors.TooManyLabelsError()
   }
   if(res[cId].indexOf(name)<=0){
@@ -125,3 +126,16 @@ exports.getLabels=(cId)=>storage.get("labels").then(res=>{
     return [exports.DEFAULT_LABEL_NAME]
   }
 })
+exports.copy=data=>{
+
+}
+
+exports.getBip21=(bip21Urn,address,query)=>{
+  let queryStr="?"
+  for(let v in query){
+    if(query[v]){
+      queryStr+=encodeURIComponent(v)+"="+encodeURIComponent(query[v])+"&"
+    }
+  }
+  return bip21Urn+":"+address+queryStr
+};

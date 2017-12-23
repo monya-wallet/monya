@@ -5,24 +5,45 @@
     </v-ons-toolbar-button>
   </custom-bar>
   <div>
+    <v-ons-pull-hook
+      :action="load"
+      @changestate="state = $event.state"
+    >
+      <span v-show="state === 'initial'"> 引っ張って更新! </span>
+      <span v-show="state === 'preaction'"> 今だ！離せ！ </span>
+      <span v-show="state === 'action'"> <div class="spinner"></div> </span>
+    </v-ons-pull-hook>
+    <div id="currencySelector">
+      <v-ons-carousel swipeable overscrollable direction="horizontal" item-height="50px" item-width="50px" :index="currencyIndex">
+        <v-ons-carousel-item v-for="(crc,i) in currency" class="currencyIcon" :style="{'background-image':'url('+crc.icon+')'}" @click="currencyIndex=i">
+          <div class="checked" v-show="currencyIndex==i"></div>
+        </v-ons-carousel-item>
+      </v-ons-carousel>
+    </div>
+    <div class="spinner" v-show="!txs.length"></div>
     <v-ons-list>
       
-      <v-ons-list-item modifier="tappable" @click="">
+      <v-ons-list-item modifier="tappable" v-for="tx in txs" @click="txDetail(tx.txId)">
         <div>
-          
-          
-          <div class="label">(名称未設定)</div>
-          <div class="destAddress">MWBaWdcgNVdcemqA2c2TkNV8ndYenVPAEY</div>
-          
-          
+          <div class="label" v-show="!tx.txLabel">名称未設定</div>
+          <div class="label" v-show="tx.txLabel">{{tx.txLabel}}</div>
         </div>
         <div class="w_right">
-          <span class="date">1日前</span>
+          <span class="date"><timestamp :timestamp="tx.timestamp"></timestamp></span>
           <span class="symbols">
-            <v-ons-icon icon="fa-comment" class="hasMsg"></v-ons-icon>
+            <v-ons-icon icon="fa-comment" class="hasMsg" v-show="tx.hasMessage"></v-ons-icon>
             <v-ons-icon icon="fa-bell" class="unread"></v-ons-icon>
+            <v-ons-icon icon="fa-exclamation" class="inmatureConfirmation" v-show="inmatureConfirmation"></v-ons-icon>
           </span>
-          <currency-set amount="0.001" ticker="mona" isEasy="false"></currency-set>
+          <div class="receive" v-if="tx.direction==='receive'">
+            <currency-set :amount="tx.aOut" :ticker="coinId"></currency-set>
+          </div>
+          <div class="send" v-if="tx.direction==='send'">
+            <currency-set :amount="-tx.aIn" :ticker="coinId"></currency-set>
+          </div>
+          <div class="unknown" v-if="tx.direction==='unknown'">
+            (不明)
+          </div>
         </div>
       </v-ons-list-item>
     </v-ons-list>
@@ -30,9 +51,8 @@
       :visible.sync="filterDlg"
     >
       <span slot="title">絞り込み</span>
-      <v-ons-select v-model="curFilter">
-        <option value="all">全て</option>
-        <option value="mona">モナコイン</option>
+      <v-ons-select v-model="currencyIndex">
+        <option v-for="(crc,i) in currency" :value="i">{{crc.name}}</option>
       </v-ons-select>
       <v-ons-select v-model="dirFilter">
         <option value="all">全て</option>
@@ -40,7 +60,7 @@
         <option value="receive">受け取り</option>
       </v-ons-select>
       <template slot="footer">
-        <div class="alert-dialog-button" @click="setFilter">閉じる</div>
+        <div class="alert-dialog-button" @click="filterDlg=false">閉じる</div>
       </template>
     </v-ons-alert-dialog>
   </div>

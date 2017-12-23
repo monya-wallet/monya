@@ -13,7 +13,7 @@ module.exports=require("./confirm.html")({
       fee:0,
       destHasUsed:false,
       message:"",
-      myBalanceBeforeSendingSat:0,
+      myBalanceBeforeSending:0,
       showDetail:false,
       utxosToShow:null,
       signedHex:null,
@@ -34,18 +34,24 @@ module.exports=require("./confirm.html")({
     ["address","amount","fiat","feePerByte","message","coinType"].forEach(v=>{
       this[v]=this.$store.state.confPayload[v]
     })
+    this.cur=currencyList.get(this.coinType)
     this.$nextTick(this.build)
+    currencyList.get(this.coinType).getAddressProp("totalReceived",this.address).then(res=>{
+      if(res|0){
+        this.destHasUsed=true
+      }
+    })
   },
   computed:{
     afterSent(){
-      return (this.myBalanceBeforeSendingSat-this.amount*100000000-this.fee*100000000)/100000000
+      return (this.myBalanceBeforeSending-this.amount-this.fee)
     },
     utxosJson(){
       return JSON.stringify(this.utxosToShow)
     },
     build(){
       
-      const cur =this.cur=currencyList.get(this.coinType)
+      const cur =this.cur
       const targets = [{
         address:this.address,
         value:this.amount*100000000
@@ -63,7 +69,7 @@ module.exports=require("./confirm.html")({
         this.fee=d.fee/100000000
         this.utxosToShow=d.utxos
         this.path=d.path
-        this.myBalanceBeforeSendingSat=d.balance
+        this.myBalanceBeforeSending=d.balance
         this.txb=d.txBuilder
         this.ready=true
         this.loading=false

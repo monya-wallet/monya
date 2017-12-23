@@ -1,12 +1,12 @@
 <v-ons-page data-page="showLabel">
   <custom-bar :title="label||hdPath" menu="true">
-    <v-ons-toolbar-button @click="edit=true">
-      <v-ons-icon v-if="label" icon="ion-edit"></v-ons-icon>
+    <v-ons-toolbar-button @click="edit=true" v-if="label">
+      <v-ons-icon icon="ion-edit"></v-ons-icon>
     </v-ons-toolbar-button>
   </custom-bar>
   <div>
     <div id="simple">
-      <div class="label">手動導出アドレスのため、残高が反映されない可能性があります。送金する場合はご注意ください。</div>
+      <div class="label" v-show="!label">手動導出アドレスのため、残高が反映されない可能性があります。送金する場合はご注意ください。</div>
       <div id="qrArea">
         <div id="qrcode">
           <img :src="qrDataUrl" alt="QR code" id="qrcodeImage"/>

@@ -10,6 +10,7 @@ Vue.use(Vuex)
 
 Vue.component('custom-bar', require("../component/customBar.js"))
 Vue.component('currency-set', require("../component/currencySet.js"))
+Vue.component('timestamp', require("../component/timestamp.js"))
 
 Vue.directive('focus', {
   inserted: function (el,binding) {

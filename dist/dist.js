@@ -1858,7 +1858,7 @@ function isnan (val) {
   return val !== val // eslint-disable-line no-self-compare
 }
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(14)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(16)))
 
 /***/ }),
 /* 1 */
@@ -1962,7 +1962,7 @@ SafeBuffer.allocUnsafeSlow = function (size) {
 /***/ (function(module, exports, __webpack_require__) {
 
 var ERRORS = __webpack_require__(85)
-var NATIVE = __webpack_require__(53)
+var NATIVE = __webpack_require__(54)
 
 // short-hand
 var tfJSON = ERRORS.tfJSON
@@ -5932,7 +5932,7 @@ var elliptic = exports;
 elliptic.version = __webpack_require__(279).version;
 elliptic.utils = __webpack_require__(280);
 elliptic.rand = __webpack_require__(111);
-elliptic.curve = __webpack_require__(41);
+elliptic.curve = __webpack_require__(42);
 elliptic.curves = __webpack_require__(285);
 
 // Protocols
@@ -5942,6 +5942,68 @@ elliptic.eddsa = __webpack_require__(297);
 
 /***/ }),
 /* 9 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var Vuex = __webpack_require__(76);
+module.exports = new Vuex.Store({
+  state: {
+    entropy: null,
+    confPayload: null,
+    finishNextPage: null,
+    easyUnit: false,
+    fiat: "jpy",
+    showLabelPayload: {},
+    tsMode: "relative",
+    detail: {},
+    zaifPayEnabled: true
+  },
+  mutations: {
+    setEntropy: function setEntropy(state, ent) {
+      state.entropy = ent;
+    },
+    deleteEntropy: function deleteEntropy(state) {
+      state.entropy = null;
+    },
+    setConfirmation: function setConfirmation(state, payload) {
+      state.confPayload = {
+        address: payload.address,
+        amount: parseFloat(payload.amount),
+        fiat: parseFloat(payload.fiat),
+        feePerByte: parseInt(payload.feePerByte, 10),
+        message: payload.message,
+        coinType: payload.coinType
+      };
+    },
+    setFinishNextPage: function setFinishNextPage(state, pageData) {
+      state.finishNextPage = {
+        page: pageData.page,
+        infoId: pageData.infoId,
+        payload: pageData.payload
+      };
+    },
+    setEasyUnit: function setEasyUnit(state, flag) {
+      state.easyUnit = !!flag;
+    },
+    setLabelToShow: function setLabelToShow(state, param) {
+      state.showLabelPayload = {
+        coinId: param.coinId,
+        name: param.name,
+        index: param.index,
+        change: param.change
+      };
+    },
+    setTxDetail: function setTxDetail(state, d) {
+      state.detail.coinId = d.coinId;
+      state.detail.txId = d.txId;
+    }
+  }
+});
+
+/***/ }),
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6251,7 +6313,7 @@ module.exports = {
 
 
 /***/ }),
-/* 10 */
+/* 11 */
 /***/ (function(module, exports) {
 
 module.exports = assert;
@@ -6268,7 +6330,7 @@ assert.equal = function assertEqual(l, r, msg) {
 
 
 /***/ }),
-/* 11 */
+/* 12 */
 /***/ (function(module, exports) {
 
 // shim for using process in browser
@@ -6458,13 +6520,252 @@ process.umask = function() { return 0; };
 
 
 /***/ }),
-/* 12 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var assert = __webpack_require__(10);
+var Currency = __webpack_require__(77);
+var axios = __webpack_require__(94);
+
+var coins = {
+  mona: new Currency({ //key = coinId that is lowercase ticker symbol
+    coinScreenName: "モナコイン",
+    coinId: "mona",
+    unit: "MONA",
+    unitEasy: "モナ",
+    bip44: {
+      coinType: 22, //from slip44
+      account: 0
+    },
+    bip21: "monacoin",
+    defaultFeeSatPerByte: 200, //will implement dynamic fee
+    icon: __webpack_require__(319),
+    defaultAPIEndpoint: "https://mona.insight.monaco-ex.org/insight-api-monacoin",
+    network: {
+      messagePrefix: '\x19Monacoin Signed Message:\n',
+      bip32: {
+        public: 0x0488b21e,
+
+        private: 0x0488ade4
+      },
+      pubKeyHash: 50, // M
+      scriptHash: 55, // P new scripthash
+      wif: 176, //new wif
+      bech32: "mona"
+    },
+    enableSegwit: false,
+    prefixes: ["M", "P"],
+    price: {
+      url: "https://public.bitbank.cc/mona_jpy/ticker",
+      json: true,
+      jsonPath: ["data", "last"],
+      fiat: "jpy"
+    }
+  })
+  /**
+   * Get supported Currencies
+   * @param {function} fn(Currency).
+   */
+};exports.each = function (fn, mode) {
+  for (var curName in coins) {
+    if (coins[curName] instanceof Currency && !coins[curName].dummy) {
+      fn(coins[curName]);
+    }
+  }
+};
+
+/**
+ * Get Available Currencies with dummy(such as fiat currency)
+ * @param {function} fn(Currency).
+ */
+exports.eachWithDummy = function (fn, mode) {
+  for (var curName in coins) {
+    if (coins[curName] instanceof Currency) {
+      fn(coins[curName]);
+    }
+  }
+};
+/**
+ * Get Available Currencies which have pubkey
+ * @param {function} fn(Currency).
+ */
+exports.eachWithPub = function (fn, mode) {
+  for (var curName in coins) {
+    if (coins[curName] instanceof Currency && coins[curName].hdPubNode) {
+      fn(coins[curName]);
+    }
+  }
+};
+
+/**
+ * Get a currency
+ * @param {String} coinId.
+ */
+exports.get = function (coinId) {
+  if (coins[coinId] instanceof Currency) {
+    return coins[coinId];
+  }
+};
+exports.createNewCurrency = function (opts) {};
+
+/***/ }),
+/* 14 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var currencyList = __webpack_require__(13);
+var bcLib = __webpack_require__(35);
+var bip39 = __webpack_require__(39);
+var crypto = __webpack_require__(103);
+var storage = __webpack_require__(19);
+var errors = __webpack_require__(65);
+
+exports.DEFAULT_LABEL_NAME = "Default";
+exports.GAP_LIMIT = 10;
+exports.GAP_LIMIT_FOR_CHANGE = 10;
+
+exports.isValidAddress = function (addr) {
+  try {
+    bcLib.address.fromBase58Check(addr);
+    return true;
+  } catch (e) {
+    return false;
+  }
+};
+exports.getPrice = function (cryptoId, fiatId) {
+  var currencyPath = [];
+  var prevId = cryptoId;
+  while (prevId !== fiatId) {
+    currencyPath.push(currencyList.get(prevId).getPrice());
+    prevId = currencyList.get(prevId).price.fiat;
+  }
+  return Promise.all(currencyPath).then(function (v) {
+    var price = 1;
+    v.forEach(function (p) {
+      price *= p;
+    });
+    return price;
+  });
+};
+exports.encrypt = function (plain, password) {
+  var cipher = crypto.createCipher('aes256', password);
+  return cipher.update(plain, 'utf8', 'hex') + cipher.final('hex');
+};
+exports.decrypt = function (cipher, password) {
+  var decipher = crypto.createDecipher('aes256', password);
+  return decipher.update(cipher, 'hex', 'utf8') + decipher.final('utf8');
+};
+
+exports.makePairsAndEncrypt = function (option) {
+  return new Promise(function (resolve, reject) {
+    var seed = void 0;
+    var entropy = void 0;
+    if (option.entropy) {
+      entropy = option.entropy;
+      seed = bip39.mnemonicToSeed(bip39.entropyToMnemonic(option.entropy));
+    } else if (option.mnemonic) {
+      entropy = bip39.mnemonicToEntropy(option.mnemonic);
+      seed = bip39.mnemonicToSeed(option.mnemonic);
+    } else {
+      throw new Error("Can't generate entropy");
+    }
+    if (option.encryptPub) {
+      resolve({ entropy: exports.encrypt(entropy, option.password) });
+    } else {
+      var ret = {
+        entropy: "",
+        pubs: {}
+      };
+      for (var i = 0; i < option.makeCur.length; i++) {
+        var coinId = option.makeCur[i];
+        var pub = currencyList.get(coinId).seedToPubB58(seed);
+        ret.pubs[coinId] = pub;
+      }
+
+      ret.entropy = exports.encrypt(entropy, option.password);
+      resolve(ret);
+    }
+  });
+};
+
+exports.decryptKeys = function (option) {
+  return new Promise(function (resolve, reject) {
+    var seed = bip39.mnemonicToSeed(bip39.entropyToMnemonic(exports.decrypt(option.entropyCipher, option.password)));
+
+    var ret = {};
+    for (var i = 0; i < option.makeCur.length; i++) {
+      var coinId = option.makeCur[i];
+      var pub = currencyList.get(coinId).seedToPubB58(seed);
+      ret[coinId] = pub;
+    }
+  });
+};
+
+exports.createLabel = function (cId, name) {
+  return storage.get("labels").then(function (res) {
+    if (!res) {
+      res = {};
+    }
+    if (!res[cId]) {
+      res[cId] = [exports.DEFAULT_LABEL_NAME];
+    }
+    if (res[cId].length > exports.GAP_LIMIT) {
+      throw new errors.TooManyLabelsError();
+    }
+    if (res[cId].indexOf(name) <= 0) {
+      res[cId].push();
+    }
+    return storage.set("labels", res);
+  });
+};
+
+exports.updateLabel = function (cId, name, newName) {
+  return storage.get("labels").then(function (res) {
+    if (!res || !res[cId]) {
+      throw new Error("Label object for this currency is not created yet.");
+    }
+    var index = res[cId].indexOf(name);
+    if (index >= 0) {
+      res[cId][index] = newName;
+      return storage.set("labels", res);
+    }
+    throw new errors.LabelNotFoundError();
+  });
+};
+
+exports.getLabels = function (cId) {
+  return storage.get("labels").then(function (res) {
+    if (res && res[cId]) {
+      return res[cId];
+    } else {
+      return [exports.DEFAULT_LABEL_NAME];
+    }
+  });
+};
+exports.copy = function (data) {};
+
+exports.getBip21 = function (bip21Urn, address, query) {
+  var queryStr = "?";
+  for (var v in query) {
+    if (query[v]) {
+      queryStr += encodeURIComponent(v) + "=" + encodeURIComponent(query[v]) + "&";
+    }
+  }
+  return bip21Urn + ":" + address + queryStr;
+};
+
+/***/ }),
+/* 15 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var assert = __webpack_require__(11);
 var inherits = __webpack_require__(1);
 
 exports.inherits = inherits;
@@ -6718,62 +7019,7 @@ exports.shr64_lo = shr64_lo;
 
 
 /***/ }),
-/* 13 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var Vuex = __webpack_require__(76);
-module.exports = new Vuex.Store({
-  state: {
-    entropy: null,
-    confPayload: null,
-    finishNextPage: null,
-    easyUnit: false,
-    fiat: "jpy",
-    showLabelPayload: {}
-  },
-  mutations: {
-    setEntropy: function setEntropy(state, ent) {
-      state.entropy = ent;
-    },
-    deleteEntropy: function deleteEntropy(state) {
-      state.entropy = null;
-    },
-    setConfirmation: function setConfirmation(state, payload) {
-      state.confPayload = {
-        address: payload.address,
-        amount: parseFloat(payload.amount),
-        fiat: parseFloat(payload.fiat),
-        feePerByte: parseInt(payload.feePerByte, 10),
-        message: payload.message,
-        coinType: payload.coinType
-      };
-    },
-    setFinishNextPage: function setFinishNextPage(state, pageData) {
-      state.finishNextPage = {
-        page: pageData.page,
-        infoId: pageData.infoId,
-        payload: pageData.payload
-      };
-    },
-    setEasyUnit: function setEasyUnit(state, flag) {
-      state.easyUnit = !!flag;
-    },
-    setLabelToShow: function setLabelToShow(state, param) {
-      state.showLabelPayload = {
-        coinId: param.coinId,
-        name: param.name,
-        index: param.index,
-        change: param.change
-      };
-    }
-  }
-});
-
-/***/ }),
-/* 14 */
+/* 16 */
 /***/ (function(module, exports) {
 
 var g;
@@ -6800,242 +7046,15 @@ module.exports = g;
 
 
 /***/ }),
-/* 15 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var currencyList = __webpack_require__(16);
-var bcLib = __webpack_require__(45);
-var bip39 = __webpack_require__(38);
-var crypto = __webpack_require__(103);
-var storage = __webpack_require__(19);
-var errors = __webpack_require__(64);
-
-exports.DEFAULT_LABEL_NAME = "Default";
-exports.LABEL_MAX_INDEX = 10;
-
-exports.isValidAddress = function (addr) {
-  try {
-    bcLib.address.fromBase58Check(addr);
-    return true;
-  } catch (e) {
-    return false;
-  }
-};
-exports.getPrice = function (cryptoId, fiatId) {
-  var currencyPath = [];
-  var prevId = cryptoId;
-  while (prevId !== fiatId) {
-    currencyPath.push(currencyList.get(prevId).getPrice());
-    prevId = currencyList.get(prevId).price.fiat;
-  }
-  return Promise.all(currencyPath).then(function (v) {
-    var price = 1;
-    v.forEach(function (p) {
-      price *= p;
-    });
-    return price;
-  });
-};
-exports.encrypt = function (plain, password) {
-  var cipher = crypto.createCipher('aes256', password);
-  return cipher.update(plain, 'utf8', 'hex') + cipher.final('hex');
-};
-exports.decrypt = function (cipher, password) {
-  var decipher = crypto.createDecipher('aes256', password);
-  return decipher.update(cipher, 'hex', 'utf8') + decipher.final('utf8');
-};
-
-exports.makePairsAndEncrypt = function (option) {
-  return new Promise(function (resolve, reject) {
-    var seed = void 0;
-    var entropy = void 0;
-    if (option.entropy) {
-      entropy = option.entropy;
-      seed = bip39.mnemonicToSeed(bip39.entropyToMnemonic(option.entropy));
-    } else if (option.mnemonic) {
-      entropy = bip39.mnemonicToEntropy(option.mnemonic);
-      seed = bip39.mnemonicToSeed(option.mnemonic);
-    } else {
-      throw new Error("Can't generate entropy");
-    }
-    if (option.encryptPub) {
-      resolve({ entropy: exports.encrypt(entropy, option.password) });
-    } else {
-      var ret = {
-        entropy: "",
-        pubs: {}
-      };
-      for (var i = 0; i < option.makeCur.length; i++) {
-        var coinId = option.makeCur[i];
-        var pub = currencyList.get(coinId).seedToPubB58(seed);
-        ret.pubs[coinId] = pub;
-      }
-
-      ret.entropy = exports.encrypt(entropy, option.password);
-      resolve(ret);
-    }
-  });
-};
-
-exports.decryptKeys = function (option) {
-  return new Promise(function (resolve, reject) {
-    var seed = bip39.mnemonicToSeed(bip39.entropyToMnemonic(exports.decrypt(option.entropyCipher, option.password)));
-
-    var ret = {};
-    for (var i = 0; i < option.makeCur.length; i++) {
-      var coinId = option.makeCur[i];
-      var pub = currencyList.get(coinId).seedToPubB58(seed);
-      ret[coinId] = pub;
-    }
-  });
-};
-
-exports.createLabel = function (cId, name) {
-  return storage.get("labels").then(function (res) {
-    if (!res) {
-      res = {};
-    }
-    if (!res[cId]) {
-      res[cId] = [exports.DEFAULT_LABEL_NAME];
-    }
-    if (res[cId].length > exports.LABEL_MAX_INDEX) {
-      throw new errors.TooManyLabelsError();
-    }
-    if (res[cId].indexOf(name) <= 0) {
-      res[cId].push();
-    }
-    return storage.set("labels", res);
-  });
-};
-
-exports.updateLabel = function (cId, name, newName) {
-  return storage.get("labels").then(function (res) {
-    if (!res || !res[cId]) {
-      throw new Error("Label object for this currency is not created yet.");
-    }
-    var index = res[cId].indexOf(name);
-    if (index >= 0) {
-      res[cId][index] = newName;
-      return storage.set("labels", res);
-    }
-    throw new errors.LabelNotFoundError();
-  });
-};
-
-exports.getLabels = function (cId) {
-  return storage.get("labels").then(function (res) {
-    if (res && res[cId]) {
-      return res[cId];
-    } else {
-      return [exports.DEFAULT_LABEL_NAME];
-    }
-  });
-};
-
-/***/ }),
-/* 16 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var Currency = __webpack_require__(77);
-var axios = __webpack_require__(94);
-
-var coins = {
-  mona: new Currency({ //key = coinId that is lowercase ticker symbol
-    coinScreenName: "モナコイン",
-    coinId: "mona",
-    unit: "MONA",
-    unitEasy: "モナ",
-    bip44: {
-      coinType: 22, //from slip44
-      account: 0
-    },
-    bip21: "monacoin",
-    defaultFeeSatPerByte: 200, //will implement dynamic fee
-    icon: __webpack_require__(319),
-    defaultAPIEndpoint: "https://mona.insight.monaco-ex.org/insight-api-monacoin/",
-    network: {
-      messagePrefix: '\x19Monacoin Signed Message:\n',
-      bip32: {
-        public: 0x0488b21e,
-
-        private: 0x0488ade4
-      },
-      pubKeyHash: 0x32,
-      scriptHash: 0x05,
-      wif: 0xb2,
-      bech32: "mona"
-    },
-    enableSegwit: false,
-    prefixes: ["M", "P"],
-    price: {
-      url: "https://public.bitbank.cc/mona_jpy/ticker",
-      json: true,
-      jsonPath: ["data", "last"],
-      fiat: "jpy"
-    }
-  })
-  /**
-   * Get supported Currencies
-   * @param {function} fn(Currency).
-   */
-};exports.each = function (fn, mode) {
-  for (var curName in coins) {
-    if (coins[curName] instanceof Currency && !coins[curName].dummy) {
-      fn(coins[curName]);
-    }
-  }
-};
-
-/**
- * Get Available Currencies with dummy(such as fiat currency)
- * @param {function} fn(Currency).
- */
-exports.eachWithDummy = function (fn, mode) {
-  for (var curName in coins) {
-    if (coins[curName] instanceof Currency) {
-      fn(coins[curName]);
-    }
-  }
-};
-/**
- * Get Available Currencies which have pubkey
- * @param {function} fn(Currency).
- */
-exports.eachWithPub = function (fn, mode) {
-  for (var curName in coins) {
-    if (coins[curName] instanceof Currency && coins[curName].hdPubNode) {
-      fn(coins[curName]);
-    }
-  }
-};
-
-/**
- * Get a currency
- * @param {String} coinId.
- */
-exports.get = function (coinId) {
-  if (coins[coinId] instanceof Currency) {
-    return coins[coinId];
-  }
-};
-exports.createNewCurrency = function (opts) {};
-
-/***/ }),
 /* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 /* WEBPACK VAR INJECTION */(function(Buffer) {
 var inherits = __webpack_require__(1)
-var md5 = __webpack_require__(46)
-var RIPEMD160 = __webpack_require__(47)
-var sha = __webpack_require__(52)
+var md5 = __webpack_require__(47)
+var RIPEMD160 = __webpack_require__(48)
+var sha = __webpack_require__(53)
 
 var Base = __webpack_require__(18)
 
@@ -7091,8 +7110,8 @@ module.exports = function createHash (alg) {
 /***/ (function(module, exports, __webpack_require__) {
 
 var Buffer = __webpack_require__(2).Buffer
-var Transform = __webpack_require__(35).Transform
-var StringDecoder = __webpack_require__(51).StringDecoder
+var Transform = __webpack_require__(36).Transform
+var StringDecoder = __webpack_require__(52).StringDecoder
 var inherits = __webpack_require__(1)
 
 function CipherBase (hashMode) {
@@ -7257,7 +7276,7 @@ exports.set = function (key, value) {
 
 /*<replacement>*/
 
-var processNextTick = __webpack_require__(36);
+var processNextTick = __webpack_require__(37);
 /*</replacement>*/
 
 /*<replacement>*/
@@ -7277,7 +7296,7 @@ util.inherits = __webpack_require__(1);
 /*</replacement>*/
 
 var Readable = __webpack_require__(79);
-var Writable = __webpack_require__(50);
+var Writable = __webpack_require__(51);
 
 util.inherits(Duplex, Readable);
 
@@ -7407,7 +7426,7 @@ function randomBytes (size, cb) {
   return bytes
 }
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(14), __webpack_require__(11)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(16), __webpack_require__(12)))
 
 /***/ }),
 /* 23 */
@@ -7858,7 +7877,7 @@ module.exports = Hash
 
 
 
-var isArray = __webpack_require__(71)
+var isArray = __webpack_require__(72)
 
 function typedArraySupport () {
   // Can typed array instances be augmented?
@@ -8544,8 +8563,8 @@ module.exports = {
 "use strict";
 
 
-var utils = __webpack_require__(12);
-var assert = __webpack_require__(10);
+var utils = __webpack_require__(15);
+var assert = __webpack_require__(11);
 
 function BlockHash() {
   this.pending = null;
@@ -8667,6 +8686,27 @@ base.Node = __webpack_require__(305);
 /* 35 */
 /***/ (function(module, exports, __webpack_require__) {
 
+module.exports = {
+  Block: __webpack_require__(163),
+  ECPair: __webpack_require__(57),
+  ECSignature: __webpack_require__(61),
+  HDNode: __webpack_require__(219),
+  Transaction: __webpack_require__(56),
+  TransactionBuilder: __webpack_require__(220),
+
+  address: __webpack_require__(58),
+  bufferutils: __webpack_require__(90), // TODO: remove in 4.0.0
+  crypto: __webpack_require__(26),
+  networks: __webpack_require__(30),
+  opcodes: __webpack_require__(7),
+  script: __webpack_require__(5)
+}
+
+
+/***/ }),
+/* 36 */
+/***/ (function(module, exports, __webpack_require__) {
+
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -8690,11 +8730,11 @@ base.Node = __webpack_require__(305);
 
 module.exports = Stream;
 
-var EE = __webpack_require__(48).EventEmitter;
+var EE = __webpack_require__(49).EventEmitter;
 var inherits = __webpack_require__(1);
 
 inherits(Stream, EE);
-Stream.Readable = __webpack_require__(49);
+Stream.Readable = __webpack_require__(50);
 Stream.Writable = __webpack_require__(174);
 Stream.Duplex = __webpack_require__(175);
 Stream.Transform = __webpack_require__(176);
@@ -8797,7 +8837,7 @@ Stream.prototype.pipe = function(dest, options) {
 
 
 /***/ }),
-/* 36 */
+/* 37 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8845,10 +8885,10 @@ function nextTick(fn, arg1, arg2, arg3) {
   }
 }
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(11)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(12)))
 
 /***/ }),
-/* 37 */
+/* 38 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8857,10 +8897,10 @@ var inherits = __webpack_require__(1)
 var Legacy = __webpack_require__(210)
 var Base = __webpack_require__(18)
 var Buffer = __webpack_require__(2).Buffer
-var md5 = __webpack_require__(46)
-var RIPEMD160 = __webpack_require__(47)
+var md5 = __webpack_require__(47)
+var RIPEMD160 = __webpack_require__(48)
 
-var sha = __webpack_require__(52)
+var sha = __webpack_require__(53)
 
 var ZEROS = Buffer.alloc(128)
 
@@ -8917,12 +8957,12 @@ module.exports = function createHmac (alg, key) {
 
 
 /***/ }),
-/* 38 */
+/* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var Buffer = __webpack_require__(2).Buffer
 var createHash = __webpack_require__(17)
-var pbkdf2 = __webpack_require__(65).pbkdf2Sync
+var pbkdf2 = __webpack_require__(66).pbkdf2Sync
 var randomBytes = __webpack_require__(22)
 
 // use unorm until String.prototype.normalize gets better browser support
@@ -9077,7 +9117,7 @@ module.exports = {
 
 
 /***/ }),
-/* 39 */
+/* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var Buffer = __webpack_require__(2).Buffer
@@ -9128,7 +9168,7 @@ module.exports = EVP_BytesToKey
 
 
 /***/ }),
-/* 40 */
+/* 41 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // based on the aes implimentation in triple sec
@@ -9362,7 +9402,7 @@ module.exports.AES = AES
 
 
 /***/ }),
-/* 41 */
+/* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -9377,14 +9417,14 @@ curve.edwards = __webpack_require__(284);
 
 
 /***/ }),
-/* 42 */
+/* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(Buffer) {var asn1 = __webpack_require__(300)
 var aesid = __webpack_require__(312)
 var fixProc = __webpack_require__(313)
-var ciphers = __webpack_require__(66)
-var compat = __webpack_require__(65)
+var ciphers = __webpack_require__(67)
+var compat = __webpack_require__(66)
 module.exports = parseKeys
 
 function parseKeys (buffer) {
@@ -9490,15 +9530,15 @@ function decrypt (data, password) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0).Buffer))
 
 /***/ }),
-/* 43 */
+/* 44 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var currencyList = __webpack_require__(16);
-var coinUtil = __webpack_require__(15);
-module.exports = __webpack_require__(323)({
+var currencyList = __webpack_require__(13);
+var coinUtil = __webpack_require__(14);
+module.exports = __webpack_require__(325)({
   data: function data() {
     return {
       curs: [],
@@ -9516,6 +9556,8 @@ module.exports = __webpack_require__(323)({
     load: function load() {
       var _this = this;
 
+      this.curs = [];
+      this.fiatConv = 0;
       currencyList.eachWithPub(function (cur) {
         _this.loading = true;
         var bal = null;
@@ -9524,11 +9566,11 @@ module.exports = __webpack_require__(323)({
 
           return coinUtil.getPrice(cur.coinId, _this.$store.state.fiat);
         }).then(function (res) {
-          _this.fiatConv += res * bal.balance / 100000000;
+          _this.fiatConv += res * bal.balance;
           _this.curs.push({
             coinId: cur.coinId,
-            balance: bal.balance / 100000000,
-            unconfirmed: bal.unconfirmed / 100000000,
+            balance: bal.balance,
+            unconfirmed: bal.unconfirmed,
             screenName: cur.coinScreenName,
             price: res,
             icon: cur.icon
@@ -9538,14 +9580,20 @@ module.exports = __webpack_require__(323)({
       });
     }
   },
-  store: __webpack_require__(13),
+  store: __webpack_require__(9),
   mounted: function mounted() {
     this.$nextTick(this.load);
   }
 });
 
 /***/ }),
-/* 44 */
+/* 45 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__.p + "dist/assets/afd6df30d860cf87336edaaf9912e464.png";
+
+/***/ }),
+/* 46 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*
@@ -9904,28 +9952,7 @@ function updateLink (link, options, obj) {
 
 
 /***/ }),
-/* 45 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = {
-  Block: __webpack_require__(163),
-  ECPair: __webpack_require__(56),
-  ECSignature: __webpack_require__(60),
-  HDNode: __webpack_require__(219),
-  Transaction: __webpack_require__(55),
-  TransactionBuilder: __webpack_require__(220),
-
-  address: __webpack_require__(57),
-  bufferutils: __webpack_require__(90), // TODO: remove in 4.0.0
-  crypto: __webpack_require__(26),
-  networks: __webpack_require__(30),
-  opcodes: __webpack_require__(7),
-  script: __webpack_require__(5)
-}
-
-
-/***/ }),
-/* 46 */
+/* 47 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10083,7 +10110,7 @@ module.exports = function md5 (buf) {
 
 
 /***/ }),
-/* 47 */
+/* 48 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10382,7 +10409,7 @@ module.exports = RIPEMD160
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0).Buffer))
 
 /***/ }),
-/* 48 */
+/* 49 */
 /***/ (function(module, exports) {
 
 // Copyright Joyent, Inc. and other Node contributors.
@@ -10690,20 +10717,20 @@ function isUndefined(arg) {
 
 
 /***/ }),
-/* 49 */
+/* 50 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(79);
 exports.Stream = exports;
 exports.Readable = exports;
-exports.Writable = __webpack_require__(50);
+exports.Writable = __webpack_require__(51);
 exports.Duplex = __webpack_require__(20);
 exports.Transform = __webpack_require__(82);
 exports.PassThrough = __webpack_require__(173);
 
 
 /***/ }),
-/* 50 */
+/* 51 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10736,7 +10763,7 @@ exports.PassThrough = __webpack_require__(173);
 
 /*<replacement>*/
 
-var processNextTick = __webpack_require__(36);
+var processNextTick = __webpack_require__(37);
 /*</replacement>*/
 
 module.exports = Writable;
@@ -11371,10 +11398,10 @@ Writable.prototype._destroy = function (err, cb) {
   this.end();
   cb(err);
 };
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(11), __webpack_require__(170).setImmediate, __webpack_require__(14)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(12), __webpack_require__(170).setImmediate, __webpack_require__(16)))
 
 /***/ }),
-/* 51 */
+/* 52 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // Copyright Joyent, Inc. and other Node contributors.
@@ -11601,7 +11628,7 @@ function base64DetectIncompleteChar(buffer) {
 
 
 /***/ }),
-/* 52 */
+/* 53 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var exports = module.exports = function SHA (algorithm) {
@@ -11622,7 +11649,7 @@ exports.sha512 = __webpack_require__(84)
 
 
 /***/ }),
-/* 53 */
+/* 54 */
 /***/ (function(module, exports) {
 
 var types = {
@@ -11649,7 +11676,7 @@ module.exports = types
 
 
 /***/ }),
-/* 54 */
+/* 55 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11746,7 +11773,7 @@ module.exports = { encode: encode, decode: decode, encodingLength: encodingLengt
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0).Buffer))
 
 /***/ }),
-/* 55 */
+/* 56 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var Buffer = __webpack_require__(2).Buffer
@@ -11756,7 +11783,7 @@ var bufferutils = __webpack_require__(90)
 var opcodes = __webpack_require__(7)
 var typeforce = __webpack_require__(3)
 var types = __webpack_require__(6)
-var varuint = __webpack_require__(54)
+var varuint = __webpack_require__(55)
 
 function varSliceSize (someScript) {
   var length = someScript.length
@@ -12244,10 +12271,10 @@ module.exports = Transaction
 
 
 /***/ }),
-/* 56 */
+/* 57 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var baddress = __webpack_require__(57)
+var baddress = __webpack_require__(58)
 var bcrypto = __webpack_require__(26)
 var ecdsa = __webpack_require__(209)
 var randomBytes = __webpack_require__(22)
@@ -12258,7 +12285,7 @@ var wif = __webpack_require__(218)
 var NETWORKS = __webpack_require__(30)
 var BigInteger = __webpack_require__(21)
 
-var ecurve = __webpack_require__(61)
+var ecurve = __webpack_require__(62)
 var secp256k1 = ecdsa.__curve
 
 function ECPair (d, Q, options) {
@@ -12381,12 +12408,12 @@ module.exports = ECPair
 
 
 /***/ }),
-/* 57 */
+/* 58 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var Buffer = __webpack_require__(2).Buffer
 var bech32 = __webpack_require__(206)
-var bs58check = __webpack_require__(58)
+var bs58check = __webpack_require__(59)
 var bscript = __webpack_require__(5)
 var networks = __webpack_require__(30)
 var typeforce = __webpack_require__(3)
@@ -12483,7 +12510,7 @@ module.exports = {
 
 
 /***/ }),
-/* 58 */
+/* 59 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12545,7 +12572,7 @@ module.exports = {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0).Buffer))
 
 /***/ }),
-/* 59 */
+/* 60 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -13040,10 +13067,10 @@ var objectKeys = Object.keys || function (obj) {
   return keys;
 };
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(14)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(16)))
 
 /***/ }),
-/* 60 */
+/* 61 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(Buffer) {var bip66 = __webpack_require__(86)
@@ -13136,7 +13163,7 @@ module.exports = ECSignature
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0).Buffer))
 
 /***/ }),
-/* 61 */
+/* 62 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var Point = __webpack_require__(92)
@@ -13152,13 +13179,13 @@ module.exports = {
 
 
 /***/ }),
-/* 62 */
+/* 63 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 /* WEBPACK VAR INJECTION */(function(process) {
 
-var utils = __webpack_require__(9);
+var utils = __webpack_require__(10);
 var normalizeHeaderName = __webpack_require__(224);
 
 var DEFAULT_CONTENT_TYPE = {
@@ -13249,10 +13276,10 @@ utils.forEach(['post', 'put', 'patch'], function forEachMethodWithData(method) {
 
 module.exports = defaults;
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(11)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(12)))
 
 /***/ }),
-/* 63 */
+/* 64 */
 /***/ (function(module, exports) {
 
 // baseline estimates, used to improve performance
@@ -13332,7 +13359,7 @@ module.exports = {
 
 
 /***/ }),
-/* 64 */
+/* 65 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -13356,7 +13383,7 @@ exports.NoSolutionError = createError("NoSolutionError");
 exports.LabelNotFoundError = createError("LabelNotFoundError");
 
 /***/ }),
-/* 65 */
+/* 66 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
@@ -13366,7 +13393,7 @@ exports.pbkdf2Sync = __webpack_require__(102)
 
 
 /***/ }),
-/* 66 */
+/* 67 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var ciphers = __webpack_require__(255)
@@ -13385,7 +13412,7 @@ exports.listCiphers = exports.getCiphers = getCiphers
 
 
 /***/ }),
-/* 67 */
+/* 68 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var modeModules = {
@@ -13409,7 +13436,7 @@ module.exports = modes
 
 
 /***/ }),
-/* 68 */
+/* 69 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -13423,7 +13450,7 @@ exports.EDE = __webpack_require__(269);
 
 
 /***/ }),
-/* 69 */
+/* 70 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(Buffer) {var bn = __webpack_require__(4);
@@ -13470,12 +13497,12 @@ function getr(priv) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0).Buffer))
 
 /***/ }),
-/* 70 */
+/* 71 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var hash = exports;
 
-hash.utils = __webpack_require__(12);
+hash.utils = __webpack_require__(15);
 hash.common = __webpack_require__(32);
 hash.sha = __webpack_require__(286);
 hash.ripemd = __webpack_require__(290);
@@ -13491,7 +13518,7 @@ hash.ripemd160 = hash.ripemd.ripemd160;
 
 
 /***/ }),
-/* 71 */
+/* 72 */
 /***/ (function(module, exports) {
 
 var toString = {}.toString;
@@ -13502,7 +13529,7 @@ module.exports = Array.isArray || function (arr) {
 
 
 /***/ }),
-/* 72 */
+/* 73 */
 /***/ (function(module, exports) {
 
 exports.L = { bit: 1 }
@@ -13558,16 +13585,10 @@ exports.from = function from (value, defaultValue) {
 
 
 /***/ }),
-/* 73 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__.p + "dist/assets/d04ded86af3bf074f2692b5c887c9f79.png";
-
-/***/ }),
 /* 74 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__.p + "dist/assets/afd6df30d860cf87336edaaf9912e464.png";
+module.exports = __webpack_require__.p + "dist/assets/d04ded86af3bf074f2692b5c887c9f79.png";
 
 /***/ }),
 /* 75 */
@@ -14520,7 +14541,7 @@ var index_esm = {
 
 /* harmony default export */ __webpack_exports__["default"] = (index_esm);
 
-/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(11)))
+/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(12)))
 
 /***/ }),
 /* 77 */
@@ -14533,12 +14554,12 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var bcLib = __webpack_require__(45);
+var bcLib = __webpack_require__(35);
 var axios = __webpack_require__(94);
 var coinSelect = __webpack_require__(239);
-var errors = __webpack_require__(64);
-var bip39 = __webpack_require__(38);
-var coinUtil = __webpack_require__(15);
+var errors = __webpack_require__(65);
+var bip39 = __webpack_require__(39);
+var coinUtil = __webpack_require__(14);
 module.exports = function () {
   function _class(opt) {
     _classCallCheck(this, _class);
@@ -14556,13 +14577,13 @@ module.exports = function () {
     this.prefixes = opt.prefixes;
     this.bip21 = opt.bip21;
     this.defaultFeeSatPerByte = opt.defaultFeeSatPerByte;
+    this.confirmations = opt.confirmations || 6;
 
     this.hdPubNode = null;
     this.lastPriceTime = 0;
     this.priceCache = 0;
-    this.wholeBalanceSat = 0;
-    this.receiveIndex = 0;
     this.changeIndex = -1;
+    this.changeBalance = 0;
     this.addresses = {};
   }
 
@@ -14590,108 +14611,120 @@ module.exports = function () {
   }, {
     key: 'getBalanceOfReceiveAddr',
     value: function getBalanceOfReceiveAddr(limit) {
+      return this.getUtxos(this.getReceiveAddr(limit)).then(function (v) {
+        return v.balance;
+      });
+    }
+  }, {
+    key: 'getReceiveAddr',
+    value: function getReceiveAddr(limit) {
       if (!limit) {
-        limit = coinUtil.LABEL_MAX_INDEX;
+        limit = coinUtil.GAP_LIMIT;
       }
       var adrss = [];
       for (var i = 0; i <= limit; i++) {
         adrss.push(this.getAddress(0, i));
       }
-      adrss.join(",");
+      return adrss;
+    }
+  }, {
+    key: 'getChangeAddr',
+    value: function getChangeAddr(limit) {
+      if (!limit) {
+        limit = coinUtil.GAP_LIMIT_FOR_CHANGE;
+      }
+      var adrss = [];
+      for (var i = 0; i <= limit; i++) {
+        adrss.push(this.getAddress(1, i));
+      }
+      return adrss;
+    }
+  }, {
+    key: 'getIndexFromAddress',
+    value: function getIndexFromAddress(addr) {
+      for (var p in this.addresses) {
+        if (this.addresses[p] === addr) {
+          return p.split(",");
+        }
+      }
+      return false;
+    }
+  }, {
+    key: 'getReceiveBalance',
+    value: function getReceiveBalance() {
+      return this.getUtxos(this.getReceiveAddr());
+    }
+  }, {
+    key: 'getChangeBalance',
+    value: function getChangeBalance() {
+      var _this = this;
+
+      return this.getUtxos(this.getChangeAddr()).then(function (res) {
+        var newestCnf = Infinity;
+        var newestAddr = "";
+        var bal = 0;
+        var unconfirmed = 0;
+        for (var i = 0; i < res.length; i++) {
+          if (res[i].confirmations < newestCnf) {
+            newestCnf = res[i].confirmations;
+            newestAddr = res[i].address;
+          }
+          if (res[i].confirmations === 0) {
+            unconfirmed += res[i].amount;
+          } else {
+            bal += res[i].amount;
+          }
+        }
+        _this.changeIndex = newestAddr ? _this.getIndexFromAddress(newestAddr)[1] % coinUtil.GAP_LIMIT_FOR_CHANGE : -1;
+        return {
+          balance: bal,
+          unconfirmed: unconfirmed
+        };
+      });
     }
   }, {
     key: 'getWholeBalanceOfThisAccount',
     value: function getWholeBalanceOfThisAccount() {
-      var _this = this;
-
-      var gb = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
-
       if (this.dummy) {
         return Promise.resolve();
       }
-      return new Promise(function (resolve, reject) {
-        if (!_this.hdPubNode) {
-          throw new Error("HDNode isn't specified.");
-        }
-        _this.wholeBalanceSat = 0;
-        _this.wholeUnconfirmedSat = 0;
-        _this._getBalance(0, 0, gb, function (index) {
-          _this.receiveIndex = index;
-          _this._getBalance(1, 0, gb, function (index2) {
-            _this.changeIndex = index2;
-            resolve({ balance: _this.wholeBalanceSat, unconfirmed: _this.unconfirmedBalanceSat });
-          });
-        });
-      });
-    }
-  }, {
-    key: '_getBalance',
-    value: function _getBalance(change, index, gb, cb) {
-      var _this2 = this;
-
-      if (this.dummy) {
-        return Promise.resolve();
-      }
-      return new Promise(function (resolve, reject) {
-        _this2.getAddressProp(gb ? "" : "totalReceived", _this2.getAddress(change, index)).then(function (res) {
-          if (!change) {
-            if (index > coinUtil.LABEL_MAX_INDEX) {
-              cb(index);
-            } else {
-              _this2.wholeBalanceSat += res.balanceSat;
-              _this2.wholeUnconfirmedSat += res.unconfirmedBalanceSat;
-              _this2._getBalance(change, ++index, gb, cb);
-            }
-          } else {
-            if (gb && res.totalReceived) {
-              _this2.wholeBalanceSat += res.balanceSat;
-              _this2.wholeUnconfirmedSat += res.unconfirmedBalanceSat;
-              _this2._getBalance(change, ++index, gb, cb);
-            } else if (!gb && parseInt(res, 10)) {
-              _this2._getBalance(change, ++index, gb, cb);
-            } else {
-              cb(index);
-            }
-          }
-        });
+      return Promise.all([this.getReceiveBalance(), this.getChangeBalance()]).then(function (vals) {
+        return {
+          balance: vals[0].balance + vals[1].balance,
+          unconfirmed: vals[0].unconfirmed + vals[1].unconfirmed
+        };
       });
     }
   }, {
     key: 'getUtxos',
-    value: function getUtxos() {
-      var receivePromises = [];
-      var changePromises = [];
-      var addressPath = {};
-      var utxos = [];
-      var balance = 0;
-      for (var i = 0; i < this.receiveIndex; i++) {
-        var ad = this.getAddress(0, i);
-        receivePromises.push(this.getAddressProp("utxo", ad));
-        addressPath[ad] = [0, i];
-      }
-      for (var _i = 0; _i < this.changeIndex; _i++) {
-        var _ad = this.getAddress(1, _i);
-        changePromises.push(this.getAddressProp("utxo", _ad));
-        addressPath[_ad] = [1, _i];
-      }
-      return Promise.all(receivePromises.concat(changePromises)).then(function (vals) {
-        for (var _i2 = 0; _i2 < vals.length; _i2++) {
-          for (var j = 0; j < vals[_i2].length; j++) {
-            var u = vals[_i2][j];
-            balance += u.amount * 100000000;
+    value: function getUtxos(addressList) {
+      return axios({
+        url: this.apiEndpoint + "/addrs/" + addressList.join(",") + "/utxo",
+        json: true,
+        method: "GET" }).then(function (res) {
+        var v = res.data;
+        var utxos = [];
+        var bal = 0;
+        var unconfirmed = 0;
+        for (var i = 0; i < v.length; i++) {
+          bal += v[i].amount;
+          var u = v[i];
+          if (u.confirmations !== 0) {
+            //avoid spending unconfimed fund
             utxos.push({
               value: u.amount * 100000000,
               txId: u.txid,
               vout: u.vout,
-              address: u.address,
-              change: addressPath[u.address][0],
-              index: addressPath[u.address][1]
+              address: u.address
             });
+          } else {
+            unconfirmed += u.amount;
           }
         }
         return {
+          balance: bal,
           utxos: utxos,
-          balance: balance
+          unconfirmed: unconfirmed
         };
       });
     }
@@ -14712,7 +14745,7 @@ module.exports = function () {
       if (this.addresses[addrKey]) {
         return this.addresses[addrKey];
       } else {
-        return this.addrKey[addrKey] = this.hdPubNode.derive(change).derive(index).getAddress();
+        return this.addresses[addrKey] = this.hdPubNode.derive(change).derive(index).getAddress();
       }
     }
   }, {
@@ -14764,36 +14797,38 @@ module.exports = function () {
   }, {
     key: 'getPrice',
     value: function getPrice() {
-      var _this3 = this;
+      var _this2 = this;
 
       return new Promise(function (resolve, reject) {
-        if (_this3.lastPriceTime + 1000 * 60 < Date.now()) {
+        if (_this2.lastPriceTime + 1000 * 60 < Date.now()) {
           axios({
-            method: _this3.price.method || "get",
-            url: _this3.price.url,
-            responseType: _this3.price.json ? "json" : "text"
+            method: _this2.price.method || "get",
+            url: _this2.price.url,
+            responseType: _this2.price.json ? "json" : "text"
           }).then(function (res) {
             var temp = res.data;
-            if (_this3.price.json) {
-              _this3.price.jsonPath.forEach(function (v) {
+            if (_this2.price.json) {
+              _this2.price.jsonPath.forEach(function (v) {
                 temp = temp[v];
               });
             }
-            _this3.priceCache = temp;
-            _this3.lastPriceTime = Date.now();
+            _this2.priceCache = temp;
+            _this2.lastPriceTime = Date.now();
             resolve(temp);
           }).catch(reject);
         } else {
-          resolve(_this3.priceCache);
+          resolve(_this2.priceCache);
         }
       });
     }
   }, {
     key: 'buildTransaction',
     value: function buildTransaction(option) {
-      var _this4 = this;
+      var _this3 = this;
 
-      //if(this.dummy){return}
+      if (this.dummy) {
+        return null;
+      }
       if (!this.hdPubNode) {
         throw new Error("HDNode isn't specified.");
       }
@@ -14801,8 +14836,9 @@ module.exports = function () {
         var targets = option.targets;
         var feeRate = option.feeRate;
 
-        var txb = new bcLib.TransactionBuilder(_this4.network);
-        _this4.getUtxos().then(function (res) {
+        var txb = new bcLib.TransactionBuilder(_this3.network);
+
+        _this3.getUtxos(_this3.getReceiveAddr().concat(_this3.getChangeAddr())).then(function (res) {
           var path = [];
 
           var _coinSelect = coinSelect(res.utxos, targets, feeRate),
@@ -14813,11 +14849,12 @@ module.exports = function () {
           if (!inputs || !outputs) throw new errors.NoSolutionError();
           inputs.forEach(function (input) {
             txb.addInput(input.txId, input.vout);
-            path.push([input.change, input.index]);
+
+            path.push(_this3.getIndexFromAddress(input.address));
           });
           outputs.forEach(function (output) {
             if (!output.address) {
-              output.address = _this4.getAddress(1, _this4.changeIndex);
+              output.address = _this3.getAddress(1, _this3.changeIndex + 1);
             }
 
             txb.addOutput(output.address, output.value);
@@ -14838,7 +14875,7 @@ module.exports = function () {
       var seed = bip39.mnemonicToSeed(bip39.entropyToMnemonic(coinUtil.decrypt(entropyCipher, password)));
       var node = bcLib.HDNode.fromSeedBuffer(seed, this.network);
       for (var i = 0; i < path.length; i++) {
-        txb.sign(i, node.deriveHardened(44).deriveHardened(this.bip44.coinType).deriveHardened(this.bip44.account).derive(path[i][0]).derive(path[i][1]).keyPair);
+        txb.sign(i, node.deriveHardened(44).deriveHardened(this.bip44.coinType).deriveHardened(this.bip44.account).derive(path[i][0] | 0).derive(path[i][1] | 0).keyPair);
       }
       return txb.build();
     }
@@ -14852,6 +14889,38 @@ module.exports = function () {
         url: this.apiEndpoint + "/tx/send",
         data: { rawtx: hex },
         method: "POST" }).then(function (res) {
+        return res.data;
+      });
+    }
+  }, {
+    key: 'getTxs',
+    value: function getTxs(from, to) {
+      if (this.dummy) {
+        return Promise.resolve();
+      }
+      return axios({
+        url: this.apiEndpoint + "/addrs/txs",
+        data: {
+          noAsm: 1,
+          noScriptSig: 1,
+          noSpent: 0,
+          from: from, to: to,
+          addrs: this.getReceiveAddr().concat(this.getChangeAddr()).join(",")
+        },
+        method: "POST" }).then(function (res) {
+        return res.data;
+      });
+    }
+  }, {
+    key: 'getTx',
+    value: function getTx(txId) {
+      if (this.dummy) {
+        return Promise.resolve();
+      }
+      return axios({
+        url: this.apiEndpoint + "/tx/" + txId,
+
+        method: "GET" }).then(function (res) {
         return res.data;
       });
     }
@@ -14901,7 +14970,7 @@ module.exports = Array.isArray || function (arr) {
 
 /*<replacement>*/
 
-var processNextTick = __webpack_require__(36);
+var processNextTick = __webpack_require__(37);
 /*</replacement>*/
 
 module.exports = Readable;
@@ -14917,7 +14986,7 @@ var Duplex;
 Readable.ReadableState = ReadableState;
 
 /*<replacement>*/
-var EE = __webpack_require__(48).EventEmitter;
+var EE = __webpack_require__(49).EventEmitter;
 
 var EElistenerCount = function (emitter, type) {
   return emitter.listeners(type).length;
@@ -15040,7 +15109,7 @@ function ReadableState(options, stream) {
   this.decoder = null;
   this.encoding = null;
   if (options.encoding) {
-    if (!StringDecoder) StringDecoder = __webpack_require__(51).StringDecoder;
+    if (!StringDecoder) StringDecoder = __webpack_require__(52).StringDecoder;
     this.decoder = new StringDecoder(options.encoding);
     this.encoding = options.encoding;
   }
@@ -15196,7 +15265,7 @@ Readable.prototype.isPaused = function () {
 
 // backwards compatibility.
 Readable.prototype.setEncoding = function (enc) {
-  if (!StringDecoder) StringDecoder = __webpack_require__(51).StringDecoder;
+  if (!StringDecoder) StringDecoder = __webpack_require__(52).StringDecoder;
   this._readableState.decoder = new StringDecoder(enc);
   this._readableState.encoding = enc;
   return this;
@@ -15883,13 +15952,13 @@ function indexOf(xs, x) {
   }
   return -1;
 }
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(14), __webpack_require__(11)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(16), __webpack_require__(12)))
 
 /***/ }),
 /* 80 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(48).EventEmitter;
+module.exports = __webpack_require__(49).EventEmitter;
 
 
 /***/ }),
@@ -15901,7 +15970,7 @@ module.exports = __webpack_require__(48).EventEmitter;
 
 /*<replacement>*/
 
-var processNextTick = __webpack_require__(36);
+var processNextTick = __webpack_require__(37);
 /*</replacement>*/
 
 // undocumented cb() API, needed for core, not for public API
@@ -16601,7 +16670,7 @@ module.exports = Sha512
 /* 85 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var native = __webpack_require__(53)
+var native = __webpack_require__(54)
 
 function getTypeName (fn) {
   return fn.name || fn.toString().match(/function (.*?)\s*\(/)[1]
@@ -17061,7 +17130,7 @@ module.exports = {
 /***/ (function(module, exports, __webpack_require__) {
 
 var pushdata = __webpack_require__(87)
-var varuint = __webpack_require__(54)
+var varuint = __webpack_require__(55)
 
 // https://github.com/feross/buffer/blob/master/index.js#L1127
 function verifuint (value, max) {
@@ -18637,7 +18706,7 @@ module.exports = BigInteger
 /* 92 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(Buffer) {var assert = __webpack_require__(59)
+/* WEBPACK VAR INJECTION */(function(Buffer) {var assert = __webpack_require__(60)
 var BigInteger = __webpack_require__(21)
 
 var THREE = BigInteger.valueOf(3)
@@ -18887,7 +18956,7 @@ module.exports = Point
 /* 93 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var assert = __webpack_require__(59)
+var assert = __webpack_require__(60)
 var BigInteger = __webpack_require__(21)
 
 var Point = __webpack_require__(92)
@@ -18997,7 +19066,7 @@ module.exports = function bind(fn, thisArg) {
 "use strict";
 /* WEBPACK VAR INJECTION */(function(process) {
 
-var utils = __webpack_require__(9);
+var utils = __webpack_require__(10);
 var settle = __webpack_require__(225);
 var buildURL = __webpack_require__(227);
 var parseHeaders = __webpack_require__(228);
@@ -19176,7 +19245,7 @@ module.exports = function xhrAdapter(config) {
   });
 };
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(11)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(12)))
 
 /***/ }),
 /* 97 */
@@ -19280,15 +19349,15 @@ if (process.browser) {
 }
 module.exports = defaultEncoding
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(11)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(12)))
 
 /***/ }),
 /* 102 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var md5 = __webpack_require__(46)
-var rmd160 = __webpack_require__(47)
-var sha = __webpack_require__(52)
+var md5 = __webpack_require__(47)
+var rmd160 = __webpack_require__(48)
+var sha = __webpack_require__(53)
 
 var checkParameters = __webpack_require__(100)
 var defaultEncoding = __webpack_require__(101)
@@ -19398,7 +19467,7 @@ module.exports = pbkdf2
 
 exports.randomBytes = exports.rng = exports.pseudoRandomBytes = exports.prng = __webpack_require__(22)
 exports.createHash = exports.Hash = __webpack_require__(17)
-exports.createHmac = exports.Hmac = __webpack_require__(37)
+exports.createHmac = exports.Hmac = __webpack_require__(38)
 
 var algos = __webpack_require__(251)
 var algoKeys = Object.keys(algos)
@@ -19407,7 +19476,7 @@ exports.getHashes = function () {
   return hashes
 }
 
-var p = __webpack_require__(65)
+var p = __webpack_require__(66)
 exports.pbkdf2 = p.pbkdf2
 exports.pbkdf2Sync = p.pbkdf2Sync
 
@@ -19554,7 +19623,7 @@ module.exports = {"aes-128-ecb":{"cipher":"AES","key":128,"iv":0,"mode":"ECB","t
 /* 107 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var aes = __webpack_require__(40)
+var aes = __webpack_require__(41)
 var Buffer = __webpack_require__(2).Buffer
 var Transform = __webpack_require__(18)
 var inherits = __webpack_require__(1)
@@ -19652,7 +19721,7 @@ module.exports = StreamCipher
 /* 108 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var aes = __webpack_require__(40)
+var aes = __webpack_require__(41)
 var Buffer = __webpack_require__(2).Buffer
 var Transform = __webpack_require__(18)
 var inherits = __webpack_require__(1)
@@ -20054,7 +20123,7 @@ utils.encode = function encode(arr, enc) {
 "use strict";
 
 
-var utils = __webpack_require__(12);
+var utils = __webpack_require__(15);
 var rotr32 = utils.rotr32;
 
 function ft_1(s, x, y, z) {
@@ -20110,10 +20179,10 @@ exports.g1_256 = g1_256;
 "use strict";
 
 
-var utils = __webpack_require__(12);
+var utils = __webpack_require__(15);
 var common = __webpack_require__(32);
 var shaCommon = __webpack_require__(113);
-var assert = __webpack_require__(10);
+var assert = __webpack_require__(11);
 
 var sum32 = utils.sum32;
 var sum32_4 = utils.sum32_4;
@@ -20222,9 +20291,9 @@ SHA256.prototype._digest = function digest(enc) {
 "use strict";
 
 
-var utils = __webpack_require__(12);
+var utils = __webpack_require__(15);
 var common = __webpack_require__(32);
-var assert = __webpack_require__(10);
+var assert = __webpack_require__(11);
 
 var rotr64_hi = utils.rotr64_hi;
 var rotr64_lo = utils.rotr64_lo;
@@ -21394,9 +21463,9 @@ module.exports = withPublic;
 "use strict";
 
 
-var coinUtil = __webpack_require__(15);
-var currencyList = __webpack_require__(16);
-module.exports = __webpack_require__(324)({
+var coinUtil = __webpack_require__(14);
+var currencyList = __webpack_require__(13);
+module.exports = __webpack_require__(326)({
   data: function data() {
     return {
       address: "",
@@ -21414,7 +21483,7 @@ module.exports = __webpack_require__(324)({
     };
   },
 
-  store: __webpack_require__(13),
+  store: __webpack_require__(9),
   methods: {
     confirm: function confirm() {
       if (!this.address || !this.coinType || !this.amount || !this.feePerByte || !coinUtil.isValidAddress(this.address)) {
@@ -21430,7 +21499,7 @@ module.exports = __webpack_require__(324)({
         message: this.message,
         coinType: this.coinType
       });
-      this.$emit("push", __webpack_require__(325));
+      this.$emit("push", __webpack_require__(327));
     },
     getPrice: function getPrice() {
       var _this = this;
@@ -21486,12 +21555,12 @@ module.exports = __webpack_require__(324)({
 "use strict";
 
 
-module.exports = __webpack_require__(327)({
+module.exports = __webpack_require__(329)({
   data: function data() {
     return {};
   },
 
-  store: __webpack_require__(13),
+  store: __webpack_require__(9),
   methods: {
     start: function start() {
       this.$emit("replace", this.$store.state.finishNextPage.page);
@@ -21511,9 +21580,9 @@ module.exports = __webpack_require__(327)({
 /* 126 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var QRCode = __webpack_require__(329)
-var CanvasRenderer = __webpack_require__(345)
-var SvgRenderer = __webpack_require__(346)
+var QRCode = __webpack_require__(331)
+var CanvasRenderer = __webpack_require__(347)
+var SvgRenderer = __webpack_require__(348)
 
 function renderCanvas (renderFunc, canvas, text, opts, cb) {
   var argsNum = arguments.length - 1
@@ -21563,7 +21632,7 @@ exports.toString = renderCanvas.bind(null, function (data, _, opts) {
 /* 127 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var ECLevel = __webpack_require__(72)
+var ECLevel = __webpack_require__(73)
 
 var EC_BLOCKS_TABLE = [
 // L  M  Q  H
@@ -21706,9 +21775,9 @@ exports.getTotalCodewordsCount = function getTotalCodewordsCount (version, error
 
 var Utils = __webpack_require__(23)
 var ECCode = __webpack_require__(127)
-var ECLevel = __webpack_require__(72)
+var ECLevel = __webpack_require__(73)
 var Mode = __webpack_require__(24)
-var isArray = __webpack_require__(71)
+var isArray = __webpack_require__(72)
 
 // Generator polynomial used to encode version information
 var G18 = (1 << 12) | (1 << 11) | (1 << 10) | (1 << 9) | (1 << 8) | (1 << 5) | (1 << 2) | (1 << 0)
@@ -22005,10 +22074,10 @@ exports.qrToImageData = function qrToImageData (imgData, qr, margin, scale, colo
 "use strict";
 
 
-var bip39 = __webpack_require__(38);
+var bip39 = __webpack_require__(39);
 var storage = __webpack_require__(19);
-var coinUtil = __webpack_require__(15);
-module.exports = __webpack_require__(354)({
+var coinUtil = __webpack_require__(14);
+module.exports = __webpack_require__(358)({
   data: function data() {
     return {
       keyArray: null,
@@ -22019,7 +22088,7 @@ module.exports = __webpack_require__(354)({
     };
   },
 
-  store: __webpack_require__(13),
+  store: __webpack_require__(9),
   methods: {
     next: function next() {
       this.$emit("push", __webpack_require__(132));
@@ -22054,19 +22123,22 @@ module.exports = __webpack_require__(354)({
 "use strict";
 
 
-var coinUtil = __webpack_require__(15);
+var coinUtil = __webpack_require__(14);
 var crypto = __webpack_require__(103);
 var storage = __webpack_require__(19);
-module.exports = __webpack_require__(355)({
+module.exports = __webpack_require__(359)({
   data: function data() {
     return {
       passwordType: "password",
+      currentPassword: "",
       password: "",
-      password2: ""
+      password2: "",
+      change: false,
+      error: false
     };
   },
 
-  store: __webpack_require__(13),
+  store: __webpack_require__(9),
   methods: {
     next: function next() {
       var _this = this;
@@ -22074,20 +22146,40 @@ module.exports = __webpack_require__(355)({
       if (!this.password || this.password !== this.password2) {
         return;
       }
-      coinUtil.makePairsAndEncrypt({
-        entropy: this.$store.state.entropy,
-        password: this.password,
-        makeCur: ["mona"]
-      }).then(function (data) {
+      var cipherPromise = null;
+      if (this.change) {
+        cipherPromise = storage.get("keyPairs").then(function (cipher) {
+          return coinUtil.makePairsAndEncrypt({
+            entropy: coinUtil.decrypt(cipher.entropy, _this.currentPassword),
+            password: _this.password,
+            makeCur: ["mona"]
+          });
+        });
+      } else {
+        cipherPromise = coinUtil.makePairsAndEncrypt({
+          entropy: this.$store.state.entropy,
+          password: this.password,
+          makeCur: ["mona"]
+        });
+      }
+      cipherPromise.then(function (data) {
         return storage.set("keyPairs", data);
       }).then(function () {
         _this.$store.commit("deleteEntropy");
         _this.$store.commit("setFinishNextPage", { page: __webpack_require__(133), infoId: "createdWallet" });
         _this.$emit("replace", __webpack_require__(125));
+      }).catch(function () {
+        _this.error = true;
       });
     }
   },
-  mounted: function mounted() {},
+  mounted: function mounted() {
+    if (this.$store.state.entropy) {
+      this.change = false;
+    } else {
+      this.change = true;
+    }
+  },
 
   components: {}
 });
@@ -22100,9 +22192,9 @@ module.exports = __webpack_require__(355)({
 
 
 var storage = __webpack_require__(19);
-var currencyList = __webpack_require__(16);
-var coinUtil = __webpack_require__(15);
-module.exports = __webpack_require__(356)({
+var currencyList = __webpack_require__(13);
+var coinUtil = __webpack_require__(14);
+module.exports = __webpack_require__(360)({
   data: function data() {
     return {
       showPassword: false,
@@ -22130,7 +22222,7 @@ module.exports = __webpack_require__(356)({
           }
         }
 
-        _this.$emit("replace", __webpack_require__(43));
+        _this.$emit("replace", __webpack_require__(44));
       }).catch(function () {
         _this.loading = false;
         _this.incorrect = true;
@@ -22150,7 +22242,7 @@ module.exports = __webpack_require__(356)({
             currencyList.get(coinId).setPubSeedB58(data.pubs[coinId]);
           }
         }
-        _this2.$emit("replace", __webpack_require__(43));
+        _this2.$emit("replace", __webpack_require__(44));
       } else {
         _this2.loading = false;
       }
@@ -22177,6 +22269,7 @@ Vue.use(Vuex);
 
 Vue.component('custom-bar', __webpack_require__(160));
 Vue.component('currency-set', __webpack_require__(162));
+Vue.component('timestamp', __webpack_require__(321));
 
 Vue.directive('focus', {
   inserted: function inserted(el, binding) {
@@ -22190,7 +22283,7 @@ exports.vm = new Vue({
   },
 
   components: {
-    navigator: __webpack_require__(321)
+    navigator: __webpack_require__(323)
   }
 });
 
@@ -22209,7 +22302,7 @@ var transform;
 var options = {}
 options.transform = transform
 // add the styles to the DOM
-var update = __webpack_require__(44)(content, options);
+var update = __webpack_require__(46)(content, options);
 if(content.locals) module.exports = content.locals;
 // Hot Module Replacement
 if(false) {
@@ -22234,7 +22327,7 @@ exports = module.exports = __webpack_require__(25)(undefined);
 
 
 // module
-exports.push([module.i, ".spinner {\n  width: 50px;\n  height: 50px;\n  animation-name: spin;\n  animation-duration: 4s;\n  animation-timing-function: ease;\n  animation-iteration-count: infinite;\n  background-image: url(" + __webpack_require__(137) + ");\n  background-repeat: no-repeat no-repeat;\n  background-position: center center;\n  background-size: contain;\n  display: inline-block; }\n\n[data-page=\"home\"] #youHave {\n  width: 100%;\n  background-color: #fff85e;\n  padding: 2% 0%;\n  color: #7c5702;\n  background-image: url(" + __webpack_require__(73) + ");\n  background-repeat: no-repeat;\n  background-position: bottom right;\n  text-align: center; }\n  [data-page=\"home\"] #youHave .label {\n    color: #7b7442; }\n  [data-page=\"home\"] #youHave .currencySet {\n    margin: 5% 0;\n    display: inline-block; }\n    [data-page=\"home\"] #youHave .currencySet .amount {\n      font-size: 1.6em;\n      margin: 3px; }\n    [data-page=\"home\"] #youHave .currencySet .ticker {\n      font-size: 0.9em; }\n\n[data-page=\"home\"] #coins .w_right {\n  margin-left: auto; }\n  [data-page=\"home\"] #coins .w_right .fiatConv {\n    color: #555;\n    font-size: 0.76em; }\n  [data-page=\"home\"] #coins .w_right .amount .ticker {\n    font-size: 0.8em; }\n  [data-page=\"home\"] #coins .w_right .unconfirmed {\n    color: red; }\n\n[data-page=\"home\"] #coins .price {\n  font-size: 0.85em; }\n  [data-page=\"home\"] #coins .price .ticker {\n    color: #555;\n    font-size: 0.85em; }\n\n[data-page=\"home\"] #coins .left img {\n  width: 38px;\n  height: 38px; }\n\n[data-page=\"history\"] ons-list-item .w_right {\n  margin-left: auto;\n  text-align: right; }\n\n[data-page=\"history\"] ons-list-item .destAddress {\n  font-size: 0.8em; }\n\n[data-page=\"history\"] ons-list-item .date {\n  font-size: 0.85em; }\n\n[data-page=\"history\"] ons-list-item .hasMsg {\n  color: #81d4fa; }\n\n[data-page=\"history\"] ons-list-item .unread {\n  color: #fb8c00; }\n\n[data-page=\"showLabel\"], [data-page=\"receive\"] {\n  text-align: center; }\n  [data-page=\"showLabel\"] #currencySelector, [data-page=\"receive\"] #currencySelector {\n    width: 100%;\n    margin: none;\n    padding: none; }\n    [data-page=\"showLabel\"] #currencySelector .currencyIcon, [data-page=\"receive\"] #currencySelector .currencyIcon {\n      margin: 3px;\n      width: 47px;\n      height: 47px;\n      background-position: center center;\n      background-size: contain;\n      background-repeat: no-repeat; }\n      [data-page=\"showLabel\"] #currencySelector .currencyIcon .checked, [data-page=\"receive\"] #currencySelector .currencyIcon .checked {\n        position: absolute;\n        bottom: 0;\n        right: 0;\n        width: 25px;\n        height: 25px;\n        background-position: center center;\n        background-size: contain;\n        background-repeat: no-repeat;\n        background-image: url(" + __webpack_require__(74) + "); }\n  [data-page=\"showLabel\"] #simple .label, [data-page=\"receive\"] #simple .label {\n    margin: 10px;\n    color: #888; }\n  [data-page=\"showLabel\"] #simple #qrArea #qrcode, [data-page=\"receive\"] #simple #qrArea #qrcode {\n    width: 250px;\n    height: 250px;\n    background-color: #aaa;\n    display: inline-block;\n    margin: 10px;\n    position: relative; }\n    [data-page=\"showLabel\"] #simple #qrArea #qrcode #qrcodeImage, [data-page=\"receive\"] #simple #qrArea #qrcode #qrcodeImage {\n      width: 100%;\n      height: 100%; }\n    [data-page=\"showLabel\"] #simple #qrArea #qrcode #currentCurIcon, [data-page=\"receive\"] #simple #qrArea #qrcode #currentCurIcon {\n      position: absolute;\n      width: 20%;\n      height: 20%;\n      top: 50%;\n      left: 50%;\n      margin-left: -10%;\n      margin-top: -10%;\n      background-position: center center;\n      background-size: contain;\n      background-repeat: no-repeat; }\n  [data-page=\"showLabel\"] #simple #qrArea .address, [data-page=\"receive\"] #simple #qrArea .address {\n    display: block;\n    user-select: text;\n    -webkit-user-select: text;\n    -moz-user-select: text;\n    -ms-user-select: text; }\n\n[data-page=\"first\"] .wrap {\n  width: 100%;\n  height: 100%;\n  background-color: #fff85e; }\n  [data-page=\"first\"] .wrap .logo {\n    position: absolute;\n    top: 30%;\n    width: 100%;\n    text-align: center; }\n    [data-page=\"first\"] .wrap .logo .icon {\n      display: inline-block;\n      background-image: url(" + __webpack_require__(73) + ");\n      background-position: center center;\n      background-repeat: no-repeat;\n      background-size: contain;\n      width: 100px;\n      height: 100px; }\n    [data-page=\"first\"] .wrap .logo .appName {\n      font-size: 2em;\n      color: #7c5702; }\n    [data-page=\"first\"] .wrap .logo .label {\n      color: #7c5702;\n      opacity: 0.5; }\n  [data-page=\"first\"] .wrap .buttons {\n    margin: 80px auto;\n    width: 60%; }\n    [data-page=\"first\"] .wrap .buttons ons-button {\n      margin: 10px 0;\n      width: 100%; }\n\n[data-page=\"restorePassphrase\"] #wordArea {\n  background-color: white;\n  width: 100%; }\n  [data-page=\"restorePassphrase\"] #wordArea .word {\n    display: inline-block;\n    margin: 5px;\n    padding: 4px;\n    border: #ddd 1px solid;\n    border-radius: 3.5px; }\n    [data-page=\"restorePassphrase\"] #wordArea .word .wd {\n      color: black; }\n    [data-page=\"restorePassphrase\"] #wordArea .word .deleteBtn {\n      color: #aaa; }\n    [data-page=\"restorePassphrase\"] #wordArea .word input {\n      border: none;\n      background: transparent;\n      font-size: 1em;\n      width: 5em;\n      margin: 0px;\n      padding: 0px; }\n    [data-page=\"restorePassphrase\"] #wordArea .word.noMatch {\n      background-color: #fdc; }\n\n[data-page=\"restorePassphrase\"] #suggestion {\n  position: fixed;\n  bottom: 0;\n  width: 100%;\n  background-color: white;\n  border-top: #c3c3c8 1px solid; }\n  [data-page=\"restorePassphrase\"] #suggestion .sgst {\n    display: inline-block;\n    padding: 9px;\n    border-right: #c3c3c8 1px solid; }\n\n[data-page=\"restorePassphrase\"] #nextWrap {\n  padding: 10px; }\n\n[data-page=\"question\"] .questionItem {\n  text-align: center;\n  padding: 5%; }\n  [data-page=\"question\"] .questionItem .questionText {\n    padding: 10%;\n    border-radius: 8px;\n    border: 1px solid #7c5702;\n    color: #7c5702;\n    background-color: white; }\n  [data-page=\"question\"] .questionItem .answers .answer {\n    border-radius: 6px;\n    background-color: #fff85e;\n    color: #7c5702;\n    margin: 10px 0;\n    padding: 10px; }\n\n[data-page=\"generateKeyWarn\"] .wrap {\n  padding: 10px; }\n  [data-page=\"generateKeyWarn\"] .wrap .check {\n    padding: 12px; }\n    [data-page=\"generateKeyWarn\"] .wrap .check input {\n      font-size: 1.5em; }\n\n[data-page=\"generateKey\"] .touchArea {\n  height: 50%;\n  background: #50aba0;\n  color: white;\n  font-size: 2em;\n  text-align: center;\n  padding: 30% 10%; }\n\n[data-page=\"send\"] ons-list-item ons-input {\n  width: 100%;\n  display: block; }\n\n[data-page=\"confirm\"] .insufficientFund {\n  color: red; }\n\n[data-page=\"finished\"] .succeeded {\n  max-width: 500px;\n  width: 100%;\n  max-height: 500px;\n  height: 100%;\n  margin: 50px 0;\n  background-repeat: no-repeat no-repeat;\n  background-size: contain;\n  background-position: center center; }\n  [data-page=\"finished\"] .succeeded[data-img=\"0\"] {\n    background-image: url(" + __webpack_require__(138) + "); }\n  [data-page=\"finished\"] .succeeded[data-img=\"1\"] {\n    background-image: url(" + __webpack_require__(74) + "); }\n  [data-page=\"finished\"] .succeeded[data-img=\"2\"] {\n    background-image: url(" + __webpack_require__(139) + "); }\n\n[data-page=\"finished\"] .wrap {\n  padding: 40px;\n  text-align: center; }\n\n[data-page=\"login\"] .wrap {\n  padding: 40px;\n  text-align: center; }\n  [data-page=\"login\"] .wrap .passwordBox {\n    line-height: 35px;\n    font-size: 35px;\n    display: grid;\n    grid-template-columns: 1fr 35px;\n    background: white;\n    border-radius: 8px;\n    padding: 5px;\n    margin: 50px 5px; }\n    [data-page=\"login\"] .wrap .passwordBox input {\n      font-size: 35px;\n      background: transparent;\n      border: none; }\n    [data-page=\"login\"] .wrap .passwordBox ons-button {\n      line-height: 35px; }\n    [data-page=\"login\"] .wrap .passwordBox.incorrect {\n      animation: shake 0.72s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;\n      transform: translate3d(0, 0, 0); }\n\n@keyframes shake {\n  10%, 90% {\n    transform: translate3d(-1px, 0, 0); }\n  20%, 80% {\n    transform: translate3d(2px, 0, 0); }\n  30%, 50%, 70% {\n    transform: translate3d(-4px, 0, 0); }\n  40%, 60% {\n    transform: translate3d(4px, 0, 0); } }\n\n@keyframes spin {\n  0% {\n    transform: rotatez(0deg); }\n  25% {\n    transform: rotatez(90deg); }\n  50% {\n    transform: rotatez(180deg); }\n  75% {\n    transform: rotatez(270deg); }\n  100% {\n    transform: rotatez(360deg); } }\n", ""]);
+exports.push([module.i, ".spinner {\n  width: 90px;\n  height: 90px;\n  animation-name: spin;\n  animation-duration: 4s;\n  animation-timing-function: ease;\n  animation-iteration-count: infinite;\n  background-image: url(" + __webpack_require__(137) + ");\n  background-repeat: no-repeat no-repeat;\n  background-position: center center;\n  background-size: contain;\n  display: inline-block; }\n\n.list-item--small .list-item--small__left, .list-item--small .list-item--small__center, .list-item--small .list-item--small__right {\n  min-height: 0px;\n  padding-top: 4px;\n  padding-bottom: 4px; }\n\n[data-page=\"home\"] #youHave {\n  width: 100%;\n  background-color: #fff85e;\n  padding: 2% 0%;\n  color: #7c5702;\n  background-image: url(" + __webpack_require__(74) + ");\n  background-repeat: no-repeat;\n  background-position: bottom right;\n  text-align: center; }\n  [data-page=\"home\"] #youHave .label {\n    color: #7b7442; }\n  [data-page=\"home\"] #youHave .currencySet {\n    margin: 5% 0;\n    display: inline-block; }\n    [data-page=\"home\"] #youHave .currencySet .amount {\n      font-size: 1.6em;\n      margin: 3px; }\n    [data-page=\"home\"] #youHave .currencySet .ticker {\n      font-size: 0.9em; }\n\n[data-page=\"home\"] #coins .w_right {\n  margin-left: auto; }\n  [data-page=\"home\"] #coins .w_right .fiatConv {\n    color: #555;\n    font-size: 0.76em; }\n  [data-page=\"home\"] #coins .w_right .amount .ticker {\n    font-size: 0.8em; }\n  [data-page=\"home\"] #coins .w_right .unconfirmed {\n    color: red; }\n\n[data-page=\"home\"] #coins .price {\n  font-size: 0.85em; }\n  [data-page=\"home\"] #coins .price .ticker {\n    color: #555;\n    font-size: 0.85em; }\n\n[data-page=\"home\"] #coins .left img {\n  width: 38px;\n  height: 38px; }\n\n[data-page=\"txDetail\"] .list--inset {\n  margin-top: 10px; }\n\n[data-page=\"history\"] ons-list-item .w_right {\n  margin-left: auto;\n  text-align: right; }\n\n[data-page=\"history\"] ons-list-item .destAddress {\n  font-size: 0.8em; }\n\n[data-page=\"history\"] ons-list-item .date {\n  font-size: 0.85em; }\n\n[data-page=\"history\"] ons-list-item .hasMsg {\n  color: #81d4fa; }\n\n[data-page=\"history\"] ons-list-item .unread {\n  color: #fb8c00; }\n\n[data-page=\"showLabel\"] #currencySelector, [data-page=\"receive\"] #currencySelector, [data-page=\"history\"] #currencySelector {\n  width: 100%;\n  margin: none;\n  padding: none; }\n  [data-page=\"showLabel\"] #currencySelector .currencyIcon, [data-page=\"receive\"] #currencySelector .currencyIcon, [data-page=\"history\"] #currencySelector .currencyIcon {\n    margin: 3px;\n    width: 47px;\n    height: 47px;\n    background-position: center center;\n    background-size: contain;\n    background-repeat: no-repeat; }\n    [data-page=\"showLabel\"] #currencySelector .currencyIcon .checked, [data-page=\"receive\"] #currencySelector .currencyIcon .checked, [data-page=\"history\"] #currencySelector .currencyIcon .checked {\n      position: absolute;\n      bottom: 0;\n      right: 0;\n      width: 25px;\n      height: 25px;\n      background-position: center center;\n      background-size: contain;\n      background-repeat: no-repeat;\n      background-image: url(" + __webpack_require__(45) + "); }\n\n[data-page=\"showLabel\"], [data-page=\"invoice\"], [data-page=\"receive\"] {\n  text-align: center; }\n  [data-page=\"showLabel\"] #currencySelector, [data-page=\"invoice\"] #currencySelector, [data-page=\"receive\"] #currencySelector {\n    width: 100%;\n    margin: none;\n    padding: none; }\n    [data-page=\"showLabel\"] #currencySelector .currencyIcon, [data-page=\"invoice\"] #currencySelector .currencyIcon, [data-page=\"receive\"] #currencySelector .currencyIcon {\n      margin: 3px;\n      width: 47px;\n      height: 47px;\n      background-position: center center;\n      background-size: contain;\n      background-repeat: no-repeat; }\n      [data-page=\"showLabel\"] #currencySelector .currencyIcon .checked, [data-page=\"invoice\"] #currencySelector .currencyIcon .checked, [data-page=\"receive\"] #currencySelector .currencyIcon .checked {\n        position: absolute;\n        bottom: 0;\n        right: 0;\n        width: 25px;\n        height: 25px;\n        background-position: center center;\n        background-size: contain;\n        background-repeat: no-repeat;\n        background-image: url(" + __webpack_require__(45) + "); }\n  [data-page=\"showLabel\"] #simple .label, [data-page=\"invoice\"] #simple .label, [data-page=\"receive\"] #simple .label {\n    margin: 10px;\n    color: #888; }\n  [data-page=\"showLabel\"] #simple #qrArea #qrcode, [data-page=\"invoice\"] #simple #qrArea #qrcode, [data-page=\"receive\"] #simple #qrArea #qrcode {\n    width: 250px;\n    height: 250px;\n    background-color: #aaa;\n    display: inline-block;\n    margin: 10px;\n    position: relative; }\n    [data-page=\"showLabel\"] #simple #qrArea #qrcode #qrcodeImage, [data-page=\"invoice\"] #simple #qrArea #qrcode #qrcodeImage, [data-page=\"receive\"] #simple #qrArea #qrcode #qrcodeImage {\n      width: 100%;\n      height: 100%; }\n    [data-page=\"showLabel\"] #simple #qrArea #qrcode #currentCurIcon, [data-page=\"invoice\"] #simple #qrArea #qrcode #currentCurIcon, [data-page=\"receive\"] #simple #qrArea #qrcode #currentCurIcon {\n      position: absolute;\n      width: 20%;\n      height: 20%;\n      top: 50%;\n      left: 50%;\n      margin-left: -10%;\n      margin-top: -10%;\n      background-position: center center;\n      background-size: contain;\n      background-repeat: no-repeat; }\n  [data-page=\"showLabel\"] #simple #qrArea .address, [data-page=\"invoice\"] #simple #qrArea .address, [data-page=\"receive\"] #simple #qrArea .address {\n    display: block;\n    user-select: text;\n    -webkit-user-select: text;\n    -moz-user-select: text;\n    -ms-user-select: text; }\n\n[data-page=\"first\"] .wrap {\n  width: 100%;\n  height: 100%;\n  background-color: #fff85e; }\n  [data-page=\"first\"] .wrap .logo {\n    position: absolute;\n    top: 30%;\n    width: 100%;\n    text-align: center; }\n    [data-page=\"first\"] .wrap .logo .icon {\n      display: inline-block;\n      background-image: url(" + __webpack_require__(74) + ");\n      background-position: center center;\n      background-repeat: no-repeat;\n      background-size: contain;\n      width: 100px;\n      height: 100px; }\n    [data-page=\"first\"] .wrap .logo .appName {\n      font-size: 2em;\n      color: #7c5702; }\n    [data-page=\"first\"] .wrap .logo .label {\n      color: #7c5702;\n      opacity: 0.5; }\n  [data-page=\"first\"] .wrap .buttons {\n    margin: 80px auto;\n    width: 60%; }\n    [data-page=\"first\"] .wrap .buttons ons-button {\n      margin: 10px 0;\n      width: 100%; }\n\n[data-page=\"restorePassphrase\"] #wordArea {\n  background-color: white;\n  width: 100%; }\n  [data-page=\"restorePassphrase\"] #wordArea .word {\n    display: inline-block;\n    margin: 5px;\n    padding: 4px;\n    border: #ddd 1px solid;\n    border-radius: 3.5px; }\n    [data-page=\"restorePassphrase\"] #wordArea .word .wd {\n      color: black; }\n    [data-page=\"restorePassphrase\"] #wordArea .word .deleteBtn {\n      color: #aaa; }\n    [data-page=\"restorePassphrase\"] #wordArea .word input {\n      border: none;\n      background: transparent;\n      font-size: 1em;\n      width: 5em;\n      margin: 0px;\n      padding: 0px; }\n    [data-page=\"restorePassphrase\"] #wordArea .word.noMatch {\n      background-color: #fdc; }\n\n[data-page=\"restorePassphrase\"] #suggestion {\n  position: fixed;\n  bottom: 0;\n  width: 100%;\n  background-color: white;\n  border-top: #c3c3c8 1px solid; }\n  [data-page=\"restorePassphrase\"] #suggestion .sgst {\n    display: inline-block;\n    padding: 9px;\n    border-right: #c3c3c8 1px solid; }\n\n[data-page=\"restorePassphrase\"] #nextWrap {\n  padding: 10px; }\n\n[data-page=\"question\"] .questionItem {\n  text-align: center;\n  padding: 5%; }\n  [data-page=\"question\"] .questionItem .questionText {\n    padding: 10%;\n    border-radius: 8px;\n    border: 1px solid #7c5702;\n    color: #7c5702;\n    background-color: white; }\n  [data-page=\"question\"] .questionItem .answers .answer {\n    border-radius: 6px;\n    background-color: #fff85e;\n    color: #7c5702;\n    margin: 10px 0;\n    padding: 10px; }\n\n[data-page=\"generateKeyWarn\"] .wrap {\n  padding: 10px; }\n  [data-page=\"generateKeyWarn\"] .wrap .check {\n    padding: 12px; }\n    [data-page=\"generateKeyWarn\"] .wrap .check input {\n      font-size: 1.5em; }\n\n[data-page=\"generateKey\"] .touchArea {\n  height: 50%;\n  background: #50aba0;\n  color: white;\n  font-size: 2em;\n  text-align: center;\n  padding: 30% 10%; }\n\n[data-page=\"send\"] ons-list-item ons-input {\n  width: 100%;\n  display: block; }\n\n[data-page=\"confirm\"] .insufficientFund {\n  color: red; }\n\n[data-page=\"finished\"] .succeeded {\n  height: 300px;\n  margin: 50px 0;\n  background-repeat: no-repeat no-repeat;\n  background-size: contain;\n  background-position: center center; }\n  [data-page=\"finished\"] .succeeded[data-img=\"0\"] {\n    background-image: url(" + __webpack_require__(138) + "); }\n  [data-page=\"finished\"] .succeeded[data-img=\"1\"] {\n    background-image: url(" + __webpack_require__(45) + "); }\n  [data-page=\"finished\"] .succeeded[data-img=\"2\"] {\n    background-image: url(" + __webpack_require__(139) + "); }\n\n[data-page=\"finished\"] .wrap {\n  padding: 40px;\n  text-align: center; }\n\n[data-page=\"login\"] .wrap {\n  padding: 40px;\n  text-align: center; }\n  [data-page=\"login\"] .wrap .passwordBox {\n    line-height: 35px;\n    font-size: 35px;\n    display: grid;\n    grid-template-columns: 1fr 35px;\n    background: white;\n    border-radius: 8px;\n    padding: 5px;\n    margin: 50px 5px; }\n    [data-page=\"login\"] .wrap .passwordBox input {\n      font-size: 35px;\n      background: transparent;\n      border: none; }\n    [data-page=\"login\"] .wrap .passwordBox ons-button {\n      line-height: 35px; }\n    [data-page=\"login\"] .wrap .passwordBox.incorrect {\n      animation: shake 0.72s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;\n      transform: translate3d(0, 0, 0); }\n\n[data-page=\"zaifPay\"] {\n  text-align: center; }\n  [data-page=\"zaifPay\"] .logo {\n    display: inline-block;\n    width: 200px;\n    height: 200px;\n    background-image: url(" + __webpack_require__(375) + ");\n    background-repeat: no-repeat;\n    background-size: contain;\n    background-position: center center; }\n\n@keyframes shake {\n  10%, 90% {\n    transform: translate3d(-1px, 0, 0); }\n  20%, 80% {\n    transform: translate3d(2px, 0, 0); }\n  30%, 50%, 70% {\n    transform: translate3d(-4px, 0, 0); }\n  40%, 60% {\n    transform: translate3d(4px, 0, 0); } }\n\n@keyframes spin {\n  0% {\n    transform: rotatez(0deg); }\n  25% {\n    transform: rotatez(90deg); }\n  50% {\n    transform: rotatez(180deg); }\n  75% {\n    transform: rotatez(270deg); }\n  100% {\n    transform: rotatez(360deg); } }\n", ""]);
 
 // exports
 
@@ -22243,7 +22336,7 @@ exports.push([module.i, ".spinner {\n  width: 50px;\n  height: 50px;\n  animatio
 /* 137 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__.p + "dist/assets/afd6df30d860cf87336edaaf9912e464.png";
+module.exports = __webpack_require__.p + "dist/assets/86cc8f528c3b9535d26a0e28a1a99e2c.png";
 
 /***/ }),
 /* 138 */
@@ -22367,7 +22460,7 @@ var transform;
 var options = {}
 options.transform = transform
 // add the styles to the DOM
-var update = __webpack_require__(44)(content, options);
+var update = __webpack_require__(46)(content, options);
 if(content.locals) module.exports = content.locals;
 // Hot Module Replacement
 if(false) {
@@ -22528,7 +22621,7 @@ var transform;
 var options = {}
 options.transform = transform
 // add the styles to the DOM
-var update = __webpack_require__(44)(content, options);
+var update = __webpack_require__(46)(content, options);
 if(content.locals) module.exports = content.locals;
 // Hot Module Replacement
 if(false) {
@@ -22615,13 +22708,13 @@ if (false) {(function () {
 "use strict";
 
 
-var currencyList = __webpack_require__(16);
+var currencyList = __webpack_require__(13);
 module.exports = __webpack_require__(320)({
   data: function data() {
     return {};
   },
 
-  props: ["amount", "ticker", "easy", "about", "fiatTicker"],
+  props: ["amount", "ticker", "about", "fiatTicker"],
   methods: {
     getTicker: function getTicker(t) {
       if (!t) {
@@ -22637,9 +22730,16 @@ module.exports = __webpack_require__(320)({
       return this.easy ? currencyList.get(t).unitEasy : currencyList.get(t).unit;
     }
   },
+  store: __webpack_require__(9),
   computed: {
     tickerCap: function tickerCap() {
       return this.getTicker(this.ticker) + (this.fiatTicker ? "/" + this.getTicker(this.fiatTicker) : "");
+    },
+    compAmt: function compAmt() {
+      return this.amount ? (this.amount + "").slice(0, 10) : "";
+    },
+    easy: function easy() {
+      return this.$store.state.easyUnit;
     }
   }
 });
@@ -22653,9 +22753,9 @@ var bcrypto = __webpack_require__(26)
 var fastMerkleRoot = __webpack_require__(182)
 var typeforce = __webpack_require__(3)
 var types = __webpack_require__(6)
-var varuint = __webpack_require__(54)
+var varuint = __webpack_require__(55)
 
-var Transaction = __webpack_require__(55)
+var Transaction = __webpack_require__(56)
 
 function Block () {
   this.version = 1
@@ -23082,7 +23182,7 @@ module.exports = function hash (buf, fn) {
 
 "use strict";
 /* WEBPACK VAR INJECTION */(function(Buffer) {
-var Transform = __webpack_require__(35).Transform
+var Transform = __webpack_require__(36).Transform
 var inherits = __webpack_require__(1)
 
 function HashBase (blockSize) {
@@ -23503,7 +23603,7 @@ exports.clearImmediate = clearImmediate;
     attachTo.clearImmediate = clearImmediate;
 }(typeof self === "undefined" ? typeof global === "undefined" ? this : global : self));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(14), __webpack_require__(11)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(16), __webpack_require__(12)))
 
 /***/ }),
 /* 172 */
@@ -23577,7 +23677,7 @@ function config (name) {
   return String(val).toLowerCase() === 'true';
 }
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(14)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(16)))
 
 /***/ }),
 /* 173 */
@@ -23636,7 +23736,7 @@ PassThrough.prototype._transform = function (chunk, encoding, cb) {
 /* 174 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(50);
+module.exports = __webpack_require__(51);
 
 
 /***/ }),
@@ -23650,14 +23750,14 @@ module.exports = __webpack_require__(20);
 /* 176 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(49).Transform
+module.exports = __webpack_require__(50).Transform
 
 
 /***/ }),
 /* 177 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(49).PassThrough
+module.exports = __webpack_require__(50).PassThrough
 
 
 /***/ }),
@@ -24022,7 +24122,7 @@ module.exports = function fastRoot (values, digestFn) {
 /* 183 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(Buffer) {var NATIVE = __webpack_require__(53)
+/* WEBPACK VAR INJECTION */(function(Buffer) {var NATIVE = __webpack_require__(54)
 var ERRORS = __webpack_require__(85)
 
 function _Buffer (value) {
@@ -25123,17 +25223,17 @@ module.exports = function base (ALPHABET) {
 /***/ (function(module, exports, __webpack_require__) {
 
 var Buffer = __webpack_require__(2).Buffer
-var createHmac = __webpack_require__(37)
+var createHmac = __webpack_require__(38)
 var typeforce = __webpack_require__(3)
 var types = __webpack_require__(6)
 
 var BigInteger = __webpack_require__(21)
-var ECSignature = __webpack_require__(60)
+var ECSignature = __webpack_require__(61)
 
 var ZERO = Buffer.alloc(1, 0)
 var ONE = Buffer.alloc(1, 1)
 
-var ecurve = __webpack_require__(61)
+var ecurve = __webpack_require__(62)
 var secp256k1 = ecurve.getCurveByName('secp256k1')
 
 // https://tools.ietf.org/html/rfc6979#section-3.2
@@ -25349,7 +25449,7 @@ module.exports = {"_args":[[{"raw":"bigi@^1.4.0","scope":null,"escapedName":"big
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(Buffer) {// FIXME: Kind of a weird way to throw exceptions, consider removing
-var assert = __webpack_require__(59)
+var assert = __webpack_require__(60)
 var BigInteger = __webpack_require__(91)
 
 /**
@@ -26033,7 +26133,7 @@ function hasOwnProperty(obj, prop) {
   return Object.prototype.hasOwnProperty.call(obj, prop);
 }
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(14), __webpack_require__(11)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(16), __webpack_require__(12)))
 
 /***/ }),
 /* 214 */
@@ -26112,7 +26212,7 @@ module.exports = {"secp128r1":{"p":"fffffffdffffffffffffffffffffffff","a":"fffff
 /* 218 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(Buffer) {var bs58check = __webpack_require__(58)
+/* WEBPACK VAR INJECTION */(function(Buffer) {var bs58check = __webpack_require__(59)
 
 function decodeRaw (buffer, version) {
   // check version only if defined
@@ -26183,17 +26283,17 @@ module.exports = {
 /***/ (function(module, exports, __webpack_require__) {
 
 var Buffer = __webpack_require__(2).Buffer
-var base58check = __webpack_require__(58)
+var base58check = __webpack_require__(59)
 var bcrypto = __webpack_require__(26)
-var createHmac = __webpack_require__(37)
+var createHmac = __webpack_require__(38)
 var typeforce = __webpack_require__(3)
 var types = __webpack_require__(6)
 var NETWORKS = __webpack_require__(30)
 
 var BigInteger = __webpack_require__(21)
-var ECPair = __webpack_require__(56)
+var ECPair = __webpack_require__(57)
 
-var ecurve = __webpack_require__(61)
+var ecurve = __webpack_require__(62)
 var curve = ecurve.getCurveByName('secp256k1')
 
 function HDNode (keyPair, chainCode) {
@@ -26505,7 +26605,7 @@ module.exports = HDNode
 /***/ (function(module, exports, __webpack_require__) {
 
 var Buffer = __webpack_require__(2).Buffer
-var baddress = __webpack_require__(57)
+var baddress = __webpack_require__(58)
 var bcrypto = __webpack_require__(26)
 var bscript = __webpack_require__(5)
 var networks = __webpack_require__(30)
@@ -26516,9 +26616,9 @@ var scriptTypes = bscript.types
 var SIGNABLE = [bscript.types.P2PKH, bscript.types.P2PK, bscript.types.MULTISIG]
 var P2SH = SIGNABLE.concat([bscript.types.P2WPKH, bscript.types.P2WSH])
 
-var ECPair = __webpack_require__(56)
-var ECSignature = __webpack_require__(60)
-var Transaction = __webpack_require__(55)
+var ECPair = __webpack_require__(57)
+var ECSignature = __webpack_require__(61)
+var Transaction = __webpack_require__(56)
 
 function supportedType (type) {
   return SIGNABLE.indexOf(type) !== -1
@@ -27279,10 +27379,10 @@ module.exports = TransactionBuilder
 "use strict";
 
 
-var utils = __webpack_require__(9);
+var utils = __webpack_require__(10);
 var bind = __webpack_require__(95);
 var Axios = __webpack_require__(223);
-var defaults = __webpack_require__(62);
+var defaults = __webpack_require__(63);
 
 /**
  * Create an instance of Axios
@@ -27365,8 +27465,8 @@ function isSlowBuffer (obj) {
 "use strict";
 
 
-var defaults = __webpack_require__(62);
-var utils = __webpack_require__(9);
+var defaults = __webpack_require__(63);
+var utils = __webpack_require__(10);
 var InterceptorManager = __webpack_require__(232);
 var dispatchRequest = __webpack_require__(233);
 
@@ -27451,7 +27551,7 @@ module.exports = Axios;
 "use strict";
 
 
-var utils = __webpack_require__(9);
+var utils = __webpack_require__(10);
 
 module.exports = function normalizeHeaderName(headers, normalizedName) {
   utils.forEach(headers, function processHeader(value, name) {
@@ -27531,7 +27631,7 @@ module.exports = function enhanceError(error, config, code, request, response) {
 "use strict";
 
 
-var utils = __webpack_require__(9);
+var utils = __webpack_require__(10);
 
 function encode(val) {
   return encodeURIComponent(val).
@@ -27606,7 +27706,7 @@ module.exports = function buildURL(url, params, paramsSerializer) {
 "use strict";
 
 
-var utils = __webpack_require__(9);
+var utils = __webpack_require__(10);
 
 // Headers whose duplicates are ignored by node
 // c.f. https://nodejs.org/api/http.html#http_message_headers
@@ -27666,7 +27766,7 @@ module.exports = function parseHeaders(headers) {
 "use strict";
 
 
-var utils = __webpack_require__(9);
+var utils = __webpack_require__(10);
 
 module.exports = (
   utils.isStandardBrowserEnv() ?
@@ -27784,7 +27884,7 @@ module.exports = btoa;
 "use strict";
 
 
-var utils = __webpack_require__(9);
+var utils = __webpack_require__(10);
 
 module.exports = (
   utils.isStandardBrowserEnv() ?
@@ -27844,7 +27944,7 @@ module.exports = (
 "use strict";
 
 
-var utils = __webpack_require__(9);
+var utils = __webpack_require__(10);
 
 function InterceptorManager() {
   this.handlers = [];
@@ -27903,10 +28003,10 @@ module.exports = InterceptorManager;
 "use strict";
 
 
-var utils = __webpack_require__(9);
+var utils = __webpack_require__(10);
 var transformData = __webpack_require__(234);
 var isCancel = __webpack_require__(98);
-var defaults = __webpack_require__(62);
+var defaults = __webpack_require__(63);
 var isAbsoluteURL = __webpack_require__(235);
 var combineURLs = __webpack_require__(236);
 
@@ -27996,7 +28096,7 @@ module.exports = function dispatchRequest(config) {
 "use strict";
 
 
-var utils = __webpack_require__(9);
+var utils = __webpack_require__(10);
 
 /**
  * Transform the data for a request or a response
@@ -28162,7 +28262,7 @@ module.exports = function spread(callback) {
 
 var accumulative = __webpack_require__(240)
 var blackjack = __webpack_require__(241)
-var utils = __webpack_require__(63)
+var utils = __webpack_require__(64)
 
 // order by descending value, minus the inputs approximate fee
 function utxoScore (x, feeRate) {
@@ -28187,7 +28287,7 @@ module.exports = function coinSelect (utxos, outputs, feeRate) {
 /* 240 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var utils = __webpack_require__(63)
+var utils = __webpack_require__(64)
 
 // add inputs until we reach or surpass the target value (or deplete)
 // worst-case: O(n)
@@ -28231,7 +28331,7 @@ module.exports = function accumulative (utxos, outputs, feeRate) {
 /* 241 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var utils = __webpack_require__(63)
+var utils = __webpack_require__(64)
 
 // only add inputs if they don't bust the target value (aka, exact match)
 // worst-case: O(n)
@@ -28371,7 +28471,7 @@ module.exports = function (password, salt, iterations, keylen, digest, callback)
   }), callback)
 }
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(14), __webpack_require__(11)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(16), __webpack_require__(12)))
 
 /***/ }),
 /* 243 */
@@ -28874,11 +28974,11 @@ module.exports = __webpack_require__(104)
 /* 252 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var ebtk = __webpack_require__(39)
-var aes = __webpack_require__(66)
+var ebtk = __webpack_require__(40)
+var aes = __webpack_require__(67)
 var DES = __webpack_require__(264)
 var desModes = __webpack_require__(270)
-var aesModes = __webpack_require__(67)
+var aesModes = __webpack_require__(68)
 function createCipher (suite, password) {
   var keyLen, ivLen
   suite = suite.toLowerCase()
@@ -29109,7 +29209,7 @@ module.exports = MD5
 "use strict";
 
 var Buffer = __webpack_require__(2).Buffer
-var Transform = __webpack_require__(35).Transform
+var Transform = __webpack_require__(36).Transform
 var inherits = __webpack_require__(1)
 
 function throwIfNotStringOrBuffer (val, prefix) {
@@ -29208,13 +29308,13 @@ module.exports = HashBase
 /* 255 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var MODES = __webpack_require__(67)
+var MODES = __webpack_require__(68)
 var AuthCipher = __webpack_require__(107)
 var Buffer = __webpack_require__(2).Buffer
 var StreamCipher = __webpack_require__(108)
 var Transform = __webpack_require__(18)
-var aes = __webpack_require__(40)
-var ebtk = __webpack_require__(39)
+var aes = __webpack_require__(41)
+var ebtk = __webpack_require__(40)
 var inherits = __webpack_require__(1)
 
 function Cipher (mode, key, iv) {
@@ -29601,11 +29701,11 @@ module.exports = GHASH
 
 var AuthCipher = __webpack_require__(107)
 var Buffer = __webpack_require__(2).Buffer
-var MODES = __webpack_require__(67)
+var MODES = __webpack_require__(68)
 var StreamCipher = __webpack_require__(108)
 var Transform = __webpack_require__(18)
-var aes = __webpack_require__(40)
-var ebtk = __webpack_require__(39)
+var aes = __webpack_require__(41)
+var ebtk = __webpack_require__(40)
 var inherits = __webpack_require__(1)
 
 function Decipher (mode, key, iv) {
@@ -29727,7 +29827,7 @@ exports.createDecipheriv = createDecipheriv
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(Buffer) {var CipherBase = __webpack_require__(18)
-var des = __webpack_require__(68)
+var des = __webpack_require__(69)
 var inherits = __webpack_require__(1)
 
 var modes = {
@@ -30042,7 +30142,7 @@ exports.padSplit = function padSplit(num, size, group) {
 "use strict";
 
 
-var assert = __webpack_require__(10);
+var assert = __webpack_require__(11);
 
 function Cipher(options) {
   this.options = options;
@@ -30190,10 +30290,10 @@ Cipher.prototype._finalDecrypt = function _finalDecrypt() {
 "use strict";
 
 
-var assert = __webpack_require__(10);
+var assert = __webpack_require__(11);
 var inherits = __webpack_require__(1);
 
-var des = __webpack_require__(68);
+var des = __webpack_require__(69);
 var utils = des.utils;
 var Cipher = des.Cipher;
 
@@ -30340,7 +30440,7 @@ DES.prototype._decrypt = function _decrypt(state, lStart, rStart, out, off) {
 "use strict";
 
 
-var assert = __webpack_require__(10);
+var assert = __webpack_require__(11);
 var inherits = __webpack_require__(1);
 
 var proto = {};
@@ -30412,10 +30512,10 @@ proto._update = function _update(inp, inOff, out, outOff) {
 "use strict";
 
 
-var assert = __webpack_require__(10);
+var assert = __webpack_require__(11);
 var inherits = __webpack_require__(1);
 
-var des = __webpack_require__(68);
+var des = __webpack_require__(69);
 var Cipher = des.Cipher;
 var DES = des.DES;
 
@@ -30768,7 +30868,7 @@ function formatReturnValue(bn, enc) {
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(Buffer) {var createHash = __webpack_require__(17)
-var stream = __webpack_require__(35)
+var stream = __webpack_require__(36)
 var inherits = __webpack_require__(1)
 var sign = __webpack_require__(278)
 var verify = __webpack_require__(314)
@@ -30866,11 +30966,11 @@ module.exports = {
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(Buffer) {// much of this based on https://github.com/indutny/self-signed/blob/gh-pages/lib/rsa.js
-var createHmac = __webpack_require__(37)
-var crt = __webpack_require__(69)
+var createHmac = __webpack_require__(38)
+var crt = __webpack_require__(70)
 var EC = __webpack_require__(8).ec
 var BN = __webpack_require__(4)
-var parseKeys = __webpack_require__(42)
+var parseKeys = __webpack_require__(43)
 var curves = __webpack_require__(120)
 
 function sign (hash, key, hashType, signType, tag) {
@@ -31028,7 +31128,7 @@ module.exports = {"_args":[[{"raw":"elliptic@^6.0.0","scope":null,"escapedName":
 
 var utils = exports;
 var BN = __webpack_require__(4);
-var minAssert = __webpack_require__(10);
+var minAssert = __webpack_require__(11);
 var minUtils = __webpack_require__(112);
 
 utils.assert = minAssert;
@@ -31535,7 +31635,7 @@ BasePoint.prototype.dblp = function dblp(k) {
 "use strict";
 
 
-var curve = __webpack_require__(41);
+var curve = __webpack_require__(42);
 var elliptic = __webpack_require__(8);
 var BN = __webpack_require__(4);
 var inherits = __webpack_require__(1);
@@ -32480,7 +32580,7 @@ JPoint.prototype.isInfinity = function isInfinity() {
 "use strict";
 
 
-var curve = __webpack_require__(41);
+var curve = __webpack_require__(42);
 var BN = __webpack_require__(4);
 var inherits = __webpack_require__(1);
 var Base = curve.base;
@@ -32667,7 +32767,7 @@ Point.prototype.getX = function getX() {
 "use strict";
 
 
-var curve = __webpack_require__(41);
+var curve = __webpack_require__(42);
 var elliptic = __webpack_require__(8);
 var BN = __webpack_require__(4);
 var inherits = __webpack_require__(1);
@@ -33109,7 +33209,7 @@ Point.prototype.mixedAdd = Point.prototype.add;
 
 var curves = exports;
 
-var hash = __webpack_require__(70);
+var hash = __webpack_require__(71);
 var elliptic = __webpack_require__(8);
 
 var assert = elliptic.utils.assert;
@@ -33333,7 +33433,7 @@ exports.sha512 = __webpack_require__(115);
 "use strict";
 
 
-var utils = __webpack_require__(12);
+var utils = __webpack_require__(15);
 var common = __webpack_require__(32);
 var shaCommon = __webpack_require__(113);
 
@@ -33414,7 +33514,7 @@ SHA1.prototype._digest = function digest(enc) {
 "use strict";
 
 
-var utils = __webpack_require__(12);
+var utils = __webpack_require__(15);
 var SHA256 = __webpack_require__(114);
 
 function SHA224() {
@@ -33451,7 +33551,7 @@ SHA224.prototype._digest = function digest(enc) {
 "use strict";
 
 
-var utils = __webpack_require__(12);
+var utils = __webpack_require__(15);
 
 var SHA512 = __webpack_require__(115);
 
@@ -33493,7 +33593,7 @@ SHA384.prototype._digest = function digest(enc) {
 "use strict";
 
 
-var utils = __webpack_require__(12);
+var utils = __webpack_require__(15);
 var common = __webpack_require__(32);
 
 var rotl32 = utils.rotl32;
@@ -33646,8 +33746,8 @@ var sh = [
 "use strict";
 
 
-var utils = __webpack_require__(12);
-var assert = __webpack_require__(10);
+var utils = __webpack_require__(15);
+var assert = __webpack_require__(11);
 
 function Hmac(hash, key, enc) {
   if (!(this instanceof Hmac))
@@ -34733,9 +34833,9 @@ EC.prototype.getKeyRecoveryParam = function(e, signature, Q, enc) {
 "use strict";
 
 
-var hash = __webpack_require__(70);
+var hash = __webpack_require__(71);
 var utils = __webpack_require__(112);
-var assert = __webpack_require__(10);
+var assert = __webpack_require__(11);
 
 function HmacDRBG(options) {
   if (!(this instanceof HmacDRBG))
@@ -35121,7 +35221,7 @@ Signature.prototype.toDER = function toDER(enc) {
 "use strict";
 
 
-var hash = __webpack_require__(70);
+var hash = __webpack_require__(71);
 var elliptic = __webpack_require__(8);
 var utils = elliptic.utils;
 var assert = utils.assert;
@@ -35904,7 +36004,7 @@ ReporterError.prototype.rethrow = function rethrow(msg) {
 var Reporter = __webpack_require__(34).Reporter;
 var EncoderBuffer = __webpack_require__(34).EncoderBuffer;
 var DecoderBuffer = __webpack_require__(34).DecoderBuffer;
-var assert = __webpack_require__(10);
+var assert = __webpack_require__(11);
 
 // Supported tags
 var tags = [
@@ -36796,8 +36896,8 @@ module.exports = {"2.16.840.1.101.3.4.1.1":"aes-128-ecb","2.16.840.1.101.3.4.1.2
 var findProc = /Proc-Type: 4,ENCRYPTED\n\r?DEK-Info: AES-((?:128)|(?:192)|(?:256))-CBC,([0-9A-H]+)\n\r?\n\r?([0-9A-z\n\r\+\/\=]+)\n\r?/m
 var startRegex = /^-----BEGIN ((?:.* KEY)|CERTIFICATE)-----\n/m
 var fullRegex = /^-----BEGIN ((?:.* KEY)|CERTIFICATE)-----\n\r?([0-9A-z\n\r\+\/\=]+)\n\r?-----END \1-----$/m
-var evp = __webpack_require__(39)
-var ciphers = __webpack_require__(66)
+var evp = __webpack_require__(40)
+var ciphers = __webpack_require__(67)
 module.exports = function (okey, password) {
   var key = okey.toString()
   var match = key.match(findProc)
@@ -36832,7 +36932,7 @@ module.exports = function (okey, password) {
 /* WEBPACK VAR INJECTION */(function(Buffer) {// much of this based on https://github.com/indutny/self-signed/blob/gh-pages/lib/rsa.js
 var BN = __webpack_require__(4)
 var EC = __webpack_require__(8).ec
-var parseKeys = __webpack_require__(42)
+var parseKeys = __webpack_require__(43)
 var curves = __webpack_require__(120)
 
 function verify (sig, hash, key, signType, tag) {
@@ -37063,14 +37163,14 @@ exports.publicDecrypt = function publicDecrypt(key, buf) {
 /* 317 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(Buffer) {var parseKeys = __webpack_require__(42);
+/* WEBPACK VAR INJECTION */(function(Buffer) {var parseKeys = __webpack_require__(43);
 var randomBytes = __webpack_require__(22);
 var createHash = __webpack_require__(17);
 var mgf = __webpack_require__(121);
 var xor = __webpack_require__(122);
 var bn = __webpack_require__(4);
 var withPublic = __webpack_require__(123);
-var crt = __webpack_require__(69);
+var crt = __webpack_require__(70);
 
 var constants = {
   RSA_PKCS1_OAEP_PADDING: 4,
@@ -37164,11 +37264,11 @@ function nonZero(len, crypto) {
 /* 318 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(Buffer) {var parseKeys = __webpack_require__(42);
+/* WEBPACK VAR INJECTION */(function(Buffer) {var parseKeys = __webpack_require__(43);
 var mgf = __webpack_require__(121);
 var xor = __webpack_require__(122);
 var bn = __webpack_require__(4);
-var crt = __webpack_require__(69);
+var crt = __webpack_require__(70);
 var createHash = __webpack_require__(17);
 var withPublic = __webpack_require__(123);
 module.exports = function privateDecrypt(private_key, enc, reverse) {
@@ -37284,7 +37384,7 @@ module.exports = __webpack_require__.p + "dist/assets/fe988edbad4e40a2238f7d1131
 /* 320 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var render = function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"currencySet"},[(_vm.about)?_c('span',{staticClass:"about"},[_vm._v("約")]):_vm._e(),_c('span',{staticClass:"amount"},[_vm._v(_vm._s(_vm.amount))]),_c('span',{staticClass:"ticker"},[_vm._v(_vm._s(_vm.tickerCap))])])}
+var render = function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"currencySet"},[(_vm.about)?_c('span',{staticClass:"about"},[_vm._v("約")]):_vm._e(),_c('span',{staticClass:"amount"},[_vm._v(_vm._s(_vm.compAmt))]),_c('span',{staticClass:"ticker"},[_vm._v(_vm._s(_vm.tickerCap))])])}
 var staticRenderFns = []
 module.exports = function (_exports) {
   var options = typeof _exports === 'function'
@@ -37316,9 +37416,85 @@ if (false) {(function () {
 "use strict";
 
 
+module.exports = __webpack_require__(322)({
+  data: function data() {
+    return {
+      dateObj: null,
+      d: {},
+      mode: "absolute"
+    };
+  },
+
+  props: ["timestamp", "absolute"], //must be second
+  methods: {},
+  store: __webpack_require__(9),
+  computed: {},
+  mounted: function mounted() {
+    var dt = this.dateObj = new Date(this.timestamp * 1000);
+    var diffMsec = Date.now() - this.timestamp * 1000;
+    !this.absolute && (this.mode = this.$store.state.tsMode);
+    this.d.year = dt.getFullYear();
+    this.d.month = dt.getMonth() + 1;
+    this.d.date = dt.getDate();
+    this.d.hour = dt.getHours();
+    this.d.minute = dt.getMinutes();
+    this.d.sec = dt.getSeconds();
+
+    if (diffMsec < 1000 * 60) {
+      this.d.rightnow = true;
+    } else if (diffMsec < 1000 * 60 * 60) {
+      this.d.minAgo = diffMsec / 1000 / 60 | 0;
+    } else if (diffMsec < 1000 * 60 * 60 * 24) {
+      this.d.hrAgo = diffMsec / 1000 / 60 / 60 | 0;
+    } else if (diffMsec < 1000 * 60 * 60 * 24 * 30) {
+      this.d.dayAgo = diffMsec / 1000 / 60 / 60 / 24 | 0;
+    } else if (diffMsec < 1000 * 60 * 60 * 24 * 30 * 12) {
+      this.d.monthAgo = diffMsec / 1000 / 60 / 60 / 24 / 30 | 0;
+    } else {
+      this.d.yearAgo = diffMsec / 1000 / 60 / 60 / 24 / 30 / 12 | 0;
+    }
+  }
+});
+
+/***/ }),
+/* 322 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('span',{staticClass:"timestamp"},[(_vm.mode==='absolute')?_c('span',{staticClass:"absolute"},[_vm._v("\n    "+_vm._s(_vm.d.year)+"/"+_vm._s(_vm.d.month)+"/"+_vm._s(_vm.d.date)+" "+_vm._s(_vm.d.hour)+":"+_vm._s(_vm.d.minute)+":"+_vm._s(_vm.d.sec)+"\n  ")]):_vm._e(),_vm._v(" "),(_vm.mode==='relative')?_c('span',{staticClass:"relative"},[(_vm.d.rightnow)?_c('span',[_vm._v("たった今")]):_vm._e(),_vm._v(" "),(_vm.d.minAgo)?_c('span',[_vm._v(_vm._s(_vm.d.minAgo)+"分前")]):_vm._e(),_vm._v(" "),(_vm.d.hrAgo)?_c('span',[_vm._v(_vm._s(_vm.d.hrAgo)+"時間前")]):_vm._e(),_vm._v(" "),(_vm.d.dayAgo)?_c('span',[_vm._v(_vm._s(_vm.d.dayAgo)+"日前")]):_vm._e(),_vm._v(" "),(_vm.d.monthAgo)?_c('span',[_vm._v(_vm._s(_vm.d.monthAgo)+"か月前")]):_vm._e(),_vm._v(" "),(_vm.d.yearAgo)?_c('span',[_vm._v(_vm._s(_vm.d.yearAgo)+"年前")]):_vm._e()]):_vm._e()])}
+var staticRenderFns = []
+module.exports = function (_exports) {
+  var options = typeof _exports === 'function'
+    ? _exports.options
+    : _exports
+  options.render = render
+  options.staticRenderFns = staticRenderFns
+  if (false) {
+    api.createRecord("data-v-73a618e6", options)
+  }
+  return _exports
+}
+var api = null
+if (false) {(function () {
+  api = require("vue-hot-reload-api")
+  api.install(require("vue"))
+  if (!api.compatible) return
+  module.hot.accept()
+  if (module.hot.data) {
+    api.rerender("data-v-73a618e6", { render: render, staticRenderFns: staticRenderFns })
+  }
+})()}
+
+
+/***/ }),
+/* 323 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
 var storage = __webpack_require__(19);
 
-module.exports = __webpack_require__(322)({
+module.exports = __webpack_require__(324)({
   data: function data() {
     return {
       pageStack: [],
@@ -37327,24 +37503,28 @@ module.exports = __webpack_require__(322)({
     };
   },
 
+  store: __webpack_require__(9),
   methods: {
     home: function home() {
-      this.openSide = false;this.$set(this, "pageStack", [__webpack_require__(43)]);
+      this.openSide = false;this.$set(this, "pageStack", [__webpack_require__(44)]);
     },
     receive: function receive() {
-      this.openSide = false;this.$set(this, "pageStack", [__webpack_require__(328)]);
+      this.openSide = false;this.$set(this, "pageStack", [__webpack_require__(330)]);
     },
     send: function send() {
       this.openSide = false;this.$set(this, "pageStack", [__webpack_require__(124)]);
     },
     history: function history() {
-      this.openSide = false;this.$set(this, "pageStack", [__webpack_require__(350)]);
-    },
-    settings: function settings() {
       this.openSide = false;this.$set(this, "pageStack", [__webpack_require__(352)]);
     },
+    settings: function settings() {
+      this.openSide = false;this.$set(this, "pageStack", [__webpack_require__(356)]);
+    },
     help: function help() {
-      this.openSide = false;this.$set(this, "pageStack", [__webpack_require__(357)]);
+      this.openSide = false;this.$set(this, "pageStack", [__webpack_require__(361)]);
+    },
+    zaifPay: function zaifPay() {
+      this.openSide = false;this.$set(this, "pageStack", [__webpack_require__(376)]);
     }
   },
   created: function created() {
@@ -37355,17 +37535,17 @@ module.exports = __webpack_require__(322)({
 
         _this.pageStack.push(__webpack_require__(133));
       } else {
-        _this.pageStack.push(__webpack_require__(359));
+        _this.pageStack.push(__webpack_require__(363));
       }
     });
   }
 });
 
 /***/ }),
-/* 322 */
+/* 324 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var render = function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('v-ons-splitter',[_c('v-ons-splitter-side',{attrs:{"width":"250px","collapse":"","side":"left","open":_vm.openSide},on:{"update:open":function($event){_vm.openSide=$event}}},[_c('v-ons-page',[_c('v-ons-list',[_c('v-ons-list-item',{attrs:{"modifier":"tappable"},on:{"click":_vm.home}},[_c('div',{staticClass:"left"},[_c('v-ons-icon',{attrs:{"icon":"fa-home"}})],1),_vm._v(" "),_c('div',{staticClass:"center"},[_vm._v("ホーム")])]),_vm._v(" "),_c('v-ons-list-item',{attrs:{"modifier":"tappable"},on:{"click":_vm.receive}},[_c('div',{staticClass:"left"},[_c('v-ons-icon',{attrs:{"icon":"fa-qrcode"}})],1),_vm._v(" "),_c('div',{staticClass:"center"},[_vm._v("受け取り/QR")])]),_vm._v(" "),_c('v-ons-list-item',{attrs:{"modifier":"tappable"},on:{"click":_vm.send}},[_c('div',{staticClass:"left"},[_c('v-ons-icon',{attrs:{"icon":"fa-paper-plane"}})],1),_vm._v(" "),_c('div',{staticClass:"center"},[_vm._v("送る")])]),_vm._v(" "),_c('v-ons-list-item',{attrs:{"modifier":"tappable"},on:{"click":_vm.history}},[_c('div',{staticClass:"left"},[_c('v-ons-icon',{attrs:{"icon":"fa-history"}})],1),_vm._v(" "),_c('div',{staticClass:"center"},[_vm._v("履歴")])]),_vm._v(" "),_c('v-ons-list-item',{attrs:{"modifier":"tappable"},on:{"click":_vm.settings}},[_c('div',{staticClass:"left"},[_c('v-ons-icon',{attrs:{"icon":"fa-cog"}})],1),_vm._v(" "),_c('div',{staticClass:"center"},[_vm._v("設定")])]),_vm._v(" "),_c('v-ons-list-item',{attrs:{"modifier":"tappable"},on:{"click":_vm.help}},[_c('div',{staticClass:"left"},[_c('v-ons-icon',{attrs:{"icon":"fa-question"}})],1),_vm._v(" "),_c('div',{staticClass:"center"},[_vm._v("ヘルプ/豆知識")])])],1)],1)],1),_vm._v(" "),_c('v-ons-splitter-content',[_c('v-ons-navigator',{attrs:{"swipeable":"","page-stack":_vm.pageStack,"options":{animation:'slide'}},on:{"push":function($event){_vm.pageStack = _vm.pageStack.concat( [$event])},"reset":function($event){_vm.pageStack = [_vm.pageStack[0]]},"replace":function($event){_vm.pageStack=[$event]},"pop":function($event){_vm.pageStack.pop()}}})],1)],1)}
+var render = function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('v-ons-splitter',[_c('v-ons-splitter-side',{attrs:{"width":"250px","collapse":"","side":"left","open":_vm.openSide},on:{"update:open":function($event){_vm.openSide=$event}}},[_c('v-ons-page',[_c('v-ons-list',[_c('v-ons-list-item',{attrs:{"modifier":"tappable"},on:{"click":_vm.home}},[_c('div',{staticClass:"left"},[_c('v-ons-icon',{attrs:{"icon":"fa-home"}})],1),_vm._v(" "),_c('div',{staticClass:"center"},[_vm._v("ホーム")])]),_vm._v(" "),_c('v-ons-list-item',{attrs:{"modifier":"tappable"},on:{"click":_vm.receive}},[_c('div',{staticClass:"left"},[_c('v-ons-icon',{attrs:{"icon":"fa-qrcode"}})],1),_vm._v(" "),_c('div',{staticClass:"center"},[_vm._v("受け取り/QR")])]),_vm._v(" "),_c('v-ons-list-item',{attrs:{"modifier":"tappable"},on:{"click":_vm.send}},[_c('div',{staticClass:"left"},[_c('v-ons-icon',{attrs:{"icon":"fa-paper-plane"}})],1),_vm._v(" "),_c('div',{staticClass:"center"},[_vm._v("送る")])]),_vm._v(" "),_c('v-ons-list-item',{attrs:{"modifier":"tappable"},on:{"click":_vm.history}},[_c('div',{staticClass:"left"},[_c('v-ons-icon',{attrs:{"icon":"fa-history"}})],1),_vm._v(" "),_c('div',{staticClass:"center"},[_vm._v("履歴")])]),_vm._v(" "),(_vm.$store.state.zaifPayEnabled)?_c('v-ons-list-item',{attrs:{"modifier":"tappable"},on:{"click":_vm.zaifPay}},[_c('div',{staticClass:"left"},[_c('v-ons-icon',{attrs:{"icon":"fa-shopping-cart"}})],1),_vm._v(" "),_c('div',{staticClass:"center"},[_vm._v("Zaif Payment")])]):_vm._e(),_vm._v(" "),_c('v-ons-list-item',{attrs:{"modifier":"tappable"},on:{"click":_vm.settings}},[_c('div',{staticClass:"left"},[_c('v-ons-icon',{attrs:{"icon":"fa-cog"}})],1),_vm._v(" "),_c('div',{staticClass:"center"},[_vm._v("設定")])]),_vm._v(" "),_c('v-ons-list-item',{attrs:{"modifier":"tappable"},on:{"click":_vm.help}},[_c('div',{staticClass:"left"},[_c('v-ons-icon',{attrs:{"icon":"fa-question"}})],1),_vm._v(" "),_c('div',{staticClass:"center"},[_vm._v("ヘルプ/豆知識")])])],1)],1)],1),_vm._v(" "),_c('v-ons-splitter-content',[_c('v-ons-navigator',{attrs:{"swipeable":"","page-stack":_vm.pageStack,"options":{animation:'slide'}},on:{"push":function($event){_vm.pageStack = _vm.pageStack.concat( [$event])},"reset":function($event){_vm.pageStack = [_vm.pageStack[0]]},"replace":function($event){_vm.pageStack=[$event]},"pop":function($event){_vm.pageStack.pop()}}})],1)],1)}
 var staticRenderFns = []
 module.exports = function (_exports) {
   var options = typeof _exports === 'function'
@@ -37391,10 +37571,10 @@ if (false) {(function () {
 
 
 /***/ }),
-/* 323 */
+/* 325 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var render = function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('v-ons-page',{attrs:{"data-page":"home"}},[_c('custom-bar',{attrs:{"title":"ホーム","menu":"true"}}),_vm._v(" "),_c('div',[_c('div',{attrs:{"id":"youHave"}},[_c('div',{directives:[{name:"show",rawName:"v-show",value:(!_vm.loading),expression:"!loading"}]},[_c('div',{staticClass:"label"},[_vm._v("あなたが今持っているのは")]),_vm._v(" "),_c('div',{attrs:{"id":"balanceWrap"}},[_c('currency-set',{attrs:{"amount":_vm.fiatConv,"ticker":_vm.fiat,"easy":_vm.isEasy,"about":"true"}})],1)]),_vm._v(" "),_c('div',{directives:[{name:"show",rawName:"v-show",value:(_vm.loading),expression:"loading"}],staticClass:"spinner"})]),_vm._v(" "),_c('div',{attrs:{"id":"coins"}},[_c('v-ons-list',_vm._l((_vm.curs),function(c){return _c('v-ons-list-item',{attrs:{"modifier":"tappable"}},[_c('div',{staticClass:"left"},[_c('img',{attrs:{"src":c.icon}})]),_vm._v(" "),_c('div',[_c('div',{staticClass:"screenName"},[_vm._v(_vm._s(c.screenName))]),_vm._v(" "),_c('div',{staticClass:"price"},[_c('currency-set',{attrs:{"amount":c.price,"ticker":c.coinId,"fiatTicker":_vm.fiat,"easy":_vm.isEasy}})],1)]),_vm._v(" "),_c('div',{staticClass:"w_right"},[_c('div',{staticClass:"amount",class:{unconfirmed:c.unconfirmed}},[_c('currency-set',{attrs:{"amount":c.balance,"ticker":c.coinId,"easy":_vm.isEasy}})],1),_vm._v(" "),_c('div',{staticClass:"fiatConv"},[_c('currency-set',{attrs:{"amount":c.balance*c.price,"ticker":_vm.fiat,"easy":_vm.isEasy}})],1)])])}))],1)])],1)}
+var render = function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('v-ons-page',{attrs:{"data-page":"home"}},[_c('custom-bar',{attrs:{"title":"ホーム","menu":"true"}},[_c('v-ons-toolbar-button',{on:{"click":_vm.load}},[_c('v-ons-icon',{attrs:{"icon":"ion-ios-reload"}})],1)],1),_vm._v(" "),_c('div',[_c('div',{attrs:{"id":"youHave"}},[_c('div',{directives:[{name:"show",rawName:"v-show",value:(!_vm.loading),expression:"!loading"}]},[_c('div',{staticClass:"label"},[_vm._v("あなたが今持っているのは")]),_vm._v(" "),_c('div',{attrs:{"id":"balanceWrap"}},[_c('currency-set',{attrs:{"amount":_vm.fiatConv,"ticker":_vm.fiat,"easy":_vm.isEasy,"about":"true"}})],1)]),_vm._v(" "),_c('div',{directives:[{name:"show",rawName:"v-show",value:(_vm.loading),expression:"loading"}],staticClass:"spinner"})]),_vm._v(" "),_c('div',{attrs:{"id":"coins"}},[_c('v-ons-list',_vm._l((_vm.curs),function(c){return _c('v-ons-list-item',{attrs:{"modifier":"tappable"}},[_c('div',{staticClass:"left"},[_c('img',{attrs:{"src":c.icon}})]),_vm._v(" "),_c('div',[_c('div',{staticClass:"screenName"},[_vm._v(_vm._s(c.screenName))]),_vm._v(" "),_c('div',{staticClass:"price"},[_c('currency-set',{attrs:{"amount":c.price,"ticker":c.coinId,"fiatTicker":_vm.fiat,"easy":_vm.isEasy}})],1)]),_vm._v(" "),_c('div',{staticClass:"w_right"},[_c('div',{staticClass:"amount",class:{unconfirmed:c.unconfirmed}},[_c('currency-set',{attrs:{"amount":c.balance,"ticker":c.coinId,"easy":_vm.isEasy}}),_c('span',{directives:[{name:"show",rawName:"v-show",value:(c.unconfirmed),expression:"c.unconfirmed"}]},[_vm._v("+"+_vm._s(c.unconfirmed)+"待機中")])],1),_vm._v(" "),_c('div',{staticClass:"fiatConv"},[_c('currency-set',{attrs:{"amount":c.balance*c.price,"ticker":_vm.fiat,"easy":_vm.isEasy}})],1)])])}))],1)])],1)}
 var staticRenderFns = []
 module.exports = function (_exports) {
   var options = typeof _exports === 'function'
@@ -37420,7 +37600,7 @@ if (false) {(function () {
 
 
 /***/ }),
-/* 324 */
+/* 326 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('v-ons-page',{attrs:{"data-page":"send"}},[_c('custom-bar',{attrs:{"title":"送る","menu":"true"}}),_vm._v(" "),_c('div',[_c('v-ons-list',[_c('v-ons-list-header',[_vm._v("送金先")]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_c('v-ons-list-item',[_c('v-ons-input',{attrs:{"placeholder":"送金先アドレス"},model:{value:(_vm.address),callback:function ($$v) {_vm.address=$$v},expression:"address"}})],1)],1),_vm._v(" "),_c('div',{staticClass:"right"},[_c('v-ons-icon',{attrs:{"icon":"fa-address-card"}})],1)]),_vm._v(" "),_c('v-ons-list-header',[_vm._v("コイン種類")]),_vm._v(" "),_vm._l((_vm.possibility),function(co){return _c('v-ons-list-item',[_c('div',{staticClass:"left"},[_c('v-ons-radio',{attrs:{"input-id":'coinType-'+co.coinId,"value":co.coinId},model:{value:(_vm.coinType),callback:function ($$v) {_vm.coinType=$$v},expression:"coinType"}})],1),_vm._v(" "),_c('label',{staticClass:"center",attrs:{"for":'coinType-'+co.coinId}},[_vm._v("\n          "+_vm._s(co.name)+"\n        ")]),_vm._v(" "),_c('div',{staticClass:"right"},[_c('currency-set',{attrs:{"ticker":co.coinId,"easy":_vm.isEasy}})],1)])}),_vm._v(" "),_c('v-ons-list-item',{directives:[{name:"show",rawName:"v-show",value:(_vm.possibility.length<=0),expression:"possibility.length<=0"}]},[_c('div',{staticClass:"left"}),_vm._v(" "),_c('label',{staticClass:"center"},[_vm._v("まずは出金先アドレスを指定してください。")])]),_vm._v(" "),_c('v-ons-list-header',[_vm._v("相手に送金する金額")]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_c('v-ons-input',{attrs:{"type":"number","placeholder":"相手に送金する金額","disabled":!_vm.address||!_vm.coinType},model:{value:(_vm.amount),callback:function ($$v) {_vm.amount=$$v},expression:"amount"}})],1),_vm._v(" "),_c('div',{staticClass:"right"},[_c('currency-set',{attrs:{"ticker":_vm.coinType,"easy":_vm.isEasy}})],1)]),_vm._v(" "),_c('v-ons-list-header',[_vm._v("日本円換算")]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_c('v-ons-input',{attrs:{"type":"number","placeholder":"日本円","disabled":!_vm.address||!_vm.coinType},model:{value:(_vm.fiat),callback:function ($$v) {_vm.fiat=$$v},expression:"fiat"}})],1),_vm._v(" "),_c('div',{staticClass:"right"},[_c('currency-set',{attrs:{"ticker":"jpy","easy":_vm.isEasy}})],1)]),_vm._v(" "),_c('v-ons-list-item',[_c('v-ons-button',{attrs:{"modifier":"large","disabled":!_vm.address||!_vm.amount||!_vm.feePerByte},on:{"click":_vm.confirm}},[_vm._v("確認画面へ")])],1),_vm._v(" "),_c('v-ons-list-item',{directives:[{name:"show",rawName:"v-show",value:(!_vm.advanced),expression:"!advanced"}],on:{"click":function($event){_vm.advanced=true}}},[_c('div',{staticClass:"left"},[_c('v-ons-icon',{attrs:{"icon":"fa-caret-down"}})],1),_vm._v(" "),_c('div',{staticClass:"center"},[_vm._v("詳細オプション")])]),_vm._v(" "),_c('div',{directives:[{name:"show",rawName:"v-show",value:(_vm.advanced),expression:"advanced"}]},[_c('v-ons-list-header',[_vm._v("送金手数料(sat/Byte)")]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_c('v-ons-input',{attrs:{"type":"number","placeholder":"送金手数料(satoshi/Byte)","disabled":!_vm.address||!_vm.coinType},model:{value:(_vm.feePerByte),callback:function ($$v) {_vm.feePerByte=$$v},expression:"feePerByte"}})],1),_vm._v(" "),_c('div',{staticClass:"right"},[_c('currency-set',{attrs:{"ticker":"satByte","easy":_vm.isEasy}})],1)]),_vm._v(" "),_c('v-ons-list-header',[_vm._v("メッセージ")]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_c('v-ons-input',{attrs:{"placeholder":"80Byteまで"},model:{value:(_vm.message),callback:function ($$v) {_vm.message=$$v},expression:"message"}})],1),_vm._v(" "),_c('div',{staticClass:"right"},[_c('v-ons-icon',{attrs:{"icon":"comment"}})],1)])],1)],2)],1)],1)}
@@ -37449,18 +37629,18 @@ if (false) {(function () {
 
 
 /***/ }),
-/* 325 */
+/* 327 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 /* WEBPACK VAR INJECTION */(function(Buffer) {
 
 var storage = __webpack_require__(19);
-var coinUtil = __webpack_require__(15);
-var currencyList = __webpack_require__(16);
-var bcLib = __webpack_require__(45);
-var errors = __webpack_require__(64);
-module.exports = __webpack_require__(326)({
+var coinUtil = __webpack_require__(14);
+var currencyList = __webpack_require__(13);
+var bcLib = __webpack_require__(35);
+var errors = __webpack_require__(65);
+module.exports = __webpack_require__(328)({
   data: function data() {
     return {
       address: "",
@@ -37470,7 +37650,7 @@ module.exports = __webpack_require__(326)({
       fee: 0,
       destHasUsed: false,
       message: "",
-      myBalanceBeforeSendingSat: 0,
+      myBalanceBeforeSending: 0,
       showDetail: false,
       utxosToShow: null,
       signedHex: null,
@@ -37487,19 +37667,25 @@ module.exports = __webpack_require__(326)({
     };
   },
 
-  store: __webpack_require__(13),
+  store: __webpack_require__(9),
   mounted: function mounted() {
     var _this = this;
 
     ["address", "amount", "fiat", "feePerByte", "message", "coinType"].forEach(function (v) {
       _this[v] = _this.$store.state.confPayload[v];
     });
+    this.cur = currencyList.get(this.coinType);
     this.$nextTick(this.build);
+    currencyList.get(this.coinType).getAddressProp("totalReceived", this.address).then(function (res) {
+      if (res | 0) {
+        _this.destHasUsed = true;
+      }
+    });
   },
 
   computed: {
     afterSent: function afterSent() {
-      return (this.myBalanceBeforeSendingSat - this.amount * 100000000 - this.fee * 100000000) / 100000000;
+      return this.myBalanceBeforeSending - this.amount - this.fee;
     },
     utxosJson: function utxosJson() {
       return JSON.stringify(this.utxosToShow);
@@ -37507,7 +37693,7 @@ module.exports = __webpack_require__(326)({
     build: function build() {
       var _this2 = this;
 
-      var cur = this.cur = currencyList.get(this.coinType);
+      var cur = this.cur;
       var targets = [{
         address: this.address,
         value: this.amount * 100000000
@@ -37525,7 +37711,7 @@ module.exports = __webpack_require__(326)({
         _this2.fee = d.fee / 100000000;
         _this2.utxosToShow = d.utxos;
         _this2.path = d.path;
-        _this2.myBalanceBeforeSendingSat = d.balance;
+        _this2.myBalanceBeforeSending = d.balance;
         _this2.txb = d.txBuilder;
         _this2.ready = true;
         _this2.loading = false;
@@ -37556,7 +37742,7 @@ module.exports = __webpack_require__(326)({
         });
         return cur.pushTx(finalTx.toHex());
       }).then(function (res) {
-        _this3.$store.commit("setFinishNextPage", { page: __webpack_require__(43), infoId: "sent", payload: {
+        _this3.$store.commit("setFinishNextPage", { page: __webpack_require__(44), infoId: "sent", payload: {
             txId: res.txid
           } });
         _this3.$emit("replace", __webpack_require__(125));
@@ -37570,7 +37756,7 @@ module.exports = __webpack_require__(326)({
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0).Buffer))
 
 /***/ }),
-/* 326 */
+/* 328 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('v-ons-page',{attrs:{"data-page":"confirm"}},[_c('custom-bar',{attrs:{"title":"送る","menu":"true"}}),_vm._v(" "),_c('div',[_c('v-ons-list',[_c('v-ons-list-item',[_vm._v("\n        "+_vm._s(_vm.address)+"\n      ")]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_vm._v("送金先アドレスは")]),_vm._v(" "),_c('div',{directives:[{name:"show",rawName:"v-show",value:(_vm.destHasUsed),expression:"destHasUsed"}],staticClass:"right"},[_vm._v("使われた事があります")]),_vm._v(" "),_c('div',{directives:[{name:"show",rawName:"v-show",value:(!_vm.destHasUsed),expression:"!destHasUsed"}],staticClass:"right"},[_vm._v("初めて使用されます")])]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_vm._v("送金額")]),_vm._v(" "),_c('div',{staticClass:"right"},[_c('currency-set',{attrs:{"ticker":_vm.coinType,"amount":_vm.amount,"easy":_vm.isEasy}})],1)]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"}),_vm._v(" "),_c('div',{staticClass:"right"},[_vm._v("("),_c('currency-set',{attrs:{"ticker":_vm.$store.state.fiat,"amount":_vm.fiat,"about":true,"easy":_vm.isEasy}}),_vm._v(")")],1)]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_vm._v("送金手数料")]),_vm._v(" "),_c('div',{staticClass:"right"},[_c('currency-set',{attrs:{"ticker":_vm.coinType,"amount":_vm.fee,"easy":_vm.isEasy}})],1)]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_vm._v("メッセージ")]),_vm._v(" "),_c('div',{staticClass:"right"},[_vm._v(_vm._s(_vm.message))])]),_vm._v(" "),_c('v-ons-list-item',{class:{'insufficientFund':_vm.insufficientFund}},[_c('div',{staticClass:"center"},[_vm._v("あなたの送金後の残高")]),_vm._v(" "),_c('div',{staticClass:"right"},[_c('currency-set',{attrs:{"ticker":_vm.coinType,"amount":_vm.afterSent,"easy":_vm.isEasy}})],1)]),_vm._v(" "),_c('v-ons-list-header',[_vm._v("送金したあとは元に戻すことはできません。")]),_vm._v(" "),_c('v-ons-list-item',[_c('v-ons-input',{attrs:{"placeholder":"パスワード"},model:{value:(_vm.password),callback:function ($$v) {_vm.password=$$v},expression:"password"}})],1),_vm._v(" "),_c('v-ons-list-item',[_c('v-ons-button',{attrs:{"modifier":"large","disabled":!_vm.ready||!_vm.password},on:{"click":_vm.next}},[_vm._v("送金")])],1)],1)],1),_vm._v(" "),_c('v-ons-modal',{attrs:{"visible":_vm.loading}},[_c('p',{staticStyle:{"text-align":"center"}},[_vm._v("\n        トランザクションデータ作成中\n        "),_c('br'),_c('br')]),_c('div',{staticClass:"spinner"}),_vm._v(" "),_c('br'),_vm._v(" "),_c('v-ons-button',{attrs:{"modifier":"quiet"},on:{"click":function($event){_vm.$emit('pop')}}},[_vm._v("キャンセル")]),_vm._v(" "),_c('p')],1)],1)}
@@ -37599,7 +37785,7 @@ if (false) {(function () {
 
 
 /***/ }),
-/* 327 */
+/* 329 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('v-ons-page',{attrs:{"data-page":"finished"}},[_c('div',{staticClass:"wrap"},[_c('div',{staticClass:"succeeded",attrs:{"data-img":"0"}}),_vm._v(" "),(_vm.infoId==='createdWallet')?_c('p',[_vm._v("ウォレットを作成しました！")]):_vm._e(),_vm._v(" "),(_vm.infoId==='sent')?_c('p',[_vm._v("送金しました！トランザクションID:"+_vm._s(_vm.payload.txId))]):_vm._e(),_vm._v(" "),_c('v-ons-button',{attrs:{"modifier":"large"},on:{"click":_vm.start}},[_vm._v("OK")])],1)])}
@@ -37628,19 +37814,19 @@ if (false) {(function () {
 
 
 /***/ }),
-/* 328 */
+/* 330 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 var qrcode = __webpack_require__(126);
-var currencyList = __webpack_require__(16);
+var currencyList = __webpack_require__(13);
 var storage = __webpack_require__(19);
 var Currency = __webpack_require__(77);
-var coinUtil = __webpack_require__(15);
+var coinUtil = __webpack_require__(14);
 
-module.exports = __webpack_require__(347)({
+module.exports = __webpack_require__(349)({
   data: function data() {
     return {
       mainAddress: "",
@@ -37652,11 +37838,12 @@ module.exports = __webpack_require__(347)({
       labels: [coinUtil.DEFAULT_LABEL_NAME],
       dialogVisible: false,
       labelInput: "",
-      maxLabel: coinUtil.LABEL_MAX_INDEX
+      maxLabel: coinUtil.GAP_LIMIT,
+      state: "initial"
     };
   },
 
-  store: __webpack_require__(13),
+  store: __webpack_require__(9),
   methods: {
     getMainAddress: function getMainAddress() {
       var _this = this;
@@ -37672,7 +37859,9 @@ module.exports = __webpack_require__(347)({
 
       this.currentCurIcon = cur.icon;
     },
-    copyAddress: function copyAddress() {},
+    copyAddress: function copyAddress() {
+      coinUtil.copy(currencyList.get(this.currency[this.currencyIndex].coinId).bip21 + ":" + this.mainAddress);
+    },
     getLabels: function getLabels() {
       var _this2 = this;
 
@@ -37698,7 +37887,10 @@ module.exports = __webpack_require__(347)({
     },
     showLabel: function showLabel(coinId, name, change, index) {
       this.$store.commit("setLabelToShow", { coinId: coinId, name: name, index: index, change: change });
-      this.$emit("push", __webpack_require__(348));
+      this.$emit("push", __webpack_require__(350));
+    },
+    createInvoice: function createInvoice() {
+      this.$emit("push", __webpack_require__(373));
     }
   },
   watch: {
@@ -37724,24 +37916,24 @@ module.exports = __webpack_require__(347)({
 });
 
 /***/ }),
-/* 329 */
+/* 331 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var Buffer = __webpack_require__(28)
 var Utils = __webpack_require__(23)
-var ECLevel = __webpack_require__(72)
-var BitBuffer = __webpack_require__(330)
-var BitMatrix = __webpack_require__(331)
-var AlignmentPattern = __webpack_require__(332)
-var FinderPattern = __webpack_require__(333)
-var MaskPattern = __webpack_require__(334)
+var ECLevel = __webpack_require__(73)
+var BitBuffer = __webpack_require__(332)
+var BitMatrix = __webpack_require__(333)
+var AlignmentPattern = __webpack_require__(334)
+var FinderPattern = __webpack_require__(335)
+var MaskPattern = __webpack_require__(336)
 var ECCode = __webpack_require__(127)
-var ReedSolomonEncoder = __webpack_require__(335)
+var ReedSolomonEncoder = __webpack_require__(337)
 var Version = __webpack_require__(128)
-var FormatInfo = __webpack_require__(338)
+var FormatInfo = __webpack_require__(340)
 var Mode = __webpack_require__(24)
-var Segments = __webpack_require__(339)
-var isArray = __webpack_require__(71)
+var Segments = __webpack_require__(341)
+var isArray = __webpack_require__(72)
 
 /**
  * QRCode for JavaScript
@@ -38229,7 +38421,7 @@ exports.create = function create (data, options) {
 
 
 /***/ }),
-/* 330 */
+/* 332 */
 /***/ (function(module, exports) {
 
 function BitBuffer () {
@@ -38272,7 +38464,7 @@ module.exports = BitBuffer
 
 
 /***/ }),
-/* 331 */
+/* 333 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var Buffer = __webpack_require__(28)
@@ -38347,7 +38539,7 @@ module.exports = BitMatrix
 
 
 /***/ }),
-/* 332 */
+/* 334 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -38436,7 +38628,7 @@ exports.getPositions = function getPositions (version) {
 
 
 /***/ }),
-/* 333 */
+/* 335 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var getSymbolSize = __webpack_require__(23).getSymbolSize
@@ -38464,7 +38656,7 @@ exports.getPositions = function getPositions (version) {
 
 
 /***/ }),
-/* 334 */
+/* 336 */
 /***/ (function(module, exports) {
 
 /**
@@ -38704,11 +38896,11 @@ exports.getBestMask = function getBestMask (data, setupFormatFunc) {
 
 
 /***/ }),
-/* 335 */
+/* 337 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var Buffer = __webpack_require__(28)
-var Polynomial = __webpack_require__(336)
+var Polynomial = __webpack_require__(338)
 
 function ReedSolomonEncoder (degree) {
   this.genPoly = undefined
@@ -38769,11 +38961,11 @@ module.exports = ReedSolomonEncoder
 
 
 /***/ }),
-/* 336 */
+/* 338 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var Buffer = __webpack_require__(28)
-var GF = __webpack_require__(337)
+var GF = __webpack_require__(339)
 
 /**
  * Multiplies two polynomials inside Galois Field
@@ -38839,7 +39031,7 @@ exports.generateECPolynomial = function generateECPolynomial (degree) {
 
 
 /***/ }),
-/* 337 */
+/* 339 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var Buffer = __webpack_require__(28)
@@ -38917,7 +39109,7 @@ exports.mul = function mul (x, y) {
 
 
 /***/ }),
-/* 338 */
+/* 340 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var Utils = __webpack_require__(23)
@@ -38952,17 +39144,17 @@ exports.getEncodedBits = function getEncodedBits (errorCorrectionLevel, mask) {
 
 
 /***/ }),
-/* 339 */
+/* 341 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var Mode = __webpack_require__(24)
-var NumericData = __webpack_require__(340)
-var AlphanumericData = __webpack_require__(341)
-var ByteData = __webpack_require__(342)
-var KanjiData = __webpack_require__(343)
+var NumericData = __webpack_require__(342)
+var AlphanumericData = __webpack_require__(343)
+var ByteData = __webpack_require__(344)
+var KanjiData = __webpack_require__(345)
 var Regex = __webpack_require__(129)
 var Utils = __webpack_require__(23)
-var dijkstra = __webpack_require__(344)
+var dijkstra = __webpack_require__(346)
 
 /**
  * Returns UTF8 byte length
@@ -39288,7 +39480,7 @@ exports.rawSplit = function rawSplit (data) {
 
 
 /***/ }),
-/* 340 */
+/* 342 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var Mode = __webpack_require__(24)
@@ -39337,7 +39529,7 @@ module.exports = NumericData
 
 
 /***/ }),
-/* 341 */
+/* 343 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var Mode = __webpack_require__(24)
@@ -39402,7 +39594,7 @@ module.exports = AlphanumericData
 
 
 /***/ }),
-/* 342 */
+/* 344 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var Buffer = __webpack_require__(28)
@@ -39435,7 +39627,7 @@ module.exports = ByteData
 
 
 /***/ }),
-/* 343 */
+/* 345 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var Mode = __webpack_require__(24)
@@ -39495,7 +39687,7 @@ module.exports = KanjiData
 
 
 /***/ }),
-/* 344 */
+/* 346 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -39667,7 +39859,7 @@ if (true) {
 
 
 /***/ }),
-/* 345 */
+/* 347 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var Utils = __webpack_require__(130)
@@ -39736,7 +39928,7 @@ exports.renderToDataURL = function renderToDataURL (qrData, canvas, options) {
 
 
 /***/ }),
-/* 346 */
+/* 348 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var Utils = __webpack_require__(130)
@@ -39784,10 +39976,10 @@ exports.render = function render (qrData, options) {
 
 
 /***/ }),
-/* 347 */
+/* 349 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var render = function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('v-ons-page',{attrs:{"data-page":"receive"}},[_c('custom-bar',{attrs:{"title":"受け取り","menu":"true"}}),_vm._v(" "),_c('div',[_c('div',{attrs:{"id":"currencySelector"}},[_c('v-ons-carousel',{attrs:{"swipeable":"","overscrollable":"","direction":"horizontal","item-height":"50px","item-width":"50px","index":_vm.currencyIndex}},_vm._l((_vm.currency),function(crc,i){return _c('v-ons-carousel-item',{staticClass:"currencyIcon",style:({'background-image':'url('+crc.icon+')'}),on:{"click":function($event){_vm.currencyIndex=i}}},[_c('div',{directives:[{name:"show",rawName:"v-show",value:(_vm.currencyIndex==i),expression:"currencyIndex==i"}],staticClass:"checked"})])}))],1),_vm._v(" "),_c('div',{attrs:{"id":"simple"}},[_c('div',{staticClass:"label"},[_vm._v("とりあえず送ってもらう")]),_vm._v(" "),_c('div',{attrs:{"id":"qrArea"}},[_c('div',{attrs:{"id":"qrcode"}},[_c('img',{attrs:{"src":_vm.qrDataUrl,"alt":"QR code","id":"qrcodeImage"}}),_vm._v(" "),_c('div',{style:({'background-image':'url('+_vm.currentCurIcon+')'}),attrs:{"id":"currentCurIcon"}})]),_vm._v(" "),_c('div',{staticClass:"address"},[_vm._v(_vm._s(_vm.mainAddress||"読み込み中"))])]),_vm._v(" "),(_vm.isNative)?_c('div',[_c('v-ons-button',[_c('v-ons-icon',{attrs:{"icon":"fa-clipboard"}}),_vm._v("\n          アドレスコピー\n        ")],1),_vm._v(" "),_c('v-ons-button',[_c('v-ons-icon',{attrs:{"icon":"fa-share"}}),_vm._v("共有\n        ")],1)],1):_vm._e()]),_vm._v(" "),_c('div',{attrs:{"id":"addresses"}},[_c('v-ons-list',[_c('v-ons-list-header',[_vm._v("ラベル付きアドレス")]),_vm._v(" "),_vm._l((_vm.labels),function(l,index){return _c('v-ons-list-item',{attrs:{"modifier":"tappable chevron"},on:{"click":function($event){_vm.showLabel(_vm.currency[_vm.currencyIndex].coinId,l,0,index)}}},[_vm._v("\n          "+_vm._s(l)+"\n        ")])}),_vm._v(" "),_c('v-ons-list-item',{directives:[{name:"show",rawName:"v-show",value:(_vm.labels.length<=_vm.maxLabel),expression:"labels.length<=maxLabel"}],attrs:{"modifier":"tappable chevron"},on:{"click":function($event){_vm.dialogVisible=true}}},[_c('div',{staticClass:"left"},[_c('v-ons-icon',{attrs:{"icon":"fa-plus"}})],1),_vm._v(" "),_c('div',{staticClass:"center"},[_vm._v("ラベル追加")])])],2)],1),_vm._v(" "),_c('v-ons-alert-dialog',{attrs:{"modifier":"rowfooter","visible":_vm.dialogVisible},on:{"update:visible":function($event){_vm.dialogVisible=$event}}},[_c('span',{attrs:{"slot":"title"},slot:"title"},[_vm._v("ラベルを追加")]),_vm._v(" "),_c('p',[_vm._v("ラベルをつけて下さい。derive/"),_c('i',[_vm._v("change")]),_vm._v("/"),_c('i',[_vm._v("index")]),_vm._v(" フォーマットを入力すると、アドレスを導出します")]),_vm._v(" "),_c('v-ons-input',{attrs:{"placeholder":"ラベル"},model:{value:(_vm.labelInput),callback:function ($$v) {_vm.labelInput=$$v},expression:"labelInput"}}),_vm._v(" "),_c('template',{attrs:{"slot":"footer"},slot:"footer"},[_c('div',{staticClass:"alert-dialog-button",on:{"click":function($event){_vm.dialogVisible = false}}},[_vm._v("やめる")]),_vm._v(" "),_c('div',{staticClass:"alert-dialog-button",on:{"click":_vm.createLabel}},[_vm._v("追加")])])],2)],1)],1)}
+var render = function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('v-ons-page',{attrs:{"data-page":"receive"}},[_c('custom-bar',{attrs:{"title":"受け取り","menu":"true"}}),_vm._v(" "),_c('div',[_c('div',{attrs:{"id":"currencySelector"}},[_c('v-ons-carousel',{attrs:{"swipeable":"","overscrollable":"","direction":"horizontal","item-height":"50px","item-width":"50px","index":_vm.currencyIndex}},_vm._l((_vm.currency),function(crc,i){return _c('v-ons-carousel-item',{staticClass:"currencyIcon",style:({'background-image':'url('+crc.icon+')'}),on:{"click":function($event){_vm.currencyIndex=i}}},[_c('div',{directives:[{name:"show",rawName:"v-show",value:(_vm.currencyIndex==i),expression:"currencyIndex==i"}],staticClass:"checked"})])}))],1),_vm._v(" "),_c('div',{attrs:{"id":"simple"}},[_c('div',{staticClass:"label"},[_vm._v("とりあえず送ってもらう")]),_vm._v(" "),_c('div',{attrs:{"id":"qrArea"}},[_c('div',{attrs:{"id":"qrcode"}},[_c('img',{attrs:{"src":_vm.qrDataUrl,"alt":"QR code","id":"qrcodeImage"}}),_vm._v(" "),_c('div',{style:({'background-image':'url('+_vm.currentCurIcon+')'}),attrs:{"id":"currentCurIcon"}})]),_vm._v(" "),_c('div',{staticClass:"address"},[_vm._v(_vm._s(_vm.mainAddress||"読み込み中"))])]),_vm._v(" "),(_vm.isNative)?_c('div',[_c('v-ons-button',[_c('v-ons-icon',{attrs:{"icon":"fa-clipboard"}}),_vm._v("\n          アドレスコピー\n        ")],1),_vm._v(" "),_c('v-ons-button',[_c('v-ons-icon',{attrs:{"icon":"fa-share"}}),_vm._v("共有\n        ")],1)],1):_vm._e()]),_vm._v(" "),_c('div',{attrs:{"id":"addresses"}},[_c('v-ons-list',[_c('v-ons-list-header',[_vm._v("ラベル付きアドレス")]),_vm._v(" "),_vm._l((_vm.labels),function(l,index){return _c('v-ons-list-item',{attrs:{"modifier":"tappable chevron"},on:{"click":function($event){_vm.showLabel(_vm.currency[_vm.currencyIndex].coinId,l,0,index)}}},[_vm._v("\n          "+_vm._s(l)+"\n        ")])}),_vm._v(" "),_c('v-ons-list-item',{directives:[{name:"show",rawName:"v-show",value:(_vm.labels.length<=_vm.maxLabel),expression:"labels.length<=maxLabel"}],attrs:{"modifier":"tappable chevron"},on:{"click":function($event){_vm.dialogVisible=true}}},[_c('div',{staticClass:"left"},[_c('v-ons-icon',{attrs:{"icon":"fa-plus"}})],1),_vm._v(" "),_c('div',{staticClass:"center"},[_vm._v("ラベル追加")])]),_vm._v(" "),_c('v-ons-list-header',[_vm._v("請求書")]),_vm._v(" "),_c('v-ons-list-item',{attrs:{"modifier":"tappable chevron"},on:{"click":_vm.createInvoice}},[_vm._v("請求書のQRコードを作る")])],2)],1),_vm._v(" "),_c('v-ons-alert-dialog',{attrs:{"modifier":"rowfooter","visible":_vm.dialogVisible},on:{"update:visible":function($event){_vm.dialogVisible=$event}}},[_c('span',{attrs:{"slot":"title"},slot:"title"},[_vm._v("ラベルを追加")]),_vm._v(" "),_c('p',[_vm._v("ラベルをつけて下さい。derive/"),_c('i',[_vm._v("change")]),_vm._v("/"),_c('i',[_vm._v("index")]),_vm._v(" フォーマットを入力すると、アドレスを導出します")]),_vm._v(" "),_c('v-ons-input',{attrs:{"placeholder":"ラベル"},model:{value:(_vm.labelInput),callback:function ($$v) {_vm.labelInput=$$v},expression:"labelInput"}}),_vm._v(" "),_c('template',{attrs:{"slot":"footer"},slot:"footer"},[_c('div',{staticClass:"alert-dialog-button",on:{"click":function($event){_vm.dialogVisible = false}}},[_vm._v("やめる")]),_vm._v(" "),_c('div',{staticClass:"alert-dialog-button",on:{"click":_vm.createLabel}},[_vm._v("追加")])])],2)],1)],1)}
 var staticRenderFns = []
 module.exports = function (_exports) {
   var options = typeof _exports === 'function'
@@ -39813,17 +40005,17 @@ if (false) {(function () {
 
 
 /***/ }),
-/* 348 */
+/* 350 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 var qrcode = __webpack_require__(126);
-var currencyList = __webpack_require__(16);
+var currencyList = __webpack_require__(13);
 var storage = __webpack_require__(19);
-var coinUtil = __webpack_require__(15);
-module.exports = __webpack_require__(349)({
+var coinUtil = __webpack_require__(14);
+module.exports = __webpack_require__(351)({
   data: function data() {
     return {
       address: "",
@@ -39836,7 +40028,7 @@ module.exports = __webpack_require__(349)({
     };
   },
 
-  store: __webpack_require__(13),
+  store: __webpack_require__(9),
   methods: {
     copyAddress: function copyAddress() {},
     update: function update() {
@@ -39878,10 +40070,10 @@ module.exports = __webpack_require__(349)({
 });
 
 /***/ }),
-/* 349 */
+/* 351 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var render = function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('v-ons-page',{attrs:{"data-page":"showLabel"}},[_c('custom-bar',{attrs:{"title":_vm.label||_vm.hdPath,"menu":"true"}},[_c('v-ons-toolbar-button',{on:{"click":function($event){_vm.edit=true}}},[(_vm.label)?_c('v-ons-icon',{attrs:{"icon":"ion-edit"}}):_vm._e()],1)],1),_vm._v(" "),_c('div',[_c('div',{attrs:{"id":"simple"}},[_c('div',{staticClass:"label"},[_vm._v("手動導出アドレスのため、残高が反映されない可能性があります。送金する場合はご注意ください。")]),_vm._v(" "),_c('div',{attrs:{"id":"qrArea"}},[_c('div',{attrs:{"id":"qrcode"}},[_c('img',{attrs:{"src":_vm.qrDataUrl,"alt":"QR code","id":"qrcodeImage"}}),_vm._v(" "),_c('div',{style:({'background-image':'url('+_vm.currentCurIcon+')'}),attrs:{"id":"currentCurIcon"}})]),_vm._v(" "),_c('div',{staticClass:"address"},[_vm._v(_vm._s(_vm.address))])]),_vm._v(" "),(_vm.isNative)?_c('div',[_c('v-ons-button',[_c('v-ons-icon',{attrs:{"icon":"fa-clipboard"}}),_vm._v("\n          アドレスコピー\n        ")],1),_vm._v(" "),_c('v-ons-button',[_c('v-ons-icon',{attrs:{"icon":"fa-share"}}),_vm._v("共有\n        ")],1)],1):_vm._e(),_vm._v(" "),_c('v-ons-list',[_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_vm._v("HD Node Derivation Path")]),_vm._v(" "),_c('div',{staticClass:"right"},[_vm._v(_vm._s(_vm.hdPath))])]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_vm._v("残高")]),_vm._v(" "),_c('div',{staticClass:"right"},[_vm._v(_vm._s(_vm.balance))])])],1)],1)]),_vm._v(" "),_c('v-ons-alert-dialog',{attrs:{"modifier":"rowfooter","visible":_vm.edit},on:{"update:visible":function($event){_vm.edit=$event}}},[_c('span',{attrs:{"slot":"title"},slot:"title"},[_vm._v("ラベルを編集")]),_vm._v(" "),_c('p',[_vm._v("ラベルを変更してください")]),_vm._v(" "),_c('v-ons-input',{attrs:{"placeholder":"ラベル"},model:{value:(_vm.labelInput),callback:function ($$v) {_vm.labelInput=$$v},expression:"labelInput"}}),_vm._v(" "),_c('template',{attrs:{"slot":"footer"},slot:"footer"},[_c('div',{staticClass:"alert-dialog-button",on:{"click":function($event){_vm.edit = false}}},[_vm._v("やめる")]),_vm._v(" "),_c('div',{staticClass:"alert-dialog-button",on:{"click":_vm.update}},[_vm._v("追加")])])],2)],1)}
+var render = function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('v-ons-page',{attrs:{"data-page":"showLabel"}},[_c('custom-bar',{attrs:{"title":_vm.label||_vm.hdPath,"menu":"true"}},[(_vm.label)?_c('v-ons-toolbar-button',{on:{"click":function($event){_vm.edit=true}}},[_c('v-ons-icon',{attrs:{"icon":"ion-edit"}})],1):_vm._e()],1),_vm._v(" "),_c('div',[_c('div',{attrs:{"id":"simple"}},[_c('div',{directives:[{name:"show",rawName:"v-show",value:(!_vm.label),expression:"!label"}],staticClass:"label"},[_vm._v("手動導出アドレスのため、残高が反映されない可能性があります。送金する場合はご注意ください。")]),_vm._v(" "),_c('div',{attrs:{"id":"qrArea"}},[_c('div',{attrs:{"id":"qrcode"}},[_c('img',{attrs:{"src":_vm.qrDataUrl,"alt":"QR code","id":"qrcodeImage"}}),_vm._v(" "),_c('div',{style:({'background-image':'url('+_vm.currentCurIcon+')'}),attrs:{"id":"currentCurIcon"}})]),_vm._v(" "),_c('div',{staticClass:"address"},[_vm._v(_vm._s(_vm.address))])]),_vm._v(" "),(_vm.isNative)?_c('div',[_c('v-ons-button',[_c('v-ons-icon',{attrs:{"icon":"fa-clipboard"}}),_vm._v("\n          アドレスコピー\n        ")],1),_vm._v(" "),_c('v-ons-button',[_c('v-ons-icon',{attrs:{"icon":"fa-share"}}),_vm._v("共有\n        ")],1)],1):_vm._e(),_vm._v(" "),_c('v-ons-list',[_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_vm._v("HD Node Derivation Path")]),_vm._v(" "),_c('div',{staticClass:"right"},[_vm._v(_vm._s(_vm.hdPath))])]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_vm._v("残高")]),_vm._v(" "),_c('div',{staticClass:"right"},[_vm._v(_vm._s(_vm.balance))])])],1)],1)]),_vm._v(" "),_c('v-ons-alert-dialog',{attrs:{"modifier":"rowfooter","visible":_vm.edit},on:{"update:visible":function($event){_vm.edit=$event}}},[_c('span',{attrs:{"slot":"title"},slot:"title"},[_vm._v("ラベルを編集")]),_vm._v(" "),_c('p',[_vm._v("ラベルを変更してください")]),_vm._v(" "),_c('v-ons-input',{attrs:{"placeholder":"ラベル"},model:{value:(_vm.labelInput),callback:function ($$v) {_vm.labelInput=$$v},expression:"labelInput"}}),_vm._v(" "),_c('template',{attrs:{"slot":"footer"},slot:"footer"},[_c('div',{staticClass:"alert-dialog-button",on:{"click":function($event){_vm.edit = false}}},[_vm._v("やめる")]),_vm._v(" "),_c('div',{staticClass:"alert-dialog-button",on:{"click":_vm.update}},[_vm._v("追加")])])],2)],1)}
 var staticRenderFns = []
 module.exports = function (_exports) {
   var options = typeof _exports === 'function'
@@ -39907,34 +40099,127 @@ if (false) {(function () {
 
 
 /***/ }),
-/* 350 */
+/* 352 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-module.exports = __webpack_require__(351)({
+var currencyList = __webpack_require__(13);
+var coinUtil = __webpack_require__(14);
+module.exports = __webpack_require__(353)({
   data: function data() {
     return {
-      curFilter: "all",
+      curFilter: "mona",
       filterDlg: false,
-      dirFilter: "all"
+      dirFilter: "all",
+      currency: [],
+      currencyIndex: 0,
+      txs: [],
+      state: "initial"
     };
   },
 
+  store: __webpack_require__(9),
   methods: {
-    setFilter: function setFilter() {
-      this.filterDlg = false;
+    load: function load(done) {
+      var _this = this;
+
+      this.txs = [];
+      var cur = currencyList.get(this.currency[this.currencyIndex].coinId);
+      cur.getTxs(0, 20).then(function (res) {
+        for (var i = 0; i < res.totalItems; i++) {
+          var v = res.items[i];
+
+          //isIn=I sent
+          //!isIn&&isOut=I received
+          //!isOut=Mystery
+          var aIn = 0;
+          var aOut = 0;
+          var amount = 0;
+          var hasMessage = false;
+          var direction = "";
+          for (var j = 0; j < v.vin.length; j++) {
+            if (cur.getIndexFromAddress(v.vin[j].addr)) {
+              aIn += parseFloat(v.vin[j].value);
+            }
+          }
+          for (var k = 0; k < v.vout.length; k++) {
+            var vo = v.vout[k];
+            var spk = vo.scriptPubKey;
+            if (spk.hex.substr(0, 2) === "6a") {
+              hasMessage = true;
+            }
+            if (spk.addresses) {
+              for (var l = 0; l < spk.addresses.length; l++) {
+                if (cur.getIndexFromAddress(vo.scriptPubKey.addresses[l])) {
+                  aOut += parseFloat(vo.value);
+                  break;
+                }
+              }
+            }
+          }
+          if (aIn) {
+            direction = "send";
+          } else if (aOut) {
+            direction = "receive";
+          } else {
+            direction = "unknown";
+          }
+          var txToPush = {
+            txId: v.txid,
+            txLabel: "",
+
+            inmatureConfirmation: v.confirmations < cur.confirmations,
+            direction: direction,
+            aIn: aIn,
+            aOut: aOut,
+            hasMessage: hasMessage,
+            timestamp: v.time
+          };
+          _this.txs.push(txToPush);
+          //get tx label
+        }
+        done && done();
+      });
+    },
+    txDetail: function txDetail(txId) {
+      this.$store.commit("setTxDetail", {
+        txId: txId, coinId: this.coinId
+      });
+      this.$emit("push", __webpack_require__(354));
     }
   },
-  mounted: function mounted() {}
+  mounted: function mounted() {
+    var _this2 = this;
+
+    currencyList.eachWithPub(function (cur) {
+      _this2.currency.push({
+        coinId: cur.coinId,
+        icon: cur.icon,
+        name: cur.coinScreenName
+      });
+    });
+    this.load();
+  },
+
+  computed: {
+    coinId: function coinId() {
+      return this.currency[this.currencyIndex].coinId;
+    }
+  },
+  watch: {
+    currencyIndex: function currencyIndex() {
+      this.load();
+    }
+  }
 });
 
 /***/ }),
-/* 351 */
+/* 353 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var render = function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('v-ons-page',{attrs:{"data-page":"history"}},[_c('custom-bar',{attrs:{"title":"履歴","menu":"true"}},[_c('v-ons-toolbar-button',{on:{"click":function($event){_vm.filterDlg=true}}},[_c('v-ons-icon',{attrs:{"icon":"fa-filter"}})],1)],1),_vm._v(" "),_c('div',[_c('v-ons-list',[_c('v-ons-list-item',{attrs:{"modifier":"tappable"},on:{"click":function($event){}}},[_c('div',[_c('div',{staticClass:"label"},[_vm._v("(名称未設定)")]),_vm._v(" "),_c('div',{staticClass:"destAddress"},[_vm._v("MWBaWdcgNVdcemqA2c2TkNV8ndYenVPAEY")])]),_vm._v(" "),_c('div',{staticClass:"w_right"},[_c('span',{staticClass:"date"},[_vm._v("1日前")]),_vm._v(" "),_c('span',{staticClass:"symbols"},[_c('v-ons-icon',{staticClass:"hasMsg",attrs:{"icon":"fa-comment"}}),_vm._v(" "),_c('v-ons-icon',{staticClass:"unread",attrs:{"icon":"fa-bell"}})],1),_vm._v(" "),_c('currency-set',{attrs:{"amount":"0.001","ticker":"mona","isEasy":"false"}})],1)])],1),_vm._v(" "),_c('v-ons-alert-dialog',{attrs:{"modifier":"rowfooter","visible":_vm.filterDlg},on:{"update:visible":function($event){_vm.filterDlg=$event}}},[_c('span',{attrs:{"slot":"title"},slot:"title"},[_vm._v("絞り込み")]),_vm._v(" "),_c('v-ons-select',{model:{value:(_vm.curFilter),callback:function ($$v) {_vm.curFilter=$$v},expression:"curFilter"}},[_c('option',{attrs:{"value":"all"}},[_vm._v("全て")]),_vm._v(" "),_c('option',{attrs:{"value":"mona"}},[_vm._v("モナコイン")])]),_vm._v(" "),_c('v-ons-select',{model:{value:(_vm.dirFilter),callback:function ($$v) {_vm.dirFilter=$$v},expression:"dirFilter"}},[_c('option',{attrs:{"value":"all"}},[_vm._v("全て")]),_vm._v(" "),_c('option',{attrs:{"value":"send"}},[_vm._v("送金")]),_vm._v(" "),_c('option',{attrs:{"value":"receive"}},[_vm._v("受け取り")])]),_vm._v(" "),_c('template',{attrs:{"slot":"footer"},slot:"footer"},[_c('div',{staticClass:"alert-dialog-button",on:{"click":_vm.setFilter}},[_vm._v("閉じる")])])],2)],1)],1)}
+var render = function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('v-ons-page',{attrs:{"data-page":"history"}},[_c('custom-bar',{attrs:{"title":"履歴","menu":"true"}},[_c('v-ons-toolbar-button',{on:{"click":function($event){_vm.filterDlg=true}}},[_c('v-ons-icon',{attrs:{"icon":"fa-filter"}})],1)],1),_vm._v(" "),_c('div',[_c('v-ons-pull-hook',{attrs:{"action":_vm.load},on:{"changestate":function($event){_vm.state = $event.state}}},[_c('span',{directives:[{name:"show",rawName:"v-show",value:(_vm.state === 'initial'),expression:"state === 'initial'"}]},[_vm._v(" 引っ張って更新! ")]),_vm._v(" "),_c('span',{directives:[{name:"show",rawName:"v-show",value:(_vm.state === 'preaction'),expression:"state === 'preaction'"}]},[_vm._v(" 今だ！離せ！ ")]),_vm._v(" "),_c('span',{directives:[{name:"show",rawName:"v-show",value:(_vm.state === 'action'),expression:"state === 'action'"}]},[_c('div',{staticClass:"spinner"})])]),_vm._v(" "),_c('div',{attrs:{"id":"currencySelector"}},[_c('v-ons-carousel',{attrs:{"swipeable":"","overscrollable":"","direction":"horizontal","item-height":"50px","item-width":"50px","index":_vm.currencyIndex}},_vm._l((_vm.currency),function(crc,i){return _c('v-ons-carousel-item',{staticClass:"currencyIcon",style:({'background-image':'url('+crc.icon+')'}),on:{"click":function($event){_vm.currencyIndex=i}}},[_c('div',{directives:[{name:"show",rawName:"v-show",value:(_vm.currencyIndex==i),expression:"currencyIndex==i"}],staticClass:"checked"})])}))],1),_vm._v(" "),_c('div',{directives:[{name:"show",rawName:"v-show",value:(!_vm.txs.length),expression:"!txs.length"}],staticClass:"spinner"}),_vm._v(" "),_c('v-ons-list',_vm._l((_vm.txs),function(tx){return _c('v-ons-list-item',{attrs:{"modifier":"tappable"},on:{"click":function($event){_vm.txDetail(tx.txId)}}},[_c('div',[_c('div',{directives:[{name:"show",rawName:"v-show",value:(!tx.txLabel),expression:"!tx.txLabel"}],staticClass:"label"},[_vm._v("名称未設定")]),_vm._v(" "),_c('div',{directives:[{name:"show",rawName:"v-show",value:(tx.txLabel),expression:"tx.txLabel"}],staticClass:"label"},[_vm._v(_vm._s(tx.txLabel))])]),_vm._v(" "),_c('div',{staticClass:"w_right"},[_c('span',{staticClass:"date"},[_c('timestamp',{attrs:{"timestamp":tx.timestamp}})],1),_vm._v(" "),_c('span',{staticClass:"symbols"},[_c('v-ons-icon',{directives:[{name:"show",rawName:"v-show",value:(tx.hasMessage),expression:"tx.hasMessage"}],staticClass:"hasMsg",attrs:{"icon":"fa-comment"}}),_vm._v(" "),_c('v-ons-icon',{staticClass:"unread",attrs:{"icon":"fa-bell"}}),_vm._v(" "),_c('v-ons-icon',{directives:[{name:"show",rawName:"v-show",value:(_vm.inmatureConfirmation),expression:"inmatureConfirmation"}],staticClass:"inmatureConfirmation",attrs:{"icon":"fa-exclamation"}})],1),_vm._v(" "),(tx.direction==='receive')?_c('div',{staticClass:"receive"},[_c('currency-set',{attrs:{"amount":tx.aOut,"ticker":_vm.coinId}})],1):_vm._e(),_vm._v(" "),(tx.direction==='send')?_c('div',{staticClass:"send"},[_c('currency-set',{attrs:{"amount":-tx.aIn,"ticker":_vm.coinId}})],1):_vm._e(),_vm._v(" "),(tx.direction==='unknown')?_c('div',{staticClass:"unknown"},[_vm._v("\n            (不明)\n          ")]):_vm._e()])])})),_vm._v(" "),_c('v-ons-alert-dialog',{attrs:{"modifier":"rowfooter","visible":_vm.filterDlg},on:{"update:visible":function($event){_vm.filterDlg=$event}}},[_c('span',{attrs:{"slot":"title"},slot:"title"},[_vm._v("絞り込み")]),_vm._v(" "),_c('v-ons-select',{model:{value:(_vm.currencyIndex),callback:function ($$v) {_vm.currencyIndex=$$v},expression:"currencyIndex"}},_vm._l((_vm.currency),function(crc,i){return _c('option',{domProps:{"value":i}},[_vm._v(_vm._s(crc.name))])})),_vm._v(" "),_c('v-ons-select',{model:{value:(_vm.dirFilter),callback:function ($$v) {_vm.dirFilter=$$v},expression:"dirFilter"}},[_c('option',{attrs:{"value":"all"}},[_vm._v("全て")]),_vm._v(" "),_c('option',{attrs:{"value":"send"}},[_vm._v("送金")]),_vm._v(" "),_c('option',{attrs:{"value":"receive"}},[_vm._v("受け取り")])]),_vm._v(" "),_c('template',{attrs:{"slot":"footer"},slot:"footer"},[_c('div',{staticClass:"alert-dialog-button",on:{"click":function($event){_vm.filterDlg=false}}},[_vm._v("閉じる")])])],2)],1)],1)}
 var staticRenderFns = []
 module.exports = function (_exports) {
   var options = typeof _exports === 'function'
@@ -39960,13 +40245,92 @@ if (false) {(function () {
 
 
 /***/ }),
-/* 352 */
+/* 354 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(Buffer) {
+
+var currencyList = __webpack_require__(13);
+var bcLib = __webpack_require__(35);
+module.exports = __webpack_require__(355)({
+  data: function data() {
+    return {
+      res: null,
+      message: "",
+      coinId: ""
+    };
+  },
+  mounted: function mounted() {
+    this.load();
+  },
+
+  store: __webpack_require__(9),
+  methods: {
+    load: function load() {
+      var _this = this;
+
+      var cur = currencyList.get(this.$store.state.detail.coinId);
+      this.coinId = cur.coinId;
+      cur.getTx(this.$store.state.detail.txId).then(function (v) {
+        _this.res = v;
+        v.vout.forEach(function (o) {
+          if (o.scriptPubKey.hex.substr(0, 2) === "6a") {
+            _this.message = bcLib.script.nullData.output.decode(new Buffer(o.scriptPubKey.hex, "hex")).toString('utf8');
+          }
+        });
+      });
+    },
+    txDetail: function txDetail(txId) {
+      if (!txId) {
+        return;
+      }
+      this.$store.commit("setTxDetail", {
+        txId: txId, coinId: this.coinId
+      });
+      this.$emit("push", module.exports);
+    }
+  }
+});
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0).Buffer))
+
+/***/ }),
+/* 355 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('v-ons-page',{attrs:{"data-page":"txDetail"}},[_c('custom-bar',{attrs:{"title":"取引詳細","menu":"true"}}),_vm._v(" "),_c('div',[(_vm.res)?_c('div',[_c('v-ons-list',[_c('v-ons-list-item',{attrs:{"modifier":"small"}},[_c('div',{staticClass:"center"},[_vm._v("ブロックに取り込まれた時間")]),_vm._v(" "),_c('div',{staticClass:"right"},[_c('timestamp',{attrs:{"timestamp":_vm.res.blocktime}})],1)]),_vm._v(" "),_c('v-ons-list-item',{attrs:{"modifier":"small"}},[_c('div',{staticClass:"center"},[_vm._v("承認された回数")]),_vm._v(" "),_c('div',{staticClass:"right"},[_vm._v(_vm._s(_vm.res.confirmations))])]),_vm._v(" "),_c('v-ons-list-item',{attrs:{"modifier":"small"}},[_c('div',{staticClass:"center"},[_vm._v("入力総量")]),_vm._v(" "),_c('div',{staticClass:"right"},[_vm._v(_vm._s(_vm.res.valueIn))])]),_vm._v(" "),_c('v-ons-list-item',{attrs:{"modifier":"small"}},[_c('div',{staticClass:"center"},[_vm._v("出力総量")]),_vm._v(" "),_c('div',{staticClass:"right"},[_vm._v(_vm._s(_vm.res.valueOut))])]),_vm._v(" "),_c('v-ons-list-item',{attrs:{"modifier":"small"}},[_c('div',{staticClass:"center"},[_vm._v("トランザクションID")]),_vm._v(" "),_c('div',{staticClass:"right"},[_c('v-ons-input',{attrs:{"value":_vm.res.txid}})],1)]),_vm._v(" "),_c('v-ons-list-item',{attrs:{"modifier":""}},[_c('div',{staticClass:"center"},[_vm._v("メッセージ")]),_vm._v(" "),(_vm.message)?_c('div',{staticClass:"right"},[_vm._v(_vm._s(_vm.message))]):_vm._e(),_vm._v(" "),(!_vm.message)?_c('div',{staticClass:"right"},[_vm._v("(メッセージ無し)")]):_vm._e()])],1),_vm._v(" "),_c('v-ons-list',{attrs:{"modifier":"inset"}},[_c('v-ons-list-title',[_vm._v("入力")]),_vm._v(" "),_vm._l((_vm.res.vin),function(v){return _c('v-ons-list-item',{attrs:{"modifier":"tappable chevron"},on:{"click":function($event){_vm.txDetail(v.txid)}}},[_c('div',{staticClass:"center"},[_vm._v(_vm._s(v.addr))]),_vm._v(" "),_c('div',{staticClass:"right"},[_c('currency-set',{attrs:{"amount":v.value,"ticker":_vm.coinId}})],1)])})],2),_vm._v(" "),_c('v-ons-list',{attrs:{"modifier":"inset"}},[_c('v-ons-list-title',[_vm._v("出力")]),_vm._v(" "),_vm._l((_vm.res.vout),function(vo){return _c('v-ons-list-item',{on:{"click":function($event){_vm.txDetail(vo.spentTxId)}}},[_c('div',{staticClass:"center"},_vm._l((vo.scriptPubKey.addresses),function(addr){return _c('span',[_vm._v(_vm._s(addr))])})),_vm._v(" "),_c('div',{staticClass:"right"},[_c('currency-set',{attrs:{"amount":vo.value,"ticker":_vm.coinId}})],1)])})],2)],1):_vm._e(),_vm._v(" "),_c('div',{directives:[{name:"show",rawName:"v-show",value:(!_vm.res),expression:"!res"}],staticClass:"spinner"})])],1)}
+var staticRenderFns = []
+module.exports = function (_exports) {
+  var options = typeof _exports === 'function'
+    ? _exports.options
+    : _exports
+  options.render = render
+  options.staticRenderFns = staticRenderFns
+  if (false) {
+    api.createRecord("data-v-dab8d37e", options)
+  }
+  return _exports
+}
+var api = null
+if (false) {(function () {
+  api = require("vue-hot-reload-api")
+  api.install(require("vue"))
+  if (!api.compatible) return
+  module.hot.accept()
+  if (module.hot.data) {
+    api.rerender("data-v-dab8d37e", { render: render, staticRenderFns: staticRenderFns })
+  }
+})()}
+
+
+/***/ }),
+/* 356 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-module.exports = __webpack_require__(353)({
+module.exports = __webpack_require__(357)({
   data: function data() {
     return {};
   },
@@ -39974,16 +40338,19 @@ module.exports = __webpack_require__(353)({
   methods: {
     goToShowPassphrase: function goToShowPassphrase() {
       this.$emit("push", __webpack_require__(131));
+    },
+    goToSetPassword: function goToSetPassword() {
+      this.$emit("push", __webpack_require__(132));
     }
   },
   mounted: function mounted() {}
 });
 
 /***/ }),
-/* 353 */
+/* 357 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var render = function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('v-ons-page',{attrs:{"data-page":"settings"}},[_c('custom-bar',{attrs:{"title":"設定","menu":"true"}}),_vm._v(" "),_c('div',[_c('v-ons-list',[_c('v-ons-list-item',{attrs:{"modifier":"tappable chevron"},on:{"click":_vm.goToShowPassphrase}},[_c('div',{staticClass:"center"},[_vm._v("パスフレーズの表示")])]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_vm._v("Zaif Payment")]),_vm._v(" "),_c('div',{staticClass:"right"},[_c('v-ons-switch',{model:{value:(_vm.zaifPayment),callback:function ($$v) {_vm.zaifPayment=$$v},expression:"zaifPayment"}})],1)]),_vm._v(" "),_c('v-ons-list-header'),_vm._v(" "),_c('v-ons-list-item')],1)],1)],1)}
+var render = function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('v-ons-page',{attrs:{"data-page":"settings"}},[_c('custom-bar',{attrs:{"title":"設定","menu":"true"}}),_vm._v(" "),_c('div',[_c('v-ons-list',[_c('v-ons-list-item',{attrs:{"modifier":"tappable chevron"},on:{"click":_vm.goToShowPassphrase}},[_c('div',{staticClass:"center"},[_vm._v("パスフレーズの表示")])]),_vm._v(" "),_c('v-ons-list-item',{attrs:{"modifier":"tappable chevron"},on:{"click":_vm.goToSetPassword}},[_c('div',{staticClass:"center"},[_vm._v("パスワードを変更")])]),_vm._v(" "),_c('v-ons-list-header',[_vm._v("Zaif Payment")]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_vm._v("Zaif Paymentメニュー")]),_vm._v(" "),_c('div',{staticClass:"right"},[_c('v-ons-switch',{model:{value:(_vm.zaifPayment),callback:function ($$v) {_vm.zaifPayment=$$v},expression:"zaifPayment"}})],1)]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_vm._v("API Key")]),_vm._v(" "),_c('div',{staticClass:"right"},[_c('v-ons-input',{attrs:{"placeholder":"Type here"}})],1)]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_vm._v("Secret Key")]),_vm._v(" "),_c('div',{staticClass:"right"},[_c('v-ons-input',{attrs:{"placeholder":"SHA1/MD5/Raw"}})],1)]),_vm._v(" "),_c('v-ons-list-header'),_vm._v(" "),_c('v-ons-list-item')],1)],1)],1)}
 var staticRenderFns = []
 module.exports = function (_exports) {
   var options = typeof _exports === 'function'
@@ -40009,7 +40376,7 @@ if (false) {(function () {
 
 
 /***/ }),
-/* 354 */
+/* 358 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('v-ons-page',{attrs:{"data-page":"showPassphrase"}},[_c('custom-bar',{attrs:{"title":"パスフレーズ"}}),_vm._v(" "),_c('div',{staticClass:"wrap"},[_c('ul',[_c('li',[_vm._v("英単語を正確に、紙に手書きしてください。")]),_vm._v(" "),_c('li',[_vm._v("英単語のスクリーンショットを撮影・コピーしないでください。")]),_vm._v(" "),_c('li',[_vm._v("他人に知れ渡ると、モナコインを盗まれる可能性があります。")]),_vm._v(" "),_c('li',[_vm._v("チェックボックスは確認のためにお使いください。")])]),_vm._v(" "),_c('v-ons-list',[_vm._l((_vm.words),function(word,index){return _c('v-ons-list-item',[_c('label',{staticClass:"left"},[_vm._v("\n          "+_vm._s(index+1)+"\n        ")]),_vm._v(" "),_c('label',{staticClass:"center"},[_vm._v(_vm._s(word))]),_vm._v(" "),_c('label',{staticClass:"right"},[_c('v-ons-checkbox')],1)])}),_vm._v(" "),_c('v-ons-list-item',{directives:[{name:"show",rawName:"v-show",value:(_vm.showNext),expression:"showNext"}]},[_c('v-ons-button',{attrs:{"modifier":"large","disable":!_vm.words.length},on:{"click":_vm.next}},[_vm._v("次へ")])],1)],2),_vm._v(" "),_c('v-ons-alert-dialog',{attrs:{"modifier":"rowfooter","visible":_vm.requirePassword},on:{"update:visible":function($event){_vm.requirePassword=$event}}},[_c('span',{attrs:{"slot":"title"},slot:"title"},[_vm._v("パスワード")]),_vm._v(" "),_c('p',[_vm._v("パスワードを入力してください")]),_vm._v(" "),_c('v-ons-input',{attrs:{"placeholder":"パスワード"},model:{value:(_vm.password),callback:function ($$v) {_vm.password=$$v},expression:"password"}}),_vm._v(" "),_c('template',{attrs:{"slot":"footer"},slot:"footer"},[_c('div',{staticClass:"alert-dialog-button",on:{"click":function($event){_vm.$emit('pop')}}},[_vm._v("やめる")]),_vm._v(" "),_c('div',{staticClass:"alert-dialog-button",on:{"click":_vm.decrypt}},[_vm._v("追加")])])],2)],1)],1)}
@@ -40038,10 +40405,10 @@ if (false) {(function () {
 
 
 /***/ }),
-/* 355 */
+/* 359 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var render = function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('v-ons-page',{attrs:{"data-page":"setPassword"}},[_c('custom-bar',{attrs:{"title":"パスワード設定"}}),_vm._v(" "),_c('div',{staticClass:"wrap"},[_c('ul',[_c('li',[_vm._v("パスワードを設定します。")]),_vm._v(" "),_c('li',[_vm._v("6文字以上")]),_vm._v(" "),_c('li',[_vm._v("秘密鍵を保護するために使用されます。")]),_vm._v(" "),_c('li',[_vm._v("他人に知れ渡ると、勝手にアプリケーションを利用される可能性があります。")])]),_vm._v(" "),_c('v-ons-list',[_c('v-ons-list-header',[_vm._v("パスワードの種類")]),_vm._v(" "),_c('v-ons-list-item',[_c('label',{staticClass:"left"},[_c('v-ons-radio',{attrs:{"input-id":"pin","value":"pin"},model:{value:(_vm.passwordType),callback:function ($$v) {_vm.passwordType=$$v},expression:"passwordType"}})],1),_vm._v(" "),_c('label',{staticClass:"center",attrs:{"for":"pin"}},[_vm._v("数字のみのPINコード")])]),_vm._v(" "),_c('v-ons-list-item',[_c('label',{staticClass:"left"},[_c('v-ons-radio',{attrs:{"input-id":"password","value":"password"},model:{value:(_vm.passwordType),callback:function ($$v) {_vm.passwordType=$$v},expression:"passwordType"}})],1),_vm._v(" "),_c('label',{staticClass:"center",attrs:{"for":"password"}},[_vm._v("半角英数字のパスワード")])]),_vm._v(" "),_c('div',{directives:[{name:"show",rawName:"v-show",value:(_vm.passwordType==='password'),expression:"passwordType==='password'"}]},[_c('v-ons-list-header',[_vm._v("パスワード")]),_vm._v(" "),_c('v-ons-list-item',[_c('v-ons-input',{attrs:{"placeholder":"Password"},model:{value:(_vm.password),callback:function ($$v) {_vm.password=$$v},expression:"password"}})],1),_vm._v(" "),_c('v-ons-list-item',[_c('v-ons-input',{attrs:{"placeholder":"Retype Password"},model:{value:(_vm.password2),callback:function ($$v) {_vm.password2=$$v},expression:"password2"}})],1),_vm._v(" "),_c('v-ons-list-item',[_c('v-ons-button',{attrs:{"modifier":"large","disabled":!_vm.password||_vm.password!==_vm.password2},on:{"click":_vm.next}},[_vm._v("次へ")])],1)],1),_vm._v(" "),_c('div',{directives:[{name:"show",rawName:"v-show",value:(_vm.passwordType==='pin'),expression:"passwordType==='pin'"}]},[_c('v-ons-list',[_c('v-ons-list-header',[_vm._v("PINコード")]),_vm._v(" "),_c('v-ons-list',[_vm._v("Coming soon...")])],1)],1)],1)],1)],1)}
+var render = function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('v-ons-page',{attrs:{"data-page":"setPassword"}},[_c('custom-bar',{attrs:{"title":"パスワード設定"}}),_vm._v(" "),_c('div',{staticClass:"wrap"},[_c('ul',[_c('li',[_vm._v("パスワードを設定します。")]),_vm._v(" "),_c('li',[_vm._v("6文字以上")]),_vm._v(" "),_c('li',[_vm._v("秘密鍵を保護するために使用されます。")]),_vm._v(" "),_c('li',[_vm._v("他人に知れ渡ると、勝手にアプリケーションを利用される可能性があります。")])]),_vm._v(" "),_c('v-ons-list',[_c('v-ons-list-item',{directives:[{name:"show",rawName:"v-show",value:(_vm.error),expression:"error"}]},[_vm._v("エラーが発生しました。再度お試し下さい。")]),_vm._v(" "),_c('div',{directives:[{name:"show",rawName:"v-show",value:(_vm.change),expression:"change"}]},[_c('v-ons-list-header',[_vm._v("現在のパスワード")]),_vm._v(" "),_c('v-ons-list-item',[_c('v-ons-input',{attrs:{"placeholder":"現在のパスワード"},model:{value:(_vm.currentPassword),callback:function ($$v) {_vm.currentPassword=$$v},expression:"currentPassword"}})],1)],1),_vm._v(" "),_c('v-ons-list-header',[_vm._v("パスワードの種類")]),_vm._v(" "),_c('v-ons-list-item',[_c('label',{staticClass:"left"},[_c('v-ons-radio',{attrs:{"input-id":"pin","value":"pin"},model:{value:(_vm.passwordType),callback:function ($$v) {_vm.passwordType=$$v},expression:"passwordType"}})],1),_vm._v(" "),_c('label',{staticClass:"center",attrs:{"for":"pin"}},[_vm._v("数字のみのPINコード")])]),_vm._v(" "),_c('v-ons-list-item',[_c('label',{staticClass:"left"},[_c('v-ons-radio',{attrs:{"input-id":"password","value":"password"},model:{value:(_vm.passwordType),callback:function ($$v) {_vm.passwordType=$$v},expression:"passwordType"}})],1),_vm._v(" "),_c('label',{staticClass:"center",attrs:{"for":"password"}},[_vm._v("半角英数字のパスワード")])]),_vm._v(" "),_c('div',{directives:[{name:"show",rawName:"v-show",value:(_vm.passwordType==='password'),expression:"passwordType==='password'"}]},[_c('v-ons-list-header',[_vm._v("パスワード")]),_vm._v(" "),_c('v-ons-list-item',[_c('v-ons-input',{attrs:{"placeholder":"Password"},model:{value:(_vm.password),callback:function ($$v) {_vm.password=$$v},expression:"password"}})],1),_vm._v(" "),_c('v-ons-list-item',[_c('v-ons-input',{attrs:{"placeholder":"Retype Password"},model:{value:(_vm.password2),callback:function ($$v) {_vm.password2=$$v},expression:"password2"}})],1),_vm._v(" "),_c('v-ons-list-item',[_c('v-ons-button',{attrs:{"modifier":"large","disabled":!_vm.password||_vm.password!==_vm.password2},on:{"click":_vm.next}},[_vm._v("次へ")])],1)],1),_vm._v(" "),_c('div',{directives:[{name:"show",rawName:"v-show",value:(_vm.passwordType==='pin'),expression:"passwordType==='pin'"}]},[_c('v-ons-list',[_c('v-ons-list-header',[_vm._v("PINコード")]),_vm._v(" "),_c('v-ons-list',[_vm._v("Coming soon...")])],1)],1)],1)],1)],1)}
 var staticRenderFns = []
 module.exports = function (_exports) {
   var options = typeof _exports === 'function'
@@ -40067,7 +40434,7 @@ if (false) {(function () {
 
 
 /***/ }),
-/* 356 */
+/* 360 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('v-ons-page',{attrs:{"data-page":"login"}},[_c('div',{staticClass:"wrap"},[_c('p',[_vm._v("パスワードを入力して下さい。")]),_vm._v(" "),_c('div',{class:{passwordBox:true,incorrect:_vm.incorrect}},[_c('input',{attrs:{"name":"","type":_vm.showPassword?'text':'password',"id":"password","disabled":_vm.loading},on:{"input":function($event){_vm.password=$event.target.value},"change":_vm.start}}),_vm._v(" "),_c('v-ons-button',{attrs:{"modifier":"quiet"}},[_c('v-ons-icon',{attrs:{"icon":_vm.showPassword?'eye-slash':'eye',"disabled":_vm.loading},on:{"click":function($event){_vm.showPassword=!_vm.showPassword}}})],1)],1),_vm._v(" "),_c('v-ons-button',{attrs:{"modifier":"large","disabled":_vm.loading},on:{"click":_vm.start}},[_vm._v("はじめる")])],1)])}
@@ -40096,13 +40463,13 @@ if (false) {(function () {
 
 
 /***/ }),
-/* 357 */
+/* 361 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-module.exports = __webpack_require__(358)({
+module.exports = __webpack_require__(362)({
   data: function data() {
     return {};
   },
@@ -40112,7 +40479,7 @@ module.exports = __webpack_require__(358)({
 });
 
 /***/ }),
-/* 358 */
+/* 362 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('v-ons-page',{attrs:{"data-page":"help"}},[_c('custom-bar',{attrs:{"title":"ヘルプ","menu":"true"}}),_vm._v(" "),_c('div',[_c('v-ons-list',[_c('v-ons-list-header',[_vm._v("使い方")]),_vm._v(" "),_c('v-ons-list-item'),_vm._v(" "),_c('v-ons-list-header',[_vm._v("暗号通貨解説")]),_vm._v(" "),_c('v-ons-list-header',[_vm._v("用語集")]),_vm._v(" "),_c('v-ons-list-header',[_vm._v("その他")]),_vm._v(" "),_c('v-ons-list-item',[_vm._v("このアプリについて")])],1)],1)],1)}
@@ -40141,27 +40508,27 @@ if (false) {(function () {
 
 
 /***/ }),
-/* 359 */
+/* 363 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-module.exports = __webpack_require__(360)({
+module.exports = __webpack_require__(364)({
   data: function data() {
     return {};
   },
 
   methods: {
     start: function start() {
-      this.$emit("push", __webpack_require__(361));
+      this.$emit("push", __webpack_require__(365));
     }
   },
   mounted: function mounted() {}
 });
 
 /***/ }),
-/* 360 */
+/* 364 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('v-ons-page',{attrs:{"data-page":"first"}},[_c('div',{staticClass:"wrap"},[_c('div',{staticClass:"logo"},[_c('div',{staticClass:"icon"}),_vm._v(" "),_c('div',{staticClass:"appName"},[_vm._v("もにゃ")]),_vm._v(" "),_c('div',{staticClass:"label"},[_vm._v("The easiest Monacoin Wallet")]),_vm._v(" "),_c('div',{staticClass:"buttons"},[_c('v-ons-button',{on:{"click":_vm.start}},[_vm._v("Start!")])],1)])])])}
@@ -40190,13 +40557,13 @@ if (false) {(function () {
 
 
 /***/ }),
-/* 361 */
+/* 365 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-module.exports = __webpack_require__(362)({
+module.exports = __webpack_require__(366)({
   data: function data() {
     return {
       questionNumber: 0,
@@ -40221,11 +40588,11 @@ module.exports = __webpack_require__(362)({
         case -2:
           //User declined.Go to key generation
 
-          this.$emit("push", __webpack_require__(363));
+          this.$emit("push", __webpack_require__(367));
           break;
         case -3:
           //User has passphrase so start recover
-          this.$emit("push", __webpack_require__(367));
+          this.$emit("push", __webpack_require__(371));
           break;
         default:
           this.questionNumber = ans.to | 0;
@@ -40431,7 +40798,7 @@ var qList = [{ //0
 }];
 
 /***/ }),
-/* 362 */
+/* 366 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('v-ons-page',{attrs:{"data-page":"question"}},[_c('v-ons-carousel',{attrs:{"fullscreen":"","auto-scroll":"","index":_vm.questionNumber}},_vm._l((_vm.questions),function(qq){return _c('v-ons-carousel-item',{staticClass:"questionItem"},[_c('div',{staticClass:"questionText"},[_vm._v(_vm._s(qq.text))]),_vm._v(" "),_vm._l((qq.answers),function(ans,ind){return _c('div',{staticClass:"answers"},[_c('div',{staticClass:"answer",on:{"click":function($event){_vm.answer(ans)}}},[_vm._v(_vm._s(ans.label))])])})],2)}))],1)}
@@ -40460,13 +40827,13 @@ if (false) {(function () {
 
 
 /***/ }),
-/* 363 */
+/* 367 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-module.exports = __webpack_require__(364)({
+module.exports = __webpack_require__(368)({
   data: function data() {
     return {
       check1: false, check2: false, check3: false
@@ -40475,13 +40842,13 @@ module.exports = __webpack_require__(364)({
 
   methods: {
     next: function next() {
-      this.$emit("push", __webpack_require__(365));
+      this.$emit("push", __webpack_require__(369));
     }
   }
 });
 
 /***/ }),
-/* 364 */
+/* 368 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('v-ons-page',{attrs:{"data-page":"generateKeyWarn"}},[_c('custom-bar',{attrs:{"title":"ご確認ください"}}),_vm._v(" "),_c('div',{staticClass:"wrap"},[_c('p',[_vm._v("秘密鍵を作成します。以下の注意事項をよく読んで、チェックをしてください")]),_vm._v(" "),_c('ul',[_c('li',[_vm._v("秘密鍵は所有するモナコインにアクセスする権利そのものです。")]),_vm._v(" "),_c('li',[_vm._v("13個の英単語を正確に、紙に手書きしてください。")]),_vm._v(" "),_c('li',[_vm._v("英単語のスクリーンショットを撮影・コピーしないでください。")]),_vm._v(" "),_c('li',[_vm._v("これを紛失すると、モナコインを使うことはできなくなります。")]),_vm._v(" "),_c('li',[_vm._v("他人に知れ渡ると、モナコインを盗まれる可能性があります。")]),_vm._v(" "),_c('li',[_vm._v("管理が不十分だったことによる責任は利用者自身が負い、他の誰も負いません。")])])]),_vm._v(" "),_c('v-ons-list',[_c('v-ons-list-item',[_c('label',{staticClass:"left"},[_c('v-ons-checkbox',{attrs:{"input-id":"check1"},model:{value:(_vm.check1),callback:function ($$v) {_vm.check1=$$v},expression:"check1"}})],1),_vm._v(" "),_c('label',{staticClass:"center",attrs:{"for":"check1"}},[_vm._v("秘密鍵の重要性を理解しました。")])]),_vm._v(" "),_c('v-ons-list-item',[_c('label',{staticClass:"left"},[_c('v-ons-checkbox',{attrs:{"input-id":"check2"},model:{value:(_vm.check2),callback:function ($$v) {_vm.check2=$$v},expression:"check2"}})],1),_vm._v(" "),_c('label',{staticClass:"center",attrs:{"for":"check2"}},[_vm._v("画面を誰にも・どのソフトにも見られたり盗聴されていません。")])]),_vm._v(" "),_c('v-ons-list-item',[_c('label',{staticClass:"left"},[_c('v-ons-checkbox',{attrs:{"input-id":"check3"},model:{value:(_vm.check3),callback:function ($$v) {_vm.check3=$$v},expression:"check3"}})],1),_vm._v(" "),_c('label',{staticClass:"center",attrs:{"for":"check3"}},[_vm._v("秘密鍵の管理は自己責任であることを理解しました。")])]),_vm._v(" "),_c('v-ons-list-item',[_c('v-ons-button',{attrs:{"disabled":!_vm.check1||!_vm.check2||!_vm.check3,"modifier":"large"},on:{"click":_vm.next}},[_vm._v("次へ")])],1)],1)],1)}
@@ -40510,13 +40877,13 @@ if (false) {(function () {
 
 
 /***/ }),
-/* 365 */
+/* 369 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-module.exports = __webpack_require__(366)({
+module.exports = __webpack_require__(370)({
   data: function data() {
     return {
       cnt: 0,
@@ -40528,7 +40895,7 @@ module.exports = __webpack_require__(366)({
     };
   },
 
-  store: __webpack_require__(13),
+  store: __webpack_require__(9),
   methods: {
     complete: function complete() {
       if (!this.next) {
@@ -40611,7 +40978,7 @@ module.exports = __webpack_require__(366)({
 });
 
 /***/ }),
-/* 366 */
+/* 370 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('v-ons-page',{attrs:{"data-page":"generateKey"}},[_c('custom-bar',{attrs:{"title":"秘密鍵を生成","modifier":"transparent"}}),_vm._v(" "),_c('div',{ref:"touchArea",staticClass:"touchArea"},[_c('p',{directives:[{name:"show",rawName:"v-show",value:(_vm.cnt<_vm.wordCount),expression:"cnt<wordCount"}]},[_vm._v("\n      ここをスワイプしたりドラッグしたりしてセキュリティを高めましょう"),_c('br'),_vm._v(" "),_c('small',{directives:[{name:"show",rawName:"v-show",value:(_vm.sensorAvailable),expression:"sensorAvailable"}]},[_vm._v("または端末を振ってください。")]),_c('br'),_vm._v("\n      "+_vm._s(_vm.cnt)),_c('small',[_vm._v("/"+_vm._s(_vm.wordCount))])]),_vm._v(" "),_c('p',{directives:[{name:"show",rawName:"v-show",value:(_vm.cnt>=_vm.wordCount),expression:"cnt>=wordCount"}]},[_vm._v("計算中"),_c('br'),_c('small',[_vm._v("数分かかる場合があります。")])]),_vm._v(" "),_c('v-ons-progress-bar',{attrs:{"value":_vm.cnt/_vm.wordCount*100}})],1)],1)}
@@ -40640,14 +41007,14 @@ if (false) {(function () {
 
 
 /***/ }),
-/* 367 */
+/* 371 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var bip39 = __webpack_require__(38);
-module.exports = __webpack_require__(368)({
+var bip39 = __webpack_require__(39);
+module.exports = __webpack_require__(372)({
   data: function data() {
     return {
       keyArray: null,
@@ -40663,7 +41030,7 @@ module.exports = __webpack_require__(368)({
     };
   },
 
-  store: __webpack_require__(13),
+  store: __webpack_require__(9),
   methods: {
     next: function next() {
       try {
@@ -40751,7 +41118,7 @@ module.exports = __webpack_require__(368)({
 });
 
 /***/ }),
-/* 368 */
+/* 372 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('v-ons-page',{attrs:{"data-page":"restorePassphrase"}},[_c('custom-bar',{attrs:{"title":"ウォレットの復元"}}),_vm._v(" "),_c('div',[_c('p',[_vm._v("単語を入力してください。候補を絞り込めた場合、確定します。")]),_vm._v(" "),_c('v-ons-button',{attrs:{"modifier":"quiet"},on:{"click":_vm.reset}},[_c('v-ons-icon',{attrs:{"icon":"fa-erase"}}),_vm._v("\n        単語をリセット\n      ")],1),_vm._v(" "),_c('div',{attrs:{"id":"wordArea"}},_vm._l((_vm.words),function(w,i){return _c('div',{staticClass:"word",class:{noMatch:_vm.noMatch&&i===_vm.wdLength-1}},[_c('span',{directives:[{name:"show",rawName:"v-show",value:(i!==_vm.wdLength-1),expression:"i!==wdLength-1"}],staticClass:"deleteBtn",on:{"click":function($event){_vm.remove(i)}}},[_c('v-ons-icon',{attrs:{"icon":"ion-close"}})],1),_vm._v(" "),(i!==_vm.wdLength-1)?_c('span',{staticClass:"wd"},[_vm._v(_vm._s(w.word))]):_vm._e(),_vm._v(" "),(i===_vm.wdLength-1)?_c('input',{directives:[{name:"model",rawName:"v-model",value:(w.word),expression:"w.word"},{name:"focus",rawName:"v-focus"}],attrs:{"type":"text"},domProps:{"value":(w.word)},on:{"input":[function($event){if($event.target.composing){ return; }w.word=$event.target.value},_vm.input],"keydown":[function($event){if(!('button' in $event)&&_vm._k($event.keyCode,"delete",[8,46])){ return null; }_vm.removeEvt($event)},function($event){if(!('button' in $event)&&_vm._k($event.keyCode,"enter",13)){ return null; }_vm.insert($event)}]}}):_vm._e()])})),_vm._v(" "),_c('div',{attrs:{"id":"nextWrap"}},[_c('v-ons-button',{attrs:{"modifier":"large","disabled":_vm.wdLength<=12},on:{"click":_vm.next}},[_vm._v("次へ")])],1),_vm._v(" "),_c('div',{attrs:{"id":"suggestion"}},_vm._l((_vm.suggestion),function(s){return _c('div',{staticClass:"sgst",on:{"click":function($event){_vm.apply(s)}}},[_vm._v(_vm._s(s))])})),_vm._v(" "),_c('v-ons-alert-dialog',{attrs:{"modifier":"rowfooter","visible":_vm.error},on:{"update:visible":function($event){_vm.error=$event}}},[_c('span',{attrs:{"slot":"title"},slot:"title"},[_vm._v("Error")]),_vm._v(" "),_c('p',[_vm._v("エラーが発生しました。単語の順番、スペルが間違っていないかを確認して、もう一度お試しください。")]),_vm._v(" "),_c('template',{attrs:{"slot":"footer"},slot:"footer"},[_c('div',{staticClass:"alert-dialog-button",on:{"click":function($event){_vm.error = false}}},[_vm._v("やり直す")])])],2)],1)],1)}
@@ -40775,6 +41142,161 @@ if (false) {(function () {
   module.hot.accept()
   if (module.hot.data) {
     api.rerender("data-v-7f106d04", { render: render, staticRenderFns: staticRenderFns })
+  }
+})()}
+
+
+/***/ }),
+/* 373 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var qrcode = __webpack_require__(126);
+var currencyList = __webpack_require__(13);
+var storage = __webpack_require__(19);
+var coinUtil = __webpack_require__(14);
+module.exports = __webpack_require__(374)({
+  data: function data() {
+    return {
+      address: "",
+      qrDataUrl: "",
+      isNative: false,
+      edit: false,
+      amount: 0,
+      message: "",
+      addressIndex: 0,
+      messageOpRet: "",
+      currency: [],
+      currencyIndex: 0,
+      labels: [coinUtil.DEFAULT_LABEL_NAME]
+    };
+  },
+
+  store: __webpack_require__(9),
+  methods: {
+    copyAddress: function copyAddress() {
+      coinUtil.copy(this.address);
+    },
+    generateQR: function generateQR() {
+      var _this = this;
+
+      qrcode.toDataURL(this.url, {
+        errorCorrectionLevel: 'M',
+        type: 'image/png'
+      }, function (err, url) {
+        _this.qrDataUrl = url;
+      });
+      this.currentCurIcon = currencyList.get(this.currency[this.currencyIndex].coinId).icon;
+    },
+    goToZaifPay: function goToZaifPay() {}
+  },
+  computed: {
+    url: function url() {
+      if (!this.currency[this.currencyIndex]) {
+        return "";
+      }
+      var cur = currencyList.get(this.currency[this.currencyIndex].coinId);
+      return coinUtil.getBip21(cur.bip21, cur.getAddress(0, this.addressIndex | 0), {
+        amount: this.amount,
+        label: this.labels[this.addressIndex],
+        message: this.message,
+        "req-opreturn": this.messageOpRet
+      });
+    }
+  },
+
+  mounted: function mounted() {
+    var _this2 = this;
+
+    currencyList.eachWithPub(function (cur) {
+      _this2.currency.push({
+        coinId: cur.coinId,
+        icon: cur.icon,
+        name: cur.coinScreenName
+      });
+    });
+    this.generateQR();
+    coinUtil.getLabels(this.currency[this.currencyIndex].coinId).then(function (res) {
+      _this2.$set(_this2, "labels", res);
+    });
+  }
+});
+
+/***/ }),
+/* 374 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('v-ons-page',{attrs:{"data-page":"invoice"}},[_c('custom-bar',{attrs:{"title":_vm.請求する,"menu":"true"}},[_c('v-ons-toolbar-button',{on:{"click":_vm.goToZaifPay}},[_vm._v("\n      Zaif\n      \n    ")])],1),_vm._v(" "),_c('div',[_c('div',{attrs:{"id":"currencySelector"}},[_c('v-ons-carousel',{attrs:{"swipeable":"","overscrollable":"","direction":"horizontal","item-height":"50px","item-width":"50px","index":_vm.currencyIndex}},_vm._l((_vm.currency),function(crc,i){return _c('v-ons-carousel-item',{staticClass:"currencyIcon",style:({'background-image':'url('+crc.icon+')'}),on:{"click":function($event){_vm.currencyIndex=i}}},[_c('div',{directives:[{name:"show",rawName:"v-show",value:(_vm.currencyIndex==i),expression:"currencyIndex==i"}],staticClass:"checked"})])}))],1),_vm._v(" "),_c('div',{attrs:{"id":"simple"}},[_c('div',{attrs:{"id":"qrArea"}},[_c('div',{attrs:{"id":"qrcode"}},[_c('img',{attrs:{"src":_vm.qrDataUrl||'',"alt":"QR code","id":"qrcodeImage"}}),_vm._v(" "),_c('div',{style:({'background-image':'url('+_vm.currentCurIcon+')'}),attrs:{"id":"currentCurIcon"}})]),_vm._v(" "),_c('div',{staticClass:"address"},[_vm._v(_vm._s(_vm.url))])]),_vm._v(" "),(_vm.isNative)?_c('div',[_c('v-ons-button',[_c('v-ons-icon',{attrs:{"icon":"fa-clipboard"}}),_vm._v("\n          アドレスコピー\n        ")],1),_vm._v(" "),_c('v-ons-button',[_c('v-ons-icon',{attrs:{"icon":"fa-share"}}),_vm._v("共有\n        ")],1)],1):_vm._e(),_vm._v(" "),_c('v-ons-list',[_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_vm._v("受信アドレスのラベル")]),_vm._v(" "),_c('div',{staticClass:"right"},[_c('v-ons-select',{on:{"change":_vm.generateQR},model:{value:(_vm.addressIndex),callback:function ($$v) {_vm.addressIndex=$$v},expression:"addressIndex"}},_vm._l((_vm.labels),function(l,i){return _c('option',{domProps:{"value":i}},[_vm._v(_vm._s(l))])}))],1)]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_vm._v("請求額")]),_vm._v(" "),_c('div',{staticClass:"right"},[_c('v-ons-input',{attrs:{"placeholder":"金額"},on:{"change":_vm.generateQR},model:{value:(_vm.amount),callback:function ($$v) {_vm.amount=$$v},expression:"amount"}})],1)]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_vm._v("相手に表示する文")]),_vm._v(" "),_c('div',{staticClass:"right"},[_c('v-ons-input',{attrs:{"placeholder":"メッセージ"},on:{"change":_vm.generateQR},model:{value:(_vm.message),callback:function ($$v) {_vm.message=$$v},expression:"message"}})],1)]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_vm._v("ブロックに書き込んでもらうメッセージ(対応ウォレットのみ)")]),_vm._v(" "),_c('div',{staticClass:"right"},[_c('v-ons-input',{attrs:{"placeholder":"OP_RETURN"},on:{"change":_vm.generateQR},model:{value:(_vm.messageOpRet),callback:function ($$v) {_vm.messageOpRet=$$v},expression:"messageOpRet"}})],1)]),_vm._v(" "),_c('v-ons-list-item',[_c('v-ons-button',{attrs:{"modifier":"large"},on:{"click":_vm.generateQR}},[_vm._v("QRコードを生成")])],1)],1)],1)])],1)}
+var staticRenderFns = []
+module.exports = function (_exports) {
+  var options = typeof _exports === 'function'
+    ? _exports.options
+    : _exports
+  options.render = render
+  options.staticRenderFns = staticRenderFns
+  if (false) {
+    api.createRecord("data-v-866f9c22", options)
+  }
+  return _exports
+}
+var api = null
+if (false) {(function () {
+  api = require("vue-hot-reload-api")
+  api.install(require("vue"))
+  if (!api.compatible) return
+  module.hot.accept()
+  if (module.hot.data) {
+    api.rerender("data-v-866f9c22", { render: render, staticRenderFns: staticRenderFns })
+  }
+})()}
+
+
+/***/ }),
+/* 375 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__.p + "dist/assets/166a3b8d4cb88167905a416310403da9.png";
+
+/***/ }),
+/* 376 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+module.exports = __webpack_require__(377)({
+  data: function data() {
+    return {};
+  }
+});
+
+/***/ }),
+/* 377 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('v-ons-page',{attrs:{"data-page":"zaifPay"}},[_c('custom-bar',{attrs:{"title":"Zaif Payment","menu":"true"}}),_vm._v(" "),_c('div',[_c('div',{staticClass:"logo"}),_vm._v(" "),_c('p',[_vm._v("Zaif Paymentとは、Zaif取引所を通して、受け取り時に暗号通貨でなく、日本円で受け取ることができる決済サービスです。これにより、レート変動によるリスクから解放されます。始め方、操作方法は、Zaif公式ドキュメントより優しい本アプリ解説をご覧下さい。 "),_c('br'),_vm._v("\n      まずは、APIキー、シークレットキーを設定画面から入力しましょう。\n    ")])])],1)}
+var staticRenderFns = []
+module.exports = function (_exports) {
+  var options = typeof _exports === 'function'
+    ? _exports.options
+    : _exports
+  options.render = render
+  options.staticRenderFns = staticRenderFns
+  if (false) {
+    api.createRecord("data-v-b5a8f010", options)
+  }
+  return _exports
+}
+var api = null
+if (false) {(function () {
+  api = require("vue-hot-reload-api")
+  api.install(require("vue"))
+  if (!api.compatible) return
+  module.hot.accept()
+  if (module.hot.data) {
+    api.rerender("data-v-b5a8f010", { render: render, staticRenderFns: staticRenderFns })
   }
 })()}
 

@@ -14,7 +14,7 @@ const coins={
     bip21:"monacoin",
     defaultFeeSatPerByte:200,//will implement dynamic fee
     icon:require("../res/coins/mona.png"),
-    defaultAPIEndpoint:"https://mona.insight.monaco-ex.org/insight-api-monacoin/",
+    defaultAPIEndpoint:"https://mona.insight.monaco-ex.org/insight-api-monacoin",
     network:{
       messagePrefix: '\x19Monacoin Signed Message:\n',
       bip32: {
@@ -22,9 +22,9 @@ const coins={
         
         private: 0x0488ade4
       },
-      pubKeyHash: 0x32,
-      scriptHash: 0x05,
-      wif: 0xb2,
+      pubKeyHash: 50,// M
+      scriptHash: 55,// P new scripthash
+      wif: 176,//new wif
       bech32:"mona"
     },
     enableSegwit:false,
@@ -35,7 +35,8 @@ const coins={
       jsonPath:["data","last"],
       fiat:"jpy"
     }
-  })
+  }),
+  
 }
 /**
  * Get supported Currencies
