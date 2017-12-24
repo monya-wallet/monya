@@ -23,7 +23,7 @@ module.exports=require("./currencySet.html")({
       return this.getTicker(this.ticker)+(this.fiatTicker?"/"+this.getTicker(this.fiatTicker):"")
     },
     compAmt(){
-      return this.amount?(this.amount+"").slice(0,10):""
+      return isNaN(parseFloat(this.amount))?"処理不可能":(this.amount+"").slice(0,14)
     },
     easy(){
       return this.$store.state.easyUnit

@@ -35,15 +35,9 @@
             <v-ons-icon icon="fa-bell" class="unread"></v-ons-icon>
             <v-ons-icon icon="fa-exclamation" class="inmatureConfirmation" v-show="inmatureConfirmation"></v-ons-icon>
           </span>
-          <div class="receive" v-if="tx.direction==='receive'">
-            <currency-set :amount="tx.aOut" :ticker="coinId"></currency-set>
-          </div>
-          <div class="send" v-if="tx.direction==='send'">
-            <currency-set :amount="-tx.aIn" :ticker="coinId"></currency-set>
-          </div>
-          <div class="unknown" v-if="tx.direction==='unknown'">
-            (不明)
-          </div>
+          
+          <currency-set :amount="tx.aOut-tx.aIn" :ticker="coinId"></currency-set>
+          
         </div>
       </v-ons-list-item>
     </v-ons-list>

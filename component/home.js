@@ -4,7 +4,6 @@ module.exports=require("./home.html")({
   data(){
     return {
       curs:[],
-      isEasy:true,
       fiatConv:0,
       fiat:this.$store.state.fiat,
       loading:false

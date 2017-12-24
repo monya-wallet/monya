@@ -7,8 +7,8 @@ const errors=require("./errors")
 
 
 exports.DEFAULT_LABEL_NAME = "Default"
-exports.GAP_LIMIT=10
-exports.GAP_LIMIT_FOR_CHANGE=10
+exports.GAP_LIMIT=20
+exports.GAP_LIMIT_FOR_CHANGE=20
 
 exports.isValidAddress=(addr)=>{
   try{

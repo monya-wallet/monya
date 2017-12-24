@@ -42,11 +42,6 @@ module.exports=class{
         return res.data
       })
   }
-  getBalanceOfReceiveAddr(limit){
-    return this.getUtxos(this.getReceiveAddr(limit)).then(v=>{
-      return v.balance
-    })
-  }
   getReceiveAddr(limit){
     if(!limit){
       limit=coinUtil.GAP_LIMIT
@@ -79,20 +74,21 @@ module.exports=class{
     return this.getUtxos(this.getReceiveAddr())
   }
   getChangeBalance(){
-    return this.getUtxos(this.getChangeAddr()).then(res=>{
+    return this.getUtxos(this.getChangeAddr()).then(d=>{
       let newestCnf=Infinity
       let newestAddr=""
       let bal=0
       let unconfirmed=0
+      const res=d.utxos
       for(let i=0;i<res.length;i++){
         if(res[i].confirmations<newestCnf){
           newestCnf=res[i].confirmations
           newestAddr=res[i].address
         }
         if(res[i].confirmations===0){
-          unconfirmed+=res[i].amount
+          unconfirmed+=res[i].value
         }else{
-          bal+=res[i].amount
+          bal+=res[i].value
         }
       }
       this.changeIndex=newestAddr?
@@ -108,8 +104,8 @@ module.exports=class{
   getWholeBalanceOfThisAccount(){
     if(this.dummy){return Promise.resolve()}
     return Promise.all([this.getReceiveBalance(),this.getChangeBalance()]).then(vals=>({
-      balance:vals[0].balance+vals[1].balance,
-      unconfirmed:vals[0].unconfirmed+vals[1].unconfirmed
+      balance:vals[0].balance+vals[1].balance/100000000,
+      unconfirmed:vals[0].unconfirmed+vals[1].unconfirmed/100000000
     }))
   }
   

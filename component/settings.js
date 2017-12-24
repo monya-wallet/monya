@@ -8,9 +8,12 @@ module.exports=require("./settings.html")({
     goToShowPassphrase(){
       this.$emit("push",require("./showPassphrase.js"))
     },
-     goToSetPassword(){
+    goToSetPassword(){
       this.$emit("push",require("./setPassword.js"))
-    }
+    },
+    goToManageCoin(){
+      this.$emit("push",require("./manageCoin.js"))
+     }
     
   },
   mounted(){
