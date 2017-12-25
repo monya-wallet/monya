@@ -16,6 +16,9 @@ module.exports=require("./invoice.html")({
       currency:[],
       currencyIndex:0,
       labels:[coinUtil.DEFAULT_LABEL_NAME],
+      fiat:0,
+      price:0,
+      fiatTicker:this.$store.state.fiat,
     }
   },
   store:require("../js/store.js"),
@@ -32,7 +35,24 @@ module.exports=require("./invoice.html")({
       })
       this.currentCurIcon=currencyList.get(this.currency[this.currencyIndex].coinId).icon
     },
-    goToZaifPay(){}
+    calcFiat(){
+      this.$nextTick(()=>{
+        this.fiat=this.amount*this.price
+        this.generateQR()
+      })
+      
+    },
+    calcCur(){
+      this.$nextTick(()=>{
+        this.amount=this.fiat/this.price
+        this.generateQR()
+      })
+    },
+    getPrice(){
+      coinUtil.getPrice(this.coinType,this.fiatTicker).then(res=>{
+        this.price=res
+      })
+    }
   },
   computed:{
     url(){
@@ -46,6 +66,9 @@ module.exports=require("./invoice.html")({
         message:this.message,
         "req-opreturn":this.messageOpRet
       })
+    },
+    coinType(){
+      return (this.currency[this.currencyIndex])?this.currency[this.currencyIndex].coinId:""
     }
   },
 
@@ -60,6 +83,7 @@ module.exports=require("./invoice.html")({
     this.generateQR()
     coinUtil.getLabels(this.currency[this.currencyIndex].coinId).then(res=>{
         this.$set(this,"labels",res)
-      })
+    })
+    this.getPrice()
   }
 })

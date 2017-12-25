@@ -80,7 +80,7 @@
 
 var base64 = __webpack_require__(165)
 var ieee754 = __webpack_require__(166)
-var isArray = __webpack_require__(80)
+var isArray = __webpack_require__(81)
 
 exports.Buffer = Buffer
 exports.SlowBuffer = SlowBuffer
@@ -1961,7 +1961,7 @@ SafeBuffer.allocUnsafeSlow = function (size) {
 /* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var ERRORS = __webpack_require__(87)
+var ERRORS = __webpack_require__(88)
 var NATIVE = __webpack_require__(54)
 
 // short-hand
@@ -5635,11 +5635,11 @@ module.exports = typeforce
 /***/ (function(module, exports, __webpack_require__) {
 
 var Buffer = __webpack_require__(2).Buffer
-var bip66 = __webpack_require__(88)
-var pushdata = __webpack_require__(89)
+var bip66 = __webpack_require__(89)
+var pushdata = __webpack_require__(90)
 var typeforce = __webpack_require__(3)
-var types = __webpack_require__(6)
-var scriptNumber = __webpack_require__(90)
+var types = __webpack_require__(7)
+var scriptNumber = __webpack_require__(91)
 
 var OPS = __webpack_require__(8)
 var REVERSE_OPS = __webpack_require__(185)
@@ -5841,7 +5841,7 @@ module.exports = {
   toASM: toASM,
   toStack: toStack,
 
-  number: __webpack_require__(90),
+  number: __webpack_require__(91),
 
   isCanonicalPubKey: isCanonicalPubKey,
   isCanonicalSignature: isCanonicalSignature,
@@ -5857,6 +5857,68 @@ for (var key in templates) {
 
 /***/ }),
 /* 6 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var Vuex = __webpack_require__(79);
+module.exports = new Vuex.Store({
+  state: {
+    entropy: null,
+    confPayload: null,
+    finishNextPage: null,
+    easyUnit: false,
+    fiat: "jpy",
+    showLabelPayload: {},
+    tsMode: "relative",
+    detail: {},
+    zaifPayEnabled: true
+  },
+  mutations: {
+    setEntropy: function setEntropy(state, ent) {
+      state.entropy = ent;
+    },
+    deleteEntropy: function deleteEntropy(state) {
+      state.entropy = null;
+    },
+    setConfirmation: function setConfirmation(state, payload) {
+      state.confPayload = {
+        address: payload.address,
+        amount: parseFloat(payload.amount),
+        fiat: parseFloat(payload.fiat),
+        feePerByte: parseInt(payload.feePerByte, 10),
+        message: payload.message,
+        coinType: payload.coinType
+      };
+    },
+    setFinishNextPage: function setFinishNextPage(state, pageData) {
+      state.finishNextPage = {
+        page: pageData.page,
+        infoId: pageData.infoId,
+        payload: pageData.payload
+      };
+    },
+    setEasyUnit: function setEasyUnit(state, flag) {
+      state.easyUnit = !!flag;
+    },
+    setLabelToShow: function setLabelToShow(state, param) {
+      state.showLabelPayload = {
+        coinId: param.coinId,
+        name: param.name,
+        index: param.index,
+        change: param.change
+      };
+    },
+    setTxDetail: function setTxDetail(state, d) {
+      state.detail.coinId = d.coinId;
+      state.detail.txId = d.txId;
+    }
+  }
+});
+
+/***/ }),
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var typeforce = __webpack_require__(3)
@@ -5915,68 +5977,6 @@ module.exports = types
 
 
 /***/ }),
-/* 7 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var Vuex = __webpack_require__(78);
-module.exports = new Vuex.Store({
-  state: {
-    entropy: null,
-    confPayload: null,
-    finishNextPage: null,
-    easyUnit: false,
-    fiat: "jpy",
-    showLabelPayload: {},
-    tsMode: "relative",
-    detail: {},
-    zaifPayEnabled: true
-  },
-  mutations: {
-    setEntropy: function setEntropy(state, ent) {
-      state.entropy = ent;
-    },
-    deleteEntropy: function deleteEntropy(state) {
-      state.entropy = null;
-    },
-    setConfirmation: function setConfirmation(state, payload) {
-      state.confPayload = {
-        address: payload.address,
-        amount: parseFloat(payload.amount),
-        fiat: parseFloat(payload.fiat),
-        feePerByte: parseInt(payload.feePerByte, 10),
-        message: payload.message,
-        coinType: payload.coinType
-      };
-    },
-    setFinishNextPage: function setFinishNextPage(state, pageData) {
-      state.finishNextPage = {
-        page: pageData.page,
-        infoId: pageData.infoId,
-        payload: pageData.payload
-      };
-    },
-    setEasyUnit: function setEasyUnit(state, flag) {
-      state.easyUnit = !!flag;
-    },
-    setLabelToShow: function setLabelToShow(state, param) {
-      state.showLabelPayload = {
-        coinId: param.coinId,
-        name: param.name,
-        index: param.index,
-        change: param.change
-      };
-    },
-    setTxDetail: function setTxDetail(state, d) {
-      state.detail.coinId = d.coinId;
-      state.detail.txId = d.txId;
-    }
-  }
-});
-
-/***/ }),
 /* 8 */
 /***/ (function(module, exports) {
 
@@ -5993,7 +5993,7 @@ var elliptic = exports;
 
 elliptic.version = __webpack_require__(280).version;
 elliptic.utils = __webpack_require__(281);
-elliptic.rand = __webpack_require__(113);
+elliptic.rand = __webpack_require__(114);
 elliptic.curve = __webpack_require__(42);
 elliptic.curves = __webpack_require__(286);
 
@@ -6009,7 +6009,98 @@ elliptic.eddsa = __webpack_require__(298);
 "use strict";
 
 
-var bind = __webpack_require__(97);
+var Currency = __webpack_require__(80);
+var axios = __webpack_require__(97);
+
+var coins = {
+  mona: new Currency({ //key = coinId that is lowercase ticker symbol
+    coinScreenName: "モナコイン",
+    coinId: "mona",
+    unit: "MONA",
+    unitEasy: "モナ",
+    bip44: {
+      coinType: 22, //from slip44
+      account: 0
+    },
+    bip21: "monacoin",
+    defaultFeeSatPerByte: 200, //will implement dynamic fee
+    icon: __webpack_require__(320),
+    defaultAPIEndpoint: "https://mona.insight.monaco-ex.org/insight-api-monacoin",
+    network: {
+      messagePrefix: '\x19Monacoin Signed Message:\n',
+      bip32: {
+        public: 0x0488b21e,
+
+        private: 0x0488ade4
+      },
+      pubKeyHash: 50, // M
+      scriptHash: 55, // P new scripthash
+      wif: 176, //new wif
+      bech32: "mona"
+    },
+    enableSegwit: false,
+    prefixes: ["M", "P"],
+    price: {
+      url: "https://public.bitbank.cc/mona_jpy/ticker",
+      json: true,
+      jsonPath: ["data", "last"],
+      fiat: "jpy"
+    }
+  })
+  /**
+   * Get supported Currencies
+   * @param {function} fn(Currency).
+   */
+};exports.each = function (fn, mode) {
+  for (var curName in coins) {
+    if (coins[curName] instanceof Currency && !coins[curName].dummy) {
+      fn(coins[curName]);
+    }
+  }
+};
+
+/**
+ * Get Available Currencies with dummy(such as fiat currency)
+ * @param {function} fn(Currency).
+ */
+exports.eachWithDummy = function (fn, mode) {
+  for (var curName in coins) {
+    if (coins[curName] instanceof Currency) {
+      fn(coins[curName]);
+    }
+  }
+};
+/**
+ * Get Available Currencies which have pubkey
+ * @param {function} fn(Currency).
+ */
+exports.eachWithPub = function (fn, mode) {
+  for (var curName in coins) {
+    if (coins[curName] instanceof Currency && coins[curName].hdPubNode) {
+      fn(coins[curName]);
+    }
+  }
+};
+
+/**
+ * Get a currency
+ * @param {String} coinId.
+ */
+exports.get = function (coinId) {
+  if (coins[coinId] instanceof Currency) {
+    return coins[coinId];
+  }
+};
+exports.createNewCurrency = function (opts) {};
+
+/***/ }),
+/* 11 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var bind = __webpack_require__(98);
 var isBuffer = __webpack_require__(223);
 
 /*global toString:true*/
@@ -6313,7 +6404,155 @@ module.exports = {
 
 
 /***/ }),
-/* 11 */
+/* 12 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var currencyList = __webpack_require__(10);
+var bcLib = __webpack_require__(35);
+var bip39 = __webpack_require__(39);
+var crypto = __webpack_require__(106);
+var storage = __webpack_require__(17);
+var errors = __webpack_require__(65);
+
+exports.DEFAULT_LABEL_NAME = "Default";
+exports.GAP_LIMIT = 20;
+exports.GAP_LIMIT_FOR_CHANGE = 20;
+
+exports.isValidAddress = function (addr) {
+  try {
+    bcLib.address.fromBase58Check(addr);
+    return true;
+  } catch (e) {
+    return false;
+  }
+};
+exports.getPrice = function (cryptoId, fiatId) {
+  var currencyPath = [];
+  var prevId = cryptoId;
+  while (prevId !== fiatId) {
+    currencyPath.push(currencyList.get(prevId).getPrice());
+    prevId = currencyList.get(prevId).price.fiat;
+  }
+  return Promise.all(currencyPath).then(function (v) {
+    var price = 1;
+    v.forEach(function (p) {
+      price *= p;
+    });
+    return price;
+  });
+};
+exports.encrypt = function (plain, password) {
+  var cipher = crypto.createCipher('aes256', password);
+  return cipher.update(plain, 'utf8', 'hex') + cipher.final('hex');
+};
+exports.decrypt = function (cipher, password) {
+  var decipher = crypto.createDecipher('aes256', password);
+  return decipher.update(cipher, 'hex', 'utf8') + decipher.final('utf8');
+};
+
+exports.makePairsAndEncrypt = function (option) {
+  return new Promise(function (resolve, reject) {
+    var seed = void 0;
+    var entropy = void 0;
+    if (option.entropy) {
+      entropy = option.entropy;
+      seed = bip39.mnemonicToSeed(bip39.entropyToMnemonic(option.entropy));
+    } else if (option.mnemonic) {
+      entropy = bip39.mnemonicToEntropy(option.mnemonic);
+      seed = bip39.mnemonicToSeed(option.mnemonic);
+    } else {
+      throw new Error("Can't generate entropy");
+    }
+    if (option.encryptPub) {
+      resolve({ entropy: exports.encrypt(entropy, option.password) });
+    } else {
+      var ret = {
+        entropy: "",
+        pubs: {}
+      };
+      for (var i = 0; i < option.makeCur.length; i++) {
+        var coinId = option.makeCur[i];
+        var pub = currencyList.get(coinId).seedToPubB58(seed);
+        ret.pubs[coinId] = pub;
+      }
+
+      ret.entropy = exports.encrypt(entropy, option.password);
+      resolve(ret);
+    }
+  });
+};
+
+exports.decryptKeys = function (option) {
+  return new Promise(function (resolve, reject) {
+    var seed = bip39.mnemonicToSeed(bip39.entropyToMnemonic(exports.decrypt(option.entropyCipher, option.password)));
+
+    var ret = {};
+    for (var i = 0; i < option.makeCur.length; i++) {
+      var coinId = option.makeCur[i];
+      var pub = currencyList.get(coinId).seedToPubB58(seed);
+      ret[coinId] = pub;
+    }
+  });
+};
+
+exports.createLabel = function (cId, name) {
+  return storage.get("labels").then(function (res) {
+    if (!res) {
+      res = {};
+    }
+    if (!res[cId]) {
+      res[cId] = [exports.DEFAULT_LABEL_NAME];
+    }
+    if (res[cId].length > exports.GAP_LIMIT) {
+      throw new errors.TooManyLabelsError();
+    }
+    if (res[cId].indexOf(name) <= 0) {
+      res[cId].push();
+    }
+    return storage.set("labels", res);
+  });
+};
+
+exports.updateLabel = function (cId, name, newName) {
+  return storage.get("labels").then(function (res) {
+    if (!res || !res[cId]) {
+      throw new Error("Label object for this currency is not created yet.");
+    }
+    var index = res[cId].indexOf(name);
+    if (index >= 0) {
+      res[cId][index] = newName;
+      return storage.set("labels", res);
+    }
+    throw new errors.LabelNotFoundError();
+  });
+};
+
+exports.getLabels = function (cId) {
+  return storage.get("labels").then(function (res) {
+    if (res && res[cId]) {
+      return res[cId];
+    } else {
+      return [exports.DEFAULT_LABEL_NAME];
+    }
+  });
+};
+exports.copy = function (data) {};
+
+exports.getBip21 = function (bip21Urn, address, query) {
+  var queryStr = "?";
+  for (var v in query) {
+    if (query[v]) {
+      queryStr += encodeURIComponent(v) + "=" + encodeURIComponent(query[v]) + "&";
+    }
+  }
+  return bip21Urn + ":" + address + queryStr;
+};
+
+/***/ }),
+/* 13 */
 /***/ (function(module, exports) {
 
 module.exports = assert;
@@ -6330,7 +6569,7 @@ assert.equal = function assertEqual(l, r, msg) {
 
 
 /***/ }),
-/* 12 */
+/* 14 */
 /***/ (function(module, exports) {
 
 // shim for using process in browser
@@ -6520,252 +6759,13 @@ process.umask = function() { return 0; };
 
 
 /***/ }),
-/* 13 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var Currency = __webpack_require__(79);
-var axios = __webpack_require__(96);
-
-var coins = {
-  mona: new Currency({ //key = coinId that is lowercase ticker symbol
-    coinScreenName: "モナコイン",
-    coinId: "mona",
-    unit: "MONA",
-    unitEasy: "モナ",
-    bip44: {
-      coinType: 22, //from slip44
-      account: 0
-    },
-    bip21: "monacoin",
-    defaultFeeSatPerByte: 200, //will implement dynamic fee
-    icon: __webpack_require__(320),
-    defaultAPIEndpoint: "https://mona.insight.monaco-ex.org/insight-api-monacoin",
-    network: {
-      messagePrefix: '\x19Monacoin Signed Message:\n',
-      bip32: {
-        public: 0x0488b21e,
-
-        private: 0x0488ade4
-      },
-      pubKeyHash: 50, // M
-      scriptHash: 55, // P new scripthash
-      wif: 176, //new wif
-      bech32: "mona"
-    },
-    enableSegwit: false,
-    prefixes: ["M", "P"],
-    price: {
-      url: "https://public.bitbank.cc/mona_jpy/ticker",
-      json: true,
-      jsonPath: ["data", "last"],
-      fiat: "jpy"
-    }
-  })
-  /**
-   * Get supported Currencies
-   * @param {function} fn(Currency).
-   */
-};exports.each = function (fn, mode) {
-  for (var curName in coins) {
-    if (coins[curName] instanceof Currency && !coins[curName].dummy) {
-      fn(coins[curName]);
-    }
-  }
-};
-
-/**
- * Get Available Currencies with dummy(such as fiat currency)
- * @param {function} fn(Currency).
- */
-exports.eachWithDummy = function (fn, mode) {
-  for (var curName in coins) {
-    if (coins[curName] instanceof Currency) {
-      fn(coins[curName]);
-    }
-  }
-};
-/**
- * Get Available Currencies which have pubkey
- * @param {function} fn(Currency).
- */
-exports.eachWithPub = function (fn, mode) {
-  for (var curName in coins) {
-    if (coins[curName] instanceof Currency && coins[curName].hdPubNode) {
-      fn(coins[curName]);
-    }
-  }
-};
-
-/**
- * Get a currency
- * @param {String} coinId.
- */
-exports.get = function (coinId) {
-  if (coins[coinId] instanceof Currency) {
-    return coins[coinId];
-  }
-};
-exports.createNewCurrency = function (opts) {};
-
-/***/ }),
-/* 14 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var currencyList = __webpack_require__(13);
-var bcLib = __webpack_require__(35);
-var bip39 = __webpack_require__(39);
-var crypto = __webpack_require__(105);
-var storage = __webpack_require__(17);
-var errors = __webpack_require__(65);
-
-exports.DEFAULT_LABEL_NAME = "Default";
-exports.GAP_LIMIT = 20;
-exports.GAP_LIMIT_FOR_CHANGE = 20;
-
-exports.isValidAddress = function (addr) {
-  try {
-    bcLib.address.fromBase58Check(addr);
-    return true;
-  } catch (e) {
-    return false;
-  }
-};
-exports.getPrice = function (cryptoId, fiatId) {
-  var currencyPath = [];
-  var prevId = cryptoId;
-  while (prevId !== fiatId) {
-    currencyPath.push(currencyList.get(prevId).getPrice());
-    prevId = currencyList.get(prevId).price.fiat;
-  }
-  return Promise.all(currencyPath).then(function (v) {
-    var price = 1;
-    v.forEach(function (p) {
-      price *= p;
-    });
-    return price;
-  });
-};
-exports.encrypt = function (plain, password) {
-  var cipher = crypto.createCipher('aes256', password);
-  return cipher.update(plain, 'utf8', 'hex') + cipher.final('hex');
-};
-exports.decrypt = function (cipher, password) {
-  var decipher = crypto.createDecipher('aes256', password);
-  return decipher.update(cipher, 'hex', 'utf8') + decipher.final('utf8');
-};
-
-exports.makePairsAndEncrypt = function (option) {
-  return new Promise(function (resolve, reject) {
-    var seed = void 0;
-    var entropy = void 0;
-    if (option.entropy) {
-      entropy = option.entropy;
-      seed = bip39.mnemonicToSeed(bip39.entropyToMnemonic(option.entropy));
-    } else if (option.mnemonic) {
-      entropy = bip39.mnemonicToEntropy(option.mnemonic);
-      seed = bip39.mnemonicToSeed(option.mnemonic);
-    } else {
-      throw new Error("Can't generate entropy");
-    }
-    if (option.encryptPub) {
-      resolve({ entropy: exports.encrypt(entropy, option.password) });
-    } else {
-      var ret = {
-        entropy: "",
-        pubs: {}
-      };
-      for (var i = 0; i < option.makeCur.length; i++) {
-        var coinId = option.makeCur[i];
-        var pub = currencyList.get(coinId).seedToPubB58(seed);
-        ret.pubs[coinId] = pub;
-      }
-
-      ret.entropy = exports.encrypt(entropy, option.password);
-      resolve(ret);
-    }
-  });
-};
-
-exports.decryptKeys = function (option) {
-  return new Promise(function (resolve, reject) {
-    var seed = bip39.mnemonicToSeed(bip39.entropyToMnemonic(exports.decrypt(option.entropyCipher, option.password)));
-
-    var ret = {};
-    for (var i = 0; i < option.makeCur.length; i++) {
-      var coinId = option.makeCur[i];
-      var pub = currencyList.get(coinId).seedToPubB58(seed);
-      ret[coinId] = pub;
-    }
-  });
-};
-
-exports.createLabel = function (cId, name) {
-  return storage.get("labels").then(function (res) {
-    if (!res) {
-      res = {};
-    }
-    if (!res[cId]) {
-      res[cId] = [exports.DEFAULT_LABEL_NAME];
-    }
-    if (res[cId].length > exports.GAP_LIMIT) {
-      throw new errors.TooManyLabelsError();
-    }
-    if (res[cId].indexOf(name) <= 0) {
-      res[cId].push();
-    }
-    return storage.set("labels", res);
-  });
-};
-
-exports.updateLabel = function (cId, name, newName) {
-  return storage.get("labels").then(function (res) {
-    if (!res || !res[cId]) {
-      throw new Error("Label object for this currency is not created yet.");
-    }
-    var index = res[cId].indexOf(name);
-    if (index >= 0) {
-      res[cId][index] = newName;
-      return storage.set("labels", res);
-    }
-    throw new errors.LabelNotFoundError();
-  });
-};
-
-exports.getLabels = function (cId) {
-  return storage.get("labels").then(function (res) {
-    if (res && res[cId]) {
-      return res[cId];
-    } else {
-      return [exports.DEFAULT_LABEL_NAME];
-    }
-  });
-};
-exports.copy = function (data) {};
-
-exports.getBip21 = function (bip21Urn, address, query) {
-  var queryStr = "?";
-  for (var v in query) {
-    if (query[v]) {
-      queryStr += encodeURIComponent(v) + "=" + encodeURIComponent(query[v]) + "&";
-    }
-  }
-  return bip21Urn + ":" + address + queryStr;
-};
-
-/***/ }),
 /* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var assert = __webpack_require__(11);
+var assert = __webpack_require__(13);
 var inherits = __webpack_require__(1);
 
 exports.inherits = inherits;
@@ -7295,7 +7295,7 @@ var util = __webpack_require__(29);
 util.inherits = __webpack_require__(1);
 /*</replacement>*/
 
-var Readable = __webpack_require__(81);
+var Readable = __webpack_require__(82);
 var Writable = __webpack_require__(51);
 
 util.inherits(Duplex, Readable);
@@ -7375,7 +7375,7 @@ function forEach(xs, f) {
 /* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var BigInteger = __webpack_require__(93)
+var BigInteger = __webpack_require__(94)
 
 //addons
 __webpack_require__(213)
@@ -7426,7 +7426,7 @@ function randomBytes (size, cb) {
   return bytes
 }
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(16), __webpack_require__(12)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(16), __webpack_require__(14)))
 
 /***/ }),
 /* 23 */
@@ -7877,7 +7877,7 @@ module.exports = Hash
 
 
 
-var isArray = __webpack_require__(73)
+var isArray = __webpack_require__(74)
 
 function typedArraySupport () {
   // Can typed array instances be augmented?
@@ -8564,7 +8564,7 @@ module.exports = {
 
 
 var utils = __webpack_require__(15);
-var assert = __webpack_require__(11);
+var assert = __webpack_require__(13);
 
 function BlockHash() {
   this.pending = null;
@@ -8665,7 +8665,7 @@ asn1.bignum = __webpack_require__(4);
 
 asn1.define = __webpack_require__(302).define;
 asn1.base = __webpack_require__(34);
-asn1.constants = __webpack_require__(119);
+asn1.constants = __webpack_require__(120);
 asn1.decoders = __webpack_require__(308);
 asn1.encoders = __webpack_require__(310);
 
@@ -8677,8 +8677,8 @@ asn1.encoders = __webpack_require__(310);
 var base = exports;
 
 base.Reporter = __webpack_require__(305).Reporter;
-base.DecoderBuffer = __webpack_require__(118).DecoderBuffer;
-base.EncoderBuffer = __webpack_require__(118).EncoderBuffer;
+base.DecoderBuffer = __webpack_require__(119).DecoderBuffer;
+base.EncoderBuffer = __webpack_require__(119).EncoderBuffer;
 base.Node = __webpack_require__(306);
 
 
@@ -8695,7 +8695,7 @@ module.exports = {
   TransactionBuilder: __webpack_require__(221),
 
   address: __webpack_require__(58),
-  bufferutils: __webpack_require__(92), // TODO: remove in 4.0.0
+  bufferutils: __webpack_require__(93), // TODO: remove in 4.0.0
   crypto: __webpack_require__(26),
   networks: __webpack_require__(30),
   opcodes: __webpack_require__(8),
@@ -8885,7 +8885,7 @@ function nextTick(fn, arg1, arg2, arg3) {
   }
 }
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(12)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(14)))
 
 /***/ }),
 /* 38 */
@@ -9536,29 +9536,31 @@ function decrypt (data, password) {
 "use strict";
 
 
-var currencyList = __webpack_require__(13);
-var coinUtil = __webpack_require__(14);
+var currencyList = __webpack_require__(10);
+var coinUtil = __webpack_require__(12);
 module.exports = __webpack_require__(326)({
   data: function data() {
     return {
       curs: [],
       fiatConv: 0,
       fiat: this.$store.state.fiat,
-      loading: false
+      loading: false,
+      state: "initial"
     };
   },
 
   methods: {
     push: function push() {
-      this.$emit("push", __webpack_require__(126));
+      this.$emit("push", __webpack_require__(72));
     },
-    load: function load() {
+    load: function load(done) {
       var _this = this;
 
       this.curs = [];
       this.fiatConv = 0;
+      this.loading = true;
       currencyList.eachWithPub(function (cur) {
-        _this.loading = true;
+
         var bal = null;
         cur.getWholeBalanceOfThisAccount().then(function (res) {
           bal = res;
@@ -9575,13 +9577,14 @@ module.exports = __webpack_require__(326)({
             icon: cur.icon
           });
           _this.loading = false;
+          typeof done === 'function' && done();
         });
       });
     }
   },
-  store: __webpack_require__(7),
+  store: __webpack_require__(6),
   mounted: function mounted() {
-    this.$nextTick(this.load);
+    this.load();
   }
 });
 
@@ -10719,12 +10722,12 @@ function isUndefined(arg) {
 /* 50 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(81);
+exports = module.exports = __webpack_require__(82);
 exports.Stream = exports;
 exports.Readable = exports;
 exports.Writable = __webpack_require__(51);
 exports.Duplex = __webpack_require__(20);
-exports.Transform = __webpack_require__(84);
+exports.Transform = __webpack_require__(85);
 exports.PassThrough = __webpack_require__(174);
 
 
@@ -10810,7 +10813,7 @@ var internalUtil = {
 /*</replacement>*/
 
 /*<replacement>*/
-var Stream = __webpack_require__(82);
+var Stream = __webpack_require__(83);
 /*</replacement>*/
 
 /*<replacement>*/
@@ -10824,7 +10827,7 @@ function _isUint8Array(obj) {
 }
 /*</replacement>*/
 
-var destroyImpl = __webpack_require__(83);
+var destroyImpl = __webpack_require__(84);
 
 util.inherits(Writable, Stream);
 
@@ -11397,7 +11400,7 @@ Writable.prototype._destroy = function (err, cb) {
   this.end();
   cb(err);
 };
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(12), __webpack_require__(171).setImmediate, __webpack_require__(16)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(14), __webpack_require__(171).setImmediate, __webpack_require__(16)))
 
 /***/ }),
 /* 52 */
@@ -11642,9 +11645,9 @@ var exports = module.exports = function SHA (algorithm) {
 exports.sha = __webpack_require__(179)
 exports.sha1 = __webpack_require__(180)
 exports.sha224 = __webpack_require__(181)
-exports.sha256 = __webpack_require__(85)
+exports.sha256 = __webpack_require__(86)
 exports.sha384 = __webpack_require__(182)
-exports.sha512 = __webpack_require__(86)
+exports.sha512 = __webpack_require__(87)
 
 
 /***/ }),
@@ -11778,10 +11781,10 @@ module.exports = { encode: encode, decode: decode, encodingLength: encodingLengt
 var Buffer = __webpack_require__(2).Buffer
 var bcrypto = __webpack_require__(26)
 var bscript = __webpack_require__(5)
-var bufferutils = __webpack_require__(92)
+var bufferutils = __webpack_require__(93)
 var opcodes = __webpack_require__(8)
 var typeforce = __webpack_require__(3)
-var types = __webpack_require__(6)
+var types = __webpack_require__(7)
 var varuint = __webpack_require__(55)
 
 function varSliceSize (someScript) {
@@ -12278,7 +12281,7 @@ var bcrypto = __webpack_require__(26)
 var ecdsa = __webpack_require__(210)
 var randomBytes = __webpack_require__(22)
 var typeforce = __webpack_require__(3)
-var types = __webpack_require__(6)
+var types = __webpack_require__(7)
 var wif = __webpack_require__(219)
 
 var NETWORKS = __webpack_require__(30)
@@ -12416,7 +12419,7 @@ var bs58check = __webpack_require__(59)
 var bscript = __webpack_require__(5)
 var networks = __webpack_require__(30)
 var typeforce = __webpack_require__(3)
-var types = __webpack_require__(6)
+var types = __webpack_require__(7)
 
 function fromBase58Check (address) {
   var payload = bs58check.decode(address)
@@ -13072,9 +13075,9 @@ var objectKeys = Object.keys || function (obj) {
 /* 61 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(Buffer) {var bip66 = __webpack_require__(88)
+/* WEBPACK VAR INJECTION */(function(Buffer) {var bip66 = __webpack_require__(89)
 var typeforce = __webpack_require__(3)
-var types = __webpack_require__(6)
+var types = __webpack_require__(7)
 
 var BigInteger = __webpack_require__(21)
 
@@ -13165,8 +13168,8 @@ module.exports = ECSignature
 /* 62 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var Point = __webpack_require__(94)
-var Curve = __webpack_require__(95)
+var Point = __webpack_require__(95)
+var Curve = __webpack_require__(96)
 
 var getCurveByName = __webpack_require__(217)
 
@@ -13184,7 +13187,7 @@ module.exports = {
 "use strict";
 /* WEBPACK VAR INJECTION */(function(process) {
 
-var utils = __webpack_require__(10);
+var utils = __webpack_require__(11);
 var normalizeHeaderName = __webpack_require__(225);
 
 var DEFAULT_CONTENT_TYPE = {
@@ -13201,10 +13204,10 @@ function getDefaultAdapter() {
   var adapter;
   if (typeof XMLHttpRequest !== 'undefined') {
     // For browsers use XHR adapter
-    adapter = __webpack_require__(98);
+    adapter = __webpack_require__(99);
   } else if (typeof process !== 'undefined') {
     // For node use HTTP adapter
-    adapter = __webpack_require__(98);
+    adapter = __webpack_require__(99);
   }
   return adapter;
 }
@@ -13275,7 +13278,7 @@ utils.forEach(['post', 'put', 'patch'], function forEachMethodWithData(method) {
 
 module.exports = defaults;
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(12)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(14)))
 
 /***/ }),
 /* 64 */
@@ -13388,7 +13391,7 @@ exports.LabelNotFoundError = createError("LabelNotFoundError");
 
 exports.pbkdf2 = __webpack_require__(243)
 
-exports.pbkdf2Sync = __webpack_require__(104)
+exports.pbkdf2Sync = __webpack_require__(105)
 
 
 /***/ }),
@@ -13397,7 +13400,7 @@ exports.pbkdf2Sync = __webpack_require__(104)
 
 var ciphers = __webpack_require__(256)
 var deciphers = __webpack_require__(264)
-var modes = __webpack_require__(108)
+var modes = __webpack_require__(109)
 
 function getCiphers () {
   return Object.keys(modes)
@@ -13421,11 +13424,11 @@ var modeModules = {
   CFB8: __webpack_require__(260),
   CFB1: __webpack_require__(261),
   OFB: __webpack_require__(262),
-  CTR: __webpack_require__(107),
-  GCM: __webpack_require__(107)
+  CTR: __webpack_require__(108),
+  GCM: __webpack_require__(108)
 }
 
-var modes = __webpack_require__(108)
+var modes = __webpack_require__(109)
 
 for (var key in modes) {
   modes[key].module = modeModules[modes[key].mode]
@@ -13520,6 +13523,105 @@ hash.ripemd160 = hash.ripemd.ripemd160;
 /* 72 */
 /***/ (function(module, exports, __webpack_require__) {
 
+"use strict";
+
+
+var coinUtil = __webpack_require__(12);
+var currencyList = __webpack_require__(10);
+module.exports = __webpack_require__(327)({
+  data: function data() {
+    return {
+      address: "",
+      amount: 0,
+      fiat: 0,
+      feePerByte: 0,
+      message: "",
+      balance: 0,
+      price: 1,
+      coinType: "",
+      possibility: [],
+      fiatTicker: this.$store.state.fiat,
+      advanced: false
+    };
+  },
+
+  store: __webpack_require__(6),
+  methods: {
+    confirm: function confirm() {
+      if (!this.address || !this.coinType || !this.amount || !this.feePerByte || !coinUtil.isValidAddress(this.address)) {
+
+        this.$ons.notification.alert("正しく入力してね！");
+        return;
+      }
+      this.$store.commit("setConfirmation", {
+        address: this.address,
+        amount: this.amount,
+        fiat: this.fiat,
+        feePerByte: this.feePerByte,
+        message: this.message,
+        coinType: this.coinType
+      });
+      this.$emit("push", __webpack_require__(328));
+    },
+    getPrice: function getPrice() {
+      var _this = this;
+
+      coinUtil.getPrice(this.coinType, this.fiatTicker).then(function (res) {
+        _this.price = res;
+      });
+    },
+    calcFiat: function calcFiat() {
+      var _this2 = this;
+
+      this.$nextTick(function () {
+        return _this2.fiat = _this2.amount * _this2.price;
+      });
+    },
+    calcCur: function calcCur() {
+      var _this3 = this;
+
+      this.$nextTick(function () {
+        return _this3.amount = _this3.fiat / _this3.price;
+      });
+    }
+  },
+  watch: {
+    address: function address() {
+      var _this4 = this;
+
+      this.$set(this, "possibility", []);
+      if (this.address) {
+        currencyList.eachWithPub(function (cur) {
+          if (cur.prefixes.indexOf(_this4.address[0]) >= 0) {
+            _this4.possibility.push({
+              name: cur.coinScreenName,
+              coinId: cur.coinId
+            });
+          }
+        });
+        if (this.possibility[0]) {
+          this.coinType = this.possibility[0].coinId;
+        } else {
+          this.coinType = "";
+        }
+      } else {
+        this.coinType = "";
+      }
+    },
+    coinType: function coinType() {
+      if (this.coinType) {
+        this.getPrice();
+        this.feePerByte = currencyList.get(this.coinType).defaultFeeSatPerByte;
+      }
+    }
+  },
+  mounted: function mounted() {}
+});
+
+/***/ }),
+/* 73 */
+/***/ (function(module, exports, __webpack_require__) {
+
 var QRCode = __webpack_require__(332)
 var CanvasRenderer = __webpack_require__(348)
 var SvgRenderer = __webpack_require__(349)
@@ -13569,7 +13671,7 @@ exports.toString = renderCanvas.bind(null, function (data, _, opts) {
 
 
 /***/ }),
-/* 73 */
+/* 74 */
 /***/ (function(module, exports) {
 
 var toString = {}.toString;
@@ -13580,7 +13682,7 @@ module.exports = Array.isArray || function (arr) {
 
 
 /***/ }),
-/* 74 */
+/* 75 */
 /***/ (function(module, exports) {
 
 exports.L = { bit: 1 }
@@ -13636,14 +13738,14 @@ exports.from = function from (value, defaultValue) {
 
 
 /***/ }),
-/* 75 */
+/* 76 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var coinUtil = __webpack_require__(14);
-var crypto = __webpack_require__(105);
+var coinUtil = __webpack_require__(12);
+var crypto = __webpack_require__(106);
 var storage = __webpack_require__(17);
 module.exports = __webpack_require__(362)({
   data: function data() {
@@ -13657,7 +13759,7 @@ module.exports = __webpack_require__(362)({
     };
   },
 
-  store: __webpack_require__(7),
+  store: __webpack_require__(6),
   methods: {
     next: function next() {
       var _this = this;
@@ -13704,19 +13806,19 @@ module.exports = __webpack_require__(362)({
 });
 
 /***/ }),
-/* 76 */
+/* 77 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = __webpack_require__.p + "dist/assets/d04ded86af3bf074f2692b5c887c9f79.png";
 
 /***/ }),
-/* 77 */
+/* 78 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = __webpack_require__.p + "dist/assets/19e65b89cee273a249fba4c09b951b74.eot";
 
 /***/ }),
-/* 78 */
+/* 79 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -14660,10 +14762,10 @@ var index_esm = {
 
 /* harmony default export */ __webpack_exports__["default"] = (index_esm);
 
-/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(12)))
+/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(14)))
 
 /***/ }),
-/* 79 */
+/* 80 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -14674,11 +14776,11 @@ var _createClass = function () { function defineProperties(target, props) { for 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var bcLib = __webpack_require__(35);
-var axios = __webpack_require__(96);
+var axios = __webpack_require__(97);
 var coinSelect = __webpack_require__(240);
 var errors = __webpack_require__(65);
 var bip39 = __webpack_require__(39);
-var coinUtil = __webpack_require__(14);
+var coinUtil = __webpack_require__(12);
 module.exports = function () {
   function _class(opt) {
     _classCallCheck(this, _class);
@@ -14768,10 +14870,10 @@ module.exports = function () {
     }
   }, {
     key: 'getChangeBalance',
-    value: function getChangeBalance() {
+    value: function getChangeBalance(includeUnconfirmedFunds) {
       var _this = this;
 
-      return this.getUtxos(this.getChangeAddr()).then(function (d) {
+      return this.getUtxos(this.getChangeAddr(), includeUnconfirmedFunds).then(function (d) {
         var newestCnf = Infinity;
         var newestAddr = "";
         var bal = 0;
@@ -14801,7 +14903,7 @@ module.exports = function () {
       if (this.dummy) {
         return Promise.resolve();
       }
-      return Promise.all([this.getReceiveBalance(), this.getChangeBalance()]).then(function (vals) {
+      return Promise.all([this.getReceiveBalance(), this.getChangeBalance(true)]).then(function (vals) {
         return {
           balance: vals[0].balance + vals[1].balance / 100000000,
           unconfirmed: vals[0].unconfirmed + vals[1].unconfirmed / 100000000
@@ -14811,6 +14913,8 @@ module.exports = function () {
   }, {
     key: 'getUtxos',
     value: function getUtxos(addressList) {
+      var includeUnconfirmedFunds = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+
       return axios({
         url: this.apiEndpoint + "/addrs/" + addressList.join(",") + "/utxo",
         json: true,
@@ -14822,13 +14926,13 @@ module.exports = function () {
         for (var i = 0; i < v.length; i++) {
           bal += v[i].amount;
           var u = v[i];
-          if (u.confirmations !== 0) {
-            //avoid spending unconfimed fund
+          if (includeUnconfirmedFunds || u.confirmations !== 0) {
             utxos.push({
               value: u.amount * 100000000,
               txId: u.txid,
               vout: u.vout,
-              address: u.address
+              address: u.address,
+              confirmations: u.confirmations
             });
           } else {
             unconfirmed += u.amount;
@@ -14951,7 +15055,7 @@ module.exports = function () {
 
         var txb = new bcLib.TransactionBuilder(_this3.network);
 
-        _this3.getUtxos(_this3.getReceiveAddr().concat(_this3.getChangeAddr())).then(function (res) {
+        _this3.getUtxos(_this3.getReceiveAddr().concat(_this3.getChangeAddr()), option.includeUnconfirmedFunds).then(function (res) {
           var path = [];
 
           var _coinSelect = coinSelect(res.utxos, targets, feeRate),
@@ -15043,7 +15147,7 @@ module.exports = function () {
 }();
 
 /***/ }),
-/* 80 */
+/* 81 */
 /***/ (function(module, exports) {
 
 var toString = {}.toString;
@@ -15054,7 +15158,7 @@ module.exports = Array.isArray || function (arr) {
 
 
 /***/ }),
-/* 81 */
+/* 82 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -15089,7 +15193,7 @@ var processNextTick = __webpack_require__(37);
 module.exports = Readable;
 
 /*<replacement>*/
-var isArray = __webpack_require__(80);
+var isArray = __webpack_require__(81);
 /*</replacement>*/
 
 /*<replacement>*/
@@ -15107,7 +15211,7 @@ var EElistenerCount = function (emitter, type) {
 /*</replacement>*/
 
 /*<replacement>*/
-var Stream = __webpack_require__(82);
+var Stream = __webpack_require__(83);
 /*</replacement>*/
 
 // TODO(bmeurer): Change this back to const once hole checks are
@@ -15139,7 +15243,7 @@ if (debugUtil && debugUtil.debuglog) {
 /*</replacement>*/
 
 var BufferList = __webpack_require__(170);
-var destroyImpl = __webpack_require__(83);
+var destroyImpl = __webpack_require__(84);
 var StringDecoder;
 
 util.inherits(Readable, Stream);
@@ -16065,17 +16169,17 @@ function indexOf(xs, x) {
   }
   return -1;
 }
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(16), __webpack_require__(12)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(16), __webpack_require__(14)))
 
 /***/ }),
-/* 82 */
+/* 83 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = __webpack_require__(49).EventEmitter;
 
 
 /***/ }),
-/* 83 */
+/* 84 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -16153,7 +16257,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 84 */
+/* 85 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -16373,7 +16477,7 @@ function done(stream, er, data) {
 }
 
 /***/ }),
-/* 85 */
+/* 86 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(Buffer) {/**
@@ -16514,7 +16618,7 @@ module.exports = Sha256
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0).Buffer))
 
 /***/ }),
-/* 86 */
+/* 87 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(Buffer) {var inherits = __webpack_require__(1)
@@ -16780,7 +16884,7 @@ module.exports = Sha512
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0).Buffer))
 
 /***/ }),
-/* 87 */
+/* 88 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var native = __webpack_require__(54)
@@ -16890,7 +16994,7 @@ module.exports = {
 
 
 /***/ }),
-/* 88 */
+/* 89 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // Reference https://github.com/bitcoin/bips/blob/master/bip-0066.mediawiki
@@ -17009,7 +17113,7 @@ module.exports = {
 
 
 /***/ }),
-/* 89 */
+/* 90 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var OPS = __webpack_require__(8)
@@ -17092,7 +17196,7 @@ module.exports = {
 
 
 /***/ }),
-/* 90 */
+/* 91 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var Buffer = __webpack_require__(2).Buffer
@@ -17166,7 +17270,7 @@ module.exports = {
 
 
 /***/ }),
-/* 91 */
+/* 92 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // <scriptSig> {serialized scriptPubKey script}
@@ -17239,10 +17343,10 @@ module.exports = {
 
 
 /***/ }),
-/* 92 */
+/* 93 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var pushdata = __webpack_require__(89)
+var pushdata = __webpack_require__(90)
 var varuint = __webpack_require__(55)
 
 // https://github.com/feross/buffer/blob/master/index.js#L1127
@@ -17301,7 +17405,7 @@ module.exports = {
 
 
 /***/ }),
-/* 93 */
+/* 94 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // (public) Constructor
@@ -18816,7 +18920,7 @@ module.exports = BigInteger
 
 
 /***/ }),
-/* 94 */
+/* 95 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(Buffer) {var assert = __webpack_require__(60)
@@ -19066,13 +19170,13 @@ module.exports = Point
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0).Buffer))
 
 /***/ }),
-/* 95 */
+/* 96 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var assert = __webpack_require__(60)
 var BigInteger = __webpack_require__(21)
 
-var Point = __webpack_require__(94)
+var Point = __webpack_require__(95)
 
 function Curve (p, a, b, Gx, Gy, n, h) {
   this.p = p
@@ -19149,13 +19253,13 @@ module.exports = Curve
 
 
 /***/ }),
-/* 96 */
+/* 97 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = __webpack_require__(222);
 
 /***/ }),
-/* 97 */
+/* 98 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -19173,18 +19277,18 @@ module.exports = function bind(fn, thisArg) {
 
 
 /***/ }),
-/* 98 */
+/* 99 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 /* WEBPACK VAR INJECTION */(function(process) {
 
-var utils = __webpack_require__(10);
+var utils = __webpack_require__(11);
 var settle = __webpack_require__(226);
 var buildURL = __webpack_require__(228);
 var parseHeaders = __webpack_require__(229);
 var isURLSameOrigin = __webpack_require__(230);
-var createError = __webpack_require__(99);
+var createError = __webpack_require__(100);
 var btoa = (typeof window !== 'undefined' && window.btoa && window.btoa.bind(window)) || __webpack_require__(231);
 
 module.exports = function xhrAdapter(config) {
@@ -19358,10 +19462,10 @@ module.exports = function xhrAdapter(config) {
   });
 };
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(12)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(14)))
 
 /***/ }),
-/* 99 */
+/* 100 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -19386,7 +19490,7 @@ module.exports = function createError(message, config, code, request, response) 
 
 
 /***/ }),
-/* 100 */
+/* 101 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -19398,7 +19502,7 @@ module.exports = function isCancel(value) {
 
 
 /***/ }),
-/* 101 */
+/* 102 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -19424,7 +19528,7 @@ module.exports = Cancel;
 
 
 /***/ }),
-/* 102 */
+/* 103 */
 /***/ (function(module, exports) {
 
 var MAX_ALLOC = Math.pow(2, 30) - 1 // default in iojs
@@ -19448,7 +19552,7 @@ module.exports = function (iterations, keylen) {
 
 
 /***/ }),
-/* 103 */
+/* 104 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(process) {var defaultEncoding
@@ -19462,18 +19566,18 @@ if (process.browser) {
 }
 module.exports = defaultEncoding
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(12)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(14)))
 
 /***/ }),
-/* 104 */
+/* 105 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var md5 = __webpack_require__(47)
 var rmd160 = __webpack_require__(48)
 var sha = __webpack_require__(53)
 
-var checkParameters = __webpack_require__(102)
-var defaultEncoding = __webpack_require__(103)
+var checkParameters = __webpack_require__(103)
+var defaultEncoding = __webpack_require__(104)
 var Buffer = __webpack_require__(2).Buffer
 var ZEROS = Buffer.alloc(128)
 var sizes = {
@@ -19572,7 +19676,7 @@ module.exports = pbkdf2
 
 
 /***/ }),
-/* 105 */
+/* 106 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -19671,13 +19775,13 @@ exports.constants = {
 
 
 /***/ }),
-/* 106 */
+/* 107 */
 /***/ (function(module, exports) {
 
 module.exports = {"sha224WithRSAEncryption":{"sign":"rsa","hash":"sha224","id":"302d300d06096086480165030402040500041c"},"RSA-SHA224":{"sign":"ecdsa/rsa","hash":"sha224","id":"302d300d06096086480165030402040500041c"},"sha256WithRSAEncryption":{"sign":"rsa","hash":"sha256","id":"3031300d060960864801650304020105000420"},"RSA-SHA256":{"sign":"ecdsa/rsa","hash":"sha256","id":"3031300d060960864801650304020105000420"},"sha384WithRSAEncryption":{"sign":"rsa","hash":"sha384","id":"3041300d060960864801650304020205000430"},"RSA-SHA384":{"sign":"ecdsa/rsa","hash":"sha384","id":"3041300d060960864801650304020205000430"},"sha512WithRSAEncryption":{"sign":"rsa","hash":"sha512","id":"3051300d060960864801650304020305000440"},"RSA-SHA512":{"sign":"ecdsa/rsa","hash":"sha512","id":"3051300d060960864801650304020305000440"},"RSA-SHA1":{"sign":"rsa","hash":"sha1","id":"3021300906052b0e03021a05000414"},"ecdsa-with-SHA1":{"sign":"ecdsa","hash":"sha1","id":""},"sha256":{"sign":"ecdsa","hash":"sha256","id":""},"sha224":{"sign":"ecdsa","hash":"sha224","id":""},"sha384":{"sign":"ecdsa","hash":"sha384","id":""},"sha512":{"sign":"ecdsa","hash":"sha512","id":""},"DSA-SHA":{"sign":"dsa","hash":"sha1","id":""},"DSA-SHA1":{"sign":"dsa","hash":"sha1","id":""},"DSA":{"sign":"dsa","hash":"sha1","id":""},"DSA-WITH-SHA224":{"sign":"dsa","hash":"sha224","id":""},"DSA-SHA224":{"sign":"dsa","hash":"sha224","id":""},"DSA-WITH-SHA256":{"sign":"dsa","hash":"sha256","id":""},"DSA-SHA256":{"sign":"dsa","hash":"sha256","id":""},"DSA-WITH-SHA384":{"sign":"dsa","hash":"sha384","id":""},"DSA-SHA384":{"sign":"dsa","hash":"sha384","id":""},"DSA-WITH-SHA512":{"sign":"dsa","hash":"sha512","id":""},"DSA-SHA512":{"sign":"dsa","hash":"sha512","id":""},"DSA-RIPEMD160":{"sign":"dsa","hash":"rmd160","id":""},"ripemd160WithRSA":{"sign":"rsa","hash":"rmd160","id":"3021300906052b2403020105000414"},"RSA-RIPEMD160":{"sign":"rsa","hash":"rmd160","id":"3021300906052b2403020105000414"},"md5WithRSAEncryption":{"sign":"rsa","hash":"md5","id":"3020300c06082a864886f70d020505000410"},"RSA-MD5":{"sign":"rsa","hash":"md5","id":"3020300c06082a864886f70d020505000410"}}
 
 /***/ }),
-/* 107 */
+/* 108 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(Buffer) {var xor = __webpack_require__(31)
@@ -19727,13 +19831,13 @@ exports.encrypt = function (self, chunk) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0).Buffer))
 
 /***/ }),
-/* 108 */
+/* 109 */
 /***/ (function(module, exports) {
 
 module.exports = {"aes-128-ecb":{"cipher":"AES","key":128,"iv":0,"mode":"ECB","type":"block"},"aes-192-ecb":{"cipher":"AES","key":192,"iv":0,"mode":"ECB","type":"block"},"aes-256-ecb":{"cipher":"AES","key":256,"iv":0,"mode":"ECB","type":"block"},"aes-128-cbc":{"cipher":"AES","key":128,"iv":16,"mode":"CBC","type":"block"},"aes-192-cbc":{"cipher":"AES","key":192,"iv":16,"mode":"CBC","type":"block"},"aes-256-cbc":{"cipher":"AES","key":256,"iv":16,"mode":"CBC","type":"block"},"aes128":{"cipher":"AES","key":128,"iv":16,"mode":"CBC","type":"block"},"aes192":{"cipher":"AES","key":192,"iv":16,"mode":"CBC","type":"block"},"aes256":{"cipher":"AES","key":256,"iv":16,"mode":"CBC","type":"block"},"aes-128-cfb":{"cipher":"AES","key":128,"iv":16,"mode":"CFB","type":"stream"},"aes-192-cfb":{"cipher":"AES","key":192,"iv":16,"mode":"CFB","type":"stream"},"aes-256-cfb":{"cipher":"AES","key":256,"iv":16,"mode":"CFB","type":"stream"},"aes-128-cfb8":{"cipher":"AES","key":128,"iv":16,"mode":"CFB8","type":"stream"},"aes-192-cfb8":{"cipher":"AES","key":192,"iv":16,"mode":"CFB8","type":"stream"},"aes-256-cfb8":{"cipher":"AES","key":256,"iv":16,"mode":"CFB8","type":"stream"},"aes-128-cfb1":{"cipher":"AES","key":128,"iv":16,"mode":"CFB1","type":"stream"},"aes-192-cfb1":{"cipher":"AES","key":192,"iv":16,"mode":"CFB1","type":"stream"},"aes-256-cfb1":{"cipher":"AES","key":256,"iv":16,"mode":"CFB1","type":"stream"},"aes-128-ofb":{"cipher":"AES","key":128,"iv":16,"mode":"OFB","type":"stream"},"aes-192-ofb":{"cipher":"AES","key":192,"iv":16,"mode":"OFB","type":"stream"},"aes-256-ofb":{"cipher":"AES","key":256,"iv":16,"mode":"OFB","type":"stream"},"aes-128-ctr":{"cipher":"AES","key":128,"iv":16,"mode":"CTR","type":"stream"},"aes-192-ctr":{"cipher":"AES","key":192,"iv":16,"mode":"CTR","type":"stream"},"aes-256-ctr":{"cipher":"AES","key":256,"iv":16,"mode":"CTR","type":"stream"},"aes-128-gcm":{"cipher":"AES","key":128,"iv":12,"mode":"GCM","type":"auth"},"aes-192-gcm":{"cipher":"AES","key":192,"iv":12,"mode":"GCM","type":"auth"},"aes-256-gcm":{"cipher":"AES","key":256,"iv":12,"mode":"GCM","type":"auth"}}
 
 /***/ }),
-/* 109 */
+/* 110 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var aes = __webpack_require__(41)
@@ -19831,7 +19935,7 @@ module.exports = StreamCipher
 
 
 /***/ }),
-/* 110 */
+/* 111 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var aes = __webpack_require__(41)
@@ -19864,7 +19968,7 @@ module.exports = StreamCipher
 
 
 /***/ }),
-/* 111 */
+/* 112 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var randomBytes = __webpack_require__(22);
@@ -19873,7 +19977,7 @@ findPrime.simpleSieve = simpleSieve;
 findPrime.fermatTest = fermatTest;
 var BN = __webpack_require__(4);
 var TWENTYFOUR = new BN(24);
-var MillerRabin = __webpack_require__(112);
+var MillerRabin = __webpack_require__(113);
 var millerRabin = new MillerRabin();
 var ONE = new BN(1);
 var TWO = new BN(2);
@@ -19975,11 +20079,11 @@ function findPrime(bits, gen) {
 
 
 /***/ }),
-/* 112 */
+/* 113 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var bn = __webpack_require__(4);
-var brorand = __webpack_require__(113);
+var brorand = __webpack_require__(114);
 
 function MillerRabin(rand) {
   this.rand = rand || new brorand.Rand();
@@ -20094,7 +20198,7 @@ MillerRabin.prototype.getDivisor = function getDivisor(n, k) {
 
 
 /***/ }),
-/* 113 */
+/* 114 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var r;
@@ -20165,7 +20269,7 @@ if (typeof self === 'object') {
 
 
 /***/ }),
-/* 114 */
+/* 115 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -20230,7 +20334,7 @@ utils.encode = function encode(arr, enc) {
 
 
 /***/ }),
-/* 115 */
+/* 116 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -20286,7 +20390,7 @@ exports.g1_256 = g1_256;
 
 
 /***/ }),
-/* 116 */
+/* 117 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -20294,8 +20398,8 @@ exports.g1_256 = g1_256;
 
 var utils = __webpack_require__(15);
 var common = __webpack_require__(32);
-var shaCommon = __webpack_require__(115);
-var assert = __webpack_require__(11);
+var shaCommon = __webpack_require__(116);
+var assert = __webpack_require__(13);
 
 var sum32 = utils.sum32;
 var sum32_4 = utils.sum32_4;
@@ -20398,7 +20502,7 @@ SHA256.prototype._digest = function digest(enc) {
 
 
 /***/ }),
-/* 117 */
+/* 118 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -20406,7 +20510,7 @@ SHA256.prototype._digest = function digest(enc) {
 
 var utils = __webpack_require__(15);
 var common = __webpack_require__(32);
-var assert = __webpack_require__(11);
+var assert = __webpack_require__(13);
 
 var rotr64_hi = utils.rotr64_hi;
 var rotr64_lo = utils.rotr64_lo;
@@ -20735,7 +20839,7 @@ function g1_512_lo(xh, xl) {
 
 
 /***/ }),
-/* 118 */
+/* 119 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var inherits = __webpack_require__(1);
@@ -20857,7 +20961,7 @@ EncoderBuffer.prototype.join = function join(out, offset) {
 
 
 /***/ }),
-/* 119 */
+/* 120 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var constants = exports;
@@ -20882,7 +20986,7 @@ constants.der = __webpack_require__(307);
 
 
 /***/ }),
-/* 120 */
+/* 121 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var inherits = __webpack_require__(1);
@@ -21212,7 +21316,7 @@ function derDecodeLen(buf, primitive, fail) {
 
 
 /***/ }),
-/* 121 */
+/* 122 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var inherits = __webpack_require__(1);
@@ -21513,13 +21617,13 @@ function encodeTag(tag, primitive, cls, reporter) {
 
 
 /***/ }),
-/* 122 */
+/* 123 */
 /***/ (function(module, exports) {
 
 module.exports = {"1.3.132.0.10":"secp256k1","1.3.132.0.33":"p224","1.2.840.10045.3.1.1":"p192","1.2.840.10045.3.1.7":"p256","1.3.132.0.34":"p384","1.3.132.0.35":"p521"}
 
 /***/ }),
-/* 123 */
+/* 124 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(Buffer) {var createHash = __webpack_require__(18);
@@ -21541,7 +21645,7 @@ function i2ops(c) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0).Buffer))
 
 /***/ }),
-/* 124 */
+/* 125 */
 /***/ (function(module, exports) {
 
 module.exports = function xor(a, b) {
@@ -21554,7 +21658,7 @@ module.exports = function xor(a, b) {
 };
 
 /***/ }),
-/* 125 */
+/* 126 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(Buffer) {var bn = __webpack_require__(4);
@@ -21570,98 +21674,6 @@ module.exports = withPublic;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0).Buffer))
 
 /***/ }),
-/* 126 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var coinUtil = __webpack_require__(14);
-var currencyList = __webpack_require__(13);
-module.exports = __webpack_require__(327)({
-  data: function data() {
-    return {
-      address: "",
-      amount: 0,
-      fiat: 0,
-      feePerByte: 0,
-      message: "",
-      balance: 0,
-      price: 1,
-      coinType: "",
-      isEasy: this.$store.state.easyUnit,
-      possibility: [],
-
-      advanced: false
-    };
-  },
-
-  store: __webpack_require__(7),
-  methods: {
-    confirm: function confirm() {
-      if (!this.address || !this.coinType || !this.amount || !this.feePerByte || !coinUtil.isValidAddress(this.address)) {
-
-        this.$ons.notification.alert("正しく入力してね！");
-        return;
-      }
-      this.$store.commit("setConfirmation", {
-        address: this.address,
-        amount: this.amount,
-        fiat: this.fiat,
-        feePerByte: this.feePerByte,
-        message: this.message,
-        coinType: this.coinType
-      });
-      this.$emit("push", __webpack_require__(328));
-    },
-    getPrice: function getPrice() {
-      var _this = this;
-
-      coinUtil.getPrice(this.coinType, "jpy").then(function (res) {
-        _this.price = res;
-      });
-    }
-  },
-  watch: {
-    fiat: function fiat() {
-      this.amount = this.fiat / this.price;
-    },
-    amount: function amount() {
-      this.fiat = this.amount * this.price;
-    },
-    address: function address() {
-      var _this2 = this;
-
-      this.$set(this, "possibility", []);
-      if (this.address) {
-        currencyList.eachWithPub(function (cur) {
-          if (cur.prefixes.indexOf(_this2.address[0]) >= 0) {
-            _this2.possibility.push({
-              name: cur.coinScreenName,
-              coinId: cur.coinId
-            });
-          }
-        });
-        if (this.possibility[0]) {
-          this.coinType = this.possibility[0].coinId;
-        } else {
-          this.coinType = "";
-        }
-      } else {
-        this.coinType = "";
-      }
-    },
-    coinType: function coinType() {
-      if (this.coinType) {
-        this.getPrice();
-        this.feePerByte = currencyList.get(this.coinType).defaultFeeSatPerByte;
-      }
-    }
-  },
-  mounted: function mounted() {}
-});
-
-/***/ }),
 /* 127 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -21673,7 +21685,7 @@ module.exports = __webpack_require__(330)({
     return {};
   },
 
-  store: __webpack_require__(7),
+  store: __webpack_require__(6),
   methods: {
     start: function start() {
       this.$emit("replace", this.$store.state.finishNextPage.page);
@@ -21693,7 +21705,7 @@ module.exports = __webpack_require__(330)({
 /* 128 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var ECLevel = __webpack_require__(74)
+var ECLevel = __webpack_require__(75)
 
 var EC_BLOCKS_TABLE = [
 // L  M  Q  H
@@ -21836,9 +21848,9 @@ exports.getTotalCodewordsCount = function getTotalCodewordsCount (version, error
 
 var Utils = __webpack_require__(23)
 var ECCode = __webpack_require__(128)
-var ECLevel = __webpack_require__(74)
+var ECLevel = __webpack_require__(75)
 var Mode = __webpack_require__(24)
-var isArray = __webpack_require__(73)
+var isArray = __webpack_require__(74)
 
 // Generator polynomial used to encode version information
 var G18 = (1 << 12) | (1 << 11) | (1 << 10) | (1 << 9) | (1 << 8) | (1 << 5) | (1 << 2) | (1 << 0)
@@ -22137,7 +22149,7 @@ exports.qrToImageData = function qrToImageData (imgData, qr, margin, scale, colo
 
 var bip39 = __webpack_require__(39);
 var storage = __webpack_require__(17);
-var coinUtil = __webpack_require__(14);
+var coinUtil = __webpack_require__(12);
 module.exports = __webpack_require__(361)({
   data: function data() {
     return {
@@ -22149,10 +22161,10 @@ module.exports = __webpack_require__(361)({
     };
   },
 
-  store: __webpack_require__(7),
+  store: __webpack_require__(6),
   methods: {
     next: function next() {
-      this.$emit("push", __webpack_require__(75));
+      this.$emit("push", __webpack_require__(76));
     },
     render: function render(entropy) {
       this.words = bip39.entropyToMnemonic(entropy).split(" ");
@@ -22185,8 +22197,8 @@ module.exports = __webpack_require__(361)({
 
 
 var storage = __webpack_require__(17);
-var currencyList = __webpack_require__(13);
-var coinUtil = __webpack_require__(14);
+var currencyList = __webpack_require__(10);
+var coinUtil = __webpack_require__(12);
 module.exports = __webpack_require__(363)({
   data: function data() {
     return {
@@ -22255,7 +22267,7 @@ __webpack_require__(142);
 __webpack_require__(159);
 //const Vue = require("vue/dist/vue")
 //const VueOnsen = require("vue-onsenui")
-var Vuex = __webpack_require__(78);
+var Vuex = __webpack_require__(79);
 
 Vue.use(VueOnsen);
 Vue.use(Vuex);
@@ -22320,7 +22332,7 @@ exports = module.exports = __webpack_require__(25)(undefined);
 
 
 // module
-exports.push([module.i, ".spinner {\n  width: 90px;\n  height: 90px;\n  animation-name: spin;\n  animation-duration: 4s;\n  animation-timing-function: ease;\n  animation-iteration-count: infinite;\n  background-image: url(" + __webpack_require__(137) + ");\n  background-repeat: no-repeat no-repeat;\n  background-position: center center;\n  background-size: contain;\n  display: inline-block; }\n\n.list-item--small .list-item--small__left, .list-item--small .list-item--small__center, .list-item--small .list-item--small__right {\n  min-height: 0px;\n  padding-top: 4px;\n  padding-bottom: 4px; }\n\nons-list-item .w_right {\n  margin-left: auto;\n  text-align: right; }\n\n[data-page=\"home\"] #youHave {\n  width: 100%;\n  background-color: #fff85e;\n  padding: 2% 0%;\n  color: #7c5702;\n  background-image: url(" + __webpack_require__(76) + ");\n  background-repeat: no-repeat;\n  background-position: bottom right;\n  text-align: center; }\n  [data-page=\"home\"] #youHave .label {\n    color: #7b7442; }\n  [data-page=\"home\"] #youHave .currencySet {\n    margin: 5% 0;\n    display: inline-block; }\n    [data-page=\"home\"] #youHave .currencySet .amount {\n      font-size: 1.6em;\n      margin: 3px; }\n    [data-page=\"home\"] #youHave .currencySet .ticker {\n      font-size: 0.9em; }\n\n[data-page=\"home\"] #coins .w_right {\n  margin-left: auto; }\n  [data-page=\"home\"] #coins .w_right .fiatConv {\n    color: #555;\n    font-size: 0.76em; }\n  [data-page=\"home\"] #coins .w_right .amount .ticker {\n    font-size: 0.8em; }\n  [data-page=\"home\"] #coins .w_right .unconfirmed {\n    color: red; }\n\n[data-page=\"home\"] #coins .price {\n  font-size: 0.85em; }\n  [data-page=\"home\"] #coins .price .ticker {\n    color: #555;\n    font-size: 0.85em; }\n\n[data-page=\"home\"] #coins .left img {\n  width: 38px;\n  height: 38px; }\n\n[data-page=\"manageCoin\"] .left img {\n  width: 38px;\n  height: 38px; }\n\n[data-page=\"txDetail\"] .list--inset {\n  margin-top: 10px; }\n\n[data-page=\"history\"] ons-list-item .destAddress {\n  font-size: 0.8em; }\n\n[data-page=\"history\"] ons-list-item .date {\n  font-size: 0.85em; }\n\n[data-page=\"history\"] ons-list-item .hasMsg {\n  color: #81d4fa; }\n\n[data-page=\"history\"] ons-list-item .unread {\n  color: #fb8c00; }\n\n[data-page=\"showLabel\"] #currencySelector, [data-page=\"receive\"] #currencySelector, [data-page=\"history\"] #currencySelector {\n  width: 100%;\n  margin: none;\n  padding: none; }\n  [data-page=\"showLabel\"] #currencySelector .currencyIcon, [data-page=\"receive\"] #currencySelector .currencyIcon, [data-page=\"history\"] #currencySelector .currencyIcon {\n    margin: 3px;\n    width: 47px;\n    height: 47px;\n    background-position: center center;\n    background-size: contain;\n    background-repeat: no-repeat; }\n    [data-page=\"showLabel\"] #currencySelector .currencyIcon .checked, [data-page=\"receive\"] #currencySelector .currencyIcon .checked, [data-page=\"history\"] #currencySelector .currencyIcon .checked {\n      position: absolute;\n      bottom: 0;\n      right: 0;\n      width: 25px;\n      height: 25px;\n      background-position: center center;\n      background-size: contain;\n      background-repeat: no-repeat;\n      background-image: url(" + __webpack_require__(45) + "); }\n\n[data-page=\"showLabel\"], [data-page=\"invoice\"], [data-page=\"receive\"] {\n  text-align: center; }\n  [data-page=\"showLabel\"] #currencySelector, [data-page=\"invoice\"] #currencySelector, [data-page=\"receive\"] #currencySelector {\n    width: 100%;\n    margin: none;\n    padding: none; }\n    [data-page=\"showLabel\"] #currencySelector .currencyIcon, [data-page=\"invoice\"] #currencySelector .currencyIcon, [data-page=\"receive\"] #currencySelector .currencyIcon {\n      margin: 3px;\n      width: 47px;\n      height: 47px;\n      background-position: center center;\n      background-size: contain;\n      background-repeat: no-repeat; }\n      [data-page=\"showLabel\"] #currencySelector .currencyIcon .checked, [data-page=\"invoice\"] #currencySelector .currencyIcon .checked, [data-page=\"receive\"] #currencySelector .currencyIcon .checked {\n        position: absolute;\n        bottom: 0;\n        right: 0;\n        width: 25px;\n        height: 25px;\n        background-position: center center;\n        background-size: contain;\n        background-repeat: no-repeat;\n        background-image: url(" + __webpack_require__(45) + "); }\n  [data-page=\"showLabel\"] #simple .label, [data-page=\"invoice\"] #simple .label, [data-page=\"receive\"] #simple .label {\n    margin: 10px;\n    color: #888; }\n  [data-page=\"showLabel\"] #simple #qrArea #qrcode, [data-page=\"invoice\"] #simple #qrArea #qrcode, [data-page=\"receive\"] #simple #qrArea #qrcode {\n    width: 250px;\n    height: 250px;\n    background-color: #aaa;\n    display: inline-block;\n    margin: 10px;\n    position: relative; }\n    [data-page=\"showLabel\"] #simple #qrArea #qrcode #qrcodeImage, [data-page=\"invoice\"] #simple #qrArea #qrcode #qrcodeImage, [data-page=\"receive\"] #simple #qrArea #qrcode #qrcodeImage {\n      width: 100%;\n      height: 100%; }\n    [data-page=\"showLabel\"] #simple #qrArea #qrcode #currentCurIcon, [data-page=\"invoice\"] #simple #qrArea #qrcode #currentCurIcon, [data-page=\"receive\"] #simple #qrArea #qrcode #currentCurIcon {\n      position: absolute;\n      width: 20%;\n      height: 20%;\n      top: 50%;\n      left: 50%;\n      margin-left: -10%;\n      margin-top: -10%;\n      background-position: center center;\n      background-size: contain;\n      background-repeat: no-repeat; }\n  [data-page=\"showLabel\"] #simple #qrArea .address, [data-page=\"invoice\"] #simple #qrArea .address, [data-page=\"receive\"] #simple #qrArea .address {\n    display: block;\n    user-select: text;\n    -webkit-user-select: text;\n    -moz-user-select: text;\n    -ms-user-select: text; }\n\n[data-page=\"first\"] .wrap {\n  width: 100%;\n  height: 100%;\n  background-color: #fff85e; }\n  [data-page=\"first\"] .wrap .logo {\n    position: absolute;\n    top: 30%;\n    width: 100%;\n    text-align: center; }\n    [data-page=\"first\"] .wrap .logo .icon {\n      display: inline-block;\n      background-image: url(" + __webpack_require__(76) + ");\n      background-position: center center;\n      background-repeat: no-repeat;\n      background-size: contain;\n      width: 100px;\n      height: 100px; }\n    [data-page=\"first\"] .wrap .logo .appName {\n      font-size: 2em;\n      color: #7c5702; }\n    [data-page=\"first\"] .wrap .logo .label {\n      color: #7c5702;\n      opacity: 0.5; }\n  [data-page=\"first\"] .wrap .buttons {\n    margin: 80px auto;\n    width: 60%; }\n    [data-page=\"first\"] .wrap .buttons ons-button {\n      margin: 10px 0;\n      width: 100%; }\n\n[data-page=\"restorePassphrase\"] #wordArea {\n  background-color: white;\n  width: 100%; }\n  [data-page=\"restorePassphrase\"] #wordArea .word {\n    display: inline-block;\n    margin: 5px;\n    padding: 4px;\n    border: #ddd 1px solid;\n    border-radius: 3.5px; }\n    [data-page=\"restorePassphrase\"] #wordArea .word .wd {\n      color: black; }\n    [data-page=\"restorePassphrase\"] #wordArea .word .deleteBtn {\n      color: #aaa; }\n    [data-page=\"restorePassphrase\"] #wordArea .word input {\n      border: none;\n      background: transparent;\n      font-size: 1em;\n      width: 5em;\n      margin: 0px;\n      padding: 0px; }\n    [data-page=\"restorePassphrase\"] #wordArea .word.noMatch {\n      background-color: #fdc; }\n\n[data-page=\"restorePassphrase\"] #suggestion {\n  position: fixed;\n  bottom: 0;\n  width: 100%;\n  background-color: white;\n  border-top: #c3c3c8 1px solid; }\n  [data-page=\"restorePassphrase\"] #suggestion .sgst {\n    display: inline-block;\n    padding: 9px;\n    border-right: #c3c3c8 1px solid; }\n\n[data-page=\"restorePassphrase\"] #nextWrap {\n  padding: 10px; }\n\n[data-page=\"question\"] .questionItem {\n  text-align: center;\n  padding: 5%; }\n  [data-page=\"question\"] .questionItem .questionText {\n    padding: 10%;\n    border-radius: 8px;\n    border: 1px solid #7c5702;\n    color: #7c5702;\n    background-color: white; }\n  [data-page=\"question\"] .questionItem .answers .answer {\n    border-radius: 6px;\n    background-color: #fff85e;\n    color: #7c5702;\n    margin: 10px 0;\n    padding: 10px; }\n\n[data-page=\"generateKeyWarn\"] .wrap {\n  padding: 10px; }\n  [data-page=\"generateKeyWarn\"] .wrap .check {\n    padding: 12px; }\n    [data-page=\"generateKeyWarn\"] .wrap .check input {\n      font-size: 1.5em; }\n\n[data-page=\"generateKey\"] .touchArea {\n  height: 50%;\n  background: #50aba0;\n  color: white;\n  font-size: 2em;\n  text-align: center;\n  padding: 30% 10%; }\n\n[data-page=\"send\"] ons-list-item ons-input {\n  width: 100%;\n  display: block; }\n\n[data-page=\"confirm\"] .insufficientFund {\n  color: red; }\n\n[data-page=\"finished\"] .succeeded {\n  height: 300px;\n  margin: 50px 0;\n  background-repeat: no-repeat no-repeat;\n  background-size: contain;\n  background-position: center center; }\n  [data-page=\"finished\"] .succeeded[data-img=\"0\"] {\n    background-image: url(" + __webpack_require__(138) + "); }\n  [data-page=\"finished\"] .succeeded[data-img=\"1\"] {\n    background-image: url(" + __webpack_require__(45) + "); }\n  [data-page=\"finished\"] .succeeded[data-img=\"2\"] {\n    background-image: url(" + __webpack_require__(139) + "); }\n\n[data-page=\"finished\"] .wrap {\n  padding: 40px;\n  text-align: center; }\n\n[data-page=\"login\"] .wrap {\n  padding: 40px;\n  text-align: center; }\n  [data-page=\"login\"] .wrap .passwordBox {\n    line-height: 35px;\n    font-size: 35px;\n    display: grid;\n    grid-template-columns: 1fr 35px;\n    background: white;\n    border-radius: 8px;\n    padding: 5px;\n    margin: 50px 5px; }\n    [data-page=\"login\"] .wrap .passwordBox input {\n      font-size: 35px;\n      background: transparent;\n      border: none; }\n    [data-page=\"login\"] .wrap .passwordBox ons-button {\n      line-height: 35px; }\n    [data-page=\"login\"] .wrap .passwordBox.incorrect {\n      animation: shake 0.72s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;\n      transform: translate3d(0, 0, 0); }\n\n[data-page=\"zaifPay\"] {\n  text-align: center; }\n  [data-page=\"zaifPay\"] .logo {\n    display: inline-block;\n    width: 200px;\n    height: 200px;\n    background-image: url(" + __webpack_require__(140) + ");\n    background-repeat: no-repeat;\n    background-size: contain;\n    background-position: center center; }\n\n@keyframes shake {\n  10%, 90% {\n    transform: translate3d(-1px, 0, 0); }\n  20%, 80% {\n    transform: translate3d(2px, 0, 0); }\n  30%, 50%, 70% {\n    transform: translate3d(-4px, 0, 0); }\n  40%, 60% {\n    transform: translate3d(4px, 0, 0); } }\n\n@keyframes spin {\n  0% {\n    transform: rotatez(0deg); }\n  25% {\n    transform: rotatez(90deg); }\n  50% {\n    transform: rotatez(180deg); }\n  75% {\n    transform: rotatez(270deg); }\n  100% {\n    transform: rotatez(360deg); } }\n", ""]);
+exports.push([module.i, ".spinner {\n  width: 90px;\n  height: 90px;\n  animation-name: spin;\n  animation-duration: 4s;\n  animation-timing-function: ease;\n  animation-iteration-count: infinite;\n  background-image: url(" + __webpack_require__(137) + ");\n  background-repeat: no-repeat no-repeat;\n  background-position: center center;\n  background-size: contain;\n  display: inline-block; }\n\n.list-item--small .list-item--small__left, .list-item--small .list-item--small__center, .list-item--small .list-item--small__right {\n  min-height: 0px;\n  padding-top: 4px;\n  padding-bottom: 4px; }\n\nons-list-item .w_right {\n  margin-left: auto;\n  text-align: right; }\n\n[data-page=\"home\"] #youHave {\n  width: 100%;\n  background-color: #fff85e;\n  padding: 2% 0%;\n  color: #7c5702;\n  background-image: url(" + __webpack_require__(77) + ");\n  background-repeat: no-repeat;\n  background-position: bottom right;\n  text-align: center; }\n  [data-page=\"home\"] #youHave .label {\n    color: #7b7442; }\n  [data-page=\"home\"] #youHave .currencySet {\n    margin: 5% 0;\n    display: inline-block; }\n    [data-page=\"home\"] #youHave .currencySet .amount {\n      font-size: 1.6em;\n      margin: 3px; }\n    [data-page=\"home\"] #youHave .currencySet .ticker {\n      font-size: 0.9em; }\n\n[data-page=\"home\"] #coins .w_right {\n  margin-left: auto; }\n  [data-page=\"home\"] #coins .w_right .fiatConv {\n    color: #555;\n    font-size: 0.76em; }\n  [data-page=\"home\"] #coins .w_right .amount .ticker {\n    font-size: 0.8em; }\n  [data-page=\"home\"] #coins .w_right .unconfirmed {\n    color: red; }\n\n[data-page=\"home\"] #coins .price {\n  font-size: 0.85em; }\n  [data-page=\"home\"] #coins .price .ticker {\n    color: #555;\n    font-size: 0.85em; }\n\n[data-page=\"home\"] #coins .left img {\n  width: 38px;\n  height: 38px; }\n\n[data-page=\"manageCoin\"] .left img {\n  width: 38px;\n  height: 38px; }\n\n[data-page=\"txDetail\"] .list--inset {\n  margin-top: 10px; }\n\n[data-page=\"history\"] ons-list-item .destAddress {\n  font-size: 0.8em; }\n\n[data-page=\"history\"] ons-list-item .date {\n  font-size: 0.85em; }\n\n[data-page=\"history\"] ons-list-item .hasMsg {\n  color: #81d4fa; }\n\n[data-page=\"history\"] ons-list-item .unread {\n  color: #fb8c00; }\n\n[data-page=\"showLabel\"] #currencySelector, [data-page=\"receive\"] #currencySelector, [data-page=\"history\"] #currencySelector {\n  width: 100%;\n  margin: none;\n  padding: none; }\n  [data-page=\"showLabel\"] #currencySelector .currencyIcon, [data-page=\"receive\"] #currencySelector .currencyIcon, [data-page=\"history\"] #currencySelector .currencyIcon {\n    margin: 3px;\n    width: 47px;\n    height: 47px;\n    background-position: center center;\n    background-size: contain;\n    background-repeat: no-repeat; }\n    [data-page=\"showLabel\"] #currencySelector .currencyIcon .checked, [data-page=\"receive\"] #currencySelector .currencyIcon .checked, [data-page=\"history\"] #currencySelector .currencyIcon .checked {\n      position: absolute;\n      bottom: 0;\n      right: 0;\n      width: 25px;\n      height: 25px;\n      background-position: center center;\n      background-size: contain;\n      background-repeat: no-repeat;\n      background-image: url(" + __webpack_require__(45) + "); }\n\n[data-page=\"showLabel\"], [data-page=\"invoice\"], [data-page=\"receive\"] {\n  text-align: center; }\n  [data-page=\"showLabel\"] #currencySelector, [data-page=\"invoice\"] #currencySelector, [data-page=\"receive\"] #currencySelector {\n    width: 100%;\n    margin: none;\n    padding: none; }\n    [data-page=\"showLabel\"] #currencySelector .currencyIcon, [data-page=\"invoice\"] #currencySelector .currencyIcon, [data-page=\"receive\"] #currencySelector .currencyIcon {\n      margin: 3px;\n      width: 47px;\n      height: 47px;\n      background-position: center center;\n      background-size: contain;\n      background-repeat: no-repeat; }\n      [data-page=\"showLabel\"] #currencySelector .currencyIcon .checked, [data-page=\"invoice\"] #currencySelector .currencyIcon .checked, [data-page=\"receive\"] #currencySelector .currencyIcon .checked {\n        position: absolute;\n        bottom: 0;\n        right: 0;\n        width: 25px;\n        height: 25px;\n        background-position: center center;\n        background-size: contain;\n        background-repeat: no-repeat;\n        background-image: url(" + __webpack_require__(45) + "); }\n  [data-page=\"showLabel\"] #simple .label, [data-page=\"invoice\"] #simple .label, [data-page=\"receive\"] #simple .label {\n    margin: 10px;\n    color: #888; }\n  [data-page=\"showLabel\"] #simple #qrArea #qrcode, [data-page=\"invoice\"] #simple #qrArea #qrcode, [data-page=\"receive\"] #simple #qrArea #qrcode {\n    width: 250px;\n    height: 250px;\n    background-color: #aaa;\n    display: inline-block;\n    margin: 10px;\n    position: relative; }\n    [data-page=\"showLabel\"] #simple #qrArea #qrcode #qrcodeImage, [data-page=\"invoice\"] #simple #qrArea #qrcode #qrcodeImage, [data-page=\"receive\"] #simple #qrArea #qrcode #qrcodeImage {\n      width: 100%;\n      height: 100%; }\n    [data-page=\"showLabel\"] #simple #qrArea #qrcode #currentCurIcon, [data-page=\"invoice\"] #simple #qrArea #qrcode #currentCurIcon, [data-page=\"receive\"] #simple #qrArea #qrcode #currentCurIcon {\n      position: absolute;\n      width: 20%;\n      height: 20%;\n      top: 50%;\n      left: 50%;\n      margin-left: -10%;\n      margin-top: -10%;\n      background-position: center center;\n      background-size: contain;\n      background-repeat: no-repeat; }\n  [data-page=\"showLabel\"] #simple #qrArea .address, [data-page=\"invoice\"] #simple #qrArea .address, [data-page=\"receive\"] #simple #qrArea .address {\n    display: block;\n    user-select: text;\n    -webkit-user-select: text;\n    -moz-user-select: text;\n    -ms-user-select: text; }\n\n[data-page=\"first\"] .wrap {\n  width: 100%;\n  height: 100%;\n  background-color: #fff85e; }\n  [data-page=\"first\"] .wrap .logo {\n    position: absolute;\n    top: 30%;\n    width: 100%;\n    text-align: center; }\n    [data-page=\"first\"] .wrap .logo .icon {\n      display: inline-block;\n      background-image: url(" + __webpack_require__(77) + ");\n      background-position: center center;\n      background-repeat: no-repeat;\n      background-size: contain;\n      width: 100px;\n      height: 100px; }\n    [data-page=\"first\"] .wrap .logo .appName {\n      font-size: 2em;\n      color: #7c5702; }\n    [data-page=\"first\"] .wrap .logo .label {\n      color: #7c5702;\n      opacity: 0.5; }\n  [data-page=\"first\"] .wrap .buttons {\n    margin: 80px auto;\n    width: 60%; }\n    [data-page=\"first\"] .wrap .buttons ons-button {\n      margin: 10px 0;\n      width: 100%; }\n\n[data-page=\"restorePassphrase\"] #wordArea {\n  background-color: white;\n  width: 100%; }\n  [data-page=\"restorePassphrase\"] #wordArea .word {\n    display: inline-block;\n    margin: 5px;\n    padding: 4px;\n    border: #ddd 1px solid;\n    border-radius: 3.5px; }\n    [data-page=\"restorePassphrase\"] #wordArea .word .wd {\n      color: black; }\n    [data-page=\"restorePassphrase\"] #wordArea .word .deleteBtn {\n      color: #aaa; }\n    [data-page=\"restorePassphrase\"] #wordArea .word input {\n      border: none;\n      background: transparent;\n      font-size: 1em;\n      width: 5em;\n      margin: 0px;\n      padding: 0px; }\n    [data-page=\"restorePassphrase\"] #wordArea .word.noMatch {\n      background-color: #fdc; }\n\n[data-page=\"restorePassphrase\"] #suggestion {\n  position: fixed;\n  bottom: 0;\n  width: 100%;\n  background-color: white;\n  border-top: #c3c3c8 1px solid; }\n  [data-page=\"restorePassphrase\"] #suggestion .sgst {\n    display: inline-block;\n    padding: 9px;\n    border-right: #c3c3c8 1px solid; }\n\n[data-page=\"restorePassphrase\"] #nextWrap {\n  padding: 10px; }\n\n[data-page=\"question\"] .questionItem {\n  text-align: center;\n  padding: 5%; }\n  [data-page=\"question\"] .questionItem .questionText {\n    padding: 10%;\n    border-radius: 8px;\n    border: 1px solid #7c5702;\n    color: #7c5702;\n    background-color: white; }\n  [data-page=\"question\"] .questionItem .answers .answer {\n    border-radius: 6px;\n    background-color: #fff85e;\n    color: #7c5702;\n    margin: 10px 0;\n    padding: 10px; }\n\n[data-page=\"generateKeyWarn\"] .wrap {\n  padding: 10px; }\n  [data-page=\"generateKeyWarn\"] .wrap .check {\n    padding: 12px; }\n    [data-page=\"generateKeyWarn\"] .wrap .check input {\n      font-size: 1.5em; }\n\n[data-page=\"generateKey\"] .touchArea {\n  height: 50%;\n  background: #50aba0;\n  color: white;\n  font-size: 2em;\n  text-align: center;\n  padding: 30% 10%; }\n\n[data-page=\"send\"] ons-list-item ons-input {\n  width: 100%;\n  display: block; }\n\n[data-page=\"confirm\"] .insufficientFund {\n  color: red; }\n\n[data-page=\"finished\"] .succeeded {\n  height: 300px;\n  margin: 50px 0;\n  background-repeat: no-repeat no-repeat;\n  background-size: contain;\n  background-position: center center; }\n  [data-page=\"finished\"] .succeeded[data-img=\"0\"] {\n    background-image: url(" + __webpack_require__(138) + "); }\n  [data-page=\"finished\"] .succeeded[data-img=\"1\"] {\n    background-image: url(" + __webpack_require__(45) + "); }\n  [data-page=\"finished\"] .succeeded[data-img=\"2\"] {\n    background-image: url(" + __webpack_require__(139) + "); }\n\n[data-page=\"finished\"] .wrap {\n  padding: 40px;\n  text-align: center; }\n\n[data-page=\"login\"] .wrap {\n  padding: 40px;\n  text-align: center; }\n  [data-page=\"login\"] .wrap .passwordBox {\n    line-height: 35px;\n    font-size: 35px;\n    display: grid;\n    grid-template-columns: 1fr 35px;\n    background: white;\n    border-radius: 8px;\n    padding: 5px;\n    margin: 50px 5px; }\n    [data-page=\"login\"] .wrap .passwordBox input {\n      font-size: 35px;\n      background: transparent;\n      border: none; }\n    [data-page=\"login\"] .wrap .passwordBox ons-button {\n      line-height: 35px; }\n    [data-page=\"login\"] .wrap .passwordBox.incorrect {\n      animation: shake 0.72s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;\n      transform: translate3d(0, 0, 0); }\n\n[data-page=\"zaifPay\"] {\n  text-align: center; }\n  [data-page=\"zaifPay\"] .logo {\n    display: inline-block;\n    width: 200px;\n    height: 200px;\n    background-image: url(" + __webpack_require__(140) + ");\n    background-repeat: no-repeat;\n    background-size: contain;\n    background-position: center center; }\n\n@keyframes shake {\n  10%, 90% {\n    transform: translate3d(-1px, 0, 0); }\n  20%, 80% {\n    transform: translate3d(2px, 0, 0); }\n  30%, 50%, 70% {\n    transform: translate3d(-4px, 0, 0); }\n  40%, 60% {\n    transform: translate3d(4px, 0, 0); } }\n\n@keyframes spin {\n  0% {\n    transform: rotatez(0deg); }\n  25% {\n    transform: rotatez(90deg); }\n  50% {\n    transform: rotatez(180deg); }\n  75% {\n    transform: rotatez(270deg); }\n  100% {\n    transform: rotatez(360deg); } }\n", ""]);
 
 // exports
 
@@ -22500,7 +22512,7 @@ exports = module.exports = __webpack_require__(25)(undefined);
 
 
 // module
-exports.push([module.i, "@charset \"UTF-8\";/*!\n  Ionicons, v2.0.1\n  Created by Ben Sperry for the Ionic Framework, http://ionicons.com/\n  https://twitter.com/benjsperry  https://twitter.com/ionicframework\n  MIT License: https://github.com/driftyco/ionicons\n\n  Android-style icons originally built by Google’s\n  Material Design Icons: https://github.com/google/material-design-icons\n  used under CC BY http://creativecommons.org/licenses/by/4.0/\n  Modified icons to fit ionicon’s grid from original.\n*/@font-face{font-family:\"Ionicons\";src:url(" + __webpack_require__(77) + ");src:url(" + __webpack_require__(77) + ") format(\"embedded-opentype\"),url(" + __webpack_require__(145) + ") format(\"truetype\"),url(" + __webpack_require__(146) + ") format(\"woff\"),url(" + __webpack_require__(147) + ") format(\"svg\");font-weight:normal;font-style:normal}.ion,.ionicons,.ion-alert:before,.ion-alert-circled:before,.ion-android-add:before,.ion-android-add-circle:before,.ion-android-alarm-clock:before,.ion-android-alert:before,.ion-android-apps:before,.ion-android-archive:before,.ion-android-arrow-back:before,.ion-android-arrow-down:before,.ion-android-arrow-dropdown:before,.ion-android-arrow-dropdown-circle:before,.ion-android-arrow-dropleft:before,.ion-android-arrow-dropleft-circle:before,.ion-android-arrow-dropright:before,.ion-android-arrow-dropright-circle:before,.ion-android-arrow-dropup:before,.ion-android-arrow-dropup-circle:before,.ion-android-arrow-forward:before,.ion-android-arrow-up:before,.ion-android-attach:before,.ion-android-bar:before,.ion-android-bicycle:before,.ion-android-boat:before,.ion-android-bookmark:before,.ion-android-bulb:before,.ion-android-bus:before,.ion-android-calendar:before,.ion-android-call:before,.ion-android-camera:before,.ion-android-cancel:before,.ion-android-car:before,.ion-android-cart:before,.ion-android-chat:before,.ion-android-checkbox:before,.ion-android-checkbox-blank:before,.ion-android-checkbox-outline:before,.ion-android-checkbox-outline-blank:before,.ion-android-checkmark-circle:before,.ion-android-clipboard:before,.ion-android-close:before,.ion-android-cloud:before,.ion-android-cloud-circle:before,.ion-android-cloud-done:before,.ion-android-cloud-outline:before,.ion-android-color-palette:before,.ion-android-compass:before,.ion-android-contact:before,.ion-android-contacts:before,.ion-android-contract:before,.ion-android-create:before,.ion-android-delete:before,.ion-android-desktop:before,.ion-android-document:before,.ion-android-done:before,.ion-android-done-all:before,.ion-android-download:before,.ion-android-drafts:before,.ion-android-exit:before,.ion-android-expand:before,.ion-android-favorite:before,.ion-android-favorite-outline:before,.ion-android-film:before,.ion-android-folder:before,.ion-android-folder-open:before,.ion-android-funnel:before,.ion-android-globe:before,.ion-android-hand:before,.ion-android-hangout:before,.ion-android-happy:before,.ion-android-home:before,.ion-android-image:before,.ion-android-laptop:before,.ion-android-list:before,.ion-android-locate:before,.ion-android-lock:before,.ion-android-mail:before,.ion-android-map:before,.ion-android-menu:before,.ion-android-microphone:before,.ion-android-microphone-off:before,.ion-android-more-horizontal:before,.ion-android-more-vertical:before,.ion-android-navigate:before,.ion-android-notifications:before,.ion-android-notifications-none:before,.ion-android-notifications-off:before,.ion-android-open:before,.ion-android-options:before,.ion-android-people:before,.ion-android-person:before,.ion-android-person-add:before,.ion-android-phone-landscape:before,.ion-android-phone-portrait:before,.ion-android-pin:before,.ion-android-plane:before,.ion-android-playstore:before,.ion-android-print:before,.ion-android-radio-button-off:before,.ion-android-radio-button-on:before,.ion-android-refresh:before,.ion-android-remove:before,.ion-android-remove-circle:before,.ion-android-restaurant:before,.ion-android-sad:before,.ion-android-search:before,.ion-android-send:before,.ion-android-settings:before,.ion-android-share:before,.ion-android-share-alt:before,.ion-android-star:before,.ion-android-star-half:before,.ion-android-star-outline:before,.ion-android-stopwatch:before,.ion-android-subway:before,.ion-android-sunny:before,.ion-android-sync:before,.ion-android-textsms:before,.ion-android-time:before,.ion-android-train:before,.ion-android-unlock:before,.ion-android-upload:before,.ion-android-volume-down:before,.ion-android-volume-mute:before,.ion-android-volume-off:before,.ion-android-volume-up:before,.ion-android-walk:before,.ion-android-warning:before,.ion-android-watch:before,.ion-android-wifi:before,.ion-aperture:before,.ion-archive:before,.ion-arrow-down-a:before,.ion-arrow-down-b:before,.ion-arrow-down-c:before,.ion-arrow-expand:before,.ion-arrow-graph-down-left:before,.ion-arrow-graph-down-right:before,.ion-arrow-graph-up-left:before,.ion-arrow-graph-up-right:before,.ion-arrow-left-a:before,.ion-arrow-left-b:before,.ion-arrow-left-c:before,.ion-arrow-move:before,.ion-arrow-resize:before,.ion-arrow-return-left:before,.ion-arrow-return-right:before,.ion-arrow-right-a:before,.ion-arrow-right-b:before,.ion-arrow-right-c:before,.ion-arrow-shrink:before,.ion-arrow-swap:before,.ion-arrow-up-a:before,.ion-arrow-up-b:before,.ion-arrow-up-c:before,.ion-asterisk:before,.ion-at:before,.ion-backspace:before,.ion-backspace-outline:before,.ion-bag:before,.ion-battery-charging:before,.ion-battery-empty:before,.ion-battery-full:before,.ion-battery-half:before,.ion-battery-low:before,.ion-beaker:before,.ion-beer:before,.ion-bluetooth:before,.ion-bonfire:before,.ion-bookmark:before,.ion-bowtie:before,.ion-briefcase:before,.ion-bug:before,.ion-calculator:before,.ion-calendar:before,.ion-camera:before,.ion-card:before,.ion-cash:before,.ion-chatbox:before,.ion-chatbox-working:before,.ion-chatboxes:before,.ion-chatbubble:before,.ion-chatbubble-working:before,.ion-chatbubbles:before,.ion-checkmark:before,.ion-checkmark-circled:before,.ion-checkmark-round:before,.ion-chevron-down:before,.ion-chevron-left:before,.ion-chevron-right:before,.ion-chevron-up:before,.ion-clipboard:before,.ion-clock:before,.ion-close:before,.ion-close-circled:before,.ion-close-round:before,.ion-closed-captioning:before,.ion-cloud:before,.ion-code:before,.ion-code-download:before,.ion-code-working:before,.ion-coffee:before,.ion-compass:before,.ion-compose:before,.ion-connection-bars:before,.ion-contrast:before,.ion-crop:before,.ion-cube:before,.ion-disc:before,.ion-document:before,.ion-document-text:before,.ion-drag:before,.ion-earth:before,.ion-easel:before,.ion-edit:before,.ion-egg:before,.ion-eject:before,.ion-email:before,.ion-email-unread:before,.ion-erlenmeyer-flask:before,.ion-erlenmeyer-flask-bubbles:before,.ion-eye:before,.ion-eye-disabled:before,.ion-female:before,.ion-filing:before,.ion-film-marker:before,.ion-fireball:before,.ion-flag:before,.ion-flame:before,.ion-flash:before,.ion-flash-off:before,.ion-folder:before,.ion-fork:before,.ion-fork-repo:before,.ion-forward:before,.ion-funnel:before,.ion-gear-a:before,.ion-gear-b:before,.ion-grid:before,.ion-hammer:before,.ion-happy:before,.ion-happy-outline:before,.ion-headphone:before,.ion-heart:before,.ion-heart-broken:before,.ion-help:before,.ion-help-buoy:before,.ion-help-circled:before,.ion-home:before,.ion-icecream:before,.ion-image:before,.ion-images:before,.ion-information:before,.ion-information-circled:before,.ion-ionic:before,.ion-ios-alarm:before,.ion-ios-alarm-outline:before,.ion-ios-albums:before,.ion-ios-albums-outline:before,.ion-ios-americanfootball:before,.ion-ios-americanfootball-outline:before,.ion-ios-analytics:before,.ion-ios-analytics-outline:before,.ion-ios-arrow-back:before,.ion-ios-arrow-down:before,.ion-ios-arrow-forward:before,.ion-ios-arrow-left:before,.ion-ios-arrow-right:before,.ion-ios-arrow-thin-down:before,.ion-ios-arrow-thin-left:before,.ion-ios-arrow-thin-right:before,.ion-ios-arrow-thin-up:before,.ion-ios-arrow-up:before,.ion-ios-at:before,.ion-ios-at-outline:before,.ion-ios-barcode:before,.ion-ios-barcode-outline:before,.ion-ios-baseball:before,.ion-ios-baseball-outline:before,.ion-ios-basketball:before,.ion-ios-basketball-outline:before,.ion-ios-bell:before,.ion-ios-bell-outline:before,.ion-ios-body:before,.ion-ios-body-outline:before,.ion-ios-bolt:before,.ion-ios-bolt-outline:before,.ion-ios-book:before,.ion-ios-book-outline:before,.ion-ios-bookmarks:before,.ion-ios-bookmarks-outline:before,.ion-ios-box:before,.ion-ios-box-outline:before,.ion-ios-briefcase:before,.ion-ios-briefcase-outline:before,.ion-ios-browsers:before,.ion-ios-browsers-outline:before,.ion-ios-calculator:before,.ion-ios-calculator-outline:before,.ion-ios-calendar:before,.ion-ios-calendar-outline:before,.ion-ios-camera:before,.ion-ios-camera-outline:before,.ion-ios-cart:before,.ion-ios-cart-outline:before,.ion-ios-chatboxes:before,.ion-ios-chatboxes-outline:before,.ion-ios-chatbubble:before,.ion-ios-chatbubble-outline:before,.ion-ios-checkmark:before,.ion-ios-checkmark-empty:before,.ion-ios-checkmark-outline:before,.ion-ios-circle-filled:before,.ion-ios-circle-outline:before,.ion-ios-clock:before,.ion-ios-clock-outline:before,.ion-ios-close:before,.ion-ios-close-empty:before,.ion-ios-close-outline:before,.ion-ios-cloud:before,.ion-ios-cloud-download:before,.ion-ios-cloud-download-outline:before,.ion-ios-cloud-outline:before,.ion-ios-cloud-upload:before,.ion-ios-cloud-upload-outline:before,.ion-ios-cloudy:before,.ion-ios-cloudy-night:before,.ion-ios-cloudy-night-outline:before,.ion-ios-cloudy-outline:before,.ion-ios-cog:before,.ion-ios-cog-outline:before,.ion-ios-color-filter:before,.ion-ios-color-filter-outline:before,.ion-ios-color-wand:before,.ion-ios-color-wand-outline:before,.ion-ios-compose:before,.ion-ios-compose-outline:before,.ion-ios-contact:before,.ion-ios-contact-outline:before,.ion-ios-copy:before,.ion-ios-copy-outline:before,.ion-ios-crop:before,.ion-ios-crop-strong:before,.ion-ios-download:before,.ion-ios-download-outline:before,.ion-ios-drag:before,.ion-ios-email:before,.ion-ios-email-outline:before,.ion-ios-eye:before,.ion-ios-eye-outline:before,.ion-ios-fastforward:before,.ion-ios-fastforward-outline:before,.ion-ios-filing:before,.ion-ios-filing-outline:before,.ion-ios-film:before,.ion-ios-film-outline:before,.ion-ios-flag:before,.ion-ios-flag-outline:before,.ion-ios-flame:before,.ion-ios-flame-outline:before,.ion-ios-flask:before,.ion-ios-flask-outline:before,.ion-ios-flower:before,.ion-ios-flower-outline:before,.ion-ios-folder:before,.ion-ios-folder-outline:before,.ion-ios-football:before,.ion-ios-football-outline:before,.ion-ios-game-controller-a:before,.ion-ios-game-controller-a-outline:before,.ion-ios-game-controller-b:before,.ion-ios-game-controller-b-outline:before,.ion-ios-gear:before,.ion-ios-gear-outline:before,.ion-ios-glasses:before,.ion-ios-glasses-outline:before,.ion-ios-grid-view:before,.ion-ios-grid-view-outline:before,.ion-ios-heart:before,.ion-ios-heart-outline:before,.ion-ios-help:before,.ion-ios-help-empty:before,.ion-ios-help-outline:before,.ion-ios-home:before,.ion-ios-home-outline:before,.ion-ios-infinite:before,.ion-ios-infinite-outline:before,.ion-ios-information:before,.ion-ios-information-empty:before,.ion-ios-information-outline:before,.ion-ios-ionic-outline:before,.ion-ios-keypad:before,.ion-ios-keypad-outline:before,.ion-ios-lightbulb:before,.ion-ios-lightbulb-outline:before,.ion-ios-list:before,.ion-ios-list-outline:before,.ion-ios-location:before,.ion-ios-location-outline:before,.ion-ios-locked:before,.ion-ios-locked-outline:before,.ion-ios-loop:before,.ion-ios-loop-strong:before,.ion-ios-medical:before,.ion-ios-medical-outline:before,.ion-ios-medkit:before,.ion-ios-medkit-outline:before,.ion-ios-mic:before,.ion-ios-mic-off:before,.ion-ios-mic-outline:before,.ion-ios-minus:before,.ion-ios-minus-empty:before,.ion-ios-minus-outline:before,.ion-ios-monitor:before,.ion-ios-monitor-outline:before,.ion-ios-moon:before,.ion-ios-moon-outline:before,.ion-ios-more:before,.ion-ios-more-outline:before,.ion-ios-musical-note:before,.ion-ios-musical-notes:before,.ion-ios-navigate:before,.ion-ios-navigate-outline:before,.ion-ios-nutrition:before,.ion-ios-nutrition-outline:before,.ion-ios-paper:before,.ion-ios-paper-outline:before,.ion-ios-paperplane:before,.ion-ios-paperplane-outline:before,.ion-ios-partlysunny:before,.ion-ios-partlysunny-outline:before,.ion-ios-pause:before,.ion-ios-pause-outline:before,.ion-ios-paw:before,.ion-ios-paw-outline:before,.ion-ios-people:before,.ion-ios-people-outline:before,.ion-ios-person:before,.ion-ios-person-outline:before,.ion-ios-personadd:before,.ion-ios-personadd-outline:before,.ion-ios-photos:before,.ion-ios-photos-outline:before,.ion-ios-pie:before,.ion-ios-pie-outline:before,.ion-ios-pint:before,.ion-ios-pint-outline:before,.ion-ios-play:before,.ion-ios-play-outline:before,.ion-ios-plus:before,.ion-ios-plus-empty:before,.ion-ios-plus-outline:before,.ion-ios-pricetag:before,.ion-ios-pricetag-outline:before,.ion-ios-pricetags:before,.ion-ios-pricetags-outline:before,.ion-ios-printer:before,.ion-ios-printer-outline:before,.ion-ios-pulse:before,.ion-ios-pulse-strong:before,.ion-ios-rainy:before,.ion-ios-rainy-outline:before,.ion-ios-recording:before,.ion-ios-recording-outline:before,.ion-ios-redo:before,.ion-ios-redo-outline:before,.ion-ios-refresh:before,.ion-ios-refresh-empty:before,.ion-ios-refresh-outline:before,.ion-ios-reload:before,.ion-ios-reverse-camera:before,.ion-ios-reverse-camera-outline:before,.ion-ios-rewind:before,.ion-ios-rewind-outline:before,.ion-ios-rose:before,.ion-ios-rose-outline:before,.ion-ios-search:before,.ion-ios-search-strong:before,.ion-ios-settings:before,.ion-ios-settings-strong:before,.ion-ios-shuffle:before,.ion-ios-shuffle-strong:before,.ion-ios-skipbackward:before,.ion-ios-skipbackward-outline:before,.ion-ios-skipforward:before,.ion-ios-skipforward-outline:before,.ion-ios-snowy:before,.ion-ios-speedometer:before,.ion-ios-speedometer-outline:before,.ion-ios-star:before,.ion-ios-star-half:before,.ion-ios-star-outline:before,.ion-ios-stopwatch:before,.ion-ios-stopwatch-outline:before,.ion-ios-sunny:before,.ion-ios-sunny-outline:before,.ion-ios-telephone:before,.ion-ios-telephone-outline:before,.ion-ios-tennisball:before,.ion-ios-tennisball-outline:before,.ion-ios-thunderstorm:before,.ion-ios-thunderstorm-outline:before,.ion-ios-time:before,.ion-ios-time-outline:before,.ion-ios-timer:before,.ion-ios-timer-outline:before,.ion-ios-toggle:before,.ion-ios-toggle-outline:before,.ion-ios-trash:before,.ion-ios-trash-outline:before,.ion-ios-undo:before,.ion-ios-undo-outline:before,.ion-ios-unlocked:before,.ion-ios-unlocked-outline:before,.ion-ios-upload:before,.ion-ios-upload-outline:before,.ion-ios-videocam:before,.ion-ios-videocam-outline:before,.ion-ios-volume-high:before,.ion-ios-volume-low:before,.ion-ios-wineglass:before,.ion-ios-wineglass-outline:before,.ion-ios-world:before,.ion-ios-world-outline:before,.ion-ipad:before,.ion-iphone:before,.ion-ipod:before,.ion-jet:before,.ion-key:before,.ion-knife:before,.ion-laptop:before,.ion-leaf:before,.ion-levels:before,.ion-lightbulb:before,.ion-link:before,.ion-load-a:before,.ion-load-b:before,.ion-load-c:before,.ion-load-d:before,.ion-location:before,.ion-lock-combination:before,.ion-locked:before,.ion-log-in:before,.ion-log-out:before,.ion-loop:before,.ion-magnet:before,.ion-male:before,.ion-man:before,.ion-map:before,.ion-medkit:before,.ion-merge:before,.ion-mic-a:before,.ion-mic-b:before,.ion-mic-c:before,.ion-minus:before,.ion-minus-circled:before,.ion-minus-round:before,.ion-model-s:before,.ion-monitor:before,.ion-more:before,.ion-mouse:before,.ion-music-note:before,.ion-navicon:before,.ion-navicon-round:before,.ion-navigate:before,.ion-network:before,.ion-no-smoking:before,.ion-nuclear:before,.ion-outlet:before,.ion-paintbrush:before,.ion-paintbucket:before,.ion-paper-airplane:before,.ion-paperclip:before,.ion-pause:before,.ion-person:before,.ion-person-add:before,.ion-person-stalker:before,.ion-pie-graph:before,.ion-pin:before,.ion-pinpoint:before,.ion-pizza:before,.ion-plane:before,.ion-planet:before,.ion-play:before,.ion-playstation:before,.ion-plus:before,.ion-plus-circled:before,.ion-plus-round:before,.ion-podium:before,.ion-pound:before,.ion-power:before,.ion-pricetag:before,.ion-pricetags:before,.ion-printer:before,.ion-pull-request:before,.ion-qr-scanner:before,.ion-quote:before,.ion-radio-waves:before,.ion-record:before,.ion-refresh:before,.ion-reply:before,.ion-reply-all:before,.ion-ribbon-a:before,.ion-ribbon-b:before,.ion-sad:before,.ion-sad-outline:before,.ion-scissors:before,.ion-search:before,.ion-settings:before,.ion-share:before,.ion-shuffle:before,.ion-skip-backward:before,.ion-skip-forward:before,.ion-social-android:before,.ion-social-android-outline:before,.ion-social-angular:before,.ion-social-angular-outline:before,.ion-social-apple:before,.ion-social-apple-outline:before,.ion-social-bitcoin:before,.ion-social-bitcoin-outline:before,.ion-social-buffer:before,.ion-social-buffer-outline:before,.ion-social-chrome:before,.ion-social-chrome-outline:before,.ion-social-codepen:before,.ion-social-codepen-outline:before,.ion-social-css3:before,.ion-social-css3-outline:before,.ion-social-designernews:before,.ion-social-designernews-outline:before,.ion-social-dribbble:before,.ion-social-dribbble-outline:before,.ion-social-dropbox:before,.ion-social-dropbox-outline:before,.ion-social-euro:before,.ion-social-euro-outline:before,.ion-social-facebook:before,.ion-social-facebook-outline:before,.ion-social-foursquare:before,.ion-social-foursquare-outline:before,.ion-social-freebsd-devil:before,.ion-social-github:before,.ion-social-github-outline:before,.ion-social-google:before,.ion-social-google-outline:before,.ion-social-googleplus:before,.ion-social-googleplus-outline:before,.ion-social-hackernews:before,.ion-social-hackernews-outline:before,.ion-social-html5:before,.ion-social-html5-outline:before,.ion-social-instagram:before,.ion-social-instagram-outline:before,.ion-social-javascript:before,.ion-social-javascript-outline:before,.ion-social-linkedin:before,.ion-social-linkedin-outline:before,.ion-social-markdown:before,.ion-social-nodejs:before,.ion-social-octocat:before,.ion-social-pinterest:before,.ion-social-pinterest-outline:before,.ion-social-python:before,.ion-social-reddit:before,.ion-social-reddit-outline:before,.ion-social-rss:before,.ion-social-rss-outline:before,.ion-social-sass:before,.ion-social-skype:before,.ion-social-skype-outline:before,.ion-social-snapchat:before,.ion-social-snapchat-outline:before,.ion-social-tumblr:before,.ion-social-tumblr-outline:before,.ion-social-tux:before,.ion-social-twitch:before,.ion-social-twitch-outline:before,.ion-social-twitter:before,.ion-social-twitter-outline:before,.ion-social-usd:before,.ion-social-usd-outline:before,.ion-social-vimeo:before,.ion-social-vimeo-outline:before,.ion-social-whatsapp:before,.ion-social-whatsapp-outline:before,.ion-social-windows:before,.ion-social-windows-outline:before,.ion-social-wordpress:before,.ion-social-wordpress-outline:before,.ion-social-yahoo:before,.ion-social-yahoo-outline:before,.ion-social-yen:before,.ion-social-yen-outline:before,.ion-social-youtube:before,.ion-social-youtube-outline:before,.ion-soup-can:before,.ion-soup-can-outline:before,.ion-speakerphone:before,.ion-speedometer:before,.ion-spoon:before,.ion-star:before,.ion-stats-bars:before,.ion-steam:before,.ion-stop:before,.ion-thermometer:before,.ion-thumbsdown:before,.ion-thumbsup:before,.ion-toggle:before,.ion-toggle-filled:before,.ion-transgender:before,.ion-trash-a:before,.ion-trash-b:before,.ion-trophy:before,.ion-tshirt:before,.ion-tshirt-outline:before,.ion-umbrella:before,.ion-university:before,.ion-unlocked:before,.ion-upload:before,.ion-usb:before,.ion-videocamera:before,.ion-volume-high:before,.ion-volume-low:before,.ion-volume-medium:before,.ion-volume-mute:before,.ion-wand:before,.ion-waterdrop:before,.ion-wifi:before,.ion-wineglass:before,.ion-woman:before,.ion-wrench:before,.ion-xbox:before{display:inline-block;font-family:\"Ionicons\";speak:none;font-style:normal;font-weight:normal;font-variant:normal;text-transform:none;text-rendering:auto;line-height:1;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}.ion-alert:before{content:\"\\F101\"}.ion-alert-circled:before{content:\"\\F100\"}.ion-android-add:before{content:\"\\F2C7\"}.ion-android-add-circle:before{content:\"\\F359\"}.ion-android-alarm-clock:before{content:\"\\F35A\"}.ion-android-alert:before{content:\"\\F35B\"}.ion-android-apps:before{content:\"\\F35C\"}.ion-android-archive:before{content:\"\\F2C9\"}.ion-android-arrow-back:before{content:\"\\F2CA\"}.ion-android-arrow-down:before{content:\"\\F35D\"}.ion-android-arrow-dropdown:before{content:\"\\F35F\"}.ion-android-arrow-dropdown-circle:before{content:\"\\F35E\"}.ion-android-arrow-dropleft:before{content:\"\\F361\"}.ion-android-arrow-dropleft-circle:before{content:\"\\F360\"}.ion-android-arrow-dropright:before{content:\"\\F363\"}.ion-android-arrow-dropright-circle:before{content:\"\\F362\"}.ion-android-arrow-dropup:before{content:\"\\F365\"}.ion-android-arrow-dropup-circle:before{content:\"\\F364\"}.ion-android-arrow-forward:before{content:\"\\F30F\"}.ion-android-arrow-up:before{content:\"\\F366\"}.ion-android-attach:before{content:\"\\F367\"}.ion-android-bar:before{content:\"\\F368\"}.ion-android-bicycle:before{content:\"\\F369\"}.ion-android-boat:before{content:\"\\F36A\"}.ion-android-bookmark:before{content:\"\\F36B\"}.ion-android-bulb:before{content:\"\\F36C\"}.ion-android-bus:before{content:\"\\F36D\"}.ion-android-calendar:before{content:\"\\F2D1\"}.ion-android-call:before{content:\"\\F2D2\"}.ion-android-camera:before{content:\"\\F2D3\"}.ion-android-cancel:before{content:\"\\F36E\"}.ion-android-car:before{content:\"\\F36F\"}.ion-android-cart:before{content:\"\\F370\"}.ion-android-chat:before{content:\"\\F2D4\"}.ion-android-checkbox:before{content:\"\\F374\"}.ion-android-checkbox-blank:before{content:\"\\F371\"}.ion-android-checkbox-outline:before{content:\"\\F373\"}.ion-android-checkbox-outline-blank:before{content:\"\\F372\"}.ion-android-checkmark-circle:before{content:\"\\F375\"}.ion-android-clipboard:before{content:\"\\F376\"}.ion-android-close:before{content:\"\\F2D7\"}.ion-android-cloud:before{content:\"\\F37A\"}.ion-android-cloud-circle:before{content:\"\\F377\"}.ion-android-cloud-done:before{content:\"\\F378\"}.ion-android-cloud-outline:before{content:\"\\F379\"}.ion-android-color-palette:before{content:\"\\F37B\"}.ion-android-compass:before{content:\"\\F37C\"}.ion-android-contact:before{content:\"\\F2D8\"}.ion-android-contacts:before{content:\"\\F2D9\"}.ion-android-contract:before{content:\"\\F37D\"}.ion-android-create:before{content:\"\\F37E\"}.ion-android-delete:before{content:\"\\F37F\"}.ion-android-desktop:before{content:\"\\F380\"}.ion-android-document:before{content:\"\\F381\"}.ion-android-done:before{content:\"\\F383\"}.ion-android-done-all:before{content:\"\\F382\"}.ion-android-download:before{content:\"\\F2DD\"}.ion-android-drafts:before{content:\"\\F384\"}.ion-android-exit:before{content:\"\\F385\"}.ion-android-expand:before{content:\"\\F386\"}.ion-android-favorite:before{content:\"\\F388\"}.ion-android-favorite-outline:before{content:\"\\F387\"}.ion-android-film:before{content:\"\\F389\"}.ion-android-folder:before{content:\"\\F2E0\"}.ion-android-folder-open:before{content:\"\\F38A\"}.ion-android-funnel:before{content:\"\\F38B\"}.ion-android-globe:before{content:\"\\F38C\"}.ion-android-hand:before{content:\"\\F2E3\"}.ion-android-hangout:before{content:\"\\F38D\"}.ion-android-happy:before{content:\"\\F38E\"}.ion-android-home:before{content:\"\\F38F\"}.ion-android-image:before{content:\"\\F2E4\"}.ion-android-laptop:before{content:\"\\F390\"}.ion-android-list:before{content:\"\\F391\"}.ion-android-locate:before{content:\"\\F2E9\"}.ion-android-lock:before{content:\"\\F392\"}.ion-android-mail:before{content:\"\\F2EB\"}.ion-android-map:before{content:\"\\F393\"}.ion-android-menu:before{content:\"\\F394\"}.ion-android-microphone:before{content:\"\\F2EC\"}.ion-android-microphone-off:before{content:\"\\F395\"}.ion-android-more-horizontal:before{content:\"\\F396\"}.ion-android-more-vertical:before{content:\"\\F397\"}.ion-android-navigate:before{content:\"\\F398\"}.ion-android-notifications:before{content:\"\\F39B\"}.ion-android-notifications-none:before{content:\"\\F399\"}.ion-android-notifications-off:before{content:\"\\F39A\"}.ion-android-open:before{content:\"\\F39C\"}.ion-android-options:before{content:\"\\F39D\"}.ion-android-people:before{content:\"\\F39E\"}.ion-android-person:before{content:\"\\F3A0\"}.ion-android-person-add:before{content:\"\\F39F\"}.ion-android-phone-landscape:before{content:\"\\F3A1\"}.ion-android-phone-portrait:before{content:\"\\F3A2\"}.ion-android-pin:before{content:\"\\F3A3\"}.ion-android-plane:before{content:\"\\F3A4\"}.ion-android-playstore:before{content:\"\\F2F0\"}.ion-android-print:before{content:\"\\F3A5\"}.ion-android-radio-button-off:before{content:\"\\F3A6\"}.ion-android-radio-button-on:before{content:\"\\F3A7\"}.ion-android-refresh:before{content:\"\\F3A8\"}.ion-android-remove:before{content:\"\\F2F4\"}.ion-android-remove-circle:before{content:\"\\F3A9\"}.ion-android-restaurant:before{content:\"\\F3AA\"}.ion-android-sad:before{content:\"\\F3AB\"}.ion-android-search:before{content:\"\\F2F5\"}.ion-android-send:before{content:\"\\F2F6\"}.ion-android-settings:before{content:\"\\F2F7\"}.ion-android-share:before{content:\"\\F2F8\"}.ion-android-share-alt:before{content:\"\\F3AC\"}.ion-android-star:before{content:\"\\F2FC\"}.ion-android-star-half:before{content:\"\\F3AD\"}.ion-android-star-outline:before{content:\"\\F3AE\"}.ion-android-stopwatch:before{content:\"\\F2FD\"}.ion-android-subway:before{content:\"\\F3AF\"}.ion-android-sunny:before{content:\"\\F3B0\"}.ion-android-sync:before{content:\"\\F3B1\"}.ion-android-textsms:before{content:\"\\F3B2\"}.ion-android-time:before{content:\"\\F3B3\"}.ion-android-train:before{content:\"\\F3B4\"}.ion-android-unlock:before{content:\"\\F3B5\"}.ion-android-upload:before{content:\"\\F3B6\"}.ion-android-volume-down:before{content:\"\\F3B7\"}.ion-android-volume-mute:before{content:\"\\F3B8\"}.ion-android-volume-off:before{content:\"\\F3B9\"}.ion-android-volume-up:before{content:\"\\F3BA\"}.ion-android-walk:before{content:\"\\F3BB\"}.ion-android-warning:before{content:\"\\F3BC\"}.ion-android-watch:before{content:\"\\F3BD\"}.ion-android-wifi:before{content:\"\\F305\"}.ion-aperture:before{content:\"\\F313\"}.ion-archive:before{content:\"\\F102\"}.ion-arrow-down-a:before{content:\"\\F103\"}.ion-arrow-down-b:before{content:\"\\F104\"}.ion-arrow-down-c:before{content:\"\\F105\"}.ion-arrow-expand:before{content:\"\\F25E\"}.ion-arrow-graph-down-left:before{content:\"\\F25F\"}.ion-arrow-graph-down-right:before{content:\"\\F260\"}.ion-arrow-graph-up-left:before{content:\"\\F261\"}.ion-arrow-graph-up-right:before{content:\"\\F262\"}.ion-arrow-left-a:before{content:\"\\F106\"}.ion-arrow-left-b:before{content:\"\\F107\"}.ion-arrow-left-c:before{content:\"\\F108\"}.ion-arrow-move:before{content:\"\\F263\"}.ion-arrow-resize:before{content:\"\\F264\"}.ion-arrow-return-left:before{content:\"\\F265\"}.ion-arrow-return-right:before{content:\"\\F266\"}.ion-arrow-right-a:before{content:\"\\F109\"}.ion-arrow-right-b:before{content:\"\\F10A\"}.ion-arrow-right-c:before{content:\"\\F10B\"}.ion-arrow-shrink:before{content:\"\\F267\"}.ion-arrow-swap:before{content:\"\\F268\"}.ion-arrow-up-a:before{content:\"\\F10C\"}.ion-arrow-up-b:before{content:\"\\F10D\"}.ion-arrow-up-c:before{content:\"\\F10E\"}.ion-asterisk:before{content:\"\\F314\"}.ion-at:before{content:\"\\F10F\"}.ion-backspace:before{content:\"\\F3BF\"}.ion-backspace-outline:before{content:\"\\F3BE\"}.ion-bag:before{content:\"\\F110\"}.ion-battery-charging:before{content:\"\\F111\"}.ion-battery-empty:before{content:\"\\F112\"}.ion-battery-full:before{content:\"\\F113\"}.ion-battery-half:before{content:\"\\F114\"}.ion-battery-low:before{content:\"\\F115\"}.ion-beaker:before{content:\"\\F269\"}.ion-beer:before{content:\"\\F26A\"}.ion-bluetooth:before{content:\"\\F116\"}.ion-bonfire:before{content:\"\\F315\"}.ion-bookmark:before{content:\"\\F26B\"}.ion-bowtie:before{content:\"\\F3C0\"}.ion-briefcase:before{content:\"\\F26C\"}.ion-bug:before{content:\"\\F2BE\"}.ion-calculator:before{content:\"\\F26D\"}.ion-calendar:before{content:\"\\F117\"}.ion-camera:before{content:\"\\F118\"}.ion-card:before{content:\"\\F119\"}.ion-cash:before{content:\"\\F316\"}.ion-chatbox:before{content:\"\\F11B\"}.ion-chatbox-working:before{content:\"\\F11A\"}.ion-chatboxes:before{content:\"\\F11C\"}.ion-chatbubble:before{content:\"\\F11E\"}.ion-chatbubble-working:before{content:\"\\F11D\"}.ion-chatbubbles:before{content:\"\\F11F\"}.ion-checkmark:before{content:\"\\F122\"}.ion-checkmark-circled:before{content:\"\\F120\"}.ion-checkmark-round:before{content:\"\\F121\"}.ion-chevron-down:before{content:\"\\F123\"}.ion-chevron-left:before{content:\"\\F124\"}.ion-chevron-right:before{content:\"\\F125\"}.ion-chevron-up:before{content:\"\\F126\"}.ion-clipboard:before{content:\"\\F127\"}.ion-clock:before{content:\"\\F26E\"}.ion-close:before{content:\"\\F12A\"}.ion-close-circled:before{content:\"\\F128\"}.ion-close-round:before{content:\"\\F129\"}.ion-closed-captioning:before{content:\"\\F317\"}.ion-cloud:before{content:\"\\F12B\"}.ion-code:before{content:\"\\F271\"}.ion-code-download:before{content:\"\\F26F\"}.ion-code-working:before{content:\"\\F270\"}.ion-coffee:before{content:\"\\F272\"}.ion-compass:before{content:\"\\F273\"}.ion-compose:before{content:\"\\F12C\"}.ion-connection-bars:before{content:\"\\F274\"}.ion-contrast:before{content:\"\\F275\"}.ion-crop:before{content:\"\\F3C1\"}.ion-cube:before{content:\"\\F318\"}.ion-disc:before{content:\"\\F12D\"}.ion-document:before{content:\"\\F12F\"}.ion-document-text:before{content:\"\\F12E\"}.ion-drag:before{content:\"\\F130\"}.ion-earth:before{content:\"\\F276\"}.ion-easel:before{content:\"\\F3C2\"}.ion-edit:before{content:\"\\F2BF\"}.ion-egg:before{content:\"\\F277\"}.ion-eject:before{content:\"\\F131\"}.ion-email:before{content:\"\\F132\"}.ion-email-unread:before{content:\"\\F3C3\"}.ion-erlenmeyer-flask:before{content:\"\\F3C5\"}.ion-erlenmeyer-flask-bubbles:before{content:\"\\F3C4\"}.ion-eye:before{content:\"\\F133\"}.ion-eye-disabled:before{content:\"\\F306\"}.ion-female:before{content:\"\\F278\"}.ion-filing:before{content:\"\\F134\"}.ion-film-marker:before{content:\"\\F135\"}.ion-fireball:before{content:\"\\F319\"}.ion-flag:before{content:\"\\F279\"}.ion-flame:before{content:\"\\F31A\"}.ion-flash:before{content:\"\\F137\"}.ion-flash-off:before{content:\"\\F136\"}.ion-folder:before{content:\"\\F139\"}.ion-fork:before{content:\"\\F27A\"}.ion-fork-repo:before{content:\"\\F2C0\"}.ion-forward:before{content:\"\\F13A\"}.ion-funnel:before{content:\"\\F31B\"}.ion-gear-a:before{content:\"\\F13D\"}.ion-gear-b:before{content:\"\\F13E\"}.ion-grid:before{content:\"\\F13F\"}.ion-hammer:before{content:\"\\F27B\"}.ion-happy:before{content:\"\\F31C\"}.ion-happy-outline:before{content:\"\\F3C6\"}.ion-headphone:before{content:\"\\F140\"}.ion-heart:before{content:\"\\F141\"}.ion-heart-broken:before{content:\"\\F31D\"}.ion-help:before{content:\"\\F143\"}.ion-help-buoy:before{content:\"\\F27C\"}.ion-help-circled:before{content:\"\\F142\"}.ion-home:before{content:\"\\F144\"}.ion-icecream:before{content:\"\\F27D\"}.ion-image:before{content:\"\\F147\"}.ion-images:before{content:\"\\F148\"}.ion-information:before{content:\"\\F14A\"}.ion-information-circled:before{content:\"\\F149\"}.ion-ionic:before{content:\"\\F14B\"}.ion-ios-alarm:before{content:\"\\F3C8\"}.ion-ios-alarm-outline:before{content:\"\\F3C7\"}.ion-ios-albums:before{content:\"\\F3CA\"}.ion-ios-albums-outline:before{content:\"\\F3C9\"}.ion-ios-americanfootball:before{content:\"\\F3CC\"}.ion-ios-americanfootball-outline:before{content:\"\\F3CB\"}.ion-ios-analytics:before{content:\"\\F3CE\"}.ion-ios-analytics-outline:before{content:\"\\F3CD\"}.ion-ios-arrow-back:before{content:\"\\F3CF\"}.ion-ios-arrow-down:before{content:\"\\F3D0\"}.ion-ios-arrow-forward:before{content:\"\\F3D1\"}.ion-ios-arrow-left:before{content:\"\\F3D2\"}.ion-ios-arrow-right:before{content:\"\\F3D3\"}.ion-ios-arrow-thin-down:before{content:\"\\F3D4\"}.ion-ios-arrow-thin-left:before{content:\"\\F3D5\"}.ion-ios-arrow-thin-right:before{content:\"\\F3D6\"}.ion-ios-arrow-thin-up:before{content:\"\\F3D7\"}.ion-ios-arrow-up:before{content:\"\\F3D8\"}.ion-ios-at:before{content:\"\\F3DA\"}.ion-ios-at-outline:before{content:\"\\F3D9\"}.ion-ios-barcode:before{content:\"\\F3DC\"}.ion-ios-barcode-outline:before{content:\"\\F3DB\"}.ion-ios-baseball:before{content:\"\\F3DE\"}.ion-ios-baseball-outline:before{content:\"\\F3DD\"}.ion-ios-basketball:before{content:\"\\F3E0\"}.ion-ios-basketball-outline:before{content:\"\\F3DF\"}.ion-ios-bell:before{content:\"\\F3E2\"}.ion-ios-bell-outline:before{content:\"\\F3E1\"}.ion-ios-body:before{content:\"\\F3E4\"}.ion-ios-body-outline:before{content:\"\\F3E3\"}.ion-ios-bolt:before{content:\"\\F3E6\"}.ion-ios-bolt-outline:before{content:\"\\F3E5\"}.ion-ios-book:before{content:\"\\F3E8\"}.ion-ios-book-outline:before{content:\"\\F3E7\"}.ion-ios-bookmarks:before{content:\"\\F3EA\"}.ion-ios-bookmarks-outline:before{content:\"\\F3E9\"}.ion-ios-box:before{content:\"\\F3EC\"}.ion-ios-box-outline:before{content:\"\\F3EB\"}.ion-ios-briefcase:before{content:\"\\F3EE\"}.ion-ios-briefcase-outline:before{content:\"\\F3ED\"}.ion-ios-browsers:before{content:\"\\F3F0\"}.ion-ios-browsers-outline:before{content:\"\\F3EF\"}.ion-ios-calculator:before{content:\"\\F3F2\"}.ion-ios-calculator-outline:before{content:\"\\F3F1\"}.ion-ios-calendar:before{content:\"\\F3F4\"}.ion-ios-calendar-outline:before{content:\"\\F3F3\"}.ion-ios-camera:before{content:\"\\F3F6\"}.ion-ios-camera-outline:before{content:\"\\F3F5\"}.ion-ios-cart:before{content:\"\\F3F8\"}.ion-ios-cart-outline:before{content:\"\\F3F7\"}.ion-ios-chatboxes:before{content:\"\\F3FA\"}.ion-ios-chatboxes-outline:before{content:\"\\F3F9\"}.ion-ios-chatbubble:before{content:\"\\F3FC\"}.ion-ios-chatbubble-outline:before{content:\"\\F3FB\"}.ion-ios-checkmark:before{content:\"\\F3FF\"}.ion-ios-checkmark-empty:before{content:\"\\F3FD\"}.ion-ios-checkmark-outline:before{content:\"\\F3FE\"}.ion-ios-circle-filled:before{content:\"\\F400\"}.ion-ios-circle-outline:before{content:\"\\F401\"}.ion-ios-clock:before{content:\"\\F403\"}.ion-ios-clock-outline:before{content:\"\\F402\"}.ion-ios-close:before{content:\"\\F406\"}.ion-ios-close-empty:before{content:\"\\F404\"}.ion-ios-close-outline:before{content:\"\\F405\"}.ion-ios-cloud:before{content:\"\\F40C\"}.ion-ios-cloud-download:before{content:\"\\F408\"}.ion-ios-cloud-download-outline:before{content:\"\\F407\"}.ion-ios-cloud-outline:before{content:\"\\F409\"}.ion-ios-cloud-upload:before{content:\"\\F40B\"}.ion-ios-cloud-upload-outline:before{content:\"\\F40A\"}.ion-ios-cloudy:before{content:\"\\F410\"}.ion-ios-cloudy-night:before{content:\"\\F40E\"}.ion-ios-cloudy-night-outline:before{content:\"\\F40D\"}.ion-ios-cloudy-outline:before{content:\"\\F40F\"}.ion-ios-cog:before{content:\"\\F412\"}.ion-ios-cog-outline:before{content:\"\\F411\"}.ion-ios-color-filter:before{content:\"\\F414\"}.ion-ios-color-filter-outline:before{content:\"\\F413\"}.ion-ios-color-wand:before{content:\"\\F416\"}.ion-ios-color-wand-outline:before{content:\"\\F415\"}.ion-ios-compose:before{content:\"\\F418\"}.ion-ios-compose-outline:before{content:\"\\F417\"}.ion-ios-contact:before{content:\"\\F41A\"}.ion-ios-contact-outline:before{content:\"\\F419\"}.ion-ios-copy:before{content:\"\\F41C\"}.ion-ios-copy-outline:before{content:\"\\F41B\"}.ion-ios-crop:before{content:\"\\F41E\"}.ion-ios-crop-strong:before{content:\"\\F41D\"}.ion-ios-download:before{content:\"\\F420\"}.ion-ios-download-outline:before{content:\"\\F41F\"}.ion-ios-drag:before{content:\"\\F421\"}.ion-ios-email:before{content:\"\\F423\"}.ion-ios-email-outline:before{content:\"\\F422\"}.ion-ios-eye:before{content:\"\\F425\"}.ion-ios-eye-outline:before{content:\"\\F424\"}.ion-ios-fastforward:before{content:\"\\F427\"}.ion-ios-fastforward-outline:before{content:\"\\F426\"}.ion-ios-filing:before{content:\"\\F429\"}.ion-ios-filing-outline:before{content:\"\\F428\"}.ion-ios-film:before{content:\"\\F42B\"}.ion-ios-film-outline:before{content:\"\\F42A\"}.ion-ios-flag:before{content:\"\\F42D\"}.ion-ios-flag-outline:before{content:\"\\F42C\"}.ion-ios-flame:before{content:\"\\F42F\"}.ion-ios-flame-outline:before{content:\"\\F42E\"}.ion-ios-flask:before{content:\"\\F431\"}.ion-ios-flask-outline:before{content:\"\\F430\"}.ion-ios-flower:before{content:\"\\F433\"}.ion-ios-flower-outline:before{content:\"\\F432\"}.ion-ios-folder:before{content:\"\\F435\"}.ion-ios-folder-outline:before{content:\"\\F434\"}.ion-ios-football:before{content:\"\\F437\"}.ion-ios-football-outline:before{content:\"\\F436\"}.ion-ios-game-controller-a:before{content:\"\\F439\"}.ion-ios-game-controller-a-outline:before{content:\"\\F438\"}.ion-ios-game-controller-b:before{content:\"\\F43B\"}.ion-ios-game-controller-b-outline:before{content:\"\\F43A\"}.ion-ios-gear:before{content:\"\\F43D\"}.ion-ios-gear-outline:before{content:\"\\F43C\"}.ion-ios-glasses:before{content:\"\\F43F\"}.ion-ios-glasses-outline:before{content:\"\\F43E\"}.ion-ios-grid-view:before{content:\"\\F441\"}.ion-ios-grid-view-outline:before{content:\"\\F440\"}.ion-ios-heart:before{content:\"\\F443\"}.ion-ios-heart-outline:before{content:\"\\F442\"}.ion-ios-help:before{content:\"\\F446\"}.ion-ios-help-empty:before{content:\"\\F444\"}.ion-ios-help-outline:before{content:\"\\F445\"}.ion-ios-home:before{content:\"\\F448\"}.ion-ios-home-outline:before{content:\"\\F447\"}.ion-ios-infinite:before{content:\"\\F44A\"}.ion-ios-infinite-outline:before{content:\"\\F449\"}.ion-ios-information:before{content:\"\\F44D\"}.ion-ios-information-empty:before{content:\"\\F44B\"}.ion-ios-information-outline:before{content:\"\\F44C\"}.ion-ios-ionic-outline:before{content:\"\\F44E\"}.ion-ios-keypad:before{content:\"\\F450\"}.ion-ios-keypad-outline:before{content:\"\\F44F\"}.ion-ios-lightbulb:before{content:\"\\F452\"}.ion-ios-lightbulb-outline:before{content:\"\\F451\"}.ion-ios-list:before{content:\"\\F454\"}.ion-ios-list-outline:before{content:\"\\F453\"}.ion-ios-location:before{content:\"\\F456\"}.ion-ios-location-outline:before{content:\"\\F455\"}.ion-ios-locked:before{content:\"\\F458\"}.ion-ios-locked-outline:before{content:\"\\F457\"}.ion-ios-loop:before{content:\"\\F45A\"}.ion-ios-loop-strong:before{content:\"\\F459\"}.ion-ios-medical:before{content:\"\\F45C\"}.ion-ios-medical-outline:before{content:\"\\F45B\"}.ion-ios-medkit:before{content:\"\\F45E\"}.ion-ios-medkit-outline:before{content:\"\\F45D\"}.ion-ios-mic:before{content:\"\\F461\"}.ion-ios-mic-off:before{content:\"\\F45F\"}.ion-ios-mic-outline:before{content:\"\\F460\"}.ion-ios-minus:before{content:\"\\F464\"}.ion-ios-minus-empty:before{content:\"\\F462\"}.ion-ios-minus-outline:before{content:\"\\F463\"}.ion-ios-monitor:before{content:\"\\F466\"}.ion-ios-monitor-outline:before{content:\"\\F465\"}.ion-ios-moon:before{content:\"\\F468\"}.ion-ios-moon-outline:before{content:\"\\F467\"}.ion-ios-more:before{content:\"\\F46A\"}.ion-ios-more-outline:before{content:\"\\F469\"}.ion-ios-musical-note:before{content:\"\\F46B\"}.ion-ios-musical-notes:before{content:\"\\F46C\"}.ion-ios-navigate:before{content:\"\\F46E\"}.ion-ios-navigate-outline:before{content:\"\\F46D\"}.ion-ios-nutrition:before{content:\"\\F470\"}.ion-ios-nutrition-outline:before{content:\"\\F46F\"}.ion-ios-paper:before{content:\"\\F472\"}.ion-ios-paper-outline:before{content:\"\\F471\"}.ion-ios-paperplane:before{content:\"\\F474\"}.ion-ios-paperplane-outline:before{content:\"\\F473\"}.ion-ios-partlysunny:before{content:\"\\F476\"}.ion-ios-partlysunny-outline:before{content:\"\\F475\"}.ion-ios-pause:before{content:\"\\F478\"}.ion-ios-pause-outline:before{content:\"\\F477\"}.ion-ios-paw:before{content:\"\\F47A\"}.ion-ios-paw-outline:before{content:\"\\F479\"}.ion-ios-people:before{content:\"\\F47C\"}.ion-ios-people-outline:before{content:\"\\F47B\"}.ion-ios-person:before{content:\"\\F47E\"}.ion-ios-person-outline:before{content:\"\\F47D\"}.ion-ios-personadd:before{content:\"\\F480\"}.ion-ios-personadd-outline:before{content:\"\\F47F\"}.ion-ios-photos:before{content:\"\\F482\"}.ion-ios-photos-outline:before{content:\"\\F481\"}.ion-ios-pie:before{content:\"\\F484\"}.ion-ios-pie-outline:before{content:\"\\F483\"}.ion-ios-pint:before{content:\"\\F486\"}.ion-ios-pint-outline:before{content:\"\\F485\"}.ion-ios-play:before{content:\"\\F488\"}.ion-ios-play-outline:before{content:\"\\F487\"}.ion-ios-plus:before{content:\"\\F48B\"}.ion-ios-plus-empty:before{content:\"\\F489\"}.ion-ios-plus-outline:before{content:\"\\F48A\"}.ion-ios-pricetag:before{content:\"\\F48D\"}.ion-ios-pricetag-outline:before{content:\"\\F48C\"}.ion-ios-pricetags:before{content:\"\\F48F\"}.ion-ios-pricetags-outline:before{content:\"\\F48E\"}.ion-ios-printer:before{content:\"\\F491\"}.ion-ios-printer-outline:before{content:\"\\F490\"}.ion-ios-pulse:before{content:\"\\F493\"}.ion-ios-pulse-strong:before{content:\"\\F492\"}.ion-ios-rainy:before{content:\"\\F495\"}.ion-ios-rainy-outline:before{content:\"\\F494\"}.ion-ios-recording:before{content:\"\\F497\"}.ion-ios-recording-outline:before{content:\"\\F496\"}.ion-ios-redo:before{content:\"\\F499\"}.ion-ios-redo-outline:before{content:\"\\F498\"}.ion-ios-refresh:before{content:\"\\F49C\"}.ion-ios-refresh-empty:before{content:\"\\F49A\"}.ion-ios-refresh-outline:before{content:\"\\F49B\"}.ion-ios-reload:before{content:\"\\F49D\"}.ion-ios-reverse-camera:before{content:\"\\F49F\"}.ion-ios-reverse-camera-outline:before{content:\"\\F49E\"}.ion-ios-rewind:before{content:\"\\F4A1\"}.ion-ios-rewind-outline:before{content:\"\\F4A0\"}.ion-ios-rose:before{content:\"\\F4A3\"}.ion-ios-rose-outline:before{content:\"\\F4A2\"}.ion-ios-search:before{content:\"\\F4A5\"}.ion-ios-search-strong:before{content:\"\\F4A4\"}.ion-ios-settings:before{content:\"\\F4A7\"}.ion-ios-settings-strong:before{content:\"\\F4A6\"}.ion-ios-shuffle:before{content:\"\\F4A9\"}.ion-ios-shuffle-strong:before{content:\"\\F4A8\"}.ion-ios-skipbackward:before{content:\"\\F4AB\"}.ion-ios-skipbackward-outline:before{content:\"\\F4AA\"}.ion-ios-skipforward:before{content:\"\\F4AD\"}.ion-ios-skipforward-outline:before{content:\"\\F4AC\"}.ion-ios-snowy:before{content:\"\\F4AE\"}.ion-ios-speedometer:before{content:\"\\F4B0\"}.ion-ios-speedometer-outline:before{content:\"\\F4AF\"}.ion-ios-star:before{content:\"\\F4B3\"}.ion-ios-star-half:before{content:\"\\F4B1\"}.ion-ios-star-outline:before{content:\"\\F4B2\"}.ion-ios-stopwatch:before{content:\"\\F4B5\"}.ion-ios-stopwatch-outline:before{content:\"\\F4B4\"}.ion-ios-sunny:before{content:\"\\F4B7\"}.ion-ios-sunny-outline:before{content:\"\\F4B6\"}.ion-ios-telephone:before{content:\"\\F4B9\"}.ion-ios-telephone-outline:before{content:\"\\F4B8\"}.ion-ios-tennisball:before{content:\"\\F4BB\"}.ion-ios-tennisball-outline:before{content:\"\\F4BA\"}.ion-ios-thunderstorm:before{content:\"\\F4BD\"}.ion-ios-thunderstorm-outline:before{content:\"\\F4BC\"}.ion-ios-time:before{content:\"\\F4BF\"}.ion-ios-time-outline:before{content:\"\\F4BE\"}.ion-ios-timer:before{content:\"\\F4C1\"}.ion-ios-timer-outline:before{content:\"\\F4C0\"}.ion-ios-toggle:before{content:\"\\F4C3\"}.ion-ios-toggle-outline:before{content:\"\\F4C2\"}.ion-ios-trash:before{content:\"\\F4C5\"}.ion-ios-trash-outline:before{content:\"\\F4C4\"}.ion-ios-undo:before{content:\"\\F4C7\"}.ion-ios-undo-outline:before{content:\"\\F4C6\"}.ion-ios-unlocked:before{content:\"\\F4C9\"}.ion-ios-unlocked-outline:before{content:\"\\F4C8\"}.ion-ios-upload:before{content:\"\\F4CB\"}.ion-ios-upload-outline:before{content:\"\\F4CA\"}.ion-ios-videocam:before{content:\"\\F4CD\"}.ion-ios-videocam-outline:before{content:\"\\F4CC\"}.ion-ios-volume-high:before{content:\"\\F4CE\"}.ion-ios-volume-low:before{content:\"\\F4CF\"}.ion-ios-wineglass:before{content:\"\\F4D1\"}.ion-ios-wineglass-outline:before{content:\"\\F4D0\"}.ion-ios-world:before{content:\"\\F4D3\"}.ion-ios-world-outline:before{content:\"\\F4D2\"}.ion-ipad:before{content:\"\\F1F9\"}.ion-iphone:before{content:\"\\F1FA\"}.ion-ipod:before{content:\"\\F1FB\"}.ion-jet:before{content:\"\\F295\"}.ion-key:before{content:\"\\F296\"}.ion-knife:before{content:\"\\F297\"}.ion-laptop:before{content:\"\\F1FC\"}.ion-leaf:before{content:\"\\F1FD\"}.ion-levels:before{content:\"\\F298\"}.ion-lightbulb:before{content:\"\\F299\"}.ion-link:before{content:\"\\F1FE\"}.ion-load-a:before{content:\"\\F29A\"}.ion-load-b:before{content:\"\\F29B\"}.ion-load-c:before{content:\"\\F29C\"}.ion-load-d:before{content:\"\\F29D\"}.ion-location:before{content:\"\\F1FF\"}.ion-lock-combination:before{content:\"\\F4D4\"}.ion-locked:before{content:\"\\F200\"}.ion-log-in:before{content:\"\\F29E\"}.ion-log-out:before{content:\"\\F29F\"}.ion-loop:before{content:\"\\F201\"}.ion-magnet:before{content:\"\\F2A0\"}.ion-male:before{content:\"\\F2A1\"}.ion-man:before{content:\"\\F202\"}.ion-map:before{content:\"\\F203\"}.ion-medkit:before{content:\"\\F2A2\"}.ion-merge:before{content:\"\\F33F\"}.ion-mic-a:before{content:\"\\F204\"}.ion-mic-b:before{content:\"\\F205\"}.ion-mic-c:before{content:\"\\F206\"}.ion-minus:before{content:\"\\F209\"}.ion-minus-circled:before{content:\"\\F207\"}.ion-minus-round:before{content:\"\\F208\"}.ion-model-s:before{content:\"\\F2C1\"}.ion-monitor:before{content:\"\\F20A\"}.ion-more:before{content:\"\\F20B\"}.ion-mouse:before{content:\"\\F340\"}.ion-music-note:before{content:\"\\F20C\"}.ion-navicon:before{content:\"\\F20E\"}.ion-navicon-round:before{content:\"\\F20D\"}.ion-navigate:before{content:\"\\F2A3\"}.ion-network:before{content:\"\\F341\"}.ion-no-smoking:before{content:\"\\F2C2\"}.ion-nuclear:before{content:\"\\F2A4\"}.ion-outlet:before{content:\"\\F342\"}.ion-paintbrush:before{content:\"\\F4D5\"}.ion-paintbucket:before{content:\"\\F4D6\"}.ion-paper-airplane:before{content:\"\\F2C3\"}.ion-paperclip:before{content:\"\\F20F\"}.ion-pause:before{content:\"\\F210\"}.ion-person:before{content:\"\\F213\"}.ion-person-add:before{content:\"\\F211\"}.ion-person-stalker:before{content:\"\\F212\"}.ion-pie-graph:before{content:\"\\F2A5\"}.ion-pin:before{content:\"\\F2A6\"}.ion-pinpoint:before{content:\"\\F2A7\"}.ion-pizza:before{content:\"\\F2A8\"}.ion-plane:before{content:\"\\F214\"}.ion-planet:before{content:\"\\F343\"}.ion-play:before{content:\"\\F215\"}.ion-playstation:before{content:\"\\F30A\"}.ion-plus:before{content:\"\\F218\"}.ion-plus-circled:before{content:\"\\F216\"}.ion-plus-round:before{content:\"\\F217\"}.ion-podium:before{content:\"\\F344\"}.ion-pound:before{content:\"\\F219\"}.ion-power:before{content:\"\\F2A9\"}.ion-pricetag:before{content:\"\\F2AA\"}.ion-pricetags:before{content:\"\\F2AB\"}.ion-printer:before{content:\"\\F21A\"}.ion-pull-request:before{content:\"\\F345\"}.ion-qr-scanner:before{content:\"\\F346\"}.ion-quote:before{content:\"\\F347\"}.ion-radio-waves:before{content:\"\\F2AC\"}.ion-record:before{content:\"\\F21B\"}.ion-refresh:before{content:\"\\F21C\"}.ion-reply:before{content:\"\\F21E\"}.ion-reply-all:before{content:\"\\F21D\"}.ion-ribbon-a:before{content:\"\\F348\"}.ion-ribbon-b:before{content:\"\\F349\"}.ion-sad:before{content:\"\\F34A\"}.ion-sad-outline:before{content:\"\\F4D7\"}.ion-scissors:before{content:\"\\F34B\"}.ion-search:before{content:\"\\F21F\"}.ion-settings:before{content:\"\\F2AD\"}.ion-share:before{content:\"\\F220\"}.ion-shuffle:before{content:\"\\F221\"}.ion-skip-backward:before{content:\"\\F222\"}.ion-skip-forward:before{content:\"\\F223\"}.ion-social-android:before{content:\"\\F225\"}.ion-social-android-outline:before{content:\"\\F224\"}.ion-social-angular:before{content:\"\\F4D9\"}.ion-social-angular-outline:before{content:\"\\F4D8\"}.ion-social-apple:before{content:\"\\F227\"}.ion-social-apple-outline:before{content:\"\\F226\"}.ion-social-bitcoin:before{content:\"\\F2AF\"}.ion-social-bitcoin-outline:before{content:\"\\F2AE\"}.ion-social-buffer:before{content:\"\\F229\"}.ion-social-buffer-outline:before{content:\"\\F228\"}.ion-social-chrome:before{content:\"\\F4DB\"}.ion-social-chrome-outline:before{content:\"\\F4DA\"}.ion-social-codepen:before{content:\"\\F4DD\"}.ion-social-codepen-outline:before{content:\"\\F4DC\"}.ion-social-css3:before{content:\"\\F4DF\"}.ion-social-css3-outline:before{content:\"\\F4DE\"}.ion-social-designernews:before{content:\"\\F22B\"}.ion-social-designernews-outline:before{content:\"\\F22A\"}.ion-social-dribbble:before{content:\"\\F22D\"}.ion-social-dribbble-outline:before{content:\"\\F22C\"}.ion-social-dropbox:before{content:\"\\F22F\"}.ion-social-dropbox-outline:before{content:\"\\F22E\"}.ion-social-euro:before{content:\"\\F4E1\"}.ion-social-euro-outline:before{content:\"\\F4E0\"}.ion-social-facebook:before{content:\"\\F231\"}.ion-social-facebook-outline:before{content:\"\\F230\"}.ion-social-foursquare:before{content:\"\\F34D\"}.ion-social-foursquare-outline:before{content:\"\\F34C\"}.ion-social-freebsd-devil:before{content:\"\\F2C4\"}.ion-social-github:before{content:\"\\F233\"}.ion-social-github-outline:before{content:\"\\F232\"}.ion-social-google:before{content:\"\\F34F\"}.ion-social-google-outline:before{content:\"\\F34E\"}.ion-social-googleplus:before{content:\"\\F235\"}.ion-social-googleplus-outline:before{content:\"\\F234\"}.ion-social-hackernews:before{content:\"\\F237\"}.ion-social-hackernews-outline:before{content:\"\\F236\"}.ion-social-html5:before{content:\"\\F4E3\"}.ion-social-html5-outline:before{content:\"\\F4E2\"}.ion-social-instagram:before{content:\"\\F351\"}.ion-social-instagram-outline:before{content:\"\\F350\"}.ion-social-javascript:before{content:\"\\F4E5\"}.ion-social-javascript-outline:before{content:\"\\F4E4\"}.ion-social-linkedin:before{content:\"\\F239\"}.ion-social-linkedin-outline:before{content:\"\\F238\"}.ion-social-markdown:before{content:\"\\F4E6\"}.ion-social-nodejs:before{content:\"\\F4E7\"}.ion-social-octocat:before{content:\"\\F4E8\"}.ion-social-pinterest:before{content:\"\\F2B1\"}.ion-social-pinterest-outline:before{content:\"\\F2B0\"}.ion-social-python:before{content:\"\\F4E9\"}.ion-social-reddit:before{content:\"\\F23B\"}.ion-social-reddit-outline:before{content:\"\\F23A\"}.ion-social-rss:before{content:\"\\F23D\"}.ion-social-rss-outline:before{content:\"\\F23C\"}.ion-social-sass:before{content:\"\\F4EA\"}.ion-social-skype:before{content:\"\\F23F\"}.ion-social-skype-outline:before{content:\"\\F23E\"}.ion-social-snapchat:before{content:\"\\F4EC\"}.ion-social-snapchat-outline:before{content:\"\\F4EB\"}.ion-social-tumblr:before{content:\"\\F241\"}.ion-social-tumblr-outline:before{content:\"\\F240\"}.ion-social-tux:before{content:\"\\F2C5\"}.ion-social-twitch:before{content:\"\\F4EE\"}.ion-social-twitch-outline:before{content:\"\\F4ED\"}.ion-social-twitter:before{content:\"\\F243\"}.ion-social-twitter-outline:before{content:\"\\F242\"}.ion-social-usd:before{content:\"\\F353\"}.ion-social-usd-outline:before{content:\"\\F352\"}.ion-social-vimeo:before{content:\"\\F245\"}.ion-social-vimeo-outline:before{content:\"\\F244\"}.ion-social-whatsapp:before{content:\"\\F4F0\"}.ion-social-whatsapp-outline:before{content:\"\\F4EF\"}.ion-social-windows:before{content:\"\\F247\"}.ion-social-windows-outline:before{content:\"\\F246\"}.ion-social-wordpress:before{content:\"\\F249\"}.ion-social-wordpress-outline:before{content:\"\\F248\"}.ion-social-yahoo:before{content:\"\\F24B\"}.ion-social-yahoo-outline:before{content:\"\\F24A\"}.ion-social-yen:before{content:\"\\F4F2\"}.ion-social-yen-outline:before{content:\"\\F4F1\"}.ion-social-youtube:before{content:\"\\F24D\"}.ion-social-youtube-outline:before{content:\"\\F24C\"}.ion-soup-can:before{content:\"\\F4F4\"}.ion-soup-can-outline:before{content:\"\\F4F3\"}.ion-speakerphone:before{content:\"\\F2B2\"}.ion-speedometer:before{content:\"\\F2B3\"}.ion-spoon:before{content:\"\\F2B4\"}.ion-star:before{content:\"\\F24E\"}.ion-stats-bars:before{content:\"\\F2B5\"}.ion-steam:before{content:\"\\F30B\"}.ion-stop:before{content:\"\\F24F\"}.ion-thermometer:before{content:\"\\F2B6\"}.ion-thumbsdown:before{content:\"\\F250\"}.ion-thumbsup:before{content:\"\\F251\"}.ion-toggle:before{content:\"\\F355\"}.ion-toggle-filled:before{content:\"\\F354\"}.ion-transgender:before{content:\"\\F4F5\"}.ion-trash-a:before{content:\"\\F252\"}.ion-trash-b:before{content:\"\\F253\"}.ion-trophy:before{content:\"\\F356\"}.ion-tshirt:before{content:\"\\F4F7\"}.ion-tshirt-outline:before{content:\"\\F4F6\"}.ion-umbrella:before{content:\"\\F2B7\"}.ion-university:before{content:\"\\F357\"}.ion-unlocked:before{content:\"\\F254\"}.ion-upload:before{content:\"\\F255\"}.ion-usb:before{content:\"\\F2B8\"}.ion-videocamera:before{content:\"\\F256\"}.ion-volume-high:before{content:\"\\F257\"}.ion-volume-low:before{content:\"\\F258\"}.ion-volume-medium:before{content:\"\\F259\"}.ion-volume-mute:before{content:\"\\F25A\"}.ion-wand:before{content:\"\\F358\"}.ion-waterdrop:before{content:\"\\F25B\"}.ion-wifi:before{content:\"\\F25C\"}.ion-wineglass:before{content:\"\\F2B9\"}.ion-woman:before{content:\"\\F25D\"}.ion-wrench:before{content:\"\\F2BA\"}.ion-xbox:before{content:\"\\F30C\"}", ""]);
+exports.push([module.i, "@charset \"UTF-8\";/*!\n  Ionicons, v2.0.1\n  Created by Ben Sperry for the Ionic Framework, http://ionicons.com/\n  https://twitter.com/benjsperry  https://twitter.com/ionicframework\n  MIT License: https://github.com/driftyco/ionicons\n\n  Android-style icons originally built by Google’s\n  Material Design Icons: https://github.com/google/material-design-icons\n  used under CC BY http://creativecommons.org/licenses/by/4.0/\n  Modified icons to fit ionicon’s grid from original.\n*/@font-face{font-family:\"Ionicons\";src:url(" + __webpack_require__(78) + ");src:url(" + __webpack_require__(78) + ") format(\"embedded-opentype\"),url(" + __webpack_require__(145) + ") format(\"truetype\"),url(" + __webpack_require__(146) + ") format(\"woff\"),url(" + __webpack_require__(147) + ") format(\"svg\");font-weight:normal;font-style:normal}.ion,.ionicons,.ion-alert:before,.ion-alert-circled:before,.ion-android-add:before,.ion-android-add-circle:before,.ion-android-alarm-clock:before,.ion-android-alert:before,.ion-android-apps:before,.ion-android-archive:before,.ion-android-arrow-back:before,.ion-android-arrow-down:before,.ion-android-arrow-dropdown:before,.ion-android-arrow-dropdown-circle:before,.ion-android-arrow-dropleft:before,.ion-android-arrow-dropleft-circle:before,.ion-android-arrow-dropright:before,.ion-android-arrow-dropright-circle:before,.ion-android-arrow-dropup:before,.ion-android-arrow-dropup-circle:before,.ion-android-arrow-forward:before,.ion-android-arrow-up:before,.ion-android-attach:before,.ion-android-bar:before,.ion-android-bicycle:before,.ion-android-boat:before,.ion-android-bookmark:before,.ion-android-bulb:before,.ion-android-bus:before,.ion-android-calendar:before,.ion-android-call:before,.ion-android-camera:before,.ion-android-cancel:before,.ion-android-car:before,.ion-android-cart:before,.ion-android-chat:before,.ion-android-checkbox:before,.ion-android-checkbox-blank:before,.ion-android-checkbox-outline:before,.ion-android-checkbox-outline-blank:before,.ion-android-checkmark-circle:before,.ion-android-clipboard:before,.ion-android-close:before,.ion-android-cloud:before,.ion-android-cloud-circle:before,.ion-android-cloud-done:before,.ion-android-cloud-outline:before,.ion-android-color-palette:before,.ion-android-compass:before,.ion-android-contact:before,.ion-android-contacts:before,.ion-android-contract:before,.ion-android-create:before,.ion-android-delete:before,.ion-android-desktop:before,.ion-android-document:before,.ion-android-done:before,.ion-android-done-all:before,.ion-android-download:before,.ion-android-drafts:before,.ion-android-exit:before,.ion-android-expand:before,.ion-android-favorite:before,.ion-android-favorite-outline:before,.ion-android-film:before,.ion-android-folder:before,.ion-android-folder-open:before,.ion-android-funnel:before,.ion-android-globe:before,.ion-android-hand:before,.ion-android-hangout:before,.ion-android-happy:before,.ion-android-home:before,.ion-android-image:before,.ion-android-laptop:before,.ion-android-list:before,.ion-android-locate:before,.ion-android-lock:before,.ion-android-mail:before,.ion-android-map:before,.ion-android-menu:before,.ion-android-microphone:before,.ion-android-microphone-off:before,.ion-android-more-horizontal:before,.ion-android-more-vertical:before,.ion-android-navigate:before,.ion-android-notifications:before,.ion-android-notifications-none:before,.ion-android-notifications-off:before,.ion-android-open:before,.ion-android-options:before,.ion-android-people:before,.ion-android-person:before,.ion-android-person-add:before,.ion-android-phone-landscape:before,.ion-android-phone-portrait:before,.ion-android-pin:before,.ion-android-plane:before,.ion-android-playstore:before,.ion-android-print:before,.ion-android-radio-button-off:before,.ion-android-radio-button-on:before,.ion-android-refresh:before,.ion-android-remove:before,.ion-android-remove-circle:before,.ion-android-restaurant:before,.ion-android-sad:before,.ion-android-search:before,.ion-android-send:before,.ion-android-settings:before,.ion-android-share:before,.ion-android-share-alt:before,.ion-android-star:before,.ion-android-star-half:before,.ion-android-star-outline:before,.ion-android-stopwatch:before,.ion-android-subway:before,.ion-android-sunny:before,.ion-android-sync:before,.ion-android-textsms:before,.ion-android-time:before,.ion-android-train:before,.ion-android-unlock:before,.ion-android-upload:before,.ion-android-volume-down:before,.ion-android-volume-mute:before,.ion-android-volume-off:before,.ion-android-volume-up:before,.ion-android-walk:before,.ion-android-warning:before,.ion-android-watch:before,.ion-android-wifi:before,.ion-aperture:before,.ion-archive:before,.ion-arrow-down-a:before,.ion-arrow-down-b:before,.ion-arrow-down-c:before,.ion-arrow-expand:before,.ion-arrow-graph-down-left:before,.ion-arrow-graph-down-right:before,.ion-arrow-graph-up-left:before,.ion-arrow-graph-up-right:before,.ion-arrow-left-a:before,.ion-arrow-left-b:before,.ion-arrow-left-c:before,.ion-arrow-move:before,.ion-arrow-resize:before,.ion-arrow-return-left:before,.ion-arrow-return-right:before,.ion-arrow-right-a:before,.ion-arrow-right-b:before,.ion-arrow-right-c:before,.ion-arrow-shrink:before,.ion-arrow-swap:before,.ion-arrow-up-a:before,.ion-arrow-up-b:before,.ion-arrow-up-c:before,.ion-asterisk:before,.ion-at:before,.ion-backspace:before,.ion-backspace-outline:before,.ion-bag:before,.ion-battery-charging:before,.ion-battery-empty:before,.ion-battery-full:before,.ion-battery-half:before,.ion-battery-low:before,.ion-beaker:before,.ion-beer:before,.ion-bluetooth:before,.ion-bonfire:before,.ion-bookmark:before,.ion-bowtie:before,.ion-briefcase:before,.ion-bug:before,.ion-calculator:before,.ion-calendar:before,.ion-camera:before,.ion-card:before,.ion-cash:before,.ion-chatbox:before,.ion-chatbox-working:before,.ion-chatboxes:before,.ion-chatbubble:before,.ion-chatbubble-working:before,.ion-chatbubbles:before,.ion-checkmark:before,.ion-checkmark-circled:before,.ion-checkmark-round:before,.ion-chevron-down:before,.ion-chevron-left:before,.ion-chevron-right:before,.ion-chevron-up:before,.ion-clipboard:before,.ion-clock:before,.ion-close:before,.ion-close-circled:before,.ion-close-round:before,.ion-closed-captioning:before,.ion-cloud:before,.ion-code:before,.ion-code-download:before,.ion-code-working:before,.ion-coffee:before,.ion-compass:before,.ion-compose:before,.ion-connection-bars:before,.ion-contrast:before,.ion-crop:before,.ion-cube:before,.ion-disc:before,.ion-document:before,.ion-document-text:before,.ion-drag:before,.ion-earth:before,.ion-easel:before,.ion-edit:before,.ion-egg:before,.ion-eject:before,.ion-email:before,.ion-email-unread:before,.ion-erlenmeyer-flask:before,.ion-erlenmeyer-flask-bubbles:before,.ion-eye:before,.ion-eye-disabled:before,.ion-female:before,.ion-filing:before,.ion-film-marker:before,.ion-fireball:before,.ion-flag:before,.ion-flame:before,.ion-flash:before,.ion-flash-off:before,.ion-folder:before,.ion-fork:before,.ion-fork-repo:before,.ion-forward:before,.ion-funnel:before,.ion-gear-a:before,.ion-gear-b:before,.ion-grid:before,.ion-hammer:before,.ion-happy:before,.ion-happy-outline:before,.ion-headphone:before,.ion-heart:before,.ion-heart-broken:before,.ion-help:before,.ion-help-buoy:before,.ion-help-circled:before,.ion-home:before,.ion-icecream:before,.ion-image:before,.ion-images:before,.ion-information:before,.ion-information-circled:before,.ion-ionic:before,.ion-ios-alarm:before,.ion-ios-alarm-outline:before,.ion-ios-albums:before,.ion-ios-albums-outline:before,.ion-ios-americanfootball:before,.ion-ios-americanfootball-outline:before,.ion-ios-analytics:before,.ion-ios-analytics-outline:before,.ion-ios-arrow-back:before,.ion-ios-arrow-down:before,.ion-ios-arrow-forward:before,.ion-ios-arrow-left:before,.ion-ios-arrow-right:before,.ion-ios-arrow-thin-down:before,.ion-ios-arrow-thin-left:before,.ion-ios-arrow-thin-right:before,.ion-ios-arrow-thin-up:before,.ion-ios-arrow-up:before,.ion-ios-at:before,.ion-ios-at-outline:before,.ion-ios-barcode:before,.ion-ios-barcode-outline:before,.ion-ios-baseball:before,.ion-ios-baseball-outline:before,.ion-ios-basketball:before,.ion-ios-basketball-outline:before,.ion-ios-bell:before,.ion-ios-bell-outline:before,.ion-ios-body:before,.ion-ios-body-outline:before,.ion-ios-bolt:before,.ion-ios-bolt-outline:before,.ion-ios-book:before,.ion-ios-book-outline:before,.ion-ios-bookmarks:before,.ion-ios-bookmarks-outline:before,.ion-ios-box:before,.ion-ios-box-outline:before,.ion-ios-briefcase:before,.ion-ios-briefcase-outline:before,.ion-ios-browsers:before,.ion-ios-browsers-outline:before,.ion-ios-calculator:before,.ion-ios-calculator-outline:before,.ion-ios-calendar:before,.ion-ios-calendar-outline:before,.ion-ios-camera:before,.ion-ios-camera-outline:before,.ion-ios-cart:before,.ion-ios-cart-outline:before,.ion-ios-chatboxes:before,.ion-ios-chatboxes-outline:before,.ion-ios-chatbubble:before,.ion-ios-chatbubble-outline:before,.ion-ios-checkmark:before,.ion-ios-checkmark-empty:before,.ion-ios-checkmark-outline:before,.ion-ios-circle-filled:before,.ion-ios-circle-outline:before,.ion-ios-clock:before,.ion-ios-clock-outline:before,.ion-ios-close:before,.ion-ios-close-empty:before,.ion-ios-close-outline:before,.ion-ios-cloud:before,.ion-ios-cloud-download:before,.ion-ios-cloud-download-outline:before,.ion-ios-cloud-outline:before,.ion-ios-cloud-upload:before,.ion-ios-cloud-upload-outline:before,.ion-ios-cloudy:before,.ion-ios-cloudy-night:before,.ion-ios-cloudy-night-outline:before,.ion-ios-cloudy-outline:before,.ion-ios-cog:before,.ion-ios-cog-outline:before,.ion-ios-color-filter:before,.ion-ios-color-filter-outline:before,.ion-ios-color-wand:before,.ion-ios-color-wand-outline:before,.ion-ios-compose:before,.ion-ios-compose-outline:before,.ion-ios-contact:before,.ion-ios-contact-outline:before,.ion-ios-copy:before,.ion-ios-copy-outline:before,.ion-ios-crop:before,.ion-ios-crop-strong:before,.ion-ios-download:before,.ion-ios-download-outline:before,.ion-ios-drag:before,.ion-ios-email:before,.ion-ios-email-outline:before,.ion-ios-eye:before,.ion-ios-eye-outline:before,.ion-ios-fastforward:before,.ion-ios-fastforward-outline:before,.ion-ios-filing:before,.ion-ios-filing-outline:before,.ion-ios-film:before,.ion-ios-film-outline:before,.ion-ios-flag:before,.ion-ios-flag-outline:before,.ion-ios-flame:before,.ion-ios-flame-outline:before,.ion-ios-flask:before,.ion-ios-flask-outline:before,.ion-ios-flower:before,.ion-ios-flower-outline:before,.ion-ios-folder:before,.ion-ios-folder-outline:before,.ion-ios-football:before,.ion-ios-football-outline:before,.ion-ios-game-controller-a:before,.ion-ios-game-controller-a-outline:before,.ion-ios-game-controller-b:before,.ion-ios-game-controller-b-outline:before,.ion-ios-gear:before,.ion-ios-gear-outline:before,.ion-ios-glasses:before,.ion-ios-glasses-outline:before,.ion-ios-grid-view:before,.ion-ios-grid-view-outline:before,.ion-ios-heart:before,.ion-ios-heart-outline:before,.ion-ios-help:before,.ion-ios-help-empty:before,.ion-ios-help-outline:before,.ion-ios-home:before,.ion-ios-home-outline:before,.ion-ios-infinite:before,.ion-ios-infinite-outline:before,.ion-ios-information:before,.ion-ios-information-empty:before,.ion-ios-information-outline:before,.ion-ios-ionic-outline:before,.ion-ios-keypad:before,.ion-ios-keypad-outline:before,.ion-ios-lightbulb:before,.ion-ios-lightbulb-outline:before,.ion-ios-list:before,.ion-ios-list-outline:before,.ion-ios-location:before,.ion-ios-location-outline:before,.ion-ios-locked:before,.ion-ios-locked-outline:before,.ion-ios-loop:before,.ion-ios-loop-strong:before,.ion-ios-medical:before,.ion-ios-medical-outline:before,.ion-ios-medkit:before,.ion-ios-medkit-outline:before,.ion-ios-mic:before,.ion-ios-mic-off:before,.ion-ios-mic-outline:before,.ion-ios-minus:before,.ion-ios-minus-empty:before,.ion-ios-minus-outline:before,.ion-ios-monitor:before,.ion-ios-monitor-outline:before,.ion-ios-moon:before,.ion-ios-moon-outline:before,.ion-ios-more:before,.ion-ios-more-outline:before,.ion-ios-musical-note:before,.ion-ios-musical-notes:before,.ion-ios-navigate:before,.ion-ios-navigate-outline:before,.ion-ios-nutrition:before,.ion-ios-nutrition-outline:before,.ion-ios-paper:before,.ion-ios-paper-outline:before,.ion-ios-paperplane:before,.ion-ios-paperplane-outline:before,.ion-ios-partlysunny:before,.ion-ios-partlysunny-outline:before,.ion-ios-pause:before,.ion-ios-pause-outline:before,.ion-ios-paw:before,.ion-ios-paw-outline:before,.ion-ios-people:before,.ion-ios-people-outline:before,.ion-ios-person:before,.ion-ios-person-outline:before,.ion-ios-personadd:before,.ion-ios-personadd-outline:before,.ion-ios-photos:before,.ion-ios-photos-outline:before,.ion-ios-pie:before,.ion-ios-pie-outline:before,.ion-ios-pint:before,.ion-ios-pint-outline:before,.ion-ios-play:before,.ion-ios-play-outline:before,.ion-ios-plus:before,.ion-ios-plus-empty:before,.ion-ios-plus-outline:before,.ion-ios-pricetag:before,.ion-ios-pricetag-outline:before,.ion-ios-pricetags:before,.ion-ios-pricetags-outline:before,.ion-ios-printer:before,.ion-ios-printer-outline:before,.ion-ios-pulse:before,.ion-ios-pulse-strong:before,.ion-ios-rainy:before,.ion-ios-rainy-outline:before,.ion-ios-recording:before,.ion-ios-recording-outline:before,.ion-ios-redo:before,.ion-ios-redo-outline:before,.ion-ios-refresh:before,.ion-ios-refresh-empty:before,.ion-ios-refresh-outline:before,.ion-ios-reload:before,.ion-ios-reverse-camera:before,.ion-ios-reverse-camera-outline:before,.ion-ios-rewind:before,.ion-ios-rewind-outline:before,.ion-ios-rose:before,.ion-ios-rose-outline:before,.ion-ios-search:before,.ion-ios-search-strong:before,.ion-ios-settings:before,.ion-ios-settings-strong:before,.ion-ios-shuffle:before,.ion-ios-shuffle-strong:before,.ion-ios-skipbackward:before,.ion-ios-skipbackward-outline:before,.ion-ios-skipforward:before,.ion-ios-skipforward-outline:before,.ion-ios-snowy:before,.ion-ios-speedometer:before,.ion-ios-speedometer-outline:before,.ion-ios-star:before,.ion-ios-star-half:before,.ion-ios-star-outline:before,.ion-ios-stopwatch:before,.ion-ios-stopwatch-outline:before,.ion-ios-sunny:before,.ion-ios-sunny-outline:before,.ion-ios-telephone:before,.ion-ios-telephone-outline:before,.ion-ios-tennisball:before,.ion-ios-tennisball-outline:before,.ion-ios-thunderstorm:before,.ion-ios-thunderstorm-outline:before,.ion-ios-time:before,.ion-ios-time-outline:before,.ion-ios-timer:before,.ion-ios-timer-outline:before,.ion-ios-toggle:before,.ion-ios-toggle-outline:before,.ion-ios-trash:before,.ion-ios-trash-outline:before,.ion-ios-undo:before,.ion-ios-undo-outline:before,.ion-ios-unlocked:before,.ion-ios-unlocked-outline:before,.ion-ios-upload:before,.ion-ios-upload-outline:before,.ion-ios-videocam:before,.ion-ios-videocam-outline:before,.ion-ios-volume-high:before,.ion-ios-volume-low:before,.ion-ios-wineglass:before,.ion-ios-wineglass-outline:before,.ion-ios-world:before,.ion-ios-world-outline:before,.ion-ipad:before,.ion-iphone:before,.ion-ipod:before,.ion-jet:before,.ion-key:before,.ion-knife:before,.ion-laptop:before,.ion-leaf:before,.ion-levels:before,.ion-lightbulb:before,.ion-link:before,.ion-load-a:before,.ion-load-b:before,.ion-load-c:before,.ion-load-d:before,.ion-location:before,.ion-lock-combination:before,.ion-locked:before,.ion-log-in:before,.ion-log-out:before,.ion-loop:before,.ion-magnet:before,.ion-male:before,.ion-man:before,.ion-map:before,.ion-medkit:before,.ion-merge:before,.ion-mic-a:before,.ion-mic-b:before,.ion-mic-c:before,.ion-minus:before,.ion-minus-circled:before,.ion-minus-round:before,.ion-model-s:before,.ion-monitor:before,.ion-more:before,.ion-mouse:before,.ion-music-note:before,.ion-navicon:before,.ion-navicon-round:before,.ion-navigate:before,.ion-network:before,.ion-no-smoking:before,.ion-nuclear:before,.ion-outlet:before,.ion-paintbrush:before,.ion-paintbucket:before,.ion-paper-airplane:before,.ion-paperclip:before,.ion-pause:before,.ion-person:before,.ion-person-add:before,.ion-person-stalker:before,.ion-pie-graph:before,.ion-pin:before,.ion-pinpoint:before,.ion-pizza:before,.ion-plane:before,.ion-planet:before,.ion-play:before,.ion-playstation:before,.ion-plus:before,.ion-plus-circled:before,.ion-plus-round:before,.ion-podium:before,.ion-pound:before,.ion-power:before,.ion-pricetag:before,.ion-pricetags:before,.ion-printer:before,.ion-pull-request:before,.ion-qr-scanner:before,.ion-quote:before,.ion-radio-waves:before,.ion-record:before,.ion-refresh:before,.ion-reply:before,.ion-reply-all:before,.ion-ribbon-a:before,.ion-ribbon-b:before,.ion-sad:before,.ion-sad-outline:before,.ion-scissors:before,.ion-search:before,.ion-settings:before,.ion-share:before,.ion-shuffle:before,.ion-skip-backward:before,.ion-skip-forward:before,.ion-social-android:before,.ion-social-android-outline:before,.ion-social-angular:before,.ion-social-angular-outline:before,.ion-social-apple:before,.ion-social-apple-outline:before,.ion-social-bitcoin:before,.ion-social-bitcoin-outline:before,.ion-social-buffer:before,.ion-social-buffer-outline:before,.ion-social-chrome:before,.ion-social-chrome-outline:before,.ion-social-codepen:before,.ion-social-codepen-outline:before,.ion-social-css3:before,.ion-social-css3-outline:before,.ion-social-designernews:before,.ion-social-designernews-outline:before,.ion-social-dribbble:before,.ion-social-dribbble-outline:before,.ion-social-dropbox:before,.ion-social-dropbox-outline:before,.ion-social-euro:before,.ion-social-euro-outline:before,.ion-social-facebook:before,.ion-social-facebook-outline:before,.ion-social-foursquare:before,.ion-social-foursquare-outline:before,.ion-social-freebsd-devil:before,.ion-social-github:before,.ion-social-github-outline:before,.ion-social-google:before,.ion-social-google-outline:before,.ion-social-googleplus:before,.ion-social-googleplus-outline:before,.ion-social-hackernews:before,.ion-social-hackernews-outline:before,.ion-social-html5:before,.ion-social-html5-outline:before,.ion-social-instagram:before,.ion-social-instagram-outline:before,.ion-social-javascript:before,.ion-social-javascript-outline:before,.ion-social-linkedin:before,.ion-social-linkedin-outline:before,.ion-social-markdown:before,.ion-social-nodejs:before,.ion-social-octocat:before,.ion-social-pinterest:before,.ion-social-pinterest-outline:before,.ion-social-python:before,.ion-social-reddit:before,.ion-social-reddit-outline:before,.ion-social-rss:before,.ion-social-rss-outline:before,.ion-social-sass:before,.ion-social-skype:before,.ion-social-skype-outline:before,.ion-social-snapchat:before,.ion-social-snapchat-outline:before,.ion-social-tumblr:before,.ion-social-tumblr-outline:before,.ion-social-tux:before,.ion-social-twitch:before,.ion-social-twitch-outline:before,.ion-social-twitter:before,.ion-social-twitter-outline:before,.ion-social-usd:before,.ion-social-usd-outline:before,.ion-social-vimeo:before,.ion-social-vimeo-outline:before,.ion-social-whatsapp:before,.ion-social-whatsapp-outline:before,.ion-social-windows:before,.ion-social-windows-outline:before,.ion-social-wordpress:before,.ion-social-wordpress-outline:before,.ion-social-yahoo:before,.ion-social-yahoo-outline:before,.ion-social-yen:before,.ion-social-yen-outline:before,.ion-social-youtube:before,.ion-social-youtube-outline:before,.ion-soup-can:before,.ion-soup-can-outline:before,.ion-speakerphone:before,.ion-speedometer:before,.ion-spoon:before,.ion-star:before,.ion-stats-bars:before,.ion-steam:before,.ion-stop:before,.ion-thermometer:before,.ion-thumbsdown:before,.ion-thumbsup:before,.ion-toggle:before,.ion-toggle-filled:before,.ion-transgender:before,.ion-trash-a:before,.ion-trash-b:before,.ion-trophy:before,.ion-tshirt:before,.ion-tshirt-outline:before,.ion-umbrella:before,.ion-university:before,.ion-unlocked:before,.ion-upload:before,.ion-usb:before,.ion-videocamera:before,.ion-volume-high:before,.ion-volume-low:before,.ion-volume-medium:before,.ion-volume-mute:before,.ion-wand:before,.ion-waterdrop:before,.ion-wifi:before,.ion-wineglass:before,.ion-woman:before,.ion-wrench:before,.ion-xbox:before{display:inline-block;font-family:\"Ionicons\";speak:none;font-style:normal;font-weight:normal;font-variant:normal;text-transform:none;text-rendering:auto;line-height:1;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}.ion-alert:before{content:\"\\F101\"}.ion-alert-circled:before{content:\"\\F100\"}.ion-android-add:before{content:\"\\F2C7\"}.ion-android-add-circle:before{content:\"\\F359\"}.ion-android-alarm-clock:before{content:\"\\F35A\"}.ion-android-alert:before{content:\"\\F35B\"}.ion-android-apps:before{content:\"\\F35C\"}.ion-android-archive:before{content:\"\\F2C9\"}.ion-android-arrow-back:before{content:\"\\F2CA\"}.ion-android-arrow-down:before{content:\"\\F35D\"}.ion-android-arrow-dropdown:before{content:\"\\F35F\"}.ion-android-arrow-dropdown-circle:before{content:\"\\F35E\"}.ion-android-arrow-dropleft:before{content:\"\\F361\"}.ion-android-arrow-dropleft-circle:before{content:\"\\F360\"}.ion-android-arrow-dropright:before{content:\"\\F363\"}.ion-android-arrow-dropright-circle:before{content:\"\\F362\"}.ion-android-arrow-dropup:before{content:\"\\F365\"}.ion-android-arrow-dropup-circle:before{content:\"\\F364\"}.ion-android-arrow-forward:before{content:\"\\F30F\"}.ion-android-arrow-up:before{content:\"\\F366\"}.ion-android-attach:before{content:\"\\F367\"}.ion-android-bar:before{content:\"\\F368\"}.ion-android-bicycle:before{content:\"\\F369\"}.ion-android-boat:before{content:\"\\F36A\"}.ion-android-bookmark:before{content:\"\\F36B\"}.ion-android-bulb:before{content:\"\\F36C\"}.ion-android-bus:before{content:\"\\F36D\"}.ion-android-calendar:before{content:\"\\F2D1\"}.ion-android-call:before{content:\"\\F2D2\"}.ion-android-camera:before{content:\"\\F2D3\"}.ion-android-cancel:before{content:\"\\F36E\"}.ion-android-car:before{content:\"\\F36F\"}.ion-android-cart:before{content:\"\\F370\"}.ion-android-chat:before{content:\"\\F2D4\"}.ion-android-checkbox:before{content:\"\\F374\"}.ion-android-checkbox-blank:before{content:\"\\F371\"}.ion-android-checkbox-outline:before{content:\"\\F373\"}.ion-android-checkbox-outline-blank:before{content:\"\\F372\"}.ion-android-checkmark-circle:before{content:\"\\F375\"}.ion-android-clipboard:before{content:\"\\F376\"}.ion-android-close:before{content:\"\\F2D7\"}.ion-android-cloud:before{content:\"\\F37A\"}.ion-android-cloud-circle:before{content:\"\\F377\"}.ion-android-cloud-done:before{content:\"\\F378\"}.ion-android-cloud-outline:before{content:\"\\F379\"}.ion-android-color-palette:before{content:\"\\F37B\"}.ion-android-compass:before{content:\"\\F37C\"}.ion-android-contact:before{content:\"\\F2D8\"}.ion-android-contacts:before{content:\"\\F2D9\"}.ion-android-contract:before{content:\"\\F37D\"}.ion-android-create:before{content:\"\\F37E\"}.ion-android-delete:before{content:\"\\F37F\"}.ion-android-desktop:before{content:\"\\F380\"}.ion-android-document:before{content:\"\\F381\"}.ion-android-done:before{content:\"\\F383\"}.ion-android-done-all:before{content:\"\\F382\"}.ion-android-download:before{content:\"\\F2DD\"}.ion-android-drafts:before{content:\"\\F384\"}.ion-android-exit:before{content:\"\\F385\"}.ion-android-expand:before{content:\"\\F386\"}.ion-android-favorite:before{content:\"\\F388\"}.ion-android-favorite-outline:before{content:\"\\F387\"}.ion-android-film:before{content:\"\\F389\"}.ion-android-folder:before{content:\"\\F2E0\"}.ion-android-folder-open:before{content:\"\\F38A\"}.ion-android-funnel:before{content:\"\\F38B\"}.ion-android-globe:before{content:\"\\F38C\"}.ion-android-hand:before{content:\"\\F2E3\"}.ion-android-hangout:before{content:\"\\F38D\"}.ion-android-happy:before{content:\"\\F38E\"}.ion-android-home:before{content:\"\\F38F\"}.ion-android-image:before{content:\"\\F2E4\"}.ion-android-laptop:before{content:\"\\F390\"}.ion-android-list:before{content:\"\\F391\"}.ion-android-locate:before{content:\"\\F2E9\"}.ion-android-lock:before{content:\"\\F392\"}.ion-android-mail:before{content:\"\\F2EB\"}.ion-android-map:before{content:\"\\F393\"}.ion-android-menu:before{content:\"\\F394\"}.ion-android-microphone:before{content:\"\\F2EC\"}.ion-android-microphone-off:before{content:\"\\F395\"}.ion-android-more-horizontal:before{content:\"\\F396\"}.ion-android-more-vertical:before{content:\"\\F397\"}.ion-android-navigate:before{content:\"\\F398\"}.ion-android-notifications:before{content:\"\\F39B\"}.ion-android-notifications-none:before{content:\"\\F399\"}.ion-android-notifications-off:before{content:\"\\F39A\"}.ion-android-open:before{content:\"\\F39C\"}.ion-android-options:before{content:\"\\F39D\"}.ion-android-people:before{content:\"\\F39E\"}.ion-android-person:before{content:\"\\F3A0\"}.ion-android-person-add:before{content:\"\\F39F\"}.ion-android-phone-landscape:before{content:\"\\F3A1\"}.ion-android-phone-portrait:before{content:\"\\F3A2\"}.ion-android-pin:before{content:\"\\F3A3\"}.ion-android-plane:before{content:\"\\F3A4\"}.ion-android-playstore:before{content:\"\\F2F0\"}.ion-android-print:before{content:\"\\F3A5\"}.ion-android-radio-button-off:before{content:\"\\F3A6\"}.ion-android-radio-button-on:before{content:\"\\F3A7\"}.ion-android-refresh:before{content:\"\\F3A8\"}.ion-android-remove:before{content:\"\\F2F4\"}.ion-android-remove-circle:before{content:\"\\F3A9\"}.ion-android-restaurant:before{content:\"\\F3AA\"}.ion-android-sad:before{content:\"\\F3AB\"}.ion-android-search:before{content:\"\\F2F5\"}.ion-android-send:before{content:\"\\F2F6\"}.ion-android-settings:before{content:\"\\F2F7\"}.ion-android-share:before{content:\"\\F2F8\"}.ion-android-share-alt:before{content:\"\\F3AC\"}.ion-android-star:before{content:\"\\F2FC\"}.ion-android-star-half:before{content:\"\\F3AD\"}.ion-android-star-outline:before{content:\"\\F3AE\"}.ion-android-stopwatch:before{content:\"\\F2FD\"}.ion-android-subway:before{content:\"\\F3AF\"}.ion-android-sunny:before{content:\"\\F3B0\"}.ion-android-sync:before{content:\"\\F3B1\"}.ion-android-textsms:before{content:\"\\F3B2\"}.ion-android-time:before{content:\"\\F3B3\"}.ion-android-train:before{content:\"\\F3B4\"}.ion-android-unlock:before{content:\"\\F3B5\"}.ion-android-upload:before{content:\"\\F3B6\"}.ion-android-volume-down:before{content:\"\\F3B7\"}.ion-android-volume-mute:before{content:\"\\F3B8\"}.ion-android-volume-off:before{content:\"\\F3B9\"}.ion-android-volume-up:before{content:\"\\F3BA\"}.ion-android-walk:before{content:\"\\F3BB\"}.ion-android-warning:before{content:\"\\F3BC\"}.ion-android-watch:before{content:\"\\F3BD\"}.ion-android-wifi:before{content:\"\\F305\"}.ion-aperture:before{content:\"\\F313\"}.ion-archive:before{content:\"\\F102\"}.ion-arrow-down-a:before{content:\"\\F103\"}.ion-arrow-down-b:before{content:\"\\F104\"}.ion-arrow-down-c:before{content:\"\\F105\"}.ion-arrow-expand:before{content:\"\\F25E\"}.ion-arrow-graph-down-left:before{content:\"\\F25F\"}.ion-arrow-graph-down-right:before{content:\"\\F260\"}.ion-arrow-graph-up-left:before{content:\"\\F261\"}.ion-arrow-graph-up-right:before{content:\"\\F262\"}.ion-arrow-left-a:before{content:\"\\F106\"}.ion-arrow-left-b:before{content:\"\\F107\"}.ion-arrow-left-c:before{content:\"\\F108\"}.ion-arrow-move:before{content:\"\\F263\"}.ion-arrow-resize:before{content:\"\\F264\"}.ion-arrow-return-left:before{content:\"\\F265\"}.ion-arrow-return-right:before{content:\"\\F266\"}.ion-arrow-right-a:before{content:\"\\F109\"}.ion-arrow-right-b:before{content:\"\\F10A\"}.ion-arrow-right-c:before{content:\"\\F10B\"}.ion-arrow-shrink:before{content:\"\\F267\"}.ion-arrow-swap:before{content:\"\\F268\"}.ion-arrow-up-a:before{content:\"\\F10C\"}.ion-arrow-up-b:before{content:\"\\F10D\"}.ion-arrow-up-c:before{content:\"\\F10E\"}.ion-asterisk:before{content:\"\\F314\"}.ion-at:before{content:\"\\F10F\"}.ion-backspace:before{content:\"\\F3BF\"}.ion-backspace-outline:before{content:\"\\F3BE\"}.ion-bag:before{content:\"\\F110\"}.ion-battery-charging:before{content:\"\\F111\"}.ion-battery-empty:before{content:\"\\F112\"}.ion-battery-full:before{content:\"\\F113\"}.ion-battery-half:before{content:\"\\F114\"}.ion-battery-low:before{content:\"\\F115\"}.ion-beaker:before{content:\"\\F269\"}.ion-beer:before{content:\"\\F26A\"}.ion-bluetooth:before{content:\"\\F116\"}.ion-bonfire:before{content:\"\\F315\"}.ion-bookmark:before{content:\"\\F26B\"}.ion-bowtie:before{content:\"\\F3C0\"}.ion-briefcase:before{content:\"\\F26C\"}.ion-bug:before{content:\"\\F2BE\"}.ion-calculator:before{content:\"\\F26D\"}.ion-calendar:before{content:\"\\F117\"}.ion-camera:before{content:\"\\F118\"}.ion-card:before{content:\"\\F119\"}.ion-cash:before{content:\"\\F316\"}.ion-chatbox:before{content:\"\\F11B\"}.ion-chatbox-working:before{content:\"\\F11A\"}.ion-chatboxes:before{content:\"\\F11C\"}.ion-chatbubble:before{content:\"\\F11E\"}.ion-chatbubble-working:before{content:\"\\F11D\"}.ion-chatbubbles:before{content:\"\\F11F\"}.ion-checkmark:before{content:\"\\F122\"}.ion-checkmark-circled:before{content:\"\\F120\"}.ion-checkmark-round:before{content:\"\\F121\"}.ion-chevron-down:before{content:\"\\F123\"}.ion-chevron-left:before{content:\"\\F124\"}.ion-chevron-right:before{content:\"\\F125\"}.ion-chevron-up:before{content:\"\\F126\"}.ion-clipboard:before{content:\"\\F127\"}.ion-clock:before{content:\"\\F26E\"}.ion-close:before{content:\"\\F12A\"}.ion-close-circled:before{content:\"\\F128\"}.ion-close-round:before{content:\"\\F129\"}.ion-closed-captioning:before{content:\"\\F317\"}.ion-cloud:before{content:\"\\F12B\"}.ion-code:before{content:\"\\F271\"}.ion-code-download:before{content:\"\\F26F\"}.ion-code-working:before{content:\"\\F270\"}.ion-coffee:before{content:\"\\F272\"}.ion-compass:before{content:\"\\F273\"}.ion-compose:before{content:\"\\F12C\"}.ion-connection-bars:before{content:\"\\F274\"}.ion-contrast:before{content:\"\\F275\"}.ion-crop:before{content:\"\\F3C1\"}.ion-cube:before{content:\"\\F318\"}.ion-disc:before{content:\"\\F12D\"}.ion-document:before{content:\"\\F12F\"}.ion-document-text:before{content:\"\\F12E\"}.ion-drag:before{content:\"\\F130\"}.ion-earth:before{content:\"\\F276\"}.ion-easel:before{content:\"\\F3C2\"}.ion-edit:before{content:\"\\F2BF\"}.ion-egg:before{content:\"\\F277\"}.ion-eject:before{content:\"\\F131\"}.ion-email:before{content:\"\\F132\"}.ion-email-unread:before{content:\"\\F3C3\"}.ion-erlenmeyer-flask:before{content:\"\\F3C5\"}.ion-erlenmeyer-flask-bubbles:before{content:\"\\F3C4\"}.ion-eye:before{content:\"\\F133\"}.ion-eye-disabled:before{content:\"\\F306\"}.ion-female:before{content:\"\\F278\"}.ion-filing:before{content:\"\\F134\"}.ion-film-marker:before{content:\"\\F135\"}.ion-fireball:before{content:\"\\F319\"}.ion-flag:before{content:\"\\F279\"}.ion-flame:before{content:\"\\F31A\"}.ion-flash:before{content:\"\\F137\"}.ion-flash-off:before{content:\"\\F136\"}.ion-folder:before{content:\"\\F139\"}.ion-fork:before{content:\"\\F27A\"}.ion-fork-repo:before{content:\"\\F2C0\"}.ion-forward:before{content:\"\\F13A\"}.ion-funnel:before{content:\"\\F31B\"}.ion-gear-a:before{content:\"\\F13D\"}.ion-gear-b:before{content:\"\\F13E\"}.ion-grid:before{content:\"\\F13F\"}.ion-hammer:before{content:\"\\F27B\"}.ion-happy:before{content:\"\\F31C\"}.ion-happy-outline:before{content:\"\\F3C6\"}.ion-headphone:before{content:\"\\F140\"}.ion-heart:before{content:\"\\F141\"}.ion-heart-broken:before{content:\"\\F31D\"}.ion-help:before{content:\"\\F143\"}.ion-help-buoy:before{content:\"\\F27C\"}.ion-help-circled:before{content:\"\\F142\"}.ion-home:before{content:\"\\F144\"}.ion-icecream:before{content:\"\\F27D\"}.ion-image:before{content:\"\\F147\"}.ion-images:before{content:\"\\F148\"}.ion-information:before{content:\"\\F14A\"}.ion-information-circled:before{content:\"\\F149\"}.ion-ionic:before{content:\"\\F14B\"}.ion-ios-alarm:before{content:\"\\F3C8\"}.ion-ios-alarm-outline:before{content:\"\\F3C7\"}.ion-ios-albums:before{content:\"\\F3CA\"}.ion-ios-albums-outline:before{content:\"\\F3C9\"}.ion-ios-americanfootball:before{content:\"\\F3CC\"}.ion-ios-americanfootball-outline:before{content:\"\\F3CB\"}.ion-ios-analytics:before{content:\"\\F3CE\"}.ion-ios-analytics-outline:before{content:\"\\F3CD\"}.ion-ios-arrow-back:before{content:\"\\F3CF\"}.ion-ios-arrow-down:before{content:\"\\F3D0\"}.ion-ios-arrow-forward:before{content:\"\\F3D1\"}.ion-ios-arrow-left:before{content:\"\\F3D2\"}.ion-ios-arrow-right:before{content:\"\\F3D3\"}.ion-ios-arrow-thin-down:before{content:\"\\F3D4\"}.ion-ios-arrow-thin-left:before{content:\"\\F3D5\"}.ion-ios-arrow-thin-right:before{content:\"\\F3D6\"}.ion-ios-arrow-thin-up:before{content:\"\\F3D7\"}.ion-ios-arrow-up:before{content:\"\\F3D8\"}.ion-ios-at:before{content:\"\\F3DA\"}.ion-ios-at-outline:before{content:\"\\F3D9\"}.ion-ios-barcode:before{content:\"\\F3DC\"}.ion-ios-barcode-outline:before{content:\"\\F3DB\"}.ion-ios-baseball:before{content:\"\\F3DE\"}.ion-ios-baseball-outline:before{content:\"\\F3DD\"}.ion-ios-basketball:before{content:\"\\F3E0\"}.ion-ios-basketball-outline:before{content:\"\\F3DF\"}.ion-ios-bell:before{content:\"\\F3E2\"}.ion-ios-bell-outline:before{content:\"\\F3E1\"}.ion-ios-body:before{content:\"\\F3E4\"}.ion-ios-body-outline:before{content:\"\\F3E3\"}.ion-ios-bolt:before{content:\"\\F3E6\"}.ion-ios-bolt-outline:before{content:\"\\F3E5\"}.ion-ios-book:before{content:\"\\F3E8\"}.ion-ios-book-outline:before{content:\"\\F3E7\"}.ion-ios-bookmarks:before{content:\"\\F3EA\"}.ion-ios-bookmarks-outline:before{content:\"\\F3E9\"}.ion-ios-box:before{content:\"\\F3EC\"}.ion-ios-box-outline:before{content:\"\\F3EB\"}.ion-ios-briefcase:before{content:\"\\F3EE\"}.ion-ios-briefcase-outline:before{content:\"\\F3ED\"}.ion-ios-browsers:before{content:\"\\F3F0\"}.ion-ios-browsers-outline:before{content:\"\\F3EF\"}.ion-ios-calculator:before{content:\"\\F3F2\"}.ion-ios-calculator-outline:before{content:\"\\F3F1\"}.ion-ios-calendar:before{content:\"\\F3F4\"}.ion-ios-calendar-outline:before{content:\"\\F3F3\"}.ion-ios-camera:before{content:\"\\F3F6\"}.ion-ios-camera-outline:before{content:\"\\F3F5\"}.ion-ios-cart:before{content:\"\\F3F8\"}.ion-ios-cart-outline:before{content:\"\\F3F7\"}.ion-ios-chatboxes:before{content:\"\\F3FA\"}.ion-ios-chatboxes-outline:before{content:\"\\F3F9\"}.ion-ios-chatbubble:before{content:\"\\F3FC\"}.ion-ios-chatbubble-outline:before{content:\"\\F3FB\"}.ion-ios-checkmark:before{content:\"\\F3FF\"}.ion-ios-checkmark-empty:before{content:\"\\F3FD\"}.ion-ios-checkmark-outline:before{content:\"\\F3FE\"}.ion-ios-circle-filled:before{content:\"\\F400\"}.ion-ios-circle-outline:before{content:\"\\F401\"}.ion-ios-clock:before{content:\"\\F403\"}.ion-ios-clock-outline:before{content:\"\\F402\"}.ion-ios-close:before{content:\"\\F406\"}.ion-ios-close-empty:before{content:\"\\F404\"}.ion-ios-close-outline:before{content:\"\\F405\"}.ion-ios-cloud:before{content:\"\\F40C\"}.ion-ios-cloud-download:before{content:\"\\F408\"}.ion-ios-cloud-download-outline:before{content:\"\\F407\"}.ion-ios-cloud-outline:before{content:\"\\F409\"}.ion-ios-cloud-upload:before{content:\"\\F40B\"}.ion-ios-cloud-upload-outline:before{content:\"\\F40A\"}.ion-ios-cloudy:before{content:\"\\F410\"}.ion-ios-cloudy-night:before{content:\"\\F40E\"}.ion-ios-cloudy-night-outline:before{content:\"\\F40D\"}.ion-ios-cloudy-outline:before{content:\"\\F40F\"}.ion-ios-cog:before{content:\"\\F412\"}.ion-ios-cog-outline:before{content:\"\\F411\"}.ion-ios-color-filter:before{content:\"\\F414\"}.ion-ios-color-filter-outline:before{content:\"\\F413\"}.ion-ios-color-wand:before{content:\"\\F416\"}.ion-ios-color-wand-outline:before{content:\"\\F415\"}.ion-ios-compose:before{content:\"\\F418\"}.ion-ios-compose-outline:before{content:\"\\F417\"}.ion-ios-contact:before{content:\"\\F41A\"}.ion-ios-contact-outline:before{content:\"\\F419\"}.ion-ios-copy:before{content:\"\\F41C\"}.ion-ios-copy-outline:before{content:\"\\F41B\"}.ion-ios-crop:before{content:\"\\F41E\"}.ion-ios-crop-strong:before{content:\"\\F41D\"}.ion-ios-download:before{content:\"\\F420\"}.ion-ios-download-outline:before{content:\"\\F41F\"}.ion-ios-drag:before{content:\"\\F421\"}.ion-ios-email:before{content:\"\\F423\"}.ion-ios-email-outline:before{content:\"\\F422\"}.ion-ios-eye:before{content:\"\\F425\"}.ion-ios-eye-outline:before{content:\"\\F424\"}.ion-ios-fastforward:before{content:\"\\F427\"}.ion-ios-fastforward-outline:before{content:\"\\F426\"}.ion-ios-filing:before{content:\"\\F429\"}.ion-ios-filing-outline:before{content:\"\\F428\"}.ion-ios-film:before{content:\"\\F42B\"}.ion-ios-film-outline:before{content:\"\\F42A\"}.ion-ios-flag:before{content:\"\\F42D\"}.ion-ios-flag-outline:before{content:\"\\F42C\"}.ion-ios-flame:before{content:\"\\F42F\"}.ion-ios-flame-outline:before{content:\"\\F42E\"}.ion-ios-flask:before{content:\"\\F431\"}.ion-ios-flask-outline:before{content:\"\\F430\"}.ion-ios-flower:before{content:\"\\F433\"}.ion-ios-flower-outline:before{content:\"\\F432\"}.ion-ios-folder:before{content:\"\\F435\"}.ion-ios-folder-outline:before{content:\"\\F434\"}.ion-ios-football:before{content:\"\\F437\"}.ion-ios-football-outline:before{content:\"\\F436\"}.ion-ios-game-controller-a:before{content:\"\\F439\"}.ion-ios-game-controller-a-outline:before{content:\"\\F438\"}.ion-ios-game-controller-b:before{content:\"\\F43B\"}.ion-ios-game-controller-b-outline:before{content:\"\\F43A\"}.ion-ios-gear:before{content:\"\\F43D\"}.ion-ios-gear-outline:before{content:\"\\F43C\"}.ion-ios-glasses:before{content:\"\\F43F\"}.ion-ios-glasses-outline:before{content:\"\\F43E\"}.ion-ios-grid-view:before{content:\"\\F441\"}.ion-ios-grid-view-outline:before{content:\"\\F440\"}.ion-ios-heart:before{content:\"\\F443\"}.ion-ios-heart-outline:before{content:\"\\F442\"}.ion-ios-help:before{content:\"\\F446\"}.ion-ios-help-empty:before{content:\"\\F444\"}.ion-ios-help-outline:before{content:\"\\F445\"}.ion-ios-home:before{content:\"\\F448\"}.ion-ios-home-outline:before{content:\"\\F447\"}.ion-ios-infinite:before{content:\"\\F44A\"}.ion-ios-infinite-outline:before{content:\"\\F449\"}.ion-ios-information:before{content:\"\\F44D\"}.ion-ios-information-empty:before{content:\"\\F44B\"}.ion-ios-information-outline:before{content:\"\\F44C\"}.ion-ios-ionic-outline:before{content:\"\\F44E\"}.ion-ios-keypad:before{content:\"\\F450\"}.ion-ios-keypad-outline:before{content:\"\\F44F\"}.ion-ios-lightbulb:before{content:\"\\F452\"}.ion-ios-lightbulb-outline:before{content:\"\\F451\"}.ion-ios-list:before{content:\"\\F454\"}.ion-ios-list-outline:before{content:\"\\F453\"}.ion-ios-location:before{content:\"\\F456\"}.ion-ios-location-outline:before{content:\"\\F455\"}.ion-ios-locked:before{content:\"\\F458\"}.ion-ios-locked-outline:before{content:\"\\F457\"}.ion-ios-loop:before{content:\"\\F45A\"}.ion-ios-loop-strong:before{content:\"\\F459\"}.ion-ios-medical:before{content:\"\\F45C\"}.ion-ios-medical-outline:before{content:\"\\F45B\"}.ion-ios-medkit:before{content:\"\\F45E\"}.ion-ios-medkit-outline:before{content:\"\\F45D\"}.ion-ios-mic:before{content:\"\\F461\"}.ion-ios-mic-off:before{content:\"\\F45F\"}.ion-ios-mic-outline:before{content:\"\\F460\"}.ion-ios-minus:before{content:\"\\F464\"}.ion-ios-minus-empty:before{content:\"\\F462\"}.ion-ios-minus-outline:before{content:\"\\F463\"}.ion-ios-monitor:before{content:\"\\F466\"}.ion-ios-monitor-outline:before{content:\"\\F465\"}.ion-ios-moon:before{content:\"\\F468\"}.ion-ios-moon-outline:before{content:\"\\F467\"}.ion-ios-more:before{content:\"\\F46A\"}.ion-ios-more-outline:before{content:\"\\F469\"}.ion-ios-musical-note:before{content:\"\\F46B\"}.ion-ios-musical-notes:before{content:\"\\F46C\"}.ion-ios-navigate:before{content:\"\\F46E\"}.ion-ios-navigate-outline:before{content:\"\\F46D\"}.ion-ios-nutrition:before{content:\"\\F470\"}.ion-ios-nutrition-outline:before{content:\"\\F46F\"}.ion-ios-paper:before{content:\"\\F472\"}.ion-ios-paper-outline:before{content:\"\\F471\"}.ion-ios-paperplane:before{content:\"\\F474\"}.ion-ios-paperplane-outline:before{content:\"\\F473\"}.ion-ios-partlysunny:before{content:\"\\F476\"}.ion-ios-partlysunny-outline:before{content:\"\\F475\"}.ion-ios-pause:before{content:\"\\F478\"}.ion-ios-pause-outline:before{content:\"\\F477\"}.ion-ios-paw:before{content:\"\\F47A\"}.ion-ios-paw-outline:before{content:\"\\F479\"}.ion-ios-people:before{content:\"\\F47C\"}.ion-ios-people-outline:before{content:\"\\F47B\"}.ion-ios-person:before{content:\"\\F47E\"}.ion-ios-person-outline:before{content:\"\\F47D\"}.ion-ios-personadd:before{content:\"\\F480\"}.ion-ios-personadd-outline:before{content:\"\\F47F\"}.ion-ios-photos:before{content:\"\\F482\"}.ion-ios-photos-outline:before{content:\"\\F481\"}.ion-ios-pie:before{content:\"\\F484\"}.ion-ios-pie-outline:before{content:\"\\F483\"}.ion-ios-pint:before{content:\"\\F486\"}.ion-ios-pint-outline:before{content:\"\\F485\"}.ion-ios-play:before{content:\"\\F488\"}.ion-ios-play-outline:before{content:\"\\F487\"}.ion-ios-plus:before{content:\"\\F48B\"}.ion-ios-plus-empty:before{content:\"\\F489\"}.ion-ios-plus-outline:before{content:\"\\F48A\"}.ion-ios-pricetag:before{content:\"\\F48D\"}.ion-ios-pricetag-outline:before{content:\"\\F48C\"}.ion-ios-pricetags:before{content:\"\\F48F\"}.ion-ios-pricetags-outline:before{content:\"\\F48E\"}.ion-ios-printer:before{content:\"\\F491\"}.ion-ios-printer-outline:before{content:\"\\F490\"}.ion-ios-pulse:before{content:\"\\F493\"}.ion-ios-pulse-strong:before{content:\"\\F492\"}.ion-ios-rainy:before{content:\"\\F495\"}.ion-ios-rainy-outline:before{content:\"\\F494\"}.ion-ios-recording:before{content:\"\\F497\"}.ion-ios-recording-outline:before{content:\"\\F496\"}.ion-ios-redo:before{content:\"\\F499\"}.ion-ios-redo-outline:before{content:\"\\F498\"}.ion-ios-refresh:before{content:\"\\F49C\"}.ion-ios-refresh-empty:before{content:\"\\F49A\"}.ion-ios-refresh-outline:before{content:\"\\F49B\"}.ion-ios-reload:before{content:\"\\F49D\"}.ion-ios-reverse-camera:before{content:\"\\F49F\"}.ion-ios-reverse-camera-outline:before{content:\"\\F49E\"}.ion-ios-rewind:before{content:\"\\F4A1\"}.ion-ios-rewind-outline:before{content:\"\\F4A0\"}.ion-ios-rose:before{content:\"\\F4A3\"}.ion-ios-rose-outline:before{content:\"\\F4A2\"}.ion-ios-search:before{content:\"\\F4A5\"}.ion-ios-search-strong:before{content:\"\\F4A4\"}.ion-ios-settings:before{content:\"\\F4A7\"}.ion-ios-settings-strong:before{content:\"\\F4A6\"}.ion-ios-shuffle:before{content:\"\\F4A9\"}.ion-ios-shuffle-strong:before{content:\"\\F4A8\"}.ion-ios-skipbackward:before{content:\"\\F4AB\"}.ion-ios-skipbackward-outline:before{content:\"\\F4AA\"}.ion-ios-skipforward:before{content:\"\\F4AD\"}.ion-ios-skipforward-outline:before{content:\"\\F4AC\"}.ion-ios-snowy:before{content:\"\\F4AE\"}.ion-ios-speedometer:before{content:\"\\F4B0\"}.ion-ios-speedometer-outline:before{content:\"\\F4AF\"}.ion-ios-star:before{content:\"\\F4B3\"}.ion-ios-star-half:before{content:\"\\F4B1\"}.ion-ios-star-outline:before{content:\"\\F4B2\"}.ion-ios-stopwatch:before{content:\"\\F4B5\"}.ion-ios-stopwatch-outline:before{content:\"\\F4B4\"}.ion-ios-sunny:before{content:\"\\F4B7\"}.ion-ios-sunny-outline:before{content:\"\\F4B6\"}.ion-ios-telephone:before{content:\"\\F4B9\"}.ion-ios-telephone-outline:before{content:\"\\F4B8\"}.ion-ios-tennisball:before{content:\"\\F4BB\"}.ion-ios-tennisball-outline:before{content:\"\\F4BA\"}.ion-ios-thunderstorm:before{content:\"\\F4BD\"}.ion-ios-thunderstorm-outline:before{content:\"\\F4BC\"}.ion-ios-time:before{content:\"\\F4BF\"}.ion-ios-time-outline:before{content:\"\\F4BE\"}.ion-ios-timer:before{content:\"\\F4C1\"}.ion-ios-timer-outline:before{content:\"\\F4C0\"}.ion-ios-toggle:before{content:\"\\F4C3\"}.ion-ios-toggle-outline:before{content:\"\\F4C2\"}.ion-ios-trash:before{content:\"\\F4C5\"}.ion-ios-trash-outline:before{content:\"\\F4C4\"}.ion-ios-undo:before{content:\"\\F4C7\"}.ion-ios-undo-outline:before{content:\"\\F4C6\"}.ion-ios-unlocked:before{content:\"\\F4C9\"}.ion-ios-unlocked-outline:before{content:\"\\F4C8\"}.ion-ios-upload:before{content:\"\\F4CB\"}.ion-ios-upload-outline:before{content:\"\\F4CA\"}.ion-ios-videocam:before{content:\"\\F4CD\"}.ion-ios-videocam-outline:before{content:\"\\F4CC\"}.ion-ios-volume-high:before{content:\"\\F4CE\"}.ion-ios-volume-low:before{content:\"\\F4CF\"}.ion-ios-wineglass:before{content:\"\\F4D1\"}.ion-ios-wineglass-outline:before{content:\"\\F4D0\"}.ion-ios-world:before{content:\"\\F4D3\"}.ion-ios-world-outline:before{content:\"\\F4D2\"}.ion-ipad:before{content:\"\\F1F9\"}.ion-iphone:before{content:\"\\F1FA\"}.ion-ipod:before{content:\"\\F1FB\"}.ion-jet:before{content:\"\\F295\"}.ion-key:before{content:\"\\F296\"}.ion-knife:before{content:\"\\F297\"}.ion-laptop:before{content:\"\\F1FC\"}.ion-leaf:before{content:\"\\F1FD\"}.ion-levels:before{content:\"\\F298\"}.ion-lightbulb:before{content:\"\\F299\"}.ion-link:before{content:\"\\F1FE\"}.ion-load-a:before{content:\"\\F29A\"}.ion-load-b:before{content:\"\\F29B\"}.ion-load-c:before{content:\"\\F29C\"}.ion-load-d:before{content:\"\\F29D\"}.ion-location:before{content:\"\\F1FF\"}.ion-lock-combination:before{content:\"\\F4D4\"}.ion-locked:before{content:\"\\F200\"}.ion-log-in:before{content:\"\\F29E\"}.ion-log-out:before{content:\"\\F29F\"}.ion-loop:before{content:\"\\F201\"}.ion-magnet:before{content:\"\\F2A0\"}.ion-male:before{content:\"\\F2A1\"}.ion-man:before{content:\"\\F202\"}.ion-map:before{content:\"\\F203\"}.ion-medkit:before{content:\"\\F2A2\"}.ion-merge:before{content:\"\\F33F\"}.ion-mic-a:before{content:\"\\F204\"}.ion-mic-b:before{content:\"\\F205\"}.ion-mic-c:before{content:\"\\F206\"}.ion-minus:before{content:\"\\F209\"}.ion-minus-circled:before{content:\"\\F207\"}.ion-minus-round:before{content:\"\\F208\"}.ion-model-s:before{content:\"\\F2C1\"}.ion-monitor:before{content:\"\\F20A\"}.ion-more:before{content:\"\\F20B\"}.ion-mouse:before{content:\"\\F340\"}.ion-music-note:before{content:\"\\F20C\"}.ion-navicon:before{content:\"\\F20E\"}.ion-navicon-round:before{content:\"\\F20D\"}.ion-navigate:before{content:\"\\F2A3\"}.ion-network:before{content:\"\\F341\"}.ion-no-smoking:before{content:\"\\F2C2\"}.ion-nuclear:before{content:\"\\F2A4\"}.ion-outlet:before{content:\"\\F342\"}.ion-paintbrush:before{content:\"\\F4D5\"}.ion-paintbucket:before{content:\"\\F4D6\"}.ion-paper-airplane:before{content:\"\\F2C3\"}.ion-paperclip:before{content:\"\\F20F\"}.ion-pause:before{content:\"\\F210\"}.ion-person:before{content:\"\\F213\"}.ion-person-add:before{content:\"\\F211\"}.ion-person-stalker:before{content:\"\\F212\"}.ion-pie-graph:before{content:\"\\F2A5\"}.ion-pin:before{content:\"\\F2A6\"}.ion-pinpoint:before{content:\"\\F2A7\"}.ion-pizza:before{content:\"\\F2A8\"}.ion-plane:before{content:\"\\F214\"}.ion-planet:before{content:\"\\F343\"}.ion-play:before{content:\"\\F215\"}.ion-playstation:before{content:\"\\F30A\"}.ion-plus:before{content:\"\\F218\"}.ion-plus-circled:before{content:\"\\F216\"}.ion-plus-round:before{content:\"\\F217\"}.ion-podium:before{content:\"\\F344\"}.ion-pound:before{content:\"\\F219\"}.ion-power:before{content:\"\\F2A9\"}.ion-pricetag:before{content:\"\\F2AA\"}.ion-pricetags:before{content:\"\\F2AB\"}.ion-printer:before{content:\"\\F21A\"}.ion-pull-request:before{content:\"\\F345\"}.ion-qr-scanner:before{content:\"\\F346\"}.ion-quote:before{content:\"\\F347\"}.ion-radio-waves:before{content:\"\\F2AC\"}.ion-record:before{content:\"\\F21B\"}.ion-refresh:before{content:\"\\F21C\"}.ion-reply:before{content:\"\\F21E\"}.ion-reply-all:before{content:\"\\F21D\"}.ion-ribbon-a:before{content:\"\\F348\"}.ion-ribbon-b:before{content:\"\\F349\"}.ion-sad:before{content:\"\\F34A\"}.ion-sad-outline:before{content:\"\\F4D7\"}.ion-scissors:before{content:\"\\F34B\"}.ion-search:before{content:\"\\F21F\"}.ion-settings:before{content:\"\\F2AD\"}.ion-share:before{content:\"\\F220\"}.ion-shuffle:before{content:\"\\F221\"}.ion-skip-backward:before{content:\"\\F222\"}.ion-skip-forward:before{content:\"\\F223\"}.ion-social-android:before{content:\"\\F225\"}.ion-social-android-outline:before{content:\"\\F224\"}.ion-social-angular:before{content:\"\\F4D9\"}.ion-social-angular-outline:before{content:\"\\F4D8\"}.ion-social-apple:before{content:\"\\F227\"}.ion-social-apple-outline:before{content:\"\\F226\"}.ion-social-bitcoin:before{content:\"\\F2AF\"}.ion-social-bitcoin-outline:before{content:\"\\F2AE\"}.ion-social-buffer:before{content:\"\\F229\"}.ion-social-buffer-outline:before{content:\"\\F228\"}.ion-social-chrome:before{content:\"\\F4DB\"}.ion-social-chrome-outline:before{content:\"\\F4DA\"}.ion-social-codepen:before{content:\"\\F4DD\"}.ion-social-codepen-outline:before{content:\"\\F4DC\"}.ion-social-css3:before{content:\"\\F4DF\"}.ion-social-css3-outline:before{content:\"\\F4DE\"}.ion-social-designernews:before{content:\"\\F22B\"}.ion-social-designernews-outline:before{content:\"\\F22A\"}.ion-social-dribbble:before{content:\"\\F22D\"}.ion-social-dribbble-outline:before{content:\"\\F22C\"}.ion-social-dropbox:before{content:\"\\F22F\"}.ion-social-dropbox-outline:before{content:\"\\F22E\"}.ion-social-euro:before{content:\"\\F4E1\"}.ion-social-euro-outline:before{content:\"\\F4E0\"}.ion-social-facebook:before{content:\"\\F231\"}.ion-social-facebook-outline:before{content:\"\\F230\"}.ion-social-foursquare:before{content:\"\\F34D\"}.ion-social-foursquare-outline:before{content:\"\\F34C\"}.ion-social-freebsd-devil:before{content:\"\\F2C4\"}.ion-social-github:before{content:\"\\F233\"}.ion-social-github-outline:before{content:\"\\F232\"}.ion-social-google:before{content:\"\\F34F\"}.ion-social-google-outline:before{content:\"\\F34E\"}.ion-social-googleplus:before{content:\"\\F235\"}.ion-social-googleplus-outline:before{content:\"\\F234\"}.ion-social-hackernews:before{content:\"\\F237\"}.ion-social-hackernews-outline:before{content:\"\\F236\"}.ion-social-html5:before{content:\"\\F4E3\"}.ion-social-html5-outline:before{content:\"\\F4E2\"}.ion-social-instagram:before{content:\"\\F351\"}.ion-social-instagram-outline:before{content:\"\\F350\"}.ion-social-javascript:before{content:\"\\F4E5\"}.ion-social-javascript-outline:before{content:\"\\F4E4\"}.ion-social-linkedin:before{content:\"\\F239\"}.ion-social-linkedin-outline:before{content:\"\\F238\"}.ion-social-markdown:before{content:\"\\F4E6\"}.ion-social-nodejs:before{content:\"\\F4E7\"}.ion-social-octocat:before{content:\"\\F4E8\"}.ion-social-pinterest:before{content:\"\\F2B1\"}.ion-social-pinterest-outline:before{content:\"\\F2B0\"}.ion-social-python:before{content:\"\\F4E9\"}.ion-social-reddit:before{content:\"\\F23B\"}.ion-social-reddit-outline:before{content:\"\\F23A\"}.ion-social-rss:before{content:\"\\F23D\"}.ion-social-rss-outline:before{content:\"\\F23C\"}.ion-social-sass:before{content:\"\\F4EA\"}.ion-social-skype:before{content:\"\\F23F\"}.ion-social-skype-outline:before{content:\"\\F23E\"}.ion-social-snapchat:before{content:\"\\F4EC\"}.ion-social-snapchat-outline:before{content:\"\\F4EB\"}.ion-social-tumblr:before{content:\"\\F241\"}.ion-social-tumblr-outline:before{content:\"\\F240\"}.ion-social-tux:before{content:\"\\F2C5\"}.ion-social-twitch:before{content:\"\\F4EE\"}.ion-social-twitch-outline:before{content:\"\\F4ED\"}.ion-social-twitter:before{content:\"\\F243\"}.ion-social-twitter-outline:before{content:\"\\F242\"}.ion-social-usd:before{content:\"\\F353\"}.ion-social-usd-outline:before{content:\"\\F352\"}.ion-social-vimeo:before{content:\"\\F245\"}.ion-social-vimeo-outline:before{content:\"\\F244\"}.ion-social-whatsapp:before{content:\"\\F4F0\"}.ion-social-whatsapp-outline:before{content:\"\\F4EF\"}.ion-social-windows:before{content:\"\\F247\"}.ion-social-windows-outline:before{content:\"\\F246\"}.ion-social-wordpress:before{content:\"\\F249\"}.ion-social-wordpress-outline:before{content:\"\\F248\"}.ion-social-yahoo:before{content:\"\\F24B\"}.ion-social-yahoo-outline:before{content:\"\\F24A\"}.ion-social-yen:before{content:\"\\F4F2\"}.ion-social-yen-outline:before{content:\"\\F4F1\"}.ion-social-youtube:before{content:\"\\F24D\"}.ion-social-youtube-outline:before{content:\"\\F24C\"}.ion-soup-can:before{content:\"\\F4F4\"}.ion-soup-can-outline:before{content:\"\\F4F3\"}.ion-speakerphone:before{content:\"\\F2B2\"}.ion-speedometer:before{content:\"\\F2B3\"}.ion-spoon:before{content:\"\\F2B4\"}.ion-star:before{content:\"\\F24E\"}.ion-stats-bars:before{content:\"\\F2B5\"}.ion-steam:before{content:\"\\F30B\"}.ion-stop:before{content:\"\\F24F\"}.ion-thermometer:before{content:\"\\F2B6\"}.ion-thumbsdown:before{content:\"\\F250\"}.ion-thumbsup:before{content:\"\\F251\"}.ion-toggle:before{content:\"\\F355\"}.ion-toggle-filled:before{content:\"\\F354\"}.ion-transgender:before{content:\"\\F4F5\"}.ion-trash-a:before{content:\"\\F252\"}.ion-trash-b:before{content:\"\\F253\"}.ion-trophy:before{content:\"\\F356\"}.ion-tshirt:before{content:\"\\F4F7\"}.ion-tshirt-outline:before{content:\"\\F4F6\"}.ion-umbrella:before{content:\"\\F2B7\"}.ion-university:before{content:\"\\F357\"}.ion-unlocked:before{content:\"\\F254\"}.ion-upload:before{content:\"\\F255\"}.ion-usb:before{content:\"\\F2B8\"}.ion-videocamera:before{content:\"\\F256\"}.ion-volume-high:before{content:\"\\F257\"}.ion-volume-low:before{content:\"\\F258\"}.ion-volume-medium:before{content:\"\\F259\"}.ion-volume-mute:before{content:\"\\F25A\"}.ion-wand:before{content:\"\\F358\"}.ion-waterdrop:before{content:\"\\F25B\"}.ion-wifi:before{content:\"\\F25C\"}.ion-wineglass:before{content:\"\\F2B9\"}.ion-woman:before{content:\"\\F25D\"}.ion-wrench:before{content:\"\\F2BA\"}.ion-xbox:before{content:\"\\F30C\"}", ""]);
 
 // exports
 
@@ -22707,7 +22719,7 @@ if (false) {(function () {
 "use strict";
 
 
-var currencyList = __webpack_require__(13);
+var currencyList = __webpack_require__(10);
 module.exports = __webpack_require__(321)({
   data: function data() {
     return {};
@@ -22729,13 +22741,13 @@ module.exports = __webpack_require__(321)({
       return this.easy ? currencyList.get(t).unitEasy : currencyList.get(t).unit;
     }
   },
-  store: __webpack_require__(7),
+  store: __webpack_require__(6),
   computed: {
     tickerCap: function tickerCap() {
       return this.getTicker(this.ticker) + (this.fiatTicker ? "/" + this.getTicker(this.fiatTicker) : "");
     },
     compAmt: function compAmt() {
-      return isNaN(parseFloat(this.amount)) ? "処理不可能" : (this.amount + "").slice(0, 14);
+      return isNaN(parseFloat(this.amount)) ? "" : (this.amount + "").slice(0, 14);
     },
     easy: function easy() {
       return this.$store.state.easyUnit;
@@ -22751,7 +22763,7 @@ var Buffer = __webpack_require__(2).Buffer
 var bcrypto = __webpack_require__(26)
 var fastMerkleRoot = __webpack_require__(183)
 var typeforce = __webpack_require__(3)
-var types = __webpack_require__(6)
+var types = __webpack_require__(7)
 var varuint = __webpack_require__(55)
 
 var Transaction = __webpack_require__(56)
@@ -23602,7 +23614,7 @@ exports.clearImmediate = clearImmediate;
     attachTo.clearImmediate = clearImmediate;
 }(typeof self === "undefined" ? typeof global === "undefined" ? this : global : self));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(16), __webpack_require__(12)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(16), __webpack_require__(14)))
 
 /***/ }),
 /* 173 */
@@ -23712,7 +23724,7 @@ function config (name) {
 
 module.exports = PassThrough;
 
-var Transform = __webpack_require__(84);
+var Transform = __webpack_require__(85);
 
 /*<replacement>*/
 var util = __webpack_require__(29);
@@ -23977,7 +23989,7 @@ module.exports = Sha1
  */
 
 var inherits = __webpack_require__(1)
-var Sha256 = __webpack_require__(85)
+var Sha256 = __webpack_require__(86)
 var Hash = __webpack_require__(27)
 
 var W = new Array(64)
@@ -24028,7 +24040,7 @@ module.exports = Sha224
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(Buffer) {var inherits = __webpack_require__(1)
-var SHA512 = __webpack_require__(86)
+var SHA512 = __webpack_require__(87)
 var Hash = __webpack_require__(27)
 
 var W = new Array(160)
@@ -24122,7 +24134,7 @@ module.exports = function fastRoot (values, digestFn) {
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(Buffer) {var NATIVE = __webpack_require__(54)
-var ERRORS = __webpack_require__(87)
+var ERRORS = __webpack_require__(88)
 
 function _Buffer (value) {
   return Buffer.isBuffer(value)
@@ -24382,7 +24394,7 @@ module.exports = {
 // m [pubKeys ...] n OP_CHECKMULTISIG
 
 var bscript = __webpack_require__(5)
-var types = __webpack_require__(6)
+var types = __webpack_require__(7)
 var typeforce = __webpack_require__(3)
 var OPS = __webpack_require__(8)
 var OP_INT_BASE = OPS.OP_RESERVED // OP_1 - 1
@@ -24452,7 +24464,7 @@ module.exports = {
 // OP_RETURN {data}
 
 var bscript = __webpack_require__(5)
-var types = __webpack_require__(6)
+var types = __webpack_require__(7)
 var typeforce = __webpack_require__(3)
 var OPS = __webpack_require__(8)
 
@@ -24653,7 +24665,7 @@ module.exports = {
 // OP_DUP OP_HASH160 {pubKeyHash} OP_EQUALVERIFY OP_CHECKSIG
 
 var bscript = __webpack_require__(5)
-var types = __webpack_require__(6)
+var types = __webpack_require__(7)
 var typeforce = __webpack_require__(3)
 var OPS = __webpack_require__(8)
 
@@ -24699,7 +24711,7 @@ module.exports = {
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = {
-  input: __webpack_require__(91),
+  input: __webpack_require__(92),
   output: __webpack_require__(198)
 }
 
@@ -24711,7 +24723,7 @@ module.exports = {
 // OP_HASH160 {scriptHash} OP_EQUAL
 
 var bscript = __webpack_require__(5)
-var types = __webpack_require__(6)
+var types = __webpack_require__(7)
 var typeforce = __webpack_require__(3)
 var OPS = __webpack_require__(8)
 
@@ -24811,7 +24823,7 @@ module.exports = {
 // OP_0 {pubKeyHash}
 
 var bscript = __webpack_require__(5)
-var types = __webpack_require__(6)
+var types = __webpack_require__(7)
 var typeforce = __webpack_require__(3)
 var OPS = __webpack_require__(8)
 
@@ -24859,7 +24871,7 @@ module.exports = {
 
 // {signature} {pubKey}
 
-var p2sh = __webpack_require__(91)
+var p2sh = __webpack_require__(92)
 
 module.exports = {
   check: p2sh.check,
@@ -24875,7 +24887,7 @@ module.exports = {
 // OP_0 {scriptHash}
 
 var bscript = __webpack_require__(5)
-var types = __webpack_require__(6)
+var types = __webpack_require__(7)
 var typeforce = __webpack_require__(3)
 var OPS = __webpack_require__(8)
 
@@ -24924,7 +24936,7 @@ module.exports = {
 
 var Buffer = __webpack_require__(2).Buffer
 var bscript = __webpack_require__(5)
-var types = __webpack_require__(6)
+var types = __webpack_require__(7)
 var typeforce = __webpack_require__(3)
 var OPS = __webpack_require__(8)
 
@@ -25224,7 +25236,7 @@ module.exports = function base (ALPHABET) {
 var Buffer = __webpack_require__(2).Buffer
 var createHmac = __webpack_require__(38)
 var typeforce = __webpack_require__(3)
-var types = __webpack_require__(6)
+var types = __webpack_require__(7)
 
 var BigInteger = __webpack_require__(21)
 var ECSignature = __webpack_require__(61)
@@ -25449,7 +25461,7 @@ module.exports = {"_args":[[{"raw":"bigi@^1.4.0","scope":null,"escapedName":"big
 
 /* WEBPACK VAR INJECTION */(function(Buffer) {// FIXME: Kind of a weird way to throw exceptions, consider removing
 var assert = __webpack_require__(60)
-var BigInteger = __webpack_require__(93)
+var BigInteger = __webpack_require__(94)
 
 /**
  * Turns a byte array into a big integer.
@@ -26132,7 +26144,7 @@ function hasOwnProperty(obj, prop) {
   return Object.prototype.hasOwnProperty.call(obj, prop);
 }
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(16), __webpack_require__(12)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(16), __webpack_require__(14)))
 
 /***/ }),
 /* 215 */
@@ -26181,7 +26193,7 @@ if (typeof Object.create === 'function') {
 var BigInteger = __webpack_require__(21)
 
 var curves = __webpack_require__(218)
-var Curve = __webpack_require__(95)
+var Curve = __webpack_require__(96)
 
 function getCurveByName (name) {
   var curve = curves[name]
@@ -26286,7 +26298,7 @@ var base58check = __webpack_require__(59)
 var bcrypto = __webpack_require__(26)
 var createHmac = __webpack_require__(38)
 var typeforce = __webpack_require__(3)
-var types = __webpack_require__(6)
+var types = __webpack_require__(7)
 var NETWORKS = __webpack_require__(30)
 
 var BigInteger = __webpack_require__(21)
@@ -26610,7 +26622,7 @@ var bscript = __webpack_require__(5)
 var networks = __webpack_require__(30)
 var ops = __webpack_require__(8)
 var typeforce = __webpack_require__(3)
-var types = __webpack_require__(6)
+var types = __webpack_require__(7)
 var scriptTypes = bscript.types
 var SIGNABLE = [bscript.types.P2PKH, bscript.types.P2PK, bscript.types.MULTISIG]
 var P2SH = SIGNABLE.concat([bscript.types.P2WPKH, bscript.types.P2WSH])
@@ -27378,8 +27390,8 @@ module.exports = TransactionBuilder
 "use strict";
 
 
-var utils = __webpack_require__(10);
-var bind = __webpack_require__(97);
+var utils = __webpack_require__(11);
+var bind = __webpack_require__(98);
 var Axios = __webpack_require__(224);
 var defaults = __webpack_require__(63);
 
@@ -27414,9 +27426,9 @@ axios.create = function create(instanceConfig) {
 };
 
 // Expose Cancel & CancelToken
-axios.Cancel = __webpack_require__(101);
+axios.Cancel = __webpack_require__(102);
 axios.CancelToken = __webpack_require__(238);
-axios.isCancel = __webpack_require__(100);
+axios.isCancel = __webpack_require__(101);
 
 // Expose all/spread
 axios.all = function all(promises) {
@@ -27465,7 +27477,7 @@ function isSlowBuffer (obj) {
 
 
 var defaults = __webpack_require__(63);
-var utils = __webpack_require__(10);
+var utils = __webpack_require__(11);
 var InterceptorManager = __webpack_require__(233);
 var dispatchRequest = __webpack_require__(234);
 
@@ -27550,7 +27562,7 @@ module.exports = Axios;
 "use strict";
 
 
-var utils = __webpack_require__(10);
+var utils = __webpack_require__(11);
 
 module.exports = function normalizeHeaderName(headers, normalizedName) {
   utils.forEach(headers, function processHeader(value, name) {
@@ -27569,7 +27581,7 @@ module.exports = function normalizeHeaderName(headers, normalizedName) {
 "use strict";
 
 
-var createError = __webpack_require__(99);
+var createError = __webpack_require__(100);
 
 /**
  * Resolve or reject a Promise based on response status.
@@ -27630,7 +27642,7 @@ module.exports = function enhanceError(error, config, code, request, response) {
 "use strict";
 
 
-var utils = __webpack_require__(10);
+var utils = __webpack_require__(11);
 
 function encode(val) {
   return encodeURIComponent(val).
@@ -27705,7 +27717,7 @@ module.exports = function buildURL(url, params, paramsSerializer) {
 "use strict";
 
 
-var utils = __webpack_require__(10);
+var utils = __webpack_require__(11);
 
 // Headers whose duplicates are ignored by node
 // c.f. https://nodejs.org/api/http.html#http_message_headers
@@ -27765,7 +27777,7 @@ module.exports = function parseHeaders(headers) {
 "use strict";
 
 
-var utils = __webpack_require__(10);
+var utils = __webpack_require__(11);
 
 module.exports = (
   utils.isStandardBrowserEnv() ?
@@ -27883,7 +27895,7 @@ module.exports = btoa;
 "use strict";
 
 
-var utils = __webpack_require__(10);
+var utils = __webpack_require__(11);
 
 module.exports = (
   utils.isStandardBrowserEnv() ?
@@ -27943,7 +27955,7 @@ module.exports = (
 "use strict";
 
 
-var utils = __webpack_require__(10);
+var utils = __webpack_require__(11);
 
 function InterceptorManager() {
   this.handlers = [];
@@ -28002,9 +28014,9 @@ module.exports = InterceptorManager;
 "use strict";
 
 
-var utils = __webpack_require__(10);
+var utils = __webpack_require__(11);
 var transformData = __webpack_require__(235);
-var isCancel = __webpack_require__(100);
+var isCancel = __webpack_require__(101);
 var defaults = __webpack_require__(63);
 var isAbsoluteURL = __webpack_require__(236);
 var combineURLs = __webpack_require__(237);
@@ -28095,7 +28107,7 @@ module.exports = function dispatchRequest(config) {
 "use strict";
 
 
-var utils = __webpack_require__(10);
+var utils = __webpack_require__(11);
 
 /**
  * Transform the data for a request or a response
@@ -28164,7 +28176,7 @@ module.exports = function combineURLs(baseURL, relativeURL) {
 "use strict";
 
 
-var Cancel = __webpack_require__(101);
+var Cancel = __webpack_require__(102);
 
 /**
  * A `CancelToken` is an object that can be used to request cancellation of an operation.
@@ -28371,9 +28383,9 @@ module.exports = function blackjack (utxos, outputs, feeRate) {
 /* 243 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(global, process) {var checkParameters = __webpack_require__(102)
-var defaultEncoding = __webpack_require__(103)
-var sync = __webpack_require__(104)
+/* WEBPACK VAR INJECTION */(function(global, process) {var checkParameters = __webpack_require__(103)
+var defaultEncoding = __webpack_require__(104)
+var sync = __webpack_require__(105)
 var Buffer = __webpack_require__(2).Buffer
 
 var ZERO_BUF
@@ -28470,7 +28482,7 @@ module.exports = function (password, salt, iterations, keylen, digest, callback)
   }), callback)
 }
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(16), __webpack_require__(12)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(16), __webpack_require__(14)))
 
 /***/ }),
 /* 244 */
@@ -28966,7 +28978,7 @@ module.exports = ["ábaco","abdomen","abeja","abierto","abogado","abono","abort
 /* 252 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(106)
+module.exports = __webpack_require__(107)
 
 
 /***/ }),
@@ -29308,9 +29320,9 @@ module.exports = HashBase
 /***/ (function(module, exports, __webpack_require__) {
 
 var MODES = __webpack_require__(68)
-var AuthCipher = __webpack_require__(109)
+var AuthCipher = __webpack_require__(110)
 var Buffer = __webpack_require__(2).Buffer
-var StreamCipher = __webpack_require__(110)
+var StreamCipher = __webpack_require__(111)
 var Transform = __webpack_require__(19)
 var aes = __webpack_require__(41)
 var ebtk = __webpack_require__(40)
@@ -29698,10 +29710,10 @@ module.exports = GHASH
 /* 264 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var AuthCipher = __webpack_require__(109)
+var AuthCipher = __webpack_require__(110)
 var Buffer = __webpack_require__(2).Buffer
 var MODES = __webpack_require__(68)
-var StreamCipher = __webpack_require__(110)
+var StreamCipher = __webpack_require__(111)
 var Transform = __webpack_require__(19)
 var aes = __webpack_require__(41)
 var ebtk = __webpack_require__(40)
@@ -30141,7 +30153,7 @@ exports.padSplit = function padSplit(num, size, group) {
 "use strict";
 
 
-var assert = __webpack_require__(11);
+var assert = __webpack_require__(13);
 
 function Cipher(options) {
   this.options = options;
@@ -30289,7 +30301,7 @@ Cipher.prototype._finalDecrypt = function _finalDecrypt() {
 "use strict";
 
 
-var assert = __webpack_require__(11);
+var assert = __webpack_require__(13);
 var inherits = __webpack_require__(1);
 
 var des = __webpack_require__(69);
@@ -30439,7 +30451,7 @@ DES.prototype._decrypt = function _decrypt(state, lStart, rStart, out, off) {
 "use strict";
 
 
-var assert = __webpack_require__(11);
+var assert = __webpack_require__(13);
 var inherits = __webpack_require__(1);
 
 var proto = {};
@@ -30511,7 +30523,7 @@ proto._update = function _update(inp, inOff, out, outOff) {
 "use strict";
 
 
-var assert = __webpack_require__(11);
+var assert = __webpack_require__(13);
 var inherits = __webpack_require__(1);
 
 var des = __webpack_require__(69);
@@ -30600,7 +30612,7 @@ exports['des-ede'] = {
 /* 272 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(Buffer) {var generatePrime = __webpack_require__(111)
+/* WEBPACK VAR INJECTION */(function(Buffer) {var generatePrime = __webpack_require__(112)
 var primes = __webpack_require__(276)
 
 var DH = __webpack_require__(277)
@@ -30696,14 +30708,14 @@ module.exports = {"modp1":{"gen":"02","prime":"ffffffffffffffffc90fdaa22168c234c
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(Buffer) {var BN = __webpack_require__(4);
-var MillerRabin = __webpack_require__(112);
+var MillerRabin = __webpack_require__(113);
 var millerRabin = new MillerRabin();
 var TWENTYFOUR = new BN(24);
 var ELEVEN = new BN(11);
 var TEN = new BN(10);
 var THREE = new BN(3);
 var SEVEN = new BN(7);
-var primes = __webpack_require__(111);
+var primes = __webpack_require__(112);
 var randomBytes = __webpack_require__(22);
 module.exports = DH;
 
@@ -30872,7 +30884,7 @@ var inherits = __webpack_require__(1)
 var sign = __webpack_require__(279)
 var verify = __webpack_require__(315)
 
-var algorithms = __webpack_require__(106)
+var algorithms = __webpack_require__(107)
 Object.keys(algorithms).forEach(function (key) {
   algorithms[key].id = new Buffer(algorithms[key].id, 'hex')
   algorithms[key.toLowerCase()] = algorithms[key]
@@ -30970,7 +30982,7 @@ var crt = __webpack_require__(70)
 var EC = __webpack_require__(9).ec
 var BN = __webpack_require__(4)
 var parseKeys = __webpack_require__(43)
-var curves = __webpack_require__(122)
+var curves = __webpack_require__(123)
 
 function sign (hash, key, hashType, signType, tag) {
   var priv = parseKeys(key)
@@ -31127,8 +31139,8 @@ module.exports = {"_args":[[{"raw":"elliptic@^6.0.0","scope":null,"escapedName":
 
 var utils = exports;
 var BN = __webpack_require__(4);
-var minAssert = __webpack_require__(11);
-var minUtils = __webpack_require__(114);
+var minAssert = __webpack_require__(13);
+var minUtils = __webpack_require__(115);
 
 utils.assert = minAssert;
 utils.toArray = minUtils.toArray;
@@ -33420,9 +33432,9 @@ defineCurve('secp256k1', {
 
 exports.sha1 = __webpack_require__(288);
 exports.sha224 = __webpack_require__(289);
-exports.sha256 = __webpack_require__(116);
+exports.sha256 = __webpack_require__(117);
 exports.sha384 = __webpack_require__(290);
-exports.sha512 = __webpack_require__(117);
+exports.sha512 = __webpack_require__(118);
 
 
 /***/ }),
@@ -33434,7 +33446,7 @@ exports.sha512 = __webpack_require__(117);
 
 var utils = __webpack_require__(15);
 var common = __webpack_require__(32);
-var shaCommon = __webpack_require__(115);
+var shaCommon = __webpack_require__(116);
 
 var rotl32 = utils.rotl32;
 var sum32 = utils.sum32;
@@ -33514,7 +33526,7 @@ SHA1.prototype._digest = function digest(enc) {
 
 
 var utils = __webpack_require__(15);
-var SHA256 = __webpack_require__(116);
+var SHA256 = __webpack_require__(117);
 
 function SHA224() {
   if (!(this instanceof SHA224))
@@ -33552,7 +33564,7 @@ SHA224.prototype._digest = function digest(enc) {
 
 var utils = __webpack_require__(15);
 
-var SHA512 = __webpack_require__(117);
+var SHA512 = __webpack_require__(118);
 
 function SHA384() {
   if (!(this instanceof SHA384))
@@ -33746,7 +33758,7 @@ var sh = [
 
 
 var utils = __webpack_require__(15);
-var assert = __webpack_require__(11);
+var assert = __webpack_require__(13);
 
 function Hmac(hash, key, enc) {
   if (!(this instanceof Hmac))
@@ -34833,8 +34845,8 @@ EC.prototype.getKeyRecoveryParam = function(e, signature, Q, enc) {
 
 
 var hash = __webpack_require__(71);
-var utils = __webpack_require__(114);
-var assert = __webpack_require__(11);
+var utils = __webpack_require__(115);
+var assert = __webpack_require__(13);
 
 function HmacDRBG(options) {
   if (!(this instanceof HmacDRBG))
@@ -36003,7 +36015,7 @@ ReporterError.prototype.rethrow = function rethrow(msg) {
 var Reporter = __webpack_require__(34).Reporter;
 var EncoderBuffer = __webpack_require__(34).EncoderBuffer;
 var DecoderBuffer = __webpack_require__(34).DecoderBuffer;
-var assert = __webpack_require__(11);
+var assert = __webpack_require__(13);
 
 // Supported tags
 var tags = [
@@ -36640,7 +36652,7 @@ Node.prototype._isPrintstr = function isPrintstr(str) {
 /* 307 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var constants = __webpack_require__(119);
+var constants = __webpack_require__(120);
 
 exports.tagClass = {
   0: 'universal',
@@ -36690,7 +36702,7 @@ exports.tagByName = constants._reverse(exports.tag);
 
 var decoders = exports;
 
-decoders.der = __webpack_require__(120);
+decoders.der = __webpack_require__(121);
 decoders.pem = __webpack_require__(309);
 
 
@@ -36701,7 +36713,7 @@ decoders.pem = __webpack_require__(309);
 var inherits = __webpack_require__(1);
 var Buffer = __webpack_require__(0).Buffer;
 
-var DERDecoder = __webpack_require__(120);
+var DERDecoder = __webpack_require__(121);
 
 function PEMDecoder(entity) {
   DERDecoder.call(this, entity);
@@ -36755,7 +36767,7 @@ PEMDecoder.prototype.decode = function decode(data, options) {
 
 var encoders = exports;
 
-encoders.der = __webpack_require__(121);
+encoders.der = __webpack_require__(122);
 encoders.pem = __webpack_require__(311);
 
 
@@ -36765,7 +36777,7 @@ encoders.pem = __webpack_require__(311);
 
 var inherits = __webpack_require__(1);
 
-var DEREncoder = __webpack_require__(121);
+var DEREncoder = __webpack_require__(122);
 
 function PEMEncoder(entity) {
   DEREncoder.call(this, entity);
@@ -36932,7 +36944,7 @@ module.exports = function (okey, password) {
 var BN = __webpack_require__(4)
 var EC = __webpack_require__(9).ec
 var parseKeys = __webpack_require__(43)
-var curves = __webpack_require__(122)
+var curves = __webpack_require__(123)
 
 function verify (sig, hash, key, signType, tag) {
   var pub = parseKeys(key)
@@ -37165,10 +37177,10 @@ exports.publicDecrypt = function publicDecrypt(key, buf) {
 /* WEBPACK VAR INJECTION */(function(Buffer) {var parseKeys = __webpack_require__(43);
 var randomBytes = __webpack_require__(22);
 var createHash = __webpack_require__(18);
-var mgf = __webpack_require__(123);
-var xor = __webpack_require__(124);
+var mgf = __webpack_require__(124);
+var xor = __webpack_require__(125);
 var bn = __webpack_require__(4);
-var withPublic = __webpack_require__(125);
+var withPublic = __webpack_require__(126);
 var crt = __webpack_require__(70);
 
 var constants = {
@@ -37264,12 +37276,12 @@ function nonZero(len, crypto) {
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(Buffer) {var parseKeys = __webpack_require__(43);
-var mgf = __webpack_require__(123);
-var xor = __webpack_require__(124);
+var mgf = __webpack_require__(124);
+var xor = __webpack_require__(125);
 var bn = __webpack_require__(4);
 var crt = __webpack_require__(70);
 var createHash = __webpack_require__(18);
-var withPublic = __webpack_require__(125);
+var withPublic = __webpack_require__(126);
 module.exports = function privateDecrypt(private_key, enc, reverse) {
   var padding;
   if (private_key.padding) {
@@ -37426,7 +37438,7 @@ module.exports = __webpack_require__(323)({
 
   props: ["timestamp", "absolute"], //must be second
   methods: {},
-  store: __webpack_require__(7),
+  store: __webpack_require__(6),
   computed: {},
   mounted: function mounted() {
     var dt = this.dateObj = new Date(this.timestamp * 1000);
@@ -37502,7 +37514,7 @@ module.exports = __webpack_require__(325)({
     };
   },
 
-  store: __webpack_require__(7),
+  store: __webpack_require__(6),
   methods: {
     home: function home() {
       this.openSide = false;this.$set(this, "pageStack", [__webpack_require__(44)]);
@@ -37511,7 +37523,7 @@ module.exports = __webpack_require__(325)({
       this.openSide = false;this.$set(this, "pageStack", [__webpack_require__(331)]);
     },
     send: function send() {
-      this.openSide = false;this.$set(this, "pageStack", [__webpack_require__(126)]);
+      this.openSide = false;this.$set(this, "pageStack", [__webpack_require__(72)]);
     },
     history: function history() {
       this.openSide = false;this.$set(this, "pageStack", [__webpack_require__(355)]);
@@ -37520,10 +37532,10 @@ module.exports = __webpack_require__(325)({
       this.openSide = false;this.$set(this, "pageStack", [__webpack_require__(359)]);
     },
     help: function help() {
-      this.openSide = false;this.$set(this, "pageStack", [__webpack_require__(364)]);
+      this.openSide = false;this.$set(this, "pageStack", [__webpack_require__(366)]);
     },
     zaifPay: function zaifPay() {
-      this.openSide = false;this.$set(this, "pageStack", [__webpack_require__(366)]);
+      this.openSide = false;this.$set(this, "pageStack", [__webpack_require__(368)]);
     }
   },
   created: function created() {
@@ -37534,7 +37546,7 @@ module.exports = __webpack_require__(325)({
 
         _this.pageStack.push(__webpack_require__(133));
       } else {
-        _this.pageStack.push(__webpack_require__(368));
+        _this.pageStack.push(__webpack_require__(370));
       }
     });
   }
@@ -37573,7 +37585,7 @@ if (false) {(function () {
 /* 326 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var render = function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('v-ons-page',{attrs:{"data-page":"home"}},[_c('custom-bar',{attrs:{"title":"ホーム","menu":"true"}},[_c('v-ons-toolbar-button',{on:{"click":_vm.load}},[_c('v-ons-icon',{attrs:{"icon":"ion-ios-reload"}})],1)],1),_vm._v(" "),_c('div',[_c('div',{attrs:{"id":"youHave"}},[_c('div',{directives:[{name:"show",rawName:"v-show",value:(!_vm.loading),expression:"!loading"}]},[_c('div',{staticClass:"label"},[_vm._v("あなたが今持っているのは")]),_vm._v(" "),_c('div',{attrs:{"id":"balanceWrap"}},[_c('currency-set',{attrs:{"amount":_vm.fiatConv,"ticker":_vm.fiat,"easy":_vm.isEasy,"about":"true"}})],1)]),_vm._v(" "),_c('div',{directives:[{name:"show",rawName:"v-show",value:(_vm.loading),expression:"loading"}],staticClass:"spinner"})]),_vm._v(" "),_c('div',{attrs:{"id":"coins"}},[_c('v-ons-list',_vm._l((_vm.curs),function(c){return _c('v-ons-list-item',{attrs:{"modifier":"tappable"}},[_c('div',{staticClass:"left"},[_c('img',{attrs:{"src":c.icon}})]),_vm._v(" "),_c('div',[_c('div',{staticClass:"screenName"},[_vm._v(_vm._s(c.screenName))]),_vm._v(" "),_c('div',{staticClass:"price"},[_c('currency-set',{attrs:{"amount":c.price,"ticker":c.coinId,"fiatTicker":_vm.fiat,"easy":_vm.isEasy}})],1)]),_vm._v(" "),_c('div',{staticClass:"w_right"},[_c('div',{staticClass:"amount",class:{unconfirmed:c.unconfirmed}},[_c('currency-set',{attrs:{"amount":c.balance,"ticker":c.coinId,"easy":_vm.isEasy}}),_c('span',{directives:[{name:"show",rawName:"v-show",value:(c.unconfirmed),expression:"c.unconfirmed"}]},[_vm._v("+"+_vm._s(c.unconfirmed)+"待機中")])],1),_vm._v(" "),_c('div',{staticClass:"fiatConv"},[_c('currency-set',{attrs:{"amount":c.balance*c.price,"ticker":_vm.fiat,"easy":_vm.isEasy}})],1)])])}))],1)])],1)}
+var render = function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('v-ons-page',{attrs:{"data-page":"home"}},[_c('custom-bar',{attrs:{"title":"ホーム","menu":"true"}},[_c('v-ons-toolbar-button',{on:{"click":_vm.load}},[_c('v-ons-icon',{attrs:{"icon":"ion-ios-reload"}})],1)],1),_vm._v(" "),_c('div',[_c('v-ons-pull-hook',{attrs:{"action":_vm.load},on:{"changestate":function($event){_vm.state = $event.state}}},[_c('span',{directives:[{name:"show",rawName:"v-show",value:(_vm.state === 'initial'),expression:"state === 'initial'"}]},[_vm._v("引っ張って更新!")]),_vm._v(" "),_c('span',{directives:[{name:"show",rawName:"v-show",value:(_vm.state === 'preaction'),expression:"state === 'preaction'"}]},[_vm._v("今だ！離せ！")]),_vm._v(" "),_c('span',{directives:[{name:"show",rawName:"v-show",value:(_vm.state === 'action'),expression:"state === 'action'"}]},[_vm._v("Loading...")])]),_vm._v(" "),_c('div',{attrs:{"id":"youHave"}},[_c('div',{directives:[{name:"show",rawName:"v-show",value:(!_vm.loading),expression:"!loading"}]},[_c('div',{staticClass:"label"},[_vm._v("あなたが今持っているのは")]),_vm._v(" "),_c('div',{attrs:{"id":"balanceWrap"}},[_c('currency-set',{attrs:{"amount":_vm.fiatConv,"ticker":_vm.fiat,"easy":_vm.isEasy,"about":"true"}})],1)]),_vm._v(" "),_c('div',{directives:[{name:"show",rawName:"v-show",value:(_vm.loading),expression:"loading"}],staticClass:"spinner"})]),_vm._v(" "),_c('div',{attrs:{"id":"coins"}},[_c('v-ons-list',_vm._l((_vm.curs),function(c){return _c('v-ons-list-item',{attrs:{"modifier":"tappable"}},[_c('div',{staticClass:"left"},[_c('img',{attrs:{"src":c.icon}})]),_vm._v(" "),_c('div',[_c('div',{staticClass:"screenName"},[_vm._v(_vm._s(c.screenName))]),_vm._v(" "),_c('div',{staticClass:"price"},[_c('currency-set',{attrs:{"amount":c.price,"ticker":c.coinId,"fiatTicker":_vm.fiat,"easy":_vm.isEasy}})],1)]),_vm._v(" "),_c('div',{staticClass:"w_right"},[_c('div',{staticClass:"amount",class:{unconfirmed:c.unconfirmed}},[_c('currency-set',{attrs:{"amount":c.balance,"ticker":c.coinId,"easy":_vm.isEasy}}),_c('span',{directives:[{name:"show",rawName:"v-show",value:(c.unconfirmed),expression:"c.unconfirmed"}]},[_vm._v("+"+_vm._s(c.unconfirmed)+"待機中")])],1),_vm._v(" "),_c('div',{staticClass:"fiatConv"},[_c('currency-set',{attrs:{"amount":c.balance*c.price,"ticker":_vm.fiat,"easy":_vm.isEasy}})],1)])])}))],1)],1)],1)}
 var staticRenderFns = []
 module.exports = function (_exports) {
   var options = typeof _exports === 'function'
@@ -37602,7 +37614,7 @@ if (false) {(function () {
 /* 327 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var render = function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('v-ons-page',{attrs:{"data-page":"send"}},[_c('custom-bar',{attrs:{"title":"送る","menu":"true"}}),_vm._v(" "),_c('div',[_c('v-ons-list',[_c('v-ons-list-header',[_vm._v("送金先")]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_c('v-ons-list-item',[_c('v-ons-input',{attrs:{"placeholder":"送金先アドレス"},model:{value:(_vm.address),callback:function ($$v) {_vm.address=$$v},expression:"address"}})],1)],1),_vm._v(" "),_c('div',{staticClass:"right"},[_c('v-ons-icon',{attrs:{"icon":"fa-address-card"}})],1)]),_vm._v(" "),_c('v-ons-list-header',[_vm._v("コイン種類")]),_vm._v(" "),_vm._l((_vm.possibility),function(co){return _c('v-ons-list-item',[_c('div',{staticClass:"left"},[_c('v-ons-radio',{attrs:{"input-id":'coinType-'+co.coinId,"value":co.coinId},model:{value:(_vm.coinType),callback:function ($$v) {_vm.coinType=$$v},expression:"coinType"}})],1),_vm._v(" "),_c('label',{staticClass:"center",attrs:{"for":'coinType-'+co.coinId}},[_vm._v("\n          "+_vm._s(co.name)+"\n        ")]),_vm._v(" "),_c('div',{staticClass:"right"},[_c('currency-set',{attrs:{"ticker":co.coinId,"easy":_vm.isEasy}})],1)])}),_vm._v(" "),_c('v-ons-list-item',{directives:[{name:"show",rawName:"v-show",value:(_vm.possibility.length<=0),expression:"possibility.length<=0"}]},[_c('div',{staticClass:"left"}),_vm._v(" "),_c('label',{staticClass:"center"},[_vm._v("まずは出金先アドレスを指定してください。")])]),_vm._v(" "),_c('v-ons-list-header',[_vm._v("相手に送金する金額")]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_c('v-ons-input',{attrs:{"type":"number","placeholder":"相手に送金する金額","disabled":!_vm.address||!_vm.coinType},model:{value:(_vm.amount),callback:function ($$v) {_vm.amount=$$v},expression:"amount"}})],1),_vm._v(" "),_c('div',{staticClass:"right"},[_c('currency-set',{attrs:{"ticker":_vm.coinType,"easy":_vm.isEasy}})],1)]),_vm._v(" "),_c('v-ons-list-header',[_vm._v("日本円換算")]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_c('v-ons-input',{attrs:{"type":"number","placeholder":"日本円","disabled":!_vm.address||!_vm.coinType},model:{value:(_vm.fiat),callback:function ($$v) {_vm.fiat=$$v},expression:"fiat"}})],1),_vm._v(" "),_c('div',{staticClass:"right"},[_c('currency-set',{attrs:{"ticker":"jpy","easy":_vm.isEasy}})],1)]),_vm._v(" "),_c('v-ons-list-item',[_c('v-ons-button',{attrs:{"modifier":"large","disabled":!_vm.address||!_vm.amount||!_vm.feePerByte},on:{"click":_vm.confirm}},[_vm._v("確認画面へ")])],1),_vm._v(" "),_c('v-ons-list-item',{directives:[{name:"show",rawName:"v-show",value:(!_vm.advanced),expression:"!advanced"}],on:{"click":function($event){_vm.advanced=true}}},[_c('div',{staticClass:"left"},[_c('v-ons-icon',{attrs:{"icon":"fa-caret-down"}})],1),_vm._v(" "),_c('div',{staticClass:"center"},[_vm._v("詳細オプション")])]),_vm._v(" "),_c('div',{directives:[{name:"show",rawName:"v-show",value:(_vm.advanced),expression:"advanced"}]},[_c('v-ons-list-header',[_vm._v("送金手数料(sat/Byte)")]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_c('v-ons-input',{attrs:{"type":"number","placeholder":"送金手数料(satoshi/Byte)","disabled":!_vm.address||!_vm.coinType},model:{value:(_vm.feePerByte),callback:function ($$v) {_vm.feePerByte=$$v},expression:"feePerByte"}})],1),_vm._v(" "),_c('div',{staticClass:"right"},[_c('currency-set',{attrs:{"ticker":"satByte","easy":_vm.isEasy}})],1)]),_vm._v(" "),_c('v-ons-list-header',[_vm._v("メッセージ")]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_c('v-ons-input',{attrs:{"placeholder":"80Byteまで"},model:{value:(_vm.message),callback:function ($$v) {_vm.message=$$v},expression:"message"}})],1),_vm._v(" "),_c('div',{staticClass:"right"},[_c('v-ons-icon',{attrs:{"icon":"comment"}})],1)])],1)],2)],1)],1)}
+var render = function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('v-ons-page',{attrs:{"data-page":"send"}},[_c('custom-bar',{attrs:{"title":"送る","menu":"true"}}),_vm._v(" "),_c('div',[_c('v-ons-list',[_c('v-ons-list-header',[_vm._v("送金先")]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_c('v-ons-list-item',[_c('v-ons-input',{attrs:{"placeholder":"送金先アドレス"},model:{value:(_vm.address),callback:function ($$v) {_vm.address=$$v},expression:"address"}})],1)],1),_vm._v(" "),_c('div',{staticClass:"right"},[_c('v-ons-icon',{attrs:{"icon":"fa-address-card"}})],1)]),_vm._v(" "),_c('v-ons-list-header',[_vm._v("コイン種類")]),_vm._v(" "),_vm._l((_vm.possibility),function(co){return _c('v-ons-list-item',[_c('div',{staticClass:"left"},[_c('v-ons-radio',{attrs:{"input-id":'coinType-'+co.coinId,"value":co.coinId},model:{value:(_vm.coinType),callback:function ($$v) {_vm.coinType=$$v},expression:"coinType"}})],1),_vm._v(" "),_c('label',{staticClass:"center",attrs:{"for":'coinType-'+co.coinId}},[_vm._v("\n          "+_vm._s(co.name)+"\n        ")]),_vm._v(" "),_c('div',{staticClass:"right"},[_c('currency-set',{attrs:{"ticker":co.coinId}})],1)])}),_vm._v(" "),_c('v-ons-list-item',{directives:[{name:"show",rawName:"v-show",value:(_vm.possibility.length<=0),expression:"possibility.length<=0"}]},[_c('div',{staticClass:"left"}),_vm._v(" "),_c('label',{staticClass:"center"},[_vm._v("まずは出金先アドレスを指定してください。")])]),_vm._v(" "),_c('v-ons-list-header',[_vm._v("相手に送金する金額")]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_c('v-ons-input',{attrs:{"type":"number","placeholder":"相手に送金する金額","disabled":!_vm.address||!_vm.coinType},on:{"input":_vm.calcFiat},model:{value:(_vm.amount),callback:function ($$v) {_vm.amount=$$v},expression:"amount"}})],1),_vm._v(" "),_c('div',{staticClass:"right"},[_c('currency-set',{attrs:{"ticker":_vm.coinType}})],1)]),_vm._v(" "),_c('v-ons-list-header',[_vm._v("法定通貨換算")]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_c('v-ons-input',{attrs:{"type":"number","placeholder":"日本円","disabled":!_vm.address||!_vm.coinType},on:{"input":_vm.calcCur},model:{value:(_vm.fiat),callback:function ($$v) {_vm.fiat=$$v},expression:"fiat"}})],1),_vm._v(" "),_c('div',{staticClass:"right"},[_c('currency-set',{attrs:{"ticker":_vm.fiatTicker}})],1)]),_vm._v(" "),_c('v-ons-list-item',[_c('v-ons-button',{attrs:{"modifier":"large","disabled":!_vm.address||!_vm.amount||!_vm.feePerByte},on:{"click":_vm.confirm}},[_vm._v("確認画面へ")])],1),_vm._v(" "),_c('v-ons-list-item',{directives:[{name:"show",rawName:"v-show",value:(!_vm.advanced),expression:"!advanced"}],on:{"click":function($event){_vm.advanced=true}}},[_c('div',{staticClass:"left"},[_c('v-ons-icon',{attrs:{"icon":"fa-caret-down"}})],1),_vm._v(" "),_c('div',{staticClass:"center"},[_vm._v("詳細オプション")])]),_vm._v(" "),_c('div',{directives:[{name:"show",rawName:"v-show",value:(_vm.advanced),expression:"advanced"}]},[_c('v-ons-list-header',[_vm._v("送金手数料(sat/Byte)")]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_c('v-ons-input',{attrs:{"type":"number","placeholder":"送金手数料(satoshi/Byte)","disabled":!_vm.address||!_vm.coinType},model:{value:(_vm.feePerByte),callback:function ($$v) {_vm.feePerByte=$$v},expression:"feePerByte"}})],1),_vm._v(" "),_c('div',{staticClass:"right"},[_c('currency-set',{attrs:{"ticker":"satByte"}})],1)]),_vm._v(" "),_c('v-ons-list-header',[_vm._v("メッセージ")]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_c('v-ons-input',{attrs:{"placeholder":"80Byteまで"},model:{value:(_vm.message),callback:function ($$v) {_vm.message=$$v},expression:"message"}})],1),_vm._v(" "),_c('div',{staticClass:"right"},[_c('v-ons-icon',{attrs:{"icon":"comment"}})],1)])],1)],2)],1)],1)}
 var staticRenderFns = []
 module.exports = function (_exports) {
   var options = typeof _exports === 'function'
@@ -37635,8 +37647,8 @@ if (false) {(function () {
 /* WEBPACK VAR INJECTION */(function(Buffer) {
 
 var storage = __webpack_require__(17);
-var coinUtil = __webpack_require__(14);
-var currencyList = __webpack_require__(13);
+var coinUtil = __webpack_require__(12);
+var currencyList = __webpack_require__(10);
 var bcLib = __webpack_require__(35);
 var errors = __webpack_require__(65);
 module.exports = __webpack_require__(329)({
@@ -37666,7 +37678,7 @@ module.exports = __webpack_require__(329)({
     };
   },
 
-  store: __webpack_require__(7),
+  store: __webpack_require__(6),
   mounted: function mounted() {
     var _this = this;
 
@@ -37819,11 +37831,11 @@ if (false) {(function () {
 "use strict";
 
 
-var qrcode = __webpack_require__(72);
-var currencyList = __webpack_require__(13);
+var qrcode = __webpack_require__(73);
+var currencyList = __webpack_require__(10);
 var storage = __webpack_require__(17);
-var Currency = __webpack_require__(79);
-var coinUtil = __webpack_require__(14);
+var Currency = __webpack_require__(80);
+var coinUtil = __webpack_require__(12);
 
 module.exports = __webpack_require__(350)({
   data: function data() {
@@ -37842,7 +37854,7 @@ module.exports = __webpack_require__(350)({
     };
   },
 
-  store: __webpack_require__(7),
+  store: __webpack_require__(6),
   methods: {
     getMainAddress: function getMainAddress() {
       var _this = this;
@@ -37920,7 +37932,7 @@ module.exports = __webpack_require__(350)({
 
 var Buffer = __webpack_require__(28)
 var Utils = __webpack_require__(23)
-var ECLevel = __webpack_require__(74)
+var ECLevel = __webpack_require__(75)
 var BitBuffer = __webpack_require__(333)
 var BitMatrix = __webpack_require__(334)
 var AlignmentPattern = __webpack_require__(335)
@@ -37932,7 +37944,7 @@ var Version = __webpack_require__(129)
 var FormatInfo = __webpack_require__(341)
 var Mode = __webpack_require__(24)
 var Segments = __webpack_require__(342)
-var isArray = __webpack_require__(73)
+var isArray = __webpack_require__(74)
 
 /**
  * QRCode for JavaScript
@@ -40010,10 +40022,10 @@ if (false) {(function () {
 "use strict";
 
 
-var qrcode = __webpack_require__(72);
-var currencyList = __webpack_require__(13);
+var qrcode = __webpack_require__(73);
+var currencyList = __webpack_require__(10);
 var storage = __webpack_require__(17);
-var coinUtil = __webpack_require__(14);
+var coinUtil = __webpack_require__(12);
 module.exports = __webpack_require__(352)({
   data: function data() {
     return {
@@ -40027,7 +40039,7 @@ module.exports = __webpack_require__(352)({
     };
   },
 
-  store: __webpack_require__(7),
+  store: __webpack_require__(6),
   methods: {
     copyAddress: function copyAddress() {},
     update: function update() {
@@ -40104,10 +40116,10 @@ if (false) {(function () {
 "use strict";
 
 
-var qrcode = __webpack_require__(72);
-var currencyList = __webpack_require__(13);
+var qrcode = __webpack_require__(73);
+var currencyList = __webpack_require__(10);
 var storage = __webpack_require__(17);
-var coinUtil = __webpack_require__(14);
+var coinUtil = __webpack_require__(12);
 module.exports = __webpack_require__(354)({
   data: function data() {
     return {
@@ -40121,11 +40133,14 @@ module.exports = __webpack_require__(354)({
       messageOpRet: "",
       currency: [],
       currencyIndex: 0,
-      labels: [coinUtil.DEFAULT_LABEL_NAME]
+      labels: [coinUtil.DEFAULT_LABEL_NAME],
+      fiat: 0,
+      price: 0,
+      fiatTicker: this.$store.state.fiat
     };
   },
 
-  store: __webpack_require__(7),
+  store: __webpack_require__(6),
   methods: {
     copyAddress: function copyAddress() {
       coinUtil.copy(this.address);
@@ -40141,7 +40156,29 @@ module.exports = __webpack_require__(354)({
       });
       this.currentCurIcon = currencyList.get(this.currency[this.currencyIndex].coinId).icon;
     },
-    goToZaifPay: function goToZaifPay() {}
+    calcFiat: function calcFiat() {
+      var _this2 = this;
+
+      this.$nextTick(function () {
+        _this2.fiat = _this2.amount * _this2.price;
+        _this2.generateQR();
+      });
+    },
+    calcCur: function calcCur() {
+      var _this3 = this;
+
+      this.$nextTick(function () {
+        _this3.amount = _this3.fiat / _this3.price;
+        _this3.generateQR();
+      });
+    },
+    getPrice: function getPrice() {
+      var _this4 = this;
+
+      coinUtil.getPrice(this.coinType, this.fiatTicker).then(function (res) {
+        _this4.price = res;
+      });
+    }
   },
   computed: {
     url: function url() {
@@ -40155,14 +40192,17 @@ module.exports = __webpack_require__(354)({
         message: this.message,
         "req-opreturn": this.messageOpRet
       });
+    },
+    coinType: function coinType() {
+      return this.currency[this.currencyIndex] ? this.currency[this.currencyIndex].coinId : "";
     }
   },
 
   mounted: function mounted() {
-    var _this2 = this;
+    var _this5 = this;
 
     currencyList.eachWithPub(function (cur) {
-      _this2.currency.push({
+      _this5.currency.push({
         coinId: cur.coinId,
         icon: cur.icon,
         name: cur.coinScreenName
@@ -40170,8 +40210,9 @@ module.exports = __webpack_require__(354)({
     });
     this.generateQR();
     coinUtil.getLabels(this.currency[this.currencyIndex].coinId).then(function (res) {
-      _this2.$set(_this2, "labels", res);
+      _this5.$set(_this5, "labels", res);
     });
+    this.getPrice();
   }
 });
 
@@ -40179,7 +40220,7 @@ module.exports = __webpack_require__(354)({
 /* 354 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var render = function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('v-ons-page',{attrs:{"data-page":"invoice"}},[_c('custom-bar',{attrs:{"title":_vm.請求する,"menu":"true"}},[_c('v-ons-toolbar-button',{on:{"click":_vm.goToZaifPay}},[_vm._v("\n      Zaif\n      \n    ")])],1),_vm._v(" "),_c('div',[_c('div',{attrs:{"id":"currencySelector"}},[_c('v-ons-carousel',{attrs:{"swipeable":"","overscrollable":"","direction":"horizontal","item-height":"50px","item-width":"50px","index":_vm.currencyIndex}},_vm._l((_vm.currency),function(crc,i){return _c('v-ons-carousel-item',{staticClass:"currencyIcon",style:({'background-image':'url('+crc.icon+')'}),on:{"click":function($event){_vm.currencyIndex=i}}},[_c('div',{directives:[{name:"show",rawName:"v-show",value:(_vm.currencyIndex==i),expression:"currencyIndex==i"}],staticClass:"checked"})])}))],1),_vm._v(" "),_c('div',{attrs:{"id":"simple"}},[_c('div',{attrs:{"id":"qrArea"}},[_c('div',{attrs:{"id":"qrcode"}},[_c('img',{attrs:{"src":_vm.qrDataUrl||'',"alt":"QR code","id":"qrcodeImage"}}),_vm._v(" "),_c('div',{style:({'background-image':'url('+_vm.currentCurIcon+')'}),attrs:{"id":"currentCurIcon"}})]),_vm._v(" "),_c('div',{staticClass:"address"},[_vm._v(_vm._s(_vm.url))])]),_vm._v(" "),(_vm.isNative)?_c('div',[_c('v-ons-button',[_c('v-ons-icon',{attrs:{"icon":"fa-clipboard"}}),_vm._v("\n          アドレスコピー\n        ")],1),_vm._v(" "),_c('v-ons-button',[_c('v-ons-icon',{attrs:{"icon":"fa-share"}}),_vm._v("共有\n        ")],1)],1):_vm._e(),_vm._v(" "),_c('v-ons-list',[_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_vm._v("受信アドレスのラベル")]),_vm._v(" "),_c('div',{staticClass:"right"},[_c('v-ons-select',{on:{"change":_vm.generateQR},model:{value:(_vm.addressIndex),callback:function ($$v) {_vm.addressIndex=$$v},expression:"addressIndex"}},_vm._l((_vm.labels),function(l,i){return _c('option',{domProps:{"value":i}},[_vm._v(_vm._s(l))])}))],1)]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_vm._v("請求額")]),_vm._v(" "),_c('div',{staticClass:"right"},[_c('v-ons-input',{attrs:{"placeholder":"金額"},on:{"change":_vm.generateQR},model:{value:(_vm.amount),callback:function ($$v) {_vm.amount=$$v},expression:"amount"}})],1)]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_vm._v("相手に表示する文")]),_vm._v(" "),_c('div',{staticClass:"right"},[_c('v-ons-input',{attrs:{"placeholder":"メッセージ"},on:{"change":_vm.generateQR},model:{value:(_vm.message),callback:function ($$v) {_vm.message=$$v},expression:"message"}})],1)]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_vm._v("ブロックに書き込んでもらうメッセージ(対応ウォレットのみ)")]),_vm._v(" "),_c('div',{staticClass:"right"},[_c('v-ons-input',{attrs:{"placeholder":"OP_RETURN"},on:{"change":_vm.generateQR},model:{value:(_vm.messageOpRet),callback:function ($$v) {_vm.messageOpRet=$$v},expression:"messageOpRet"}})],1)]),_vm._v(" "),_c('v-ons-list-item',[_c('v-ons-button',{attrs:{"modifier":"large"},on:{"click":_vm.generateQR}},[_vm._v("QRコードを生成")])],1)],1)],1)])],1)}
+var render = function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('v-ons-page',{attrs:{"data-page":"invoice"}},[_c('custom-bar',{attrs:{"title":_vm.請求する,"menu":"true"}}),_vm._v(" "),_c('div',[_c('div',{attrs:{"id":"currencySelector"}},[_c('v-ons-carousel',{attrs:{"swipeable":"","overscrollable":"","direction":"horizontal","item-height":"50px","item-width":"50px","index":_vm.currencyIndex}},_vm._l((_vm.currency),function(crc,i){return _c('v-ons-carousel-item',{staticClass:"currencyIcon",style:({'background-image':'url('+crc.icon+')'}),on:{"click":function($event){_vm.currencyIndex=i}}},[_c('div',{directives:[{name:"show",rawName:"v-show",value:(_vm.currencyIndex==i),expression:"currencyIndex==i"}],staticClass:"checked"})])}))],1),_vm._v(" "),_c('div',{attrs:{"id":"simple"}},[_c('div',{attrs:{"id":"qrArea"}},[_c('div',{attrs:{"id":"qrcode"}},[_c('img',{attrs:{"src":_vm.qrDataUrl||'',"alt":"QR code","id":"qrcodeImage"}}),_vm._v(" "),_c('div',{style:({'background-image':'url('+_vm.currentCurIcon+')'}),attrs:{"id":"currentCurIcon"}})]),_vm._v(" "),_c('div',{staticClass:"address"},[_vm._v(_vm._s(_vm.url))])]),_vm._v(" "),(_vm.isNative)?_c('div',[_c('v-ons-button',[_c('v-ons-icon',{attrs:{"icon":"fa-clipboard"}}),_vm._v("\n          アドレスコピー\n        ")],1),_vm._v(" "),_c('v-ons-button',[_c('v-ons-icon',{attrs:{"icon":"fa-share"}}),_vm._v("共有\n        ")],1)],1):_vm._e(),_vm._v(" "),_c('v-ons-list',[_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_vm._v("受信アドレスのラベル")]),_vm._v(" "),_c('div',{staticClass:"right"},[_c('v-ons-select',{on:{"change":_vm.generateQR},model:{value:(_vm.addressIndex),callback:function ($$v) {_vm.addressIndex=$$v},expression:"addressIndex"}},_vm._l((_vm.labels),function(l,i){return _c('option',{domProps:{"value":i}},[_vm._v(_vm._s(l))])}))],1)]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_vm._v("請求額")]),_vm._v(" "),_c('div',{staticClass:"right"},[_c('v-ons-input',{attrs:{"placeholder":"金額"},on:{"input":_vm.calcFiat},model:{value:(_vm.amount),callback:function ($$v) {_vm.amount=$$v},expression:"amount"}}),_c('currency-set',{attrs:{"ticker":_vm.coinType}})],1)]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_vm._v("法定通貨換算")]),_vm._v(" "),_c('div',{staticClass:"right"},[_c('v-ons-input',{attrs:{"placeholder":"換算"},on:{"input":_vm.calcCur},model:{value:(_vm.fiat),callback:function ($$v) {_vm.fiat=$$v},expression:"fiat"}}),_c('currency-set',{attrs:{"ticker":_vm.fiatTicker}})],1)]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_vm._v("相手に表示する文")]),_vm._v(" "),_c('div',{staticClass:"right"},[_c('v-ons-input',{attrs:{"placeholder":"メッセージ"},on:{"change":_vm.generateQR},model:{value:(_vm.message),callback:function ($$v) {_vm.message=$$v},expression:"message"}})],1)]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_vm._v("ブロックに書き込んでもらうメッセージ(対応ウォレットのみ)")]),_vm._v(" "),_c('div',{staticClass:"right"},[_c('v-ons-input',{attrs:{"placeholder":"OP_RETURN"},on:{"change":_vm.generateQR},model:{value:(_vm.messageOpRet),callback:function ($$v) {_vm.messageOpRet=$$v},expression:"messageOpRet"}})],1)]),_vm._v(" "),_c('v-ons-list-item',[_c('v-ons-button',{attrs:{"modifier":"large"},on:{"click":_vm.generateQR}},[_vm._v("QRコードを生成")])],1)],1)],1)])],1)}
 var staticRenderFns = []
 module.exports = function (_exports) {
   var options = typeof _exports === 'function'
@@ -40211,8 +40252,8 @@ if (false) {(function () {
 "use strict";
 
 
-var currencyList = __webpack_require__(13);
-var coinUtil = __webpack_require__(14);
+var currencyList = __webpack_require__(10);
+var coinUtil = __webpack_require__(12);
 module.exports = __webpack_require__(356)({
   data: function data() {
     return {
@@ -40226,7 +40267,7 @@ module.exports = __webpack_require__(356)({
     };
   },
 
-  store: __webpack_require__(7),
+  store: __webpack_require__(6),
   methods: {
     load: function load(done) {
       var _this = this;
@@ -40357,7 +40398,7 @@ if (false) {(function () {
 "use strict";
 /* WEBPACK VAR INJECTION */(function(Buffer) {
 
-var currencyList = __webpack_require__(13);
+var currencyList = __webpack_require__(10);
 var bcLib = __webpack_require__(35);
 module.exports = __webpack_require__(358)({
   data: function data() {
@@ -40371,7 +40412,7 @@ module.exports = __webpack_require__(358)({
     this.load();
   },
 
-  store: __webpack_require__(7),
+  store: __webpack_require__(6),
   methods: {
     load: function load() {
       var _this = this;
@@ -40446,10 +40487,10 @@ module.exports = __webpack_require__(360)({
       this.$emit("push", __webpack_require__(132));
     },
     goToSetPassword: function goToSetPassword() {
-      this.$emit("push", __webpack_require__(75));
+      this.$emit("push", __webpack_require__(76));
     },
     goToManageCoin: function goToManageCoin() {
-      this.$emit("push", __webpack_require__(378));
+      this.$emit("push", __webpack_require__(364));
     }
   },
   mounted: function mounted() {}
@@ -40578,7 +40619,85 @@ if (false) {(function () {
 "use strict";
 
 
+var currencyList = __webpack_require__(10);
+var coinUtil = __webpack_require__(12);
 module.exports = __webpack_require__(365)({
+  data: function data() {
+    return {
+      usable: [],
+      unusable: [],
+      loading: false
+    };
+  },
+  methods: {
+    push: function push() {
+      this.$emit("push", __webpack_require__(72));
+    },
+    load: function load() {
+      var _this = this;
+
+      this.curs = [];
+      this.fiatConv = 0;
+      this.loading = true;
+      currencyList.each(function (cur) {
+        _this.loading = true;
+        var data = {
+          coinId: cur.coinId,
+          screenName: cur.coinScreenName,
+          icon: cur.icon
+        };
+        if (cur.hdPubNode) {
+          _this.usable.push(data);
+        } else {
+          _this.unusable.push(data);
+        }
+        _this.loading = false;
+      });
+    }
+  },
+  store: __webpack_require__(6),
+  mounted: function mounted() {
+    this.$nextTick(this.load);
+  }
+});
+
+/***/ }),
+/* 365 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('v-ons-page',{attrs:{"data-page":"manageCoin"}},[_c('custom-bar',{attrs:{"title":"コインの管理"}}),_vm._v(" "),_c('v-ons-list',[_c('v-ons-list-header',[_vm._v("利用可能")]),_vm._v(" "),_vm._l((_vm.usable),function(c){return _c('v-ons-list-item',{staticClass:"coin"},[_c('div',{staticClass:"left"},[_c('img',{attrs:{"src":c.icon}})]),_vm._v(" "),_c('div',[_c('div',{staticClass:"screenName"},[_vm._v(_vm._s(c.screenName))])]),_vm._v(" "),_c('div',{staticClass:"right"},[_c('v-ons-button',{attrs:{"modifier":"quiet"}},[_c('v-ons-icon',{attrs:{"icon":"ion-trash-a"}})],1)],1)])}),_vm._v(" "),_c('v-ons-list-header',[_vm._v("無効")]),_vm._v(" "),_vm._l((_vm.unusable),function(c){return _c('v-ons-list-item',{staticClass:"coin"},[_c('div',{staticClass:"left"},[_c('img',{attrs:{"src":c.icon}})]),_vm._v(" "),_c('div',[_c('div',{staticClass:"screenName"},[_vm._v(_vm._s(c.screenName))])]),_vm._v(" "),_c('div',{staticClass:"right"},[_c('v-ons-button',{attrs:{"modifier":"quiet"}},[_c('v-ons-icon',{attrs:{"icon":"ion-plus"}})],1)],1)])})],2)],1)}
+var staticRenderFns = []
+module.exports = function (_exports) {
+  var options = typeof _exports === 'function'
+    ? _exports.options
+    : _exports
+  options.render = render
+  options.staticRenderFns = staticRenderFns
+  if (false) {
+    api.createRecord("data-v-69567200", options)
+  }
+  return _exports
+}
+var api = null
+if (false) {(function () {
+  api = require("vue-hot-reload-api")
+  api.install(require("vue"))
+  if (!api.compatible) return
+  module.hot.accept()
+  if (module.hot.data) {
+    api.rerender("data-v-69567200", { render: render, staticRenderFns: staticRenderFns })
+  }
+})()}
+
+
+/***/ }),
+/* 366 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+module.exports = __webpack_require__(367)({
   data: function data() {
     return {};
   },
@@ -40588,7 +40707,7 @@ module.exports = __webpack_require__(365)({
 });
 
 /***/ }),
-/* 365 */
+/* 367 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('v-ons-page',{attrs:{"data-page":"help"}},[_c('custom-bar',{attrs:{"title":"ヘルプ","menu":"true"}}),_vm._v(" "),_c('div',[_c('v-ons-list',[_c('v-ons-list-header',[_vm._v("使い方")]),_vm._v(" "),_c('v-ons-list-item'),_vm._v(" "),_c('v-ons-list-header',[_vm._v("暗号通貨解説")]),_vm._v(" "),_c('v-ons-list-header',[_vm._v("用語集")]),_vm._v(" "),_c('v-ons-list-header',[_vm._v("その他")]),_vm._v(" "),_c('v-ons-list-item',[_vm._v("このアプリについて")])],1)],1)],1)}
@@ -40617,20 +40736,20 @@ if (false) {(function () {
 
 
 /***/ }),
-/* 366 */
+/* 368 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-module.exports = __webpack_require__(367)({
+module.exports = __webpack_require__(369)({
   data: function data() {
     return {};
   }
 });
 
 /***/ }),
-/* 367 */
+/* 369 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('v-ons-page',{attrs:{"data-page":"zaifPay"}},[_c('custom-bar',{attrs:{"title":"Zaif Payment","menu":"true"}}),_vm._v(" "),_c('div',[_c('div',{staticClass:"logo"}),_vm._v(" "),_c('p',[_vm._v("Zaif Paymentとは、Zaif取引所を通して、受け取り時に暗号通貨でなく、日本円で受け取ることができる決済サービスです。これにより、レート変動によるリスクから解放されます。始め方、操作方法は、Zaif公式ドキュメントより優しい本アプリ解説をご覧下さい。 "),_c('br'),_vm._v("\n      まずは、APIキー、シークレットキーを設定画面から入力しましょう。\n    ")])])],1)}
@@ -40659,27 +40778,27 @@ if (false) {(function () {
 
 
 /***/ }),
-/* 368 */
+/* 370 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-module.exports = __webpack_require__(369)({
+module.exports = __webpack_require__(371)({
   data: function data() {
     return {};
   },
 
   methods: {
     start: function start() {
-      this.$emit("push", __webpack_require__(370));
+      this.$emit("push", __webpack_require__(372));
     }
   },
   mounted: function mounted() {}
 });
 
 /***/ }),
-/* 369 */
+/* 371 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('v-ons-page',{attrs:{"data-page":"first"}},[_c('div',{staticClass:"wrap"},[_c('div',{staticClass:"logo"},[_c('div',{staticClass:"icon"}),_vm._v(" "),_c('div',{staticClass:"appName"},[_vm._v("もにゃ")]),_vm._v(" "),_c('div',{staticClass:"label"},[_vm._v("The easiest Monacoin Wallet")]),_vm._v(" "),_c('div',{staticClass:"buttons"},[_c('v-ons-button',{on:{"click":_vm.start}},[_vm._v("Start!")])],1)])])])}
@@ -40708,13 +40827,13 @@ if (false) {(function () {
 
 
 /***/ }),
-/* 370 */
+/* 372 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-module.exports = __webpack_require__(371)({
+module.exports = __webpack_require__(373)({
   data: function data() {
     return {
       questionNumber: 0,
@@ -40739,11 +40858,11 @@ module.exports = __webpack_require__(371)({
         case -2:
           //User declined.Go to key generation
 
-          this.$emit("push", __webpack_require__(372));
+          this.$emit("push", __webpack_require__(374));
           break;
         case -3:
           //User has passphrase so start recover
-          this.$emit("push", __webpack_require__(376));
+          this.$emit("push", __webpack_require__(378));
           break;
         default:
           this.questionNumber = ans.to | 0;
@@ -40949,7 +41068,7 @@ var qList = [{ //0
 }];
 
 /***/ }),
-/* 371 */
+/* 373 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('v-ons-page',{attrs:{"data-page":"question"}},[_c('v-ons-carousel',{attrs:{"fullscreen":"","auto-scroll":"","index":_vm.questionNumber}},_vm._l((_vm.questions),function(qq){return _c('v-ons-carousel-item',{staticClass:"questionItem"},[_c('div',{staticClass:"questionText"},[_vm._v(_vm._s(qq.text))]),_vm._v(" "),_vm._l((qq.answers),function(ans,ind){return _c('div',{staticClass:"answers"},[_c('div',{staticClass:"answer",on:{"click":function($event){_vm.answer(ans)}}},[_vm._v(_vm._s(ans.label))])])})],2)}))],1)}
@@ -40978,13 +41097,13 @@ if (false) {(function () {
 
 
 /***/ }),
-/* 372 */
+/* 374 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-module.exports = __webpack_require__(373)({
+module.exports = __webpack_require__(375)({
   data: function data() {
     return {
       check1: false, check2: false, check3: false
@@ -40993,13 +41112,13 @@ module.exports = __webpack_require__(373)({
 
   methods: {
     next: function next() {
-      this.$emit("push", __webpack_require__(374));
+      this.$emit("push", __webpack_require__(376));
     }
   }
 });
 
 /***/ }),
-/* 373 */
+/* 375 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('v-ons-page',{attrs:{"data-page":"generateKeyWarn"}},[_c('custom-bar',{attrs:{"title":"ご確認ください"}}),_vm._v(" "),_c('div',{staticClass:"wrap"},[_c('p',[_vm._v("秘密鍵を作成します。以下の注意事項をよく読んで、チェックをしてください")]),_vm._v(" "),_c('ul',[_c('li',[_vm._v("秘密鍵は所有するモナコインにアクセスする権利そのものです。")]),_vm._v(" "),_c('li',[_vm._v("13個の英単語を正確に、紙に手書きしてください。")]),_vm._v(" "),_c('li',[_vm._v("英単語のスクリーンショットを撮影・コピーしないでください。")]),_vm._v(" "),_c('li',[_vm._v("これを紛失すると、モナコインを使うことはできなくなります。")]),_vm._v(" "),_c('li',[_vm._v("他人に知れ渡ると、モナコインを盗まれる可能性があります。")]),_vm._v(" "),_c('li',[_vm._v("管理が不十分だったことによる責任は利用者自身が負い、他の誰も負いません。")])])]),_vm._v(" "),_c('v-ons-list',[_c('v-ons-list-item',[_c('label',{staticClass:"left"},[_c('v-ons-checkbox',{attrs:{"input-id":"check1"},model:{value:(_vm.check1),callback:function ($$v) {_vm.check1=$$v},expression:"check1"}})],1),_vm._v(" "),_c('label',{staticClass:"center",attrs:{"for":"check1"}},[_vm._v("秘密鍵の重要性を理解しました。")])]),_vm._v(" "),_c('v-ons-list-item',[_c('label',{staticClass:"left"},[_c('v-ons-checkbox',{attrs:{"input-id":"check2"},model:{value:(_vm.check2),callback:function ($$v) {_vm.check2=$$v},expression:"check2"}})],1),_vm._v(" "),_c('label',{staticClass:"center",attrs:{"for":"check2"}},[_vm._v("画面を誰にも・どのソフトにも見られたり盗聴されていません。")])]),_vm._v(" "),_c('v-ons-list-item',[_c('label',{staticClass:"left"},[_c('v-ons-checkbox',{attrs:{"input-id":"check3"},model:{value:(_vm.check3),callback:function ($$v) {_vm.check3=$$v},expression:"check3"}})],1),_vm._v(" "),_c('label',{staticClass:"center",attrs:{"for":"check3"}},[_vm._v("秘密鍵の管理は自己責任であることを理解しました。")])]),_vm._v(" "),_c('v-ons-list-item',[_c('v-ons-button',{attrs:{"disabled":!_vm.check1||!_vm.check2||!_vm.check3,"modifier":"large"},on:{"click":_vm.next}},[_vm._v("次へ")])],1)],1)],1)}
@@ -41028,13 +41147,13 @@ if (false) {(function () {
 
 
 /***/ }),
-/* 374 */
+/* 376 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-module.exports = __webpack_require__(375)({
+module.exports = __webpack_require__(377)({
   data: function data() {
     return {
       cnt: 0,
@@ -41046,7 +41165,7 @@ module.exports = __webpack_require__(375)({
     };
   },
 
-  store: __webpack_require__(7),
+  store: __webpack_require__(6),
   methods: {
     complete: function complete() {
       if (!this.next) {
@@ -41129,7 +41248,7 @@ module.exports = __webpack_require__(375)({
 });
 
 /***/ }),
-/* 375 */
+/* 377 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('v-ons-page',{attrs:{"data-page":"generateKey"}},[_c('custom-bar',{attrs:{"title":"秘密鍵を生成","modifier":"transparent"}}),_vm._v(" "),_c('div',{ref:"touchArea",staticClass:"touchArea"},[_c('p',{directives:[{name:"show",rawName:"v-show",value:(_vm.cnt<_vm.wordCount),expression:"cnt<wordCount"}]},[_vm._v("\n      ここをスワイプしたりドラッグしたりしてセキュリティを高めましょう"),_c('br'),_vm._v(" "),_c('small',{directives:[{name:"show",rawName:"v-show",value:(_vm.sensorAvailable),expression:"sensorAvailable"}]},[_vm._v("または端末を振ってください。")]),_c('br'),_vm._v("\n      "+_vm._s(_vm.cnt)),_c('small',[_vm._v("/"+_vm._s(_vm.wordCount))])]),_vm._v(" "),_c('p',{directives:[{name:"show",rawName:"v-show",value:(_vm.cnt>=_vm.wordCount),expression:"cnt>=wordCount"}]},[_vm._v("計算中"),_c('br'),_c('small',[_vm._v("数分かかる場合があります。")])]),_vm._v(" "),_c('v-ons-progress-bar',{attrs:{"value":_vm.cnt/_vm.wordCount*100}})],1)],1)}
@@ -41158,14 +41277,14 @@ if (false) {(function () {
 
 
 /***/ }),
-/* 376 */
+/* 378 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 var bip39 = __webpack_require__(39);
-module.exports = __webpack_require__(377)({
+module.exports = __webpack_require__(379)({
   data: function data() {
     return {
       keyArray: null,
@@ -41181,7 +41300,7 @@ module.exports = __webpack_require__(377)({
     };
   },
 
-  store: __webpack_require__(7),
+  store: __webpack_require__(6),
   methods: {
     next: function next() {
       try {
@@ -41190,7 +41309,7 @@ module.exports = __webpack_require__(377)({
           return (p ? p + " " : "") + v.word;
         }, null);
         this.$store.commit("setEntropy", bip39.mnemonicToEntropy(mnemonic));
-        this.$emit("push", __webpack_require__(75));
+        this.$emit("push", __webpack_require__(76));
       } catch (e) {
         this.error = true;
       }
@@ -41269,7 +41388,7 @@ module.exports = __webpack_require__(377)({
 });
 
 /***/ }),
-/* 377 */
+/* 379 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('v-ons-page',{attrs:{"data-page":"restorePassphrase"}},[_c('custom-bar',{attrs:{"title":"ウォレットの復元"}}),_vm._v(" "),_c('div',[_c('p',[_vm._v("単語を入力してください。候補を絞り込めた場合、確定します。")]),_vm._v(" "),_c('v-ons-button',{attrs:{"modifier":"quiet"},on:{"click":_vm.reset}},[_c('v-ons-icon',{attrs:{"icon":"fa-erase"}}),_vm._v("\n        単語をリセット\n      ")],1),_vm._v(" "),_c('div',{attrs:{"id":"wordArea"}},_vm._l((_vm.words),function(w,i){return _c('div',{staticClass:"word",class:{noMatch:_vm.noMatch&&i===_vm.wdLength-1}},[_c('span',{directives:[{name:"show",rawName:"v-show",value:(i!==_vm.wdLength-1),expression:"i!==wdLength-1"}],staticClass:"deleteBtn",on:{"click":function($event){_vm.remove(i)}}},[_c('v-ons-icon',{attrs:{"icon":"ion-close"}})],1),_vm._v(" "),(i!==_vm.wdLength-1)?_c('span',{staticClass:"wd"},[_vm._v(_vm._s(w.word))]):_vm._e(),_vm._v(" "),(i===_vm.wdLength-1)?_c('input',{directives:[{name:"model",rawName:"v-model",value:(w.word),expression:"w.word"},{name:"focus",rawName:"v-focus"}],attrs:{"type":"text"},domProps:{"value":(w.word)},on:{"input":[function($event){if($event.target.composing){ return; }w.word=$event.target.value},_vm.input],"keydown":[function($event){if(!('button' in $event)&&_vm._k($event.keyCode,"delete",[8,46])){ return null; }_vm.removeEvt($event)},function($event){if(!('button' in $event)&&_vm._k($event.keyCode,"enter",13)){ return null; }_vm.insert($event)}]}}):_vm._e()])})),_vm._v(" "),_c('div',{attrs:{"id":"nextWrap"}},[_c('v-ons-button',{attrs:{"modifier":"large","disabled":_vm.wdLength<=12},on:{"click":_vm.next}},[_vm._v("次へ")])],1),_vm._v(" "),_c('div',{attrs:{"id":"suggestion"}},_vm._l((_vm.suggestion),function(s){return _c('div',{staticClass:"sgst",on:{"click":function($event){_vm.apply(s)}}},[_vm._v(_vm._s(s))])})),_vm._v(" "),_c('v-ons-alert-dialog',{attrs:{"modifier":"rowfooter","visible":_vm.error},on:{"update:visible":function($event){_vm.error=$event}}},[_c('span',{attrs:{"slot":"title"},slot:"title"},[_vm._v("Error")]),_vm._v(" "),_c('p',[_vm._v("エラーが発生しました。単語の順番、スペルが間違っていないかを確認して、もう一度お試しください。")]),_vm._v(" "),_c('template',{attrs:{"slot":"footer"},slot:"footer"},[_c('div',{staticClass:"alert-dialog-button",on:{"click":function($event){_vm.error = false}}},[_vm._v("やり直す")])])],2)],1)],1)}
@@ -41293,84 +41412,6 @@ if (false) {(function () {
   module.hot.accept()
   if (module.hot.data) {
     api.rerender("data-v-7f106d04", { render: render, staticRenderFns: staticRenderFns })
-  }
-})()}
-
-
-/***/ }),
-/* 378 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var currencyList = __webpack_require__(13);
-var coinUtil = __webpack_require__(14);
-module.exports = __webpack_require__(379)({
-  data: function data() {
-    return {
-      usable: [],
-      unusable: [],
-      loading: false
-    };
-  },
-  methods: {
-    push: function push() {
-      this.$emit("push", __webpack_require__(126));
-    },
-    load: function load() {
-      var _this = this;
-
-      this.curs = [];
-      this.fiatConv = 0;
-      this.loading = true;
-      currencyList.each(function (cur) {
-        _this.loading = true;
-        var data = {
-          coinId: cur.coinId,
-          screenName: cur.coinScreenName,
-          icon: cur.icon
-        };
-        if (cur.hdPubNode) {
-          _this.usable.push(data);
-        } else {
-          _this.unusable.push(data);
-        }
-        _this.loading = false;
-      });
-    }
-  },
-  store: __webpack_require__(7),
-  mounted: function mounted() {
-    this.$nextTick(this.load);
-  }
-});
-
-/***/ }),
-/* 379 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var render = function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('v-ons-page',{attrs:{"data-page":"manageCoin"}},[_c('custom-bar',{attrs:{"title":"コインの管理"}}),_vm._v(" "),_c('v-ons-list',[_c('v-ons-list-header',[_vm._v("利用可能")]),_vm._v(" "),_vm._l((_vm.usable),function(c){return _c('v-ons-list-item',{staticClass:"coin"},[_c('div',{staticClass:"left"},[_c('img',{attrs:{"src":c.icon}})]),_vm._v(" "),_c('div',[_c('div',{staticClass:"screenName"},[_vm._v(_vm._s(c.screenName))])]),_vm._v(" "),_c('div',{staticClass:"right"},[_c('v-ons-button',{attrs:{"modifier":"quiet"}},[_c('v-ons-icon',{attrs:{"icon":"ion-trash-a"}})],1)],1)])}),_vm._v(" "),_c('v-ons-list-header',[_vm._v("無効")]),_vm._v(" "),_vm._l((_vm.unusable),function(c){return _c('v-ons-list-item',{staticClass:"coin"},[_c('div',{staticClass:"left"},[_c('img',{attrs:{"src":c.icon}})]),_vm._v(" "),_c('div',[_c('div',{staticClass:"screenName"},[_vm._v(_vm._s(c.screenName))])]),_vm._v(" "),_c('div',{staticClass:"right"},[_c('v-ons-button',{attrs:{"modifier":"quiet"}},[_c('v-ons-icon',{attrs:{"icon":"ion-plus"}})],1)],1)])})],2)],1)}
-var staticRenderFns = []
-module.exports = function (_exports) {
-  var options = typeof _exports === 'function'
-    ? _exports.options
-    : _exports
-  options.render = render
-  options.staticRenderFns = staticRenderFns
-  if (false) {
-    api.createRecord("data-v-69567200", options)
-  }
-  return _exports
-}
-var api = null
-if (false) {(function () {
-  api = require("vue-hot-reload-api")
-  api.install(require("vue"))
-  if (!api.compatible) return
-  module.hot.accept()
-  if (module.hot.data) {
-    api.rerender("data-v-69567200", { render: render, staticRenderFns: staticRenderFns })
   }
 })()}
 

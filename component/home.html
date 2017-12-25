@@ -4,7 +4,14 @@
       <v-ons-icon icon="ion-ios-reload"></v-ons-icon>
     </v-ons-toolbar-button>
   </custom-bar>
-  <div>
+  <div><v-ons-pull-hook
+      :action="load"
+      @changestate="state = $event.state"
+    >
+      <span v-show="state === 'initial'">引っ張って更新!</span>
+      <span v-show="state === 'preaction'">今だ！離せ！</span>
+      <span v-show="state === 'action'">Loading...</span>
+    </v-ons-pull-hook>
     <div id="youHave">
       <div v-show="!loading">
         <div class="label">あなたが今持っているのは</div>

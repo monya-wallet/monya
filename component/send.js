@@ -11,9 +11,8 @@ module.exports=require("./send.html")({
       balance:0,
       price:1,
       coinType:"",
-      isEasy:this.$store.state.easyUnit,
       possibility:[],
-
+      fiatTicker:this.$store.state.fiat,
       advanced:false
     }
   },
@@ -36,19 +35,18 @@ module.exports=require("./send.html")({
       this.$emit("push",require("./confirm.js"))
     },
     getPrice(){
-      coinUtil.getPrice(this.coinType,"jpy").then(res=>{
+      coinUtil.getPrice(this.coinType,this.fiatTicker).then(res=>{
         this.price=res
       })
+    },
+    calcFiat(){
+      this.$nextTick(()=>this.fiat=this.amount*this.price)
+    },
+    calcCur(){
+      this.$nextTick(()=>this.amount=this.fiat/this.price)
     }
-    
   },
   watch:{
-    fiat(){
-      this.amount=this.fiat/this.price
-    },
-    amount(){
-      this.fiat=this.amount*this.price
-    },
     address(){
       this.$set(this,"possibility",[])
       if(this.address){

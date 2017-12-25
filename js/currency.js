@@ -73,8 +73,8 @@ module.exports=class{
   getReceiveBalance(){
     return this.getUtxos(this.getReceiveAddr())
   }
-  getChangeBalance(){
-    return this.getUtxos(this.getChangeAddr()).then(d=>{
+  getChangeBalance(includeUnconfirmedFunds){
+    return this.getUtxos(this.getChangeAddr(),includeUnconfirmedFunds).then(d=>{
       let newestCnf=Infinity
       let newestAddr=""
       let bal=0
@@ -103,13 +103,13 @@ module.exports=class{
   
   getWholeBalanceOfThisAccount(){
     if(this.dummy){return Promise.resolve()}
-    return Promise.all([this.getReceiveBalance(),this.getChangeBalance()]).then(vals=>({
+    return Promise.all([this.getReceiveBalance(),this.getChangeBalance(true)]).then(vals=>({
       balance:vals[0].balance+vals[1].balance/100000000,
       unconfirmed:vals[0].unconfirmed+vals[1].unconfirmed/100000000
     }))
   }
   
-  getUtxos(addressList){
+  getUtxos(addressList,includeUnconfirmedFunds=false){
     return axios({
       url:this.apiEndpoint+"/addrs/"+addressList.join(",")+"/utxo",
       json:true,
@@ -121,12 +121,13 @@ module.exports=class{
         for(let i=0;i<v.length;i++){
           bal+=v[i].amount
           const u=v[i]
-          if(u.confirmations!==0){//avoid spending unconfimed fund
+          if(includeUnconfirmedFunds||u.confirmations!==0){
             utxos.push({
               value:u.amount*100000000,
               txId:u.txid,
               vout:u.vout,
-              address:u.address
+              address:u.address,
+              confirmations:u.confirmations
             })
           }else{
             unconfirmed+=u.amount
@@ -221,9 +222,8 @@ module.exports=class{
       const feeRate = option.feeRate
 
       const txb = new bcLib.TransactionBuilder(this.network)
-
-      
-      this.getUtxos(this.getReceiveAddr().concat(this.getChangeAddr())).then(res=>{
+ 
+      this.getUtxos(this.getReceiveAddr().concat(this.getChangeAddr()),option.includeUnconfirmedFunds).then(res=>{
         const path=[]
         const { inputs, outputs, fee } = coinSelect(res.utxos, targets, feeRate)
         if (!inputs || !outputs) throw new errors.NoSolutionError()

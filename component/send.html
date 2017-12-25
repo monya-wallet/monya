@@ -23,7 +23,7 @@
           {{co.name}}
         </label>
         <div class="right">
-          <currency-set :ticker="co.coinId" :easy="isEasy"></currency-set>
+          <currency-set :ticker="co.coinId"></currency-set>
         </div>
       </v-ons-list-item>
       <v-ons-list-item v-show="possibility.length<=0">
@@ -33,19 +33,19 @@
       <v-ons-list-header>相手に送金する金額</v-ons-list-header>
       <v-ons-list-item>
         <div class="center">
-          <v-ons-input type="number" v-model="amount" placeholder="相手に送金する金額" :disabled="!address||!coinType"></v-ons-input>
+          <v-ons-input type="number" v-model="amount" @input="calcFiat" placeholder="相手に送金する金額" :disabled="!address||!coinType"></v-ons-input>
         </div>
         <div class="right">
-          <currency-set :ticker="coinType" :easy="isEasy"></currency-set>
+          <currency-set :ticker="coinType"></currency-set>
         </div>
       </v-ons-list-item>
-      <v-ons-list-header>日本円換算</v-ons-list-header>
+      <v-ons-list-header>法定通貨換算</v-ons-list-header>
       <v-ons-list-item>
         <div class="center">
-          <v-ons-input type="number" v-model="fiat" placeholder="日本円" :disabled="!address||!coinType"></v-ons-input>
+          <v-ons-input type="number" v-model="fiat" @input="calcCur" placeholder="日本円" :disabled="!address||!coinType"></v-ons-input>
         </div>
         <div class="right">
-          <currency-set ticker="jpy" :easy="isEasy"></currency-set>
+          <currency-set :ticker="fiatTicker"></currency-set>
         </div>
       </v-ons-list-item>
       
@@ -63,7 +63,7 @@
             <v-ons-input type="number" v-model="feePerByte" placeholder="送金手数料(satoshi/Byte)" :disabled="!address||!coinType"></v-ons-input>
           </div>
           <div class="right">
-            <currency-set ticker="satByte" :easy="isEasy"></currency-set>
+            <currency-set ticker="satByte"></currency-set>
           </div>
         </v-ons-list-item>
         <v-ons-list-header>メッセージ</v-ons-list-header>

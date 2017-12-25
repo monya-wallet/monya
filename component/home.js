@@ -6,18 +6,20 @@ module.exports=require("./home.html")({
       curs:[],
       fiatConv:0,
       fiat:this.$store.state.fiat,
-      loading:false
+      loading:false,
+      state:"initial"
     }
   },
   methods:{
     push(){
       this.$emit("push",require("./send.js"))
     },
-    load(){
+    load(done){
       this.curs=[]
       this.fiatConv=0
+      this.loading=true;
       currencyList.eachWithPub(cur=>{
-        this.loading=true;
+        
         let bal=null;
         cur.getWholeBalanceOfThisAccount()
           .then(res=>{
@@ -36,12 +38,13 @@ module.exports=require("./home.html")({
               icon:cur.icon,
             })
             this.loading=false
+            typeof(done)==='function'&&done()
           })
       })
     }
   },
   store:require("../js/store.js"),
   mounted(){
-    this.$nextTick(this.load)
+    this.load()
   }
 })

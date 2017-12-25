@@ -1,10 +1,5 @@
 <v-ons-page data-page="invoice">
-  <custom-bar :title="請求する" menu="true">
-    <v-ons-toolbar-button @click="goToZaifPay">
-      Zaif
-      
-    </v-ons-toolbar-button>
-  </custom-bar>
+  <custom-bar :title="請求する" menu="true"></custom-bar>
   <div>
     <div id="currencySelector">
       <v-ons-carousel swipeable overscrollable direction="horizontal" item-height="50px" item-width="50px" :index="currencyIndex">
@@ -41,7 +36,11 @@
         </v-ons-list-item>
         <v-ons-list-item>
           <div class="center">請求額</div>
-          <div class="right"><v-ons-input v-model="amount" placeholder="金額" @change="generateQR"></v-ons-input></div>
+          <div class="right"><v-ons-input v-model="amount" placeholder="金額" @input="calcFiat"></v-ons-input><currency-set :ticker="coinType"></currency-set></div>
+        </v-ons-list-item>
+        <v-ons-list-item>
+          <div class="center">法定通貨換算</div>
+          <div class="right"><v-ons-input v-model="fiat" placeholder="換算" @input="calcCur"></v-ons-input><currency-set :ticker="fiatTicker"></currency-set></div>
         </v-ons-list-item>
         <v-ons-list-item>
           <div class="center">相手に表示する文</div>
