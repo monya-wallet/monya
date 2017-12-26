@@ -25,8 +25,8 @@ module.exports=require("./confirm.html")({
       password:"",
       cur:null,
       insufficientFund:false,
-      loading:true
-      
+      loading:true,
+      incorrect:false
     }
   },
   store:require("../js/store.js"),
@@ -62,10 +62,11 @@ module.exports=require("./confirm.html")({
           value:0
         })
       }
-      cur.buildTransaction({
+      storage.get("settings").then((data)=>cur.buildTransaction({
         targets,
-        feeRate:this.feePerByte
-      }).then(d=>{
+        feeRate:this.feePerByte,
+        includeUnconfirmedFunds:data.includeUnconfirmedFunds
+      })).then(d=>{
         this.fee=d.fee/100000000
         this.utxosToShow=d.utxos
         this.path=d.path
@@ -104,7 +105,15 @@ module.exports=require("./confirm.html")({
         this.$emit("replace",require("./finished.js"))
       }).catch(e=>{
         this.loading=false
-        this.$ons.notification.alert(e.request.responseText)
+        if(e.request){
+          this.$ons.notification.alert(e.request.responseText)
+        }else{
+          this.incorrect=true
+          this.ready=true
+          setTimeout(()=>{
+            this.incorrect=false
+          },3000)
+        }
       })
       
       

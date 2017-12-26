@@ -42,7 +42,7 @@ const coins={
  * Get supported Currencies
  * @param {function} fn(Currency).
  */
-exports.each=(fn,mode)=>{
+exports.each=(fn)=>{
   for(let curName in coins){
     if((coins[curName] instanceof Currency)&&(!coins[curName].dummy)){
       fn(coins[curName])
@@ -54,7 +54,7 @@ exports.each=(fn,mode)=>{
  * Get Available Currencies with dummy(such as fiat currency)
  * @param {function} fn(Currency).
  */
-exports.eachWithDummy=(fn,mode)=>{
+exports.eachWithDummy=(fn)=>{
   for(let curName in coins){
     if((coins[curName] instanceof Currency)){
       fn(coins[curName])
@@ -65,7 +65,7 @@ exports.eachWithDummy=(fn,mode)=>{
  * Get Available Currencies which have pubkey
  * @param {function} fn(Currency).
  */
-exports.eachWithPub=(fn,mode)=>{
+exports.eachWithPub=(fn)=>{
   for(let curName in coins){
     if((coins[curName] instanceof Currency)&&(coins[curName].hdPubNode)){
       fn(coins[curName])

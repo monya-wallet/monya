@@ -5,7 +5,11 @@ module.exports=require("./txDetail.html")({
     return {
       res:null,
       message:"",
-      coinId:""
+      fiat:this.$store.state.fiat,
+      coinId:this.$store.state.detail.coinId,
+      price:0,
+      txId:this.$store.state.detail.txId,
+      txLabel:""
     }
   },
   mounted(){
@@ -14,15 +18,19 @@ module.exports=require("./txDetail.html")({
   store:require("../js/store.js"),
   methods:{
     load(){
-      const cur = currencyList.get(this.$store.state.detail.coinId)
+      const cur = currencyList.get(this.coinId)
       this.coinId=cur.coinId
-      cur.getTx(this.$store.state.detail.txId).then(v=>{
+      cur.getTx(this.txId).then(v=>{
         this.res=v
         v.vout.forEach(o=>{
           if(o.scriptPubKey.hex.substr(0,2)==="6a"){
             this.message=bcLib.script.nullData.output.decode(new Buffer(o.scriptPubKey.hex,"hex")).toString('utf8')
           }
         })
+      })
+      cur.getTxLabel(this.txId).then(res=>{
+        this.price=res.price||""
+        this.txLabel=res.label
       })
     },
     txDetail(txId){
@@ -33,6 +41,25 @@ module.exports=require("./txDetail.html")({
         txId,coinId:this.coinId
       })
       this.$emit("push",module.exports)
+    },
+    addressClass(addr){
+      const addrTuple=currencyList.get(this.coinId).getIndexFromAddress(addr)
+      if(!addrTuple)return ""
+      if(parseInt(addrTuple[0],10)===0)return "receive"
+      if(parseInt(addrTuple[0],10)===1)return "change"
+    },
+    saveTxLabel(){
+      currencyList.get(this.coinId).saveTxLabel(this.txId,{label:this.txLabel,price:parseFloat(this.price)})
     }
   }
 })
+
+
+
+
+
+
+
+
+
+

@@ -1,6 +1,6 @@
 <span class="timestamp">
   <span class="absolute" v-if="mode==='absolute'">
-    {{d.year}}/{{d.month}}/{{d.date}}&nbsp;{{d.hour}}:{{d.minute}}:{{d.sec}}
+    {{d.year|pad}}/{{d.month|pad}}/{{d.date|pad}}&nbsp;{{d.hour|pad}}:{{d.minute|pad}}:{{d.sec|pad}}
   </span>
   <span class="relative" v-if="mode==='relative'">
     <span v-if="d.rightnow">たった今</span>

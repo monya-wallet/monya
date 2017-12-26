@@ -4,6 +4,7 @@ const coinSelect = require('coinselect')
 const errors = require("./errors")
 const bip39 = require("bip39")
 const coinUtil = require("./coinUtil")
+const storage = require("./storage")
 module.exports=class{
   
   constructor(opt){
@@ -299,14 +300,82 @@ module.exports=class{
     if(this.dummy){return Promise.resolve()}
     return axios({
       url:this.apiEndpoint+"/tx/"+txId,
-      
-      method:"GET"}).then(res=>{
+      method:"GET"})
+      .then(res=>{
         return res.data
       })
   }
+  getTxLabel(txId){
+    return storage.get("txLabels").then(res=>{
+      if(res&&res[this.coinId]){
+        if(txId){
+          return res[this.coinId][txId]||{}
+        }
+        return res[this.coinId]
+      }else{
+        return {}
+      }
+    })
+  }
+  saveTxLabel(txId,payload){
+    return storage.get("txLabels").then(res=>{
+      if(!res){
+        res={}
+      }
+      if(!res[this.coinId]){
+        res[this.coinId]={}
+      }
+      const txs=res[this.coinId][txId]
+      if(txs){
+        payload.price&&(txs.price=payload.price)
+        payload.label&&(txs.label=payload.label)
+      }else{
+        res[this.coinId][txId]={
+          price:payload.price||0,
+          label:payload.label||""
+        }
+      }
+      return storage.set("txLabels",res)
+    })
+  }
+  
+  getLabels(){
+    return storage.get("labels").then(res=>{
+      if(res&&res[this.coinId]){
+        return res[this.coinId]
+      }else{
+        return [coinUtil.DEFAULT_LABEL_NAME]
+      }
+    })
+  }
+  updateLabel(name,newName){
+    return storage.get("labels").then(res=>{
+      if(!res||!res[this.coinId]){
+        throw new Error("Label object for this currency is not created yet.");
+      }
+      const index=res[this.coinId].indexOf(name)
+      if(index>=0){
+        res[this.coinId][index]=newName
+        return storage.set("labels",res)
+      }
+      throw new errors.LabelNotFoundError()
+    })
+  }
+  createLabel(name){
+    return storage.get("labels").then(res=>{
+      if(!res){
+        res={}
+      }
+      if(!res[this.coinId]){
+        res[this.coinId]=[exports.DEFAULT_LABEL_NAME]
+      }
+      if(res[this.coinId].length>exports.GAP_LIMIT){
+        throw new errors.TooManyLabelsError()
+      }
+      if(res[this.coinId].indexOf(name)<=0){
+        res[this.coinId].push()
+      }
+      return storage.set("labels",res)
+    })
+  }
 }
-
-
-
-
-

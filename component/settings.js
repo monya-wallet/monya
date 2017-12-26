@@ -1,7 +1,22 @@
+const storage=require("../js/storage")
 module.exports=require("./settings.html")({
   data(){
     return {
-
+      d:{
+        includeUnconfirmedFunds:null,
+        zaifPay:{
+          enabled:null,
+          apiKey:"",
+          secret:""
+        },
+        useEasyUnit:null,
+        absoluteTime:null,
+        fiat:"jpy",
+        monappy:{
+          enabled:null,
+          myUserId:""
+        }
+      }
     }
   },
   methods:{
@@ -13,10 +28,18 @@ module.exports=require("./settings.html")({
     },
     goToManageCoin(){
       this.$emit("push",require("./manageCoin.js"))
-     }
-    
+    },
+    save(){
+      this.$nextTick(()=>{
+        storage.set("settings",this.d)
+        this.$store.commit("setSettings",this.d)
+      })
+    }
   },
   mounted(){
     
+    storage.get("settings").then(d=>{
+      Object.assign(this.d,d)
+    })
   }
 })

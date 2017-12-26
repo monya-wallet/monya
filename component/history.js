@@ -9,18 +9,22 @@ module.exports=require("./history.html")({
       currency:[],
       currencyIndex:0,
       txs:[],
-      state:"initial"
+      state:"initial",
+      error:false
     }
   },
   store:require("../js/store.js"),
   methods:{
     load(done){
+      this.error=false
       this.txs=[]
       const cur =currencyList.get(this.currency[this.currencyIndex].coinId)
-      cur.getTxs(0,20).then(res=>{
+
+      Promise.all([cur.getTxs(0,20), cur.getTxLabel()]).then(data=>{
+        const res=data[0]
         for(let i=0;i<res.totalItems;i++){
           const v=res.items[i]
-          
+          const txLbl=data[1][v.txid]
           //isIn=I sent
           //!isIn&&isOut=I received
           //!isOut=Mystery
@@ -58,7 +62,7 @@ module.exports=require("./history.html")({
           }
           const txToPush={
             txId:v.txid,
-            txLabel:"",
+            txLabel:txLbl?txLbl.label:"",
             
             inmatureConfirmation:v.confirmations<cur.confirmations,
             direction,
@@ -70,15 +74,26 @@ module.exports=require("./history.html")({
           this.txs.push(txToPush)
           //get tx label
         }
-        done&&done()
+        typeof(done)==='function'&&done()
+      }).catch(()=>{
+        this.error=true
+        typeof(done)==='function'&&done()
       })
+    },
+    
+    filter(tx){
+      if((this.dirFilter==="send"&&tx.aIn<tx.aOut)||(this.dirFilter==="receive"&&tx.aIn>tx.aOut)){
+        return false
+      }
+      return true
     },
     txDetail(txId){
       this.$store.commit("setTxDetail",{
         txId,coinId:this.coinId
       })
       this.$emit("push",require("./txDetail.js"))
-    }
+    },
+    sub:(a,b)=>(a*100000000-Math.round(b*100000000))/100000000
   },
   mounted(){
     currencyList.eachWithPub(cur=>{

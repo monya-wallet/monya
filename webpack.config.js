@@ -8,6 +8,9 @@ module.exports = {
     path:__dirname,
     filename:"./dist/dist.js",
   },
+  node: {
+    fs: 'empty',
+  },
   module: {
     rules: [
       {

@@ -20,7 +20,16 @@ module.exports=require("./currencySet.html")({
   store:require("../js/store.js"),
   computed:{
     tickerCap(){
-      return this.getTicker(this.ticker)+(this.fiatTicker?"/"+this.getTicker(this.fiatTicker):"")
+      if(this.fiatTicker){
+        if(this.easy){
+          return this.getTicker(this.fiatTicker)+"=1"+this.getTicker(this.ticker)
+        }else{
+          return this.getTicker(this.ticker)+"/"+this.getTicker(this.fiatTicker)
+        }
+      }else{
+        return this.getTicker(this.ticker)
+      }
+
     },
     compAmt(){
       return isNaN(parseFloat(this.amount))?"":(this.amount+"").slice(0,14)

@@ -21,12 +21,13 @@
         <v-ons-button @click="next" modifier="large" :disable="!words.length">次へ</v-ons-button>
       </v-ons-list-item>
     </v-ons-list>
-    <v-ons-alert-dialog modifier="rowfooter"
-                        :visible.sync="requirePassword"
+    <v-ons-alert-dialog
+      modifier="rowfooter"
+      :visible.sync="requirePassword"
                         >
       <span slot="title">パスワード</span>
       <p>パスワードを入力してください</p>
-      <v-ons-input placeholder="パスワード" v-model="password"></v-ons-input>
+      <v-ons-input placeholder="パスワード" v-model="password" :class="{shake:incorrect}"></v-ons-input>
       <template slot="footer">
         <div class="alert-dialog-button" @click="$emit('pop')">やめる</div>
         <div class="alert-dialog-button" @click="decrypt">追加</div>

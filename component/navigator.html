@@ -1,15 +1,17 @@
-
 <v-ons-splitter>
-  <v-ons-splitter-side width="250px" collapse="" side="left"
+  <v-ons-splitter-side
+    width="250px"
+    collapse=""
+    side="left"
     :open.sync="openSide"
-    
+    open-threshold="0.5"
+    swipe-target-width="40px"
+    swipeable
     >
     <v-ons-page>
-      
       <v-ons-list>
         <v-ons-list-item modifier="tappable" @click="home">
           <div class="left"><v-ons-icon icon="fa-home"></v-ons-icon></div>
-          
           <div class="center">ホーム</div>
         </v-ons-list-item>
         
@@ -25,6 +27,10 @@
         <v-ons-list-item modifier="tappable" @click="history">
           <div class="left"><v-ons-icon icon="fa-history"></v-ons-icon></div>
         <div class="center">履歴</div></v-ons-list-item>
+
+        <v-ons-list-item modifier="tappable" @click="monappy" v-if="$store.state.monappyEnabled">
+          <div class="left">M</div>
+          <div class="center">Monappy</div></v-ons-list-item>
         
         <v-ons-list-item modifier="tappable" @click="zaifPay" v-if="$store.state.zaifPayEnabled">
           <div class="left"><v-ons-icon icon="fa-shopping-cart"></v-ons-icon></div>
@@ -41,11 +47,7 @@
       </v-ons-list>
     </v-ons-page>
   </v-ons-splitter-side>
-
   <v-ons-splitter-content>
-   
-    
-
     <v-ons-navigator
       swipeable
       :page-stack="pageStack"

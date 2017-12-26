@@ -1,0 +1,22 @@
+<v-ons-page data-page="qrcode">
+  <div id="container">
+    <div id="overlay">
+      <div id=""></div>
+    </div>
+    <video ref="qrPreview"></video>
+    
+  </div>
+  <v-ons-fab
+    position="top left"
+    @click="back"
+    >
+      <v-ons-icon icon="fa-arrow-left"></v-ons-icon>
+    </v-ons-fab>
+    <v-ons-fab
+      position="bottom right"
+      @click="changeCam"
+      :visible="!loading"
+    >
+      <v-ons-icon icon="fa-refresh"></v-ons-icon>
+    </v-ons-fab>
+</v-ons-page>

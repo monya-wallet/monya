@@ -19,6 +19,9 @@ module.exports=require("./invoice.html")({
       fiat:0,
       price:0,
       fiatTicker:this.$store.state.fiat,
+      requestMonappy:false,
+      monappyEnabled:false,
+      monappyDestination:""
     }
   },
   store:require("../js/store.js"),
@@ -33,18 +36,20 @@ module.exports=require("./invoice.html")({
       },(err,url)=>{
         this.qrDataUrl=url
       })
-      this.currentCurIcon=currencyList.get(this.currency[this.currencyIndex].coinId).icon
+      if(this.currencyIndex!==-1){
+        this.currentCurIcon=currencyList.get(this.currency[this.currencyIndex].coinId).icon
+      }
     },
     calcFiat(){
       this.$nextTick(()=>{
-        this.fiat=this.amount*this.price
+        this.fiat=Math.ceil(this.amount*this.price*10000000)/10000000
         this.generateQR()
       })
       
     },
     calcCur(){
       this.$nextTick(()=>{
-        this.amount=this.fiat/this.price
+        this.amount=Math.ceil(this.fiat/this.price*10000000)/10000000
         this.generateQR()
       })
     },
@@ -56,6 +61,9 @@ module.exports=require("./invoice.html")({
   },
   computed:{
     url(){
+      if(this.currencyIndex===-1){
+        return "https://monappy.jp/users/send/@"+this.monappyDestination+"?amount="+parseFloat(this.amount)+"&message="+encodeURIComponent(this.message)
+      }
       if(!this.currency[this.currencyIndex]){
         return ""
       }
@@ -68,7 +76,18 @@ module.exports=require("./invoice.html")({
       })
     },
     coinType(){
-      return (this.currency[this.currencyIndex])?this.currency[this.currencyIndex].coinId:""
+      if(this.currencyIndex===-1){
+        return "mona"
+      }
+      if(this.currency[this.currencyIndex]){
+        return this.currency[this.currencyIndex].coinId
+      }
+      return ""
+    }
+  },
+  watch:{
+    currencyIndex(){
+      this.generateQR()
     }
   },
 
@@ -80,6 +99,11 @@ module.exports=require("./invoice.html")({
         name:cur.coinScreenName
       })
     })
+    storage.get("settings").then((data)=>{
+      this.monappyEnabled=data.monappy&&data.monappy.enabled;
+      this.monappyDestination=(data.monappy&&data.monappy.myUserId)||""
+    })
+    
     this.generateQR()
     coinUtil.getLabels(this.currency[this.currencyIndex].coinId).then(res=>{
         this.$set(this,"labels",res)
@@ -87,3 +111,14 @@ module.exports=require("./invoice.html")({
     this.getPrice()
   }
 })
+
+
+
+
+
+
+
+
+
+
+

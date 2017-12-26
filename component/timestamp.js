@@ -18,12 +18,14 @@ module.exports=require("./timestamp.html")({
     const dt=this.dateObj=new Date(this.timestamp*1000)
     const diffMsec=Date.now()-this.timestamp*1000
     !this.absolute&&(this.mode=this.$store.state.tsMode)
-    this.d.year=dt.getFullYear()
-    this.d.month=dt.getMonth()+1
-    this.d.date=dt.getDate()
-    this.d.hour=dt.getHours()
-    this.d.minute=dt.getMinutes()
-    this.d.sec=dt.getSeconds()
+    this.d={
+      year:dt.getFullYear()
+      ,month:dt.getMonth()+1
+      ,date:dt.getDate()
+      ,hour:dt.getHours()
+      ,minute:dt.getMinutes()
+      ,sec:dt.getSeconds()
+    }
 
     if(diffMsec<1000*60){
       this.d.rightnow=true
@@ -38,5 +40,8 @@ module.exports=require("./timestamp.html")({
     }else{
       this.d.yearAgo=(diffMsec/1000/60/60/24/30/12)|0
     }
+  },
+  filters:{
+    pad:v=>("0"+v).slice(-2)
   }
 })

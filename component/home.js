@@ -7,17 +7,19 @@ module.exports=require("./home.html")({
       fiatConv:0,
       fiat:this.$store.state.fiat,
       loading:false,
-      state:"initial"
+      state:"initial",
+      error:false
     }
   },
   methods:{
-    push(){
-      this.$emit("push",require("./send.js"))
+    qr(){
+      this.$emit("push",require("./qrcode.js"))
     },
     load(done){
       this.curs=[]
       this.fiatConv=0
       this.loading=true;
+      this.error=false
       currencyList.eachWithPub(cur=>{
         
         let bal=null;
@@ -37,6 +39,11 @@ module.exports=require("./home.html")({
               price:res,
               icon:cur.icon,
             })
+            this.loading=false
+            typeof(done)==='function'&&done()
+          })
+          .catch(()=>{
+            this.error=true
             this.loading=false
             typeof(done)==='function'&&done()
           })

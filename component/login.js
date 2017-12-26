@@ -44,6 +44,7 @@ module.exports=require("./login.html")({
             currencyList.get(coinId).setPubSeedB58(data.pubs[coinId])
           }
         }
+        
         this.$emit("replace",require("./home.js"))
       }else{
         this.loading=false

@@ -1,7 +1,10 @@
 <v-ons-page data-page="home">
   <custom-bar title="ホーム" menu="true">
     <v-ons-toolbar-button @click="load">
-      <v-ons-icon icon="ion-ios-reload"></v-ons-icon>
+      <v-ons-icon icon="fa-refresh"></v-ons-icon>
+    </v-ons-toolbar-button>
+    <v-ons-toolbar-button @click="qr">
+      <v-ons-icon icon="fa-qrcode"></v-ons-icon>
     </v-ons-toolbar-button>
   </custom-bar>
   <div><v-ons-pull-hook
@@ -18,12 +21,12 @@
         <div id="balanceWrap">
           <currency-set :amount="fiatConv" :ticker="fiat" :easy="isEasy" about="true"></currency-set>
         </div>
+        <div v-show="error">エラーが発生したようです。</div>
       </div>
       <div v-show="loading" class="spinner"></div>
     </div>
     <div id="coins">
       <v-ons-list>
-        
         <v-ons-list-item modifier="tappable" v-for="c in curs">
           <div class="left">
             <img :src="c.icon"/>
@@ -35,7 +38,7 @@
             </div>
           </div>
           <div class="w_right">
-            <div class="amount" :class='{unconfirmed:c.unconfirmed}'><currency-set :amount="c.balance" :ticker="c.coinId" :easy="isEasy"></currency-set><span v-show="c.unconfirmed">+{{c.unconfirmed}}待機中</span></div>
+            <div class="amount" :class='{unconfirmed:c.unconfirmed}'><currency-set :amount="c.balance" :ticker="c.coinId"></currency-set><span v-show="c.unconfirmed">+{{c.unconfirmed}}待機中</span></div>
             <div class="fiatConv"><currency-set :amount="c.balance*c.price" :ticker="fiat" :easy="isEasy"></currency-set></div>
           </div>
         </v-ons-list-item>

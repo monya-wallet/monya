@@ -38,7 +38,7 @@ module.exports=require("./receive.html")({
       coinUtil.copy(currencyList.get(this.currency[this.currencyIndex].coinId).bip21+":"+this.mainAddress)
     },
     getLabels(){
-      coinUtil.getLabels(this.currency[this.currencyIndex].coinId).then(res=>{
+      currencyList.get(this.currency[this.currencyIndex].coinId).getLabels().then(res=>{
         this.$set(this,"labels",res)
       })
     },
@@ -50,7 +50,7 @@ module.exports=require("./receive.html")({
         this.showLabel(cId,null,derivation[1]|0,derivation[2]|0)
         this.labelInput=""
       }else{
-        coinUtil.createLabel(cId,this.labelInput).then(()=>{
+        currencyList.get(cId).createLabel(this.labelInput).then(()=>{
           this.labelInput=""
           this.getLabels()
         })

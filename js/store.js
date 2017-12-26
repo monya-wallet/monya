@@ -9,7 +9,9 @@ module.exports = new Vuex.Store({
     showLabelPayload:{},
     tsMode:"relative",
     detail:{},
-    zaifPayEnabled:true
+    zaifPayEnabled:false,
+    monappyEnabled:false,
+    sendUrl:""
   },
   mutations: {
     setEntropy(state,ent) {
@@ -17,6 +19,15 @@ module.exports = new Vuex.Store({
     },
     deleteEntropy(state){
       state.entropy=null
+    },
+    setSettings(state,d){
+      //d can be incomplete,please be careful
+      state.zaifPayEnabled=d.zaifPay?d.zaifPay.enabled:false
+      state.monappyEnabled=d.monappy?d.monappy.enabled:false
+      state.fiat=d.fiat||"jpy"
+      state.easyUnit=d.useEasyUnit
+      state.tsMode=d.absoluteTime?"absolute":"relative"
+      
     },
     setConfirmation(state,payload){
       state.confPayload={
@@ -49,6 +60,9 @@ module.exports = new Vuex.Store({
     setTxDetail(state,d){
       state.detail.coinId=d.coinId
       state.detail.txId=d.txId
+    },
+    setSendUrl(state,url){
+      state.sendUrl=url||""
     }
   }
 })

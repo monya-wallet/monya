@@ -5,11 +5,13 @@ module.exports=require("./navigator.html")({
     return {
       pageStack:[],
       openSide:false,
-      pageParam:null
+      pageParam:null,
+      dataLoaded:false
     }
   },
   store:require("../js/store.js"),
   methods:{
+
     home(){
       this.openSide=false;this.$set(this,"pageStack",[require("./home.js")])
     },
@@ -28,6 +30,9 @@ module.exports=require("./navigator.html")({
     help(){
       this.openSide=false;this.$set(this,"pageStack",[require("./help.js")])
     },
+    monappy(){
+      this.openSide=false;this.$set(this,"pageStack",[require("./monappy.js")])
+    },
     zaifPay(){
       this.openSide=false;this.$set(this,"pageStack",[require("./zaifPay.js")])
     },
@@ -35,11 +40,14 @@ module.exports=require("./navigator.html")({
   created(){
     storage.get("keyPairs").then((data)=>{
       if(data){
-        
         this.pageStack.push(require("./login.js"))
       }else{
         this.pageStack.push(require("./first.js"))
       }
+      this.dataLoaded=true
+    })
+    storage.get("settings").then((data)=>{
+      this.$store.commit("setSettings",data)
     })
   }
 })

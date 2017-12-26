@@ -35,7 +35,7 @@
         <v-ons-input placeholder="パスワード" v-model="password"></v-ons-input>
       </v-ons-list-item>
       <v-ons-list-item>
-        <v-ons-button modifier="large" @click="next" :disabled="!ready||!password">送金</v-ons-button>
+        <v-ons-button :class="{shake:incorrect}" modifier="large" @click="next" :disabled="!ready||!password">送金</v-ons-button>
       </v-ons-list-item>
       <!--<v-ons-list-item @click="showDetail=true" v-show="showDetail">
           <div class="left"><v-ons-icon icon="fa-caret-down"></v-ons-icon></div>

@@ -21,7 +21,7 @@ module.exports=require("./showLabel.html")({
     },
     update(){
       const p=this.$store.state.showLabelPayload
-      coinUtil.updateLabel(p.coinId,this.label,this.labelInput).then(()=>{
+      currencyList.get(p.coinId).updateLabel(this.label,this.labelInput).then(()=>{
         this.edit=false;
         this.label=p.label=this.labelInput
         this.labelInput=""

@@ -4,7 +4,7 @@ const bip39 = require("bip39")
 const crypto = require('crypto');
 const storage = require("./storage")
 const errors=require("./errors")
-
+const coinUtil=require("../js/coinUtil")
 
 exports.DEFAULT_LABEL_NAME = "Default"
 exports.GAP_LIMIT=20
@@ -90,42 +90,22 @@ exports.decryptKeys=(option)=>new Promise((resolve, reject) => {
   }
 });
 
-exports.createLabel=(cId,name)=>storage.get("labels").then(res=>{
-  if(!res){
-    res={}
-  }
-  if(!res[cId]){
-    res[cId]=[exports.DEFAULT_LABEL_NAME]
-  }
-  if(res[cId].length>exports.GAP_LIMIT){
-    throw new errors.TooManyLabelsError()
-  }
-  if(res[cId].indexOf(name)<=0){
-    res[cId].push()
-  }
-  return storage.set("labels",res)
-})
+exports.createLabel=(cId,name)=>{
+  console.warn("Currency.createLabel is deprecated")
+  return currencyList.get(cId).createLabel(name)
+}
 
 
-exports.updateLabel=(cId,name,newName)=>storage.get("labels").then(res=>{
-  if(!res||!res[cId]){
-    throw new Error("Label object for this currency is not created yet.");
-  }
-  const index=res[cId].indexOf(name)
-  if(index>=0){
-    res[cId][index]=newName
-    return storage.set("labels",res)
-  }
-  throw new errors.LabelNotFoundError()
-})
+exports.updateLabel=(cId,name,newName)=>{
+  console.warn("Currency.updateLabel is deprecated")
+  return currencyList.get(cId).updateLabel(name,newName)
+}
 
-exports.getLabels=(cId)=>storage.get("labels").then(res=>{
-  if(res&&res[cId]){
-    return res[cId]
-  }else{
-    return [exports.DEFAULT_LABEL_NAME]
-  }
-})
+exports.getLabels=(cId)=>{
+  console.warn("Currency.getLabels is deprecated")
+  return currencyList.get(cId).getLabels()
+}
+  
 exports.copy=data=>{
 
 }
@@ -139,3 +119,53 @@ exports.getBip21=(bip21Urn,address,query)=>{
   }
   return bip21Urn+":"+address+queryStr
 };
+
+exports.parseUrl=url=>new Promise((resolve,reject)=>{
+  const raw=new URL(url)
+  const ret = {
+    url,
+    raw,
+    protocol:raw.protocol.slice(0,-1),
+    isCoinAddress:false,
+    isPrefixOk:false,
+    isValidAddress:false,
+    coinId:"",
+    address:"",
+    message:"",
+    amount:0,
+    opReturn:"",
+    label:""
+  }
+  currencyList.each(v=>{
+    if(v.bip21===ret.protocol){
+      ret.isCoinAddress=true
+      ret.coinId=v.coinId
+      ret.address=raw.pathname
+      for(let i=v.prefixes.length-1;i>=0;i--){
+        if(v.prefixes[i]===ret.address[0]){
+          ret.isPrefixOk=true
+          break
+        }
+      }
+      ret.isValidAddress=coinUtil.isValidAddress(ret.address)
+      ret.message=raw.searchParams.get("message")
+      ret.label=raw.searchParams.get("label")
+      ret.amount=raw.searchParams.get("amount")
+      ret.opReturn=raw.searchParams.get("req-opreturn")
+    }
+  })
+  
+  resolve(ret)
+})
+
+
+
+
+
+
+
+
+
+
+
+

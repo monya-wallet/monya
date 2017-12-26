@@ -31,6 +31,11 @@ ons-list-item{
     }
 }
 
+.shake{
+  animation: shake 0.72s cubic-bezier(.36,.07,.19,.97) both;
+  transform: translate3d(0, 0, 0);
+}
+
 [data-page="home"]{
   #youHave{
     width:100%;
@@ -101,6 +106,16 @@ ons-list-item{
   .list--inset{
     margin-top:10px;
   }
+  .addr{
+    font-size:0.8em;
+    padding:4px;
+  }
+  .addr.receive{
+    color:#4a2;
+  }
+  .addr.change{
+    color:#29a;
+  }
 }
 [data-page="history"]{
   ons-list-item{
@@ -118,8 +133,11 @@ ons-list-item{
       color:#fb8c00;
     }
   }
+  .container{
+    text-align:center;
+  }
 }
-[data-page="showLabel"],[data-page="receive"],[data-page="history"]{
+[data-page="showLabel"],[data-page="receive"],[data-page="history"],[data-page="invoice"]{
   #currencySelector{
     width:100%;
     margin:none;
@@ -140,37 +158,13 @@ ons-list-item{
         background-position:center center;
         background-size:contain;
         background-repeat:no-repeat;
-        background-image:url(../res/success_wo_mona.png);
+        background-image:url(../res/currency_checkmark.png);
       }
     }
   }
 }
 [data-page="showLabel"],[data-page="invoice"],[data-page="receive"]{
   text-align:center;
-  #currencySelector{
-    width:100%;
-    margin:none;
-    padding:none;
-    .currencyIcon{
-      margin:3px;
-      width:$currencySelectorHeight - 3px;
-      height:$currencySelectorHeight - 3px;
-      background-position:center center;
-      background-size:contain;
-      background-repeat:no-repeat;
-      .checked{
-        position:absolute;
-        bottom:0;
-        right:0;
-        width:$currencySelectorHeight/2;
-        height:$currencySelectorHeight/2;
-        background-position:center center;
-        background-size:contain;
-        background-repeat:no-repeat;
-        background-image:url(../res/success_wo_mona.png);
-      }
-    }
-  }
   #simple{
     .label{
       margin:10px;
@@ -208,11 +202,18 @@ ons-list-item{
         -webkit-user-select: text;
         -moz-user-select: text;
         -ms-user-select: text;
+        word-wrap: break-word;
+        word-break: break-all;
+        white-space: pre-wrap;
       }
     }
   }
 }
-
+[data-page="invoice"]{
+  .currencyIcon.monappy{
+    background-image:url(../res/monappy.png);
+  }
+}
 $iconSize:100px;
 [data-page="first"]{
   .wrap{
@@ -356,6 +357,7 @@ $iconSize:100px;
     color:red;
   }
 }
+
 [data-page="finished"]{
   .succeeded{
     
@@ -423,6 +425,33 @@ $zaifPayLogoSize:200px;
     background-position:center center;
   }
 }
+
+[data-page="qrcode"]{
+  #container{
+    width:100%;
+    height:100%;
+    position:absolute;
+    top:0;
+    left:0;
+    background-color: #012;
+    video{
+      width:100%;
+      height:100%;
+      position:absolute;
+      top:0;
+      left:0;
+    }
+    .overlay{
+      width:100%;
+      height:100%;
+      position:absolute;
+      top:0;
+      left:0;
+      
+    }
+  }
+}
+
 @keyframes shake {
   10%, 90% {
     transform: translate3d(-1px, 0, 0);

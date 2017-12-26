@@ -13,13 +13,15 @@ module.exports=require("./send.html")({
       coinType:"",
       possibility:[],
       fiatTicker:this.$store.state.fiat,
-      advanced:false
+      advanced:false,
+      label:"",
+      messageToShow:""
     }
   },
   store:require("../js/store.js"),
   methods:{
     confirm(){
-      if(!this.address||!this.coinType||!this.amount||!this.feePerByte||!coinUtil.isValidAddress(this.address)){
+      if(!this.address||!this.coinType||isNaN(this.amount*1)||(this.amount*1)<=0||!this.feePerByte||!coinUtil.isValidAddress(this.address)){
         
         this.$ons.notification.alert("正しく入力してね！")
         return;
@@ -40,29 +42,49 @@ module.exports=require("./send.html")({
       })
     },
     calcFiat(){
-      this.$nextTick(()=>this.fiat=this.amount*this.price)
+     this.$nextTick(()=> this.fiat=Math.ceil(this.amount*this.price*10000000)/10000000)
     },
     calcCur(){
-      this.$nextTick(()=>this.amount=this.fiat/this.price)
+      this.$nextTick(()=>this.amount=Math.ceil(this.fiat/this.price*10000000)/10000000)
+    },
+    qr(){
+      this.$emit("push",require("./qrcode.js"))
     }
   },
   watch:{
     address(){
       this.$set(this,"possibility",[])
       if(this.address){
-        currencyList.eachWithPub((cur)=>{
-          if(cur.prefixes.indexOf(this.address[0])>=0){
+        coinUtil.parseUrl(this.address).then(u=>{
+          if(u.isCoinAddress&&u.isPrefixOk&&u.isValidAddress){
+            this.coinType=u.coinId
             this.possibility.push({
-              name:cur.coinScreenName,
-              coinId:cur.coinId
+              name:currencyList.get(u.coinId).coinScreenName,
+              coinId:u.coinId
             })
+            this.address=u.address
+            this.message=u.opReturn
+            this.messageToShow=u.message
+            this.amount=u.amount
+            this.label=u.label
+            return
+          }
+          
+        }).catch(()=>{
+          currencyList.eachWithPub((cur)=>{
+            if(cur.prefixes.indexOf(this.address[0])>=0){
+              this.possibility.push({
+                name:cur.coinScreenName,
+                coinId:cur.coinId
+              })
+            }
+          })
+          if(this.possibility[0]){
+            this.coinType=this.possibility[0].coinId
+          }else{
+            this.coinType=""
           }
         })
-        if(this.possibility[0]){
-          this.coinType=this.possibility[0].coinId
-        }else{
-          this.coinType=""
-        }
       }else{
         this.coinType=""
       }
@@ -75,6 +97,12 @@ module.exports=require("./send.html")({
     }
   },
   mounted(){
-    
+    const url=this.$store.state.sendUrl
+    if(url){
+      this.$nextTick(()=>{
+        this.address=url
+      })
+      this.$store.commit("setSendUrl")
+    }
   }
 })

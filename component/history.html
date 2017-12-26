@@ -3,6 +3,9 @@
     <v-ons-toolbar-button @click="filterDlg=true">
       <v-ons-icon icon="fa-filter"></v-ons-icon>
     </v-ons-toolbar-button>
+    <v-ons-toolbar-button @click="load">
+      <v-ons-icon icon="fa-refresh"></v-ons-icon>
+    </v-ons-toolbar-button>
   </custom-bar>
   <div>
     <v-ons-pull-hook
@@ -20,10 +23,14 @@
         </v-ons-carousel-item>
       </v-ons-carousel>
     </div>
-    <div class="spinner" v-show="!txs.length"></div>
+    <div class="container">
+      <div class="spinner" v-show="!txs.length&&!error"></div>
+      <p v-show="error">エラーが発生しました。</p>
+    </div>
+    
     <v-ons-list>
       
-      <v-ons-list-item modifier="tappable" v-for="tx in txs" @click="txDetail(tx.txId)">
+      <v-ons-list-item modifier="tappable" v-for="tx in txs" v-if="filter(tx)" @click="txDetail(tx.txId)">
         <div>
           <div class="label" v-show="!tx.txLabel">名称未設定</div>
           <div class="label" v-show="tx.txLabel">{{tx.txLabel}}</div>
@@ -36,7 +43,7 @@
             <v-ons-icon icon="fa-exclamation" class="inmatureConfirmation" v-show="inmatureConfirmation"></v-ons-icon>
           </span>
           
-          <currency-set :amount="tx.aOut-tx.aIn" :ticker="coinId"></currency-set>
+          <currency-set :amount="sub(tx.aOut,tx.aIn)" :ticker="coinId"></currency-set>
           
         </div>
       </v-ons-list-item>

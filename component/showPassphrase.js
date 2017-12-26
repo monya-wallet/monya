@@ -8,7 +8,8 @@ module.exports=require("./showPassphrase.html")({
       words:[],
       password:"",
       requirePassword:false,
-      showNext:true
+      showNext:true,
+      incorrect:false
     }
   },
   store:require("../js/store.js"),
@@ -23,10 +24,14 @@ module.exports=require("./showPassphrase.html")({
       storage.get("keyPairs").then((cipher)=>{
         this.render(
           coinUtil.decrypt(cipher.entropy,this.password)
-          
         )
         this.requirePassword=false
         this.password=""
+      }).catch(()=>{
+        this.incorrect=true
+        setTimeout(()=>{
+          this.incorrect=false
+        },3000)
       })
     }
   },
