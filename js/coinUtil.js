@@ -175,7 +175,7 @@ exports.parseUrl=url=>new Promise((resolve,reject)=>{
 })
 
 exports.proxyUrl=url=>{
-  return 'http://localhost:4545/proxy/'+encodeURIComponent(url)
+  return 'https://zaif-status.herokuapp.com/'+encodeURIComponent(url)
 }
 exports.shortWait=()=>new Promise(r=>{
   setTimeout(r,150)

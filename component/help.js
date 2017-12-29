@@ -5,8 +5,9 @@ module.exports=require("./help.html")({
     }
   },
   methods:{
-    
-    
+    about(){
+      this.$emit("push",require("./about.js"))
+    }
   },
   mounted(){
     
