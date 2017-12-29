@@ -42,7 +42,7 @@ module.exports=require("./login.html")({
     Promise.all([storage.get("keyPairs"),storage.get("addresses")]).then(res=>{
       const data=res[0]
       const addrs=res[1]||{}
-
+      this.$store.commit("setKeyPairsExistence",!!data)
       if(!data||!data.pubs){
         this.loading=false
         return

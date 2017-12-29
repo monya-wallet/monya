@@ -62,7 +62,7 @@
            <v-ons-button modifier="large" @click="createInvoice">保存 & 請求発行</v-ons-button>
          </v-ons-list-item>
          <v-ons-list-header>保存された請求</v-ons-list-header>
-         <v-ons-list-item modifier="tappable chevron" v-for="inv in invoices">
+         <v-ons-list-item modifier="tappable chevron" v-for="inv in invoices" @click="showInvoice(inv.invoiceId)">
            <div class="center">{{inv.itemName}}</div>
            <div class="right">
              <timestamp :timestamp="inv.created"></timestamp>

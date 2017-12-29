@@ -78,6 +78,10 @@ module.exports=require("./zaifPay.html")({
         }
         this.loading=false
       })
+    },
+    showInvoice(id){
+      this.$store.commit("setZaifPayInvoiceId",id)
+      this.$emit("push",require("./zaifPayInvoice"))
     }
   },
   mounted(){

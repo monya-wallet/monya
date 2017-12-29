@@ -12,7 +12,8 @@ module.exports = new Vuex.Store({
     zaifPayEnabled:false,
     monappyEnabled:false,
     sendUrl:"",
-    zaifPayInvoiceId:""
+    zaifPayInvoiceId:"",
+    hasKeyPairs:false
   },
   mutations: {
     setEntropy(state,ent) {
@@ -67,6 +68,9 @@ module.exports = new Vuex.Store({
     },
     setZaifPayInvoiceId(state,id){
       state.zaifPayInvoiceId=id||""
+    },
+    setKeyPairsExistence(state,flag){
+      state.hasKeyPairs=flag
     }
   }
 })

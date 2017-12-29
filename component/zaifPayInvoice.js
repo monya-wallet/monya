@@ -14,7 +14,7 @@ module.exports=require("./zaifPayInvoice.html")({
   methods:{
     getInvoice(){
       this.loading=true;
-      storage.get("settings").then((d)=>{
+      storage.get("settings").then((d)=>
         axios({
           method:"POST",
           url:coinUtil.proxyUrl("https://api.zaif.jp/ecapi"),
@@ -26,18 +26,19 @@ module.exports=require("./zaifPayInvoice.html")({
             nonce:(Date.now()/1000)+""
           }
         })
-      }).then(res=>{
+      ).then(res=>{
         if(!res.data.success){
           throw new Error("Not successful")
         }
-        this.res=res.data
-        this.currentCurIcon=currencyList.get(res.currency).icon
+        
+        this.$set(this,"res",res.data.return)
+        this.currentCurIcon=currencyList.get(this.res.currency).icon
         this.generateQR()
       }).catch(e=>{
         if(e&&e.response){
-          this.$ons.notifications.alert(e.response.status)
+          this.$ons.notification.alert(e.response.status)
         }else{
-          this.$ons.notifications.alert("An error occured, not 502.")
+          this.$ons.notification.alert("An error occured, not 502.")
         }
       })
     },
@@ -45,13 +46,13 @@ module.exports=require("./zaifPayInvoice.html")({
       coinUtil.copy(this.res.address)
     },
     generateQR(){
-      qrcode.toDataURL(this.res.bip21,{
+      qrcode.toDataURL(this.res.BIP21,{
         errorCorrectionLevel: 'M',
         type: 'image/png'
       },(err,url)=>{
         this.qrDataUrl=url
       })
-    },
+    }
   },
   computed:{
     curAmt(){
@@ -63,7 +64,7 @@ module.exports=require("./zaifPayInvoice.html")({
       if(data.zaifPay){
         this.hasCredentials=data.zaifPay.apiKey&&data.zaifPay.secret
       }
-      
+      this.getInvoice()
     })
     
   }

@@ -44,10 +44,11 @@ module.exports=require("./navigator.html")({
       }else{
         this.pageStack.push(require("./first.js"))
       }
+      this.$store.commit("setKeyPairsExistence",!!data)
       this.dataLoaded=true
     })
     storage.get("settings").then((data)=>{
-      this.$store.commit("setSettings",data)
+      this.$store.commit("setSettings",data||{})
     })
   }
 })

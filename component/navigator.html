@@ -6,7 +6,7 @@
     :open.sync="openSide"
     open-threshold="0.5"
     swipe-target-width="40px"
-    swipeable
+    :swipeable="$store.state.hasKeyPairs"
     >
     <v-ons-page>
       <v-ons-list>

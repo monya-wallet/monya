@@ -47,19 +47,13 @@
       <v-ons-list-item>
         <div class="center">アドレス</div>
         <div class="right">
-          <v-ons-input v-model="address"></v-ons-input>
+          <v-ons-input v-model="res.address"></v-ons-input>
         </div>
       </v-ons-list-item>
       <v-ons-list-item>
         <div class="center">（日本円）</div>
         <div class="right">
-          <currency-set :amount="amount" ticker="jpy"></currency-set>
-        </div>
-        <v-ons-list-item>
-        </v-ons-list-item>
-        <div class="center">商品名</div>
-        <div class="right">
-          みじっそう
+          <currency-set :amount="res.amount" ticker="jpy"></currency-set>
         </div>
       </v-ons-list-item>
       <v-ons-list-item>
