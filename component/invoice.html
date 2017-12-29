@@ -23,11 +23,11 @@
         </div>
         <div class="address">{{url}}</div>
       </div>
+      <v-ons-button @click="copyAddress">
+        <v-ons-icon icon="fa-clipboard"></v-ons-icon>
+        アドレスコピー
+      </v-ons-button>
       <div v-if="isNative">
-        <v-ons-button>
-          <v-ons-icon icon="fa-clipboard"></v-ons-icon>
-          アドレスコピー
-        </v-ons-button>
         <v-ons-button>
           <v-ons-icon icon="fa-share"></v-ons-icon>共有
         </v-ons-button>

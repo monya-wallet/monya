@@ -107,7 +107,23 @@ exports.getLabels=(cId)=>{
 }
   
 exports.copy=data=>{
+  const temp = document.createElement('div');
 
+  temp.textContent = data;
+
+  const s = temp.style;
+  s.position = 'fixed';
+  s.left = '-100%';
+  s.userSelect="text"
+
+  document.body.appendChild(temp);
+  document.getSelection().selectAllChildren(temp);
+
+  const result = document.execCommand('copy');
+
+  document.body.removeChild(temp);
+  // true なら実行できている falseなら失敗か対応していないか
+  return result;
 }
 
 exports.getBip21=(bip21Urn,address,query)=>{

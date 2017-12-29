@@ -1,7 +1,7 @@
 require("../scss/index.scss")
 require('../dist/onsenui/css/onsenui.css')
 require('../dist/onsenui/css/onsen-css-components.css')
-//const Vue = require("vue/dist/vue")
+const Vue = require("vue/dist/vue.runtime.min")
 //const VueOnsen = require("vue-onsenui")
 const Vuex = require("vuex")
 
@@ -19,6 +19,9 @@ Vue.directive('focus', {
 })
 exports.vm= new Vue({
   el:"#app",
+  render(h){
+    return h("navigator")
+  },
   data(){
     return {}
   },

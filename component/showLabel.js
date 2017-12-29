@@ -17,7 +17,7 @@ module.exports=require("./showLabel.html")({
   store:require("../js/store.js"),
   methods:{
     copyAddress(){
-      
+      coinUtil.copy(currencyList.get(this.$store.state.showLabelPayload.coinId).bip21+":"+this.address)
     },
     update(){
       const p=this.$store.state.showLabelPayload
