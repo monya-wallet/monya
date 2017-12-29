@@ -34,6 +34,10 @@ module.exports=class{
     if(this.dummy){return}
     this.hdPubNode = bcLib.HDNode.fromBase58(seed,this.network)
   }
+  pregenerateAddress(){
+    this.getReceiveAddr()
+    this.getChangeAddr()
+  }
   getAddressProp(propName,address){
     if(this.dummy){return Promise.resolve()}
     return axios({
@@ -280,7 +284,6 @@ module.exports=class{
       })
   }
 
-
   getTxs(from,to){
     if(this.dummy){return Promise.resolve()}
     return axios({
@@ -296,6 +299,7 @@ module.exports=class{
         return res.data
       })
   }
+  
   getTx(txId){
     if(this.dummy){return Promise.resolve()}
     return axios({
@@ -367,13 +371,13 @@ module.exports=class{
         res={}
       }
       if(!res[this.coinId]){
-        res[this.coinId]=[exports.DEFAULT_LABEL_NAME]
+        res[this.coinId]=[coinUtil.DEFAULT_LABEL_NAME]
       }
       if(res[this.coinId].length>exports.GAP_LIMIT){
         throw new errors.TooManyLabelsError()
       }
       if(res[this.coinId].indexOf(name)<=0){
-        res[this.coinId].push()
+        res[this.coinId].push(name)
       }
       return storage.set("labels",res)
     })

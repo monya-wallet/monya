@@ -11,7 +11,8 @@ module.exports = new Vuex.Store({
     detail:{},
     zaifPayEnabled:false,
     monappyEnabled:false,
-    sendUrl:""
+    sendUrl:"",
+    zaifPayInvoiceId:""
   },
   mutations: {
     setEntropy(state,ent) {
@@ -63,6 +64,9 @@ module.exports = new Vuex.Store({
     },
     setSendUrl(state,url){
       state.sendUrl=url||""
+    },
+    setZaifPayInvoiceId(state,id){
+      state.zaifPayInvoiceId=id||""
     }
   }
 })

@@ -9,7 +9,8 @@ module.exports=require("./setPassword.html")({
       password:"",
       password2:"",
       change:false,
-      error:false
+      error:false,
+      loading:false
     }
   },
   store:require("../js/store.js"),
@@ -18,18 +19,19 @@ module.exports=require("./setPassword.html")({
       if(!this.password||this.password!==this.password2){
         return;
       }
+      this.loading=true
       let cipherPromise=null;
       if(this.change){
         cipherPromise=storage.get("keyPairs").then((cipher)=>coinUtil.makePairsAndEncrypt({
           entropy:coinUtil.decrypt(cipher.entropy,this.currentPassword),
           password:this.password,
-          makeCur:["mona"]
+          makeCur:Object.keys(cipher.pubs)
         }))
       }else{
         cipherPromise=coinUtil.makePairsAndEncrypt({
           entropy:this.$store.state.entropy,
           password:this.password,
-          makeCur:["mona"]
+          makeCur:["mona","zny"]
         })
       }
       cipherPromise.then((data)=>storage.set("keyPairs",data))
@@ -40,6 +42,7 @@ module.exports=require("./setPassword.html")({
           
         }).catch(()=>{
           this.error=true
+          this.loading=false
         })
     }
     

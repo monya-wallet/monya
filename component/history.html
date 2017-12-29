@@ -24,8 +24,9 @@
       </v-ons-carousel>
     </div>
     <div class="container">
-      <div class="spinner" v-show="!txs.length&&!error"></div>
+      <div class="spinner" v-show="!txs.length&&!error&&!noData"></div>
       <p v-show="error">エラーが発生しました。</p>
+      <p v-show="noData">履歴がありません。取引しましょう。</p>
     </div>
     
     <v-ons-list>
@@ -39,8 +40,8 @@
           <span class="date"><timestamp :timestamp="tx.timestamp"></timestamp></span>
           <span class="symbols">
             <v-ons-icon icon="fa-comment" class="hasMsg" v-show="tx.hasMessage"></v-ons-icon>
-            <v-ons-icon icon="fa-bell" class="unread"></v-ons-icon>
-            <v-ons-icon icon="fa-exclamation" class="inmatureConfirmation" v-show="inmatureConfirmation"></v-ons-icon>
+            <v-ons-icon icon="fa-money" class="hasPrice" v-show="tx.price"></v-ons-icon>
+            <v-ons-icon icon="fa-exclamation" class="inmatureConfirmation" v-show="tx.inmatureConfirmation"></v-ons-icon>
           </span>
           
           <currency-set :amount="sub(tx.aOut,tx.aIn)" :ticker="coinId"></currency-set>

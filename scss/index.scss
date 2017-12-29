@@ -129,8 +129,8 @@ ons-list-item{
     .hasMsg{
       color:#81d4fa;
     }
-    .unread{
-      color:#fb8c00;
+    .hasPrice{
+      color:#4caf50;
     }
   }
   .container{
@@ -414,15 +414,60 @@ $passwordHeight:35px;
 }
 $zaifPayLogoSize:200px;
 [data-page="zaifPay"]{
-  text-align:center;
-  .logo{
-    display: inline-block;
-    width: $zaifPayLogoSize;
-    height: $zaifPayLogoSize;
-    background-image:url(../res/zaifpay.png);
-    background-repeat:no-repeat;
-    background-size:contain;
-    background-position:center center;
+  .hasNoCredentials{
+    text-align:center;
+    .logo{
+      display: inline-block;
+      width: $zaifPayLogoSize;
+      height: $zaifPayLogoSize;
+      background-image:url(../res/zaifpay.png);
+      background-repeat:no-repeat;
+      background-size:contain;
+      background-position:center center;
+    }
+  }
+}
+[data-page="zaifPayInvoice"]{
+  .label{
+    margin:10px;
+    color: #888;
+  }
+  #qrArea{
+    
+    #qrcode{
+      width: 250px;
+      height: 250px;
+      background-color:#aaa;
+      display:inline-block;
+      margin:10px;
+      position:relative;
+      #qrcodeImage{
+        width:100%;
+        height:100%;
+      }
+      #currentCurIcon{
+        position:absolute;
+        width:$qrCurIconPercent;
+        height:$qrCurIconPercent;
+        top:50%;
+        left:50%;
+        margin-left:-$qrCurIconPercent / 2;
+        margin-top:-$qrCurIconPercent / 2;
+        background-position:center center;
+        background-size:contain;
+        background-repeat:no-repeat;
+      }
+    }
+    .address{
+      display: block;
+      user-select:text;
+      -webkit-user-select: text;
+      -moz-user-select: text;
+      -ms-user-select: text;
+      word-wrap: break-word;
+      word-break: break-all;
+      white-space: pre-wrap;
+    }
   }
 }
 

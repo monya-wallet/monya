@@ -57,6 +57,9 @@ module.exports=require("./invoice.html")({
       coinUtil.getPrice(this.coinType,this.fiatTicker).then(res=>{
         this.price=res
       })
+    },
+    zaifPay(){
+      this.$emit("push",require("./zaifPay.js"))
     }
   },
   computed:{
@@ -105,20 +108,9 @@ module.exports=require("./invoice.html")({
     })
     
     this.generateQR()
-    coinUtil.getLabels(this.currency[this.currencyIndex].coinId).then(res=>{
+    currencyList.get(this.currency[this.currencyIndex].coinId).getLabels().then(res=>{
         this.$set(this,"labels",res)
     })
     this.getPrice()
   }
 })
-
-
-
-
-
-
-
-
-
-
-

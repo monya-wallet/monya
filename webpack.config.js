@@ -13,7 +13,7 @@ module.exports = {
   },
   module: {
     rules: [
-      {
+      /*{
         test: /\.js$/,
         exclude: /node_modules/,
         use: {
@@ -22,7 +22,7 @@ module.exports = {
             presets: ['env']
           }
         }
-      },{
+      },*/{
         test: /\.scss$/,
         use:[{
           loader: "style-loader" // creates style nodes from JS strings

@@ -10,18 +10,24 @@ module.exports=require("./history.html")({
       currencyIndex:0,
       txs:[],
       state:"initial",
-      error:false
+      error:false,
+      noData:false
     }
   },
   store:require("../js/store.js"),
   methods:{
     load(done){
+      this.noData=false
       this.error=false
       this.txs=[]
       const cur =currencyList.get(this.currency[this.currencyIndex].coinId)
 
       Promise.all([cur.getTxs(0,20), cur.getTxLabel()]).then(data=>{
         const res=data[0]
+        if(!res.totalItems){
+          this.noData=true
+          typeof(done)==='function'&&done()
+        }
         for(let i=0;i<res.totalItems;i++){
           const v=res.items[i]
           const txLbl=data[1][v.txid]
@@ -63,8 +69,8 @@ module.exports=require("./history.html")({
           const txToPush={
             txId:v.txid,
             txLabel:txLbl?txLbl.label:"",
-            
-            inmatureConfirmation:v.confirmations<cur.confirmations,
+            price:txLbl&&txLbl.price,
+            inmatureConfirmation:!v.confirmations||v.confirmations<cur.confirmations,
             direction,
             aIn,
             aOut,

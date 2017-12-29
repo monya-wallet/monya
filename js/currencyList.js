@@ -1,5 +1,6 @@
 const Currency = require("./currency")
 const axios = require('axios');
+const coinUtil=require("../js/coinUtil")
 
 const coins={
   mona:new Currency({//key = coinId that is lowercase ticker symbol
@@ -34,9 +35,75 @@ const coins={
       json:true,
       jsonPath:["data","last"],
       fiat:"jpy"
+    },
+    confirmations:6
+  }),
+  zny:new Currency({//key = coinId that is lowercase ticker symbol
+    coinScreenName:"ビットゼニー",
+    coinId:"zny",
+    unit:"ZNY",
+    unitEasy:"ゼニー",
+    bip44:{
+      coinType:123,//from slip44
+      account:0
+    },
+    bip21:"bitzeny",
+    defaultFeeSatPerByte:200,//will implement dynamic fee
+    icon:require("../res/coins/zny.png"),
+    defaultAPIEndpoint:"https://zenyinsight.tomotomo9696.xyz/api",
+    network:{
+      messagePrefix: '\x19Bitzeny Signed Message:\n',
+      bip32: {
+        public: 0x0488b21e,
+        
+        private: 0x0488ade4
+      },
+      pubKeyHash: 81,// Z
+      scriptHash: 5,// 3
+      wif: 128
+    },
+    enableSegwit:false,
+    prefixes:["Z","3"],
+    price:{
+      url:coinUtil.proxyUrl("https://www.coingecko.com/price_charts/bitzeny/jpy/24_hours.json"),
+      json:true,
+      jsonPath:["stats",0,1],
+      fiat:"jpy"
     }
   }),
-  
+  btc:new Currency({//key = coinId that is lowercase ticker symbol
+    coinScreenName:"ビットコイン",
+    coinId:"btc",
+    unit:"BTC",
+    unitEasy:"ビットコイン",
+    bip44:{
+      coinType:0,//from slip44
+      account:0
+    },
+    bip21:"bitcoin",
+    defaultFeeSatPerByte:100000,//will implement dynamic fee
+    icon:require("../res/coins/btc.png"),
+    defaultAPIEndpoint:"https://insight.bitpay.com/api",
+    network:{
+      messagePrefix: '\x19Bitcoin Signed Message:\n',
+      bip32: {
+        public: 0x0488b21e,
+        
+        private: 0x0488ade4
+      },
+      pubKeyHash: 0,// Z
+      scriptHash: 5,// 3
+      wif: 128
+    },
+    enableSegwit:false,
+    prefixes:["1","3"],
+    price:{
+      url:"https://public.bitbank.cc/btc_jpy/ticker",
+      json:true,
+      jsonPath:["data","last"],
+      fiat:"jpy"
+    }
+  }),
 }
 /**
  * Get supported Currencies

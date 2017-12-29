@@ -27,7 +27,7 @@
                         >
       <span slot="title">パスワード</span>
       <p>パスワードを入力してください</p>
-      <v-ons-input placeholder="パスワード" v-model="password" :class="{shake:incorrect}"></v-ons-input>
+      <v-ons-input placeholder="パスワード" v-model="password" type="password" :class="{shake:incorrect}"></v-ons-input>
       <template slot="footer">
         <div class="alert-dialog-button" @click="$emit('pop')">やめる</div>
         <div class="alert-dialog-button" @click="decrypt">追加</div>

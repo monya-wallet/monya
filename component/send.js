@@ -32,7 +32,8 @@ module.exports=require("./send.html")({
         fiat:this.fiat,
         feePerByte:this.feePerByte,
         message:this.message,
-        coinType:this.coinType
+        coinType:this.coinType,
+        txLabel:this.txLabel
       })
       this.$emit("push",require("./confirm.js"))
     },

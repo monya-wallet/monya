@@ -14,39 +14,33 @@
         <div class="center">送金額</div>
         <div class="right"><currency-set :ticker="coinType" :amount="amount" :easy="isEasy"></currency-set></div>
       </v-ons-list-item>
-      <v-ons-list-item>
+      <v-ons-list-item modifier="small">
         <div class="center"></div>
         <div class="right">(<currency-set :ticker="$store.state.fiat" :amount="fiat" :about="true" :easy="isEasy"></currency-set>)</div>
       </v-ons-list-item>
-      <v-ons-list-item>
+      <v-ons-list-item modifier="small">
         <div class="center">送金手数料</div>
         <div class="right"><currency-set :ticker="coinType" :amount="fee" :easy="isEasy"></currency-set></div>
       </v-ons-list-item>
-      <v-ons-list-item>
+      <v-ons-list-item modifier="small">
+        <div class="center">取引の詳細</div>
+        <div class="right">{{txLabel}}</div>
+      </v-ons-list-item>
+      <v-ons-list-item modifier="small">
         <div class="center">メッセージ</div>
         <div class="right">{{message}}</div>
       </v-ons-list-item>
-      <v-ons-list-item :class="{'insufficientFund':insufficientFund}">
+      <v-ons-list-item :class="{'insufficientFund':insufficientFund}" modifier="small">
         <div class="center">あなたの送金後の残高</div>
         <div class="right"><currency-set :ticker="coinType" :amount="afterSent" :easy="isEasy"></currency-set></div>
       </v-ons-list-item>
       <v-ons-list-header>送金したあとは元に戻すことはできません。</v-ons-list-header>
       <v-ons-list-item>
-        <v-ons-input placeholder="パスワード" v-model="password"></v-ons-input>
+        <v-ons-input placeholder="パスワード" v-model="password" type="password"></v-ons-input>
       </v-ons-list-item>
       <v-ons-list-item>
         <v-ons-button :class="{shake:incorrect}" modifier="large" @click="next" :disabled="!ready||!password">送金</v-ons-button>
       </v-ons-list-item>
-      <!--<v-ons-list-item @click="showDetail=true" v-show="showDetail">
-          <div class="left"><v-ons-icon icon="fa-caret-down"></v-ons-icon></div>
-          <div class="center">詳細情報</div>
-      </v-ons-list-item>
-      <div v-show="showDetail">
-        <v-ons-list-header>UTXO</v-ons-list-header>
-        <v-ons-list-item>
-          <textarea :value="utxosJson"></textarea>
-        </v-ons-list-item>
-      </div>-->
     </v-ons-list>
   </div>
   <v-ons-modal :visible="loading">

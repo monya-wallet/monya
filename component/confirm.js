@@ -31,7 +31,7 @@ module.exports=require("./confirm.html")({
   },
   store:require("../js/store.js"),
   mounted(){
-    ["address","amount","fiat","feePerByte","message","coinType"].forEach(v=>{
+    ["address","amount","fiat","feePerByte","message","coinType","txLabel"].forEach(v=>{
       this[v]=this.$store.state.confPayload[v]
     })
     this.cur=currencyList.get(this.coinType)
@@ -74,6 +74,9 @@ module.exports=require("./confirm.html")({
         this.txb=d.txBuilder
         this.ready=true
         this.loading=false
+        return coinUtil.getPrice(cur.coinType,this.$store.state.fiat)
+      }).then(price=>{
+        this.price=price
       }).catch(e=>{
         this.ready=false
         this.loading=false
@@ -99,6 +102,7 @@ module.exports=require("./confirm.html")({
         })
         return cur.pushTx(finalTx.toHex())
       }).then((res)=>{
+        currencyList.get(this.coinType).saveTxLabel(res.txid,{label:this.txLabel,price:parseFloat(this.price)})
         this.$store.commit("setFinishNextPage",{page:require("./home.js"),infoId:"sent",payload:{
           txId:res.txid
         }})

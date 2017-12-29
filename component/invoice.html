@@ -1,5 +1,7 @@
 <v-ons-page data-page="invoice">
-  <custom-bar title="請求する" menu="true"></custom-bar>
+  <custom-bar title="請求する" menu="true">
+    <v-ons-toolbar-button v-show="$store.state.zaifPayEnabled" >Zaif</v-ons-toolbar-button>
+  </custom-bar>
   <div>
     <div id="currencySelector">
       <v-ons-carousel swipeable overscrollable direction="horizontal" item-height="50px" item-width="50px" :index="currencyIndex">

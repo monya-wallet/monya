@@ -64,6 +64,15 @@
       </v-ons-list-item>
       
       <div v-show="advanced">
+        <v-ons-list-header>取引の説明(任意)</v-ons-list-header>
+        <v-ons-list-item>
+          <div class="center">
+            <v-ons-input v-model="txLabel" placeholder="履歴で確認できます。"></v-ons-input>
+          </div>
+          <div class="right">
+            <v-ons-icon icon="ion-ios-list-outline"></v-ons-icon>
+          </div>
+        </v-ons-list-item>
         <v-ons-list-header>送金手数料(sat/Byte)</v-ons-list-header>
         <v-ons-list-item>
           <div class="center">
@@ -73,7 +82,7 @@
             <currency-set ticker="satByte"></currency-set>
           </div>
         </v-ons-list-item>
-        <v-ons-list-header>メッセージ</v-ons-list-header>
+        <v-ons-list-header>メッセージ(任意)</v-ons-list-header>
         <v-ons-list-item>
           <div class="center">
             <v-ons-input v-model="message" placeholder="80Byteまで"></v-ons-input>

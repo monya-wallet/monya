@@ -20,12 +20,13 @@ module.exports=require("./login.html")({
           makeCur:["mona","btc"]
         })
       }).then((pubs)=>{
-        for(let coinId in pubs){
-          if(currencyList[coinId]){
-            currencyList.get(coinId).setPubSeedB58(pubs[coinId].public)
+        currencyList.each(cur=>{
+          cur.hdPubNode=null
+          if(pubs[cur.coinId]){
+            cur.setPubSeedB58(pubs[cur.coinId].public)
           }
-        }
-        
+        })
+
         this.$emit("replace",require("./home.js"))
       }).catch(()=>{
         this.loading=false
@@ -37,29 +38,30 @@ module.exports=require("./login.html")({
     }
   },
   mounted(){
-    storage.get("keyPairs").then((data)=>{
-      if(data&&data.pubs){
-        for(let coinId in data.pubs){
-          if(currencyList.get(coinId)){
-            currencyList.get(coinId).setPubSeedB58(data.pubs[coinId])
-          }
-        }
-        
-        this.$emit("replace",require("./home.js"))
-      }else{
+    this.loading=true
+    Promise.all([storage.get("keyPairs"),storage.get("addresses")]).then(res=>{
+      const data=res[0]
+      const addrs=res[1]||{}
+
+      if(!data||!data.pubs){
         this.loading=false
+        return
       }
+      currencyList.each(cur=>{
+        cur.hdPubNode=null
+        if(data.pubs[cur.coinId]){
+          cur.setPubSeedB58(data.pubs[cur.coinId])
+          if(!addrs[cur.coinId]){
+            addrs[cur.coinId]={}
+          }
+          cur.addresses=addrs[cur.coinId]
+          cur.pregenerateAddress()
+        }
+      })
+      return storage.set("addresses",addrs)
+    }).then(()=>{
+      this.$emit("replace",require("./home.js"))
     })
   }
 })
-
-
-
-
-
-
-
-
-
-
 

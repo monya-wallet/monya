@@ -4,7 +4,7 @@ const bip39 = require("bip39")
 const crypto = require('crypto');
 const storage = require("./storage")
 const errors=require("./errors")
-const coinUtil=require("../js/coinUtil")
+
 
 exports.DEFAULT_LABEL_NAME = "Default"
 exports.GAP_LIMIT=20
@@ -20,7 +20,7 @@ exports.isValidAddress=(addr)=>{
 };
 exports.getPrice=(cryptoId,fiatId)=>{
   let currencyPath = []
-  let prevId =cryptoId;
+  let prevId =cryptoId;//reverse seek is not implemented
   while(prevId!==fiatId){
     currencyPath.push(currencyList.get(prevId).getPrice())
     prevId=currencyList.get(prevId).price.fiat
@@ -147,7 +147,7 @@ exports.parseUrl=url=>new Promise((resolve,reject)=>{
           break
         }
       }
-      ret.isValidAddress=coinUtil.isValidAddress(ret.address)
+      ret.isValidAddress=exports.isValidAddress(ret.address)
       ret.message=raw.searchParams.get("message")
       ret.label=raw.searchParams.get("label")
       ret.amount=raw.searchParams.get("amount")
@@ -158,14 +158,9 @@ exports.parseUrl=url=>new Promise((resolve,reject)=>{
   resolve(ret)
 })
 
-
-
-
-
-
-
-
-
-
-
-
+exports.proxyUrl=url=>{
+  return 'http://localhost:4545/proxy/'+encodeURIComponent(url)
+}
+exports.shortWait=()=>new Promise(r=>{
+  setTimeout(r,150)
+})

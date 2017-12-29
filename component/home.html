@@ -19,7 +19,7 @@
       <div v-show="!loading">
         <div class="label">あなたが今持っているのは</div>
         <div id="balanceWrap">
-          <currency-set :amount="fiatConv" :ticker="fiat" :easy="isEasy" about="true"></currency-set>
+          <currency-set :amount="fiatConv" :ticker="fiat" about="true"></currency-set>
         </div>
         <div v-show="error">エラーが発生したようです。</div>
       </div>
@@ -34,7 +34,7 @@
           <div >
             <div class="screenName">{{c.screenName}}</div>
             <div class="price">
-              <currency-set :amount="c.price" :ticker="c.coinId" :fiatTicker="fiat" :easy="isEasy"></currency-set>
+              <currency-set :amount="c.price" :ticker="c.coinId" :fiatTicker="fiat"></currency-set>
             </div>
           </div>
           <div class="w_right">
