@@ -22,6 +22,7 @@ module.exports=class{
     this.bip21=opt.bip21;
     this.defaultFeeSatPerByte = opt.defaultFeeSatPerByte;
     this.confirmations=opt.confirmations||6
+    this.sound=opt.sound||""
     
     this.hdPubNode=null;
     this.lastPriceTime=0;

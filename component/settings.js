@@ -2,18 +2,20 @@ const storage=require("../js/storage")
 module.exports=require("./settings.html")({
   data(){
     return {
+      resetDialog:false,
       d:{
-        includeUnconfirmedFunds:null,
+        includeUnconfirmedFunds:false,
         zaifPay:{
           enabled:null,
           apiKey:"",
           secret:""
         },
-        useEasyUnit:null,
-        absoluteTime:null,
+        useEasyUnit:false,
+        absoluteTime:false,
         fiat:"jpy",
+        paySound:false,
         monappy:{
-          enabled:null,
+          enabled:false,
           myUserId:""
         }
       }
@@ -33,6 +35,13 @@ module.exports=require("./settings.html")({
       this.$nextTick(()=>{
         storage.set("settings",this.d)
         this.$store.commit("setSettings",this.d)
+      })
+    },
+    reset(){
+      Promise.all(["keyPairs","labels","txLabels","settings","customCoins","addresses","zaifPayInvoice"].map(v=>storage.set(v,null))).then(()=>{
+        this.$store.commit("deleteEntropy")
+        this.$store.commit("setFinishNextPage",{page:require("./first.js"),infoId:"reset"})
+        this.$emit("replace",require("./finished.js"))
       })
     }
   },

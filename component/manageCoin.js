@@ -57,6 +57,9 @@ module.exports=require("./manageCoin.html")({
             this.incorrect=false
           },3000)
         })
+    },
+    customCoin(){
+      this.$emit("push",require("./customCoin.js"))
     }
   },
   

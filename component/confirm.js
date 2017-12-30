@@ -26,7 +26,8 @@ module.exports=require("./confirm.html")({
       cur:null,
       insufficientFund:false,
       loading:true,
-      incorrect:false
+      incorrect:false,
+      paySound:false
     }
   },
   store:require("../js/store.js"),
@@ -54,7 +55,7 @@ module.exports=require("./confirm.html")({
       const cur =this.cur
       const targets = [{
         address:this.address,
-        value:this.amount*100000000
+        value:(this.amount*100000000)|0
       }];
       if(this.message){
         targets.push({
@@ -62,11 +63,14 @@ module.exports=require("./confirm.html")({
           value:0
         })
       }
-      storage.get("settings").then((data)=>cur.buildTransaction({
-        targets,
-        feeRate:this.feePerByte,
-        includeUnconfirmedFunds:data.includeUnconfirmedFunds
-      })).then(d=>{
+      storage.get("settings").then((data)=>{
+        this.paySound=data.paySound
+        return cur.buildTransaction({
+          targets,
+          feeRate:this.feePerByte,
+          includeUnconfirmedFunds:data.includeUnconfirmedFunds
+        })
+      }).then(d=>{
         this.fee=d.fee/100000000
         this.utxosToShow=d.utxos
         this.path=d.path
@@ -74,7 +78,7 @@ module.exports=require("./confirm.html")({
         this.txb=d.txBuilder
         this.ready=true
         this.loading=false
-        return coinUtil.getPrice(cur.coinType,this.$store.state.fiat)
+        return coinUtil.getPrice(cur.coinId,this.$store.state.fiat)
       }).then(price=>{
         this.price=price
       }).catch(e=>{
@@ -102,11 +106,17 @@ module.exports=require("./confirm.html")({
         })
         return cur.pushTx(finalTx.toHex())
       }).then((res)=>{
-        currencyList.get(this.coinType).saveTxLabel(res.txid,{label:this.txLabel,price:parseFloat(this.price)})
+        const cur =currencyList.get(this.coinType)
+        cur.saveTxLabel(res.txid,{label:this.txLabel,price:parseFloat(this.price)})
         this.$store.commit("setFinishNextPage",{page:require("./home.js"),infoId:"sent",payload:{
           txId:res.txid
         }})
         this.$emit("replace",require("./finished.js"))
+
+        //sound
+        if (cur.sound&&this.paySound) {
+          (new Audio(cur.sound)).play()
+        }
       }).catch(e=>{
         this.loading=false
         if(e.request){
@@ -119,8 +129,6 @@ module.exports=require("./confirm.html")({
           },3000)
         }
       })
-      
-      
     }
   }
 })

@@ -10,58 +10,54 @@ module.exports=require("./qrcode.html")({
   }),
   store:require("../js/store.js"),
   methods:{
-    scan(cam,mirror){
-      this.loading=true
-      const scn =this.scanner= new Instascan.Scanner({
-        video: this.$refs.qrPreview,
-        backgroundScan:false,
-        mirror,
-        scanPeriod:6
-      })
-      scn.addListener('scan',content=>{
-        scn.stop()
-        coinUtil.parseUrl(content).then(res=>{
-          if(res.isCoinAddress&&res.isPrefixOk&&res.isValidAddress){
-            this.$store.commit("setSendUrl",res.url)
-            this.$emit("pop")
-            this.$emit("push",require("./send.js"))
-          }else{
-            window.open(res.url)
-          }
-        })
-      });
-      scn.addListener('active',()=>{
-        this.loading=false
-      });
-      scn.start(cam)
-      
-    },
     back(){
+      if (!this.scanner) {
+        this.$emit("pop")
+      }
       this.scanner.stop().then(()=>{
         this.$emit("pop")
       })
     },
     changeCam(){
-      this.loading=true
-      this.scanner.stop().then(()=>{
-        this.cameraIndex++
-        
-        this.scan(this.cameras[this.cameraIndex%this.cameras.length])
-      })
+      this.scanner.start(this.camera[(++this.cameraIndex)%this.camera.length]);
     }
   },
   mounted(){
-    this.loading=true
-    Instascan.Camera.getCameras().then( cameras=>{
+    const scn =this.scanner= new Instascan.Scanner({
+      video: this.$refs.qrPreview,
+      backgroundScan:false,
+      scanPeriod:6
+    })
+    scn.addListener('scan',content=>{
+      scn.stop()
+      coinUtil.parseUrl(content).then(res=>{
+        if(res.isCoinAddress&&res.isPrefixOk&&res.isValidAddress){
+          this.$store.commit("setSendUrl",res.url)
+          this.$emit("pop")
+          this.$emit("push",require("./send.js"))
+        }else if(res.protocol==="http"||res.protocol==="https"){
+          window.open(res.url)
+        }else{
+          this.$ons.notification.alert(res.url)
+        }
+      })
+    });
+
+    Instascan.Camera.getCameras().then(cameras=>{
+      this.cameras = cameras;
       if (cameras.length > 0) {
-        this.cameras=cameras
-        this.scan(cameras[0])
+        let index=0
+        cameras.forEach((v,i)=>{
+          if(v.name&&v.name.toLowerCase().indexOf("back")>0){
+            index=i
+          }
+        })
+        scn.start(cameras[index]);
       } else {
-        this.loading=false        
+        this.$ons.notification.alert('No cameras found.');
       }
     }).catch(function (e) {
-      this.loading=false
-      this.error=true
+      console.error(e);
     });
   }
 })

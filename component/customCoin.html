@@ -1,0 +1,10 @@
+<v-ons-page data-page="customCoin">
+  <custom-bar title="コイン追加"></custom-bar>
+  <div>
+    <p>Currencyオブジェクトに与えるJSONデータをペーストしてください。</p>
+    <p v-show="error">エラーが発生しました</p>
+    <textarea v-model="coinJson"></textarea>
+    <br/>
+    <v-ons-button @click="loadJson">JSONロード</v-ons-button>
+  </div>
+</v-ons-page>

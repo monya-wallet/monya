@@ -1,8 +1,8 @@
 const webpack = require("webpack")
-const Uglify = require("uglifyjs-webpack-plugin");
 
 module.exports = {
   context: __dirname ,
+  watch:true,
   entry: "./js/main.js",
   output: {
     path:__dirname,
@@ -13,7 +13,16 @@ module.exports = {
   },
   module: {
     rules: [
-      {
+      /*{
+        test: /\.js$/,
+        exclude: /node_modules/,
+        use: {
+          loader: 'babel-loader',
+          options: {
+            presets: ['env']
+          }
+        }
+      },*/{
         test: /\.scss$/,
         use:[{
           loader: "style-loader" // creates style nodes from JS strings
@@ -45,12 +54,11 @@ module.exports = {
     ]
   },
   plugins: [
-    new Uglify({
-      uglifyOptions:{
-        mangle:{
-          reserved:['BigInteger','ECPair','Point']
-        }
-      }
-    })
-    ]
+    // new webpack.optimize.UglifyJsPlugin({
+    //   // warningsは圧縮しない
+    //   compress: {
+    //     warnings: false
+    //   }
+    // })
+  ],
 };

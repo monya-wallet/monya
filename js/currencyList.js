@@ -1,9 +1,10 @@
+
 const Currency = require("./currency")
 const axios = require('axios');
 const coinUtil=require("../js/coinUtil")
 
-const coins={
-  mona:new Currency({//key = coinId that is lowercase ticker symbol
+const defaultCoins=[
+  {//key = coinId that is lowercase ticker symbol
     coinScreenName:"モナコイン",
     coinId:"mona",
     unit:"MONA",
@@ -28,6 +29,7 @@ const coins={
       wif: 176,//new wif
       bech32:"mona"
     },
+    sound:require("../res/coins/paySound/mona.m4a"),
     enableSegwit:false,
     prefixes:["M","P"],
     price:{
@@ -37,51 +39,17 @@ const coins={
       fiat:"jpy"
     },
     confirmations:6
-  }),
-  zny:new Currency({//key = coinId that is lowercase ticker symbol
-    coinScreenName:"ビットゼニー",
-    coinId:"zny",
-    unit:"ZNY",
-    unitEasy:"ゼニー",
-    bip44:{
-      coinType:123,//from slip44
-      account:0
-    },
-    bip21:"bitzeny",
-    defaultFeeSatPerByte:200,//will implement dynamic fee
-    icon:require("../res/coins/zny.png"),
-    defaultAPIEndpoint:"https://zenyinsight.tomotomo9696.xyz/api",
-    network:{
-      messagePrefix: '\x19Bitzeny Signed Message:\n',
-      bip32: {
-        public: 0x0488b21e,
-        
-        private: 0x0488ade4
-      },
-      pubKeyHash: 81,// Z
-      scriptHash: 5,// 3
-      wif: 128
-    },
-    enableSegwit:false,
-    prefixes:["Z","3"],
-    price:{
-      url:coinUtil.proxyUrl("https://www.coingecko.com/price_charts/bitzeny/jpy/24_hours.json"),
-      json:true,
-      jsonPath:["stats",0,1],
-      fiat:"jpy"
-    }
-  }),
-  btc:new Currency({//key = coinId that is lowercase ticker symbol
+  },{
     coinScreenName:"ビットコイン",
     coinId:"btc",
     unit:"BTC",
     unitEasy:"ビットコイン",
     bip44:{
-      coinType:0,//from slip44
+      coinType:0,
       account:0
     },
     bip21:"bitcoin",
-    defaultFeeSatPerByte:100000,//will implement dynamic fee
+    defaultFeeSatPerByte:100000,
     icon:require("../res/coins/btc.png"),
     defaultAPIEndpoint:"https://insight.bitpay.com/api",
     network:{
@@ -102,14 +70,20 @@ const coins={
       json:true,
       jsonPath:["data","last"],
       fiat:"jpy"
-    }
-  }),
-}
+    },
+    confirmations:10
+  },
+]
+
+
+const coins={}
+
 /**
  * Get supported Currencies
  * @param {function} fn(Currency).
  */
 exports.each=(fn)=>{
+  
   for(let curName in coins){
     if((coins[curName] instanceof Currency)&&(!coins[curName].dummy)){
       fn(coins[curName])
@@ -122,6 +96,7 @@ exports.each=(fn)=>{
  * @param {function} fn(Currency).
  */
 exports.eachWithDummy=(fn)=>{
+    
   for(let curName in coins){
     if((coins[curName] instanceof Currency)){
       fn(coins[curName])
@@ -145,10 +120,21 @@ exports.eachWithPub=(fn)=>{
  * @param {String} coinId.
  */
 exports.get=coinId=>{
+    
   if((coins[coinId] instanceof Currency)){
     return coins[coinId]
   }
 }
-exports.createNewCurrency =opts=>{
-  
+exports.init =customCoins=>{
+  for(let i = 0;i<defaultCoins.length;i++){
+    const defCoin = defaultCoins[i]
+    coins[defCoin.coinId]=new Currency(defCoin)
+  }
+  for(let i = 0;i<customCoins.length;i++){
+    const defCoin = customCoins[i]
+    coins[defCoin.coinId]=new Currency(defCoin)
+  }
+}
+exports.addCurrency=customCoin=>{
+  coins[customCoin.coinId]=customCoin
 }

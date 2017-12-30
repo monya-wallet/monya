@@ -94,6 +94,7 @@ module.exports=require("./invoice.html")({
       currencyList.get(this.currency[this.currencyIndex].coinId).getLabels().then(res=>{
         this.$set(this,"labels",res)
       })
+      this.getPrice()
     }
   },
 
@@ -110,9 +111,7 @@ module.exports=require("./invoice.html")({
       this.monappyEnabled=data.monappy&&data.monappy.enabled;
       this.monappyDestination=(data.monappy&&data.monappy.myUserId)||""
     })
-    
     this.generateQR()
-    
     this.getPrice()
   }
 })

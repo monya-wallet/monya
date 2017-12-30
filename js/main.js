@@ -27,5 +27,12 @@ exports.vm= new Vue({
   },
   components:{
     navigator:require("../component/navigator.js")
+  },
+  beforeMount() {
+    const html = document.documentElement;
+    if (this.$ons.platform.isIPhoneX()) {
+      html.setAttribute('onsflag-iphonex-portrait', '');
+      html.setAttribute('onsflag-iphonex-landscape', '');
+    }
   }
 })

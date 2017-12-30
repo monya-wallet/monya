@@ -2,10 +2,13 @@ var gulp=require("gulp");
 var runSequence = require('run-sequence');
 var browser = require("browser-sync").create();
 var webpack = require("webpack-stream");
-var wpConf = require("./webpack.config");
 var plumber = require("gulp-plumber");
 var eslint = require('gulp-eslint');
-var notifier = require('node-notifier');
+var uglifyes = require('uglify-es');
+var composer = require('gulp-uglify/composer');
+var pump = require('pump');
+
+var minify = composer(uglifyes, console);
 
 gulp.task("browserSync", function() {
   browser.init({
@@ -22,19 +25,11 @@ gulp.task("reload",function(){
 gulp.task("lint",function(){
   gulp.src(["component/*.js","js/*.js"])
     .pipe(plumber({
-      // エラーをハンドル
       errorHandler: function(error) {
         var taskName = 'eslint';
         var title = '[task]' + taskName + ' ' + error.plugin;
         var errorMsg = 'error: ' + error.message;
-        // ターミナルにエラーを出力
         console.error(title + '\n' + errorMsg);
-        // エラーを通知
-        // notifier.notify({
-        //   title: title,
-        //   message: errorMsg,
-        //   time: 3000
-        //});
       }
     }))
     .pipe(eslint({ useEslintrc: true })) // .eslintrc を参照
@@ -44,18 +39,36 @@ gulp.task("lint",function(){
 })
 gulp.task('webpack', function(){
   return gulp.src('js/main.js')
-    .pipe(webpack(wpConf))
+    .pipe(webpack(require("./webpack.config.dev")))
     .pipe(gulp.dest('./'))
     .pipe(browser.stream());
+});
+gulp.task('webpackProd', function(){
+  return gulp.src('js/main.js')
+    .pipe(webpack(require("./webpack.config")))
+    .pipe(gulp.dest('./'))
 });
 gulp.task("watch", function() {
   gulp.watch("dist/dist.js", ["reload"]);
   gulp.watch("index.html",["reload"]);
   gulp.watch(["component/*.js","js/*.js"],["lint"]);
 });
+gulp.task("setCordova", function() {
+  return gulp.src(["dist/**"])
+    .pipe(gulp.dest("../monya-app/www/dist"))
+});
+
 gulp.task("default", function(cb) {
   return runSequence(
-    ['browserSync',"lint","webpack","watch"],
+    ['browserSync',"webpack","watch"],
     cb
   );
 });
+gulp.task("prod", function(cb) {
+  return runSequence(
+    ["lint","webpackProd"],
+    "setCordova",
+    cb
+  );
+});
+

@@ -89,22 +89,6 @@ exports.decryptKeys=(option)=>new Promise((resolve, reject) => {
     ret[coinId]=pub
   }
 });
-
-exports.createLabel=(cId,name)=>{
-  console.warn("Currency.createLabel is deprecated")
-  return currencyList.get(cId).createLabel(name)
-}
-
-
-exports.updateLabel=(cId,name,newName)=>{
-  console.warn("Currency.updateLabel is deprecated")
-  return currencyList.get(cId).updateLabel(name,newName)
-}
-
-exports.getLabels=(cId)=>{
-  console.warn("Currency.getLabels is deprecated")
-  return currencyList.get(cId).getLabels()
-}
   
 exports.copy=data=>{
   const temp = document.createElement('div');

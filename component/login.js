@@ -39,10 +39,12 @@ module.exports=require("./login.html")({
   },
   mounted(){
     this.loading=true
-    Promise.all([storage.get("keyPairs"),storage.get("addresses")]).then(res=>{
+    Promise.all([storage.get("keyPairs"),storage.get("addresses"),storage.get("customCoins")]).then(res=>{
       const data=res[0]
       const addrs=res[1]||{}
+      const customCoins = res[2]||[]
       this.$store.commit("setKeyPairsExistence",!!data)
+      currencyList.init(customCoins)
       if(!data||!data.pubs){
         this.loading=false
         return

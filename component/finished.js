@@ -1,13 +1,18 @@
+const coinUtil = require("../js/coinUtil.js")
 module.exports=require("./finished.html")({
   data(){
     return {
-
+      loading:false
     }
   },
   store:require("../js/store.js"),
   methods:{
     start(){
-      this.$emit("replace",this.$store.state.finishNextPage.page)
+      this.loading=true
+      coinUtil.shortWait().then(()=>{
+        this.loading=false
+        this.$emit("replace",this.$store.state.finishNextPage.page)
+      })
       
     }
   },
