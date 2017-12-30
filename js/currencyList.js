@@ -73,6 +73,40 @@ const defaultCoins=[
     },
     confirmations:10
   },
+  {
+    coinScreenName:"ビットゼニー",
+    coinId:"zny",
+    unit:"ZNY",
+    unitEasy:"ゼニー",
+    bip44:{
+      coinType:123,
+      account:0
+    },
+    bip21:"bitzeny",
+    defaultFeeSatPerByte:200,
+    icon:require("../res/coins/zny.png"),
+    defaultAPIEndpoint:"https://zenyinsight.tomotomo9696.xyz/api",
+    network:{
+      messagePrefix: '\x19Bitzeny Signed Message:\n',
+      bip32: {
+        public: 0x0488b21e,
+        
+        private: 0x0488ade4
+      },
+      pubKeyHash: 81,// Z
+      scriptHash: 5,// 3
+      wif: 128
+    },
+    enableSegwit:false,
+    prefixes:["Z","3"],
+    price:{
+      url:coinUtil.proxyUrl("https://www.coingecko.com/price_charts/bitzeny/jpy/24_hours.json"),
+      json:true,
+      jsonPath:["stats",0,1],
+      fiat:"jpy"
+    },
+    sound:require("../res/coins/paySound/zny.m4a")
+  }
 ]
 
 
