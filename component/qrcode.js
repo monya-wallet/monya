@@ -19,7 +19,7 @@ module.exports=require("./qrcode.html")({
       })
     },
     changeCam(){
-      this.scanner.start(this.camera[(++this.cameraIndex)%this.cameras.length]);
+      this.scanner.start(this.cameras[(++this.cameraIndex)%this.cameras.length]);
     }
   },
   mounted(){
