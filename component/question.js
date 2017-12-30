@@ -21,7 +21,7 @@ module.exports=require("./question.html")({
         case -1://User seems to be a great Monacoiner.
         case -2:
           //User declined.Go to key generation
-
+          
           this.$emit("push",require("./generateKeyWarn.js"))
           break;
         case -3:

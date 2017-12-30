@@ -96,6 +96,10 @@ module.exports=require("./confirm.html")({
     next(){
       this.loading=true
       const cur=this.cur
+      if (cur.sound&&this.paySound) {
+        (new Audio(cur.sound)).play()
+      }
+      
       this.ready=false
       storage.get("keyPairs").then((cipher)=>{
         const finalTx=cur.signTx({
@@ -113,10 +117,7 @@ module.exports=require("./confirm.html")({
         }})
         this.$emit("replace",require("./finished.js"))
 
-        //sound
-        if (cur.sound&&this.paySound) {
-          (new Audio(cur.sound)).play()
-        }
+        
       }).catch(e=>{
         this.loading=false
         if(e.request){
