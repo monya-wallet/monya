@@ -1,3 +1,4 @@
+const storage=require("../js/storage")
 module.exports=require("./question.html")({
   data(){
     return {
@@ -19,9 +20,23 @@ module.exports=require("./question.html")({
       }
       switch(ans.to){
         case -1://User seems to be a great Monacoiner.
-        case -2:
-          //User declined.Go to key generation
-          
+        case -2://User declined.Go to key generation
+          storage.set("settings",{
+            includeUnconfirmedFunds:false,
+            zaifPay:{
+              enabled:!!this.answers[8],
+              apiKey:"",
+              secret:""
+            },
+            useEasyUnit:!!this.answers[7],
+            absoluteTime:false,
+            fiat:"jpy",
+            paySound:false,
+            monappy:{
+              enabled:false,
+              myUserId:""
+            }
+          })
           this.$emit("push",require("./generateKeyWarn.js"))
           break;
         case -3:
@@ -32,13 +47,6 @@ module.exports=require("./question.html")({
           this.questionNumber=ans.to|0;
       }
     }
-    
-  },
-  mounted(){
-    
-  },
-  components:{
-    
   }
 })
 
@@ -90,11 +98,7 @@ const qList=[{//0
     label:"脇山珠美ちゃんかわいい！",
     value:5,
     to:5
-  }/*,{
-    label:"ミスモナコイン薫ちゃんは男",
-    value:6,
-    to:5
-  }*/]
+  }]
 },{//3
   text:"「暗号通貨」といえば",
   answers:[{
@@ -181,26 +185,22 @@ const qList=[{//0
   text:"表示する単位は何にしますか？\n(あとで変更できます。)",
   answers:[{
     label:"MONA,JPYなど通貨コード",
-    value:"normal",
+    value:0,
     to:8
   },{
     label:"もにゃ,円など親しみやすい形式",
-    value:"easy",
+    value:1,
     to:8
   }]
 },{//8
-  text:"コインの使用方法",
+  text:"利用目的はなんですか？",
   answers:[{
-    label:"使いやすさ重視",
-    value:"easy",
+    label:"業務用",
+    value:1,
     to:9
   },{
-    label:"セキュリティ重視",
-    value:"secure",
-    to:9
-  },{
-    label:"UTXOを手動で操作",
-    value:"manual",
+    label:"個人用途",
+    value:0,
     to:9
   }]
 },{//9

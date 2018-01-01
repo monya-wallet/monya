@@ -1,4 +1,5 @@
 const storage = require("../js/storage.js")
+const coinUtil = require("../js/coinUtil.js")
 
 module.exports=require("./navigator.html")({
   data(){
@@ -49,6 +50,18 @@ module.exports=require("./navigator.html")({
     })
     storage.get("settings").then((data)=>{
       this.$store.commit("setSettings",data||{})
+    })
+  },
+  mounted(){
+    coinUtil.setUrlCallback(url=>{
+      coinUtil.parseUrl(url).then(res=>{
+        if(res.isCoinAddress&&res.isPrefixOk&&res.isValidAddress){
+          this.$store.commit("setSendUrl",res.url)
+          this.pageStack.push(require("./send.js"))
+        }else{
+          this.$ons.notification.alert(res.url)
+        }
+      })
     })
   }
 })

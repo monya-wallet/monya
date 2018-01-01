@@ -121,11 +121,10 @@ exports.getBip21=(bip21Urn,address,query)=>{
 };
 
 exports.parseUrl=url=>new Promise((resolve,reject)=>{
-  const raw=new URL(url)
   const ret = {
     url,
-    raw,
-    protocol:raw.protocol.slice(0,-1),
+    raw:null,
+    protocol:"",
     isCoinAddress:false,
     isPrefixOk:false,
     isValidAddress:false,
@@ -134,8 +133,18 @@ exports.parseUrl=url=>new Promise((resolve,reject)=>{
     message:"",
     amount:0,
     opReturn:"",
-    label:""
+    label:"",
+    isValidUrl:false
   }
+  let raw;
+  try{
+    raw=new URL(url)
+  }catch(e){
+    return resolve(ret)
+  }
+  ret.raw=raw
+  ret.protocol=raw.protocol.slice(0,-1),
+  ret.isValidUrl=true
   currencyList.each(v=>{
     if(v.bip21===ret.protocol){
       ret.isCoinAddress=true
@@ -164,3 +173,23 @@ exports.proxyUrl=url=>{
 exports.shortWait=()=>new Promise(r=>{
   setTimeout(r,150)
 })
+exports._url=""
+exports._urlCb=()=>{}
+exports.queueUrl=url=>{
+  exports._url=url
+  exports._urlCb(url)
+}
+exports.getQueuedUrl=()=>{
+  return exports._url
+}
+exports.popQueuedUrl=()=>{
+  const url = exports._url
+  exports._url=""
+  return url
+}
+exports.setUrlCallback=cb=>{
+  if (typeof(cb)==="function") {
+    exports._urlCb=cb
+  }
+}
+exports.hasInitialized=false

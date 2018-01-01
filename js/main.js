@@ -5,6 +5,7 @@ const Vue = require("vue/dist/vue.runtime.min")
 //const VueOnsen = require("vue-onsenui")
 const Vuex = require("vuex")
 
+
 Vue.use(VueOnsen)
 Vue.use(Vuex)
 
@@ -28,6 +29,7 @@ exports.vm= new Vue({
   components:{
     navigator:require("../component/navigator.js")
   },
+  store:require("../js/store.js"),
   beforeMount() {
     const html = document.documentElement;
     if (this.$ons.platform.isIPhoneX()) {
@@ -36,3 +38,7 @@ exports.vm= new Vue({
     }
   }
 })
+const coinUtil=require("../js/coinUtil")
+window.handleOpenURL=function(url) {
+  coinUtil.queueUrl(url)
+}

@@ -82,6 +82,10 @@ module.exports=require("./zaifPay.html")({
     showInvoice(id){
       this.$store.commit("setZaifPayInvoiceId",id)
       this.$emit("push",require("./zaifPayInvoice"))
+    },
+    health(){
+      
+      this.$emit("push",require("./zaifHealth"))
     }
   },
   mounted(){

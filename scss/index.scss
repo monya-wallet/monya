@@ -61,9 +61,7 @@ ons-list-item{
         font-size: 0.9em;
       }
     }
-    
   }
-
   #coins{
     .w_right{
       margin-left:auto;
@@ -426,6 +424,21 @@ $zaifPayLogoSize:200px;
       background-size:contain;
       background-position:center center;
     }
+  }
+}
+[data-page="zaifHealth"]{
+  text-align:center;
+  #score{
+    font-size:xx-large;
+  }
+  #zaifIcon{
+    display: inline-block;
+    width: $zaifPayLogoSize;
+    height: $zaifPayLogoSize;
+    background-repeat:no-repeat;
+    background-size:contain;
+    background-position:center center;
+    
   }
 }
 [data-page="zaifPayInvoice"]{

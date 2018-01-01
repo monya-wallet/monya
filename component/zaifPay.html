@@ -14,6 +14,9 @@
         警告: ZaifはCORSヘッダーをつけないという失態を犯したので直接通信できません。仕方なく別サーバーを介しています。そのため勝手に請求を発行される恐れがあります。GOXするわけではありませんが、十分にご注意ください。
       </p>
       <v-ons-list>
+        <v-ons-list-item modifier="chevron tappable" @click="health">
+          ヘルスメーター
+        </v-ons-list-item>
         <v-ons-list-header>請求を作成</v-ons-list-header>
         <v-ons-list-item>
           <div class="center">決済に使用する暗号通貨</div>
