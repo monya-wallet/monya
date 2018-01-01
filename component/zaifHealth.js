@@ -14,7 +14,8 @@ module.exports=require("./zaifHealth.html")({
     icon:""
   }),
   mounted(){
-    axios.get("https://zaif-status.herokuapp.com/zaif/status").then(r=>{
+    axios.get("https://zaif-status.herokuapp.com/zaif/status").then(res=>{
+      const r = res.data
       if (r.connectivity&&r.connectCount<5) {
         this.score=(r.chat*0.2+r.clicks*0.3)|0
       }else{

@@ -3,22 +3,38 @@
   <div>
     <h1>もにゃ</h1>
     <v-ons-list>
-      <v-ons-list-item modifier="small">
+      <v-ons-list-item modifier="chevron tappable" @click="goToTwitter('MissMonacoin')">
         <div class="center">作った人</div>
         <div class="right">ゆき@モナコインJK</div>
       </v-ons-list-item>
+      <v-ons-list-item modifier="chevron tappable" @click="donateMe">
+        <div class="right">モナを投げる</div>
+      </v-ons-list-item>
+      <v-ons-list-item modifier="chevron tappable" @click="donateMeWithTwitter">
+        <div class="right">Twitterで投げ銭</div>
+      </v-ons-list-item>
+      <v-ons-list-item modifier="chevron tappable" @click="donateMeWithMonappy">
+        <div class="right">Monappyで送る</div>
+      </v-ons-list-item>
+      
       <v-ons-list-header>バックエンドをお借りした方々(敬称略)</v-ons-list-header>
-      <v-ons-list-item modifier="small">
+      <v-ons-list-item modifier="chevron tappable" @click="goToTwitter('cryptcoinjunkey')">
         <div class="center">Monacoin</div>
         <div class="right">Cryptcoin Junkey</div>
       </v-ons-list-item>
-      <v-ons-list-item modifier="small">
+      <v-ons-list-item modifier="chevron tappable" @click="goToTwitter('tomotomo_9696')">
         <div class="center">BitZeny</div>
         <div class="right">tomotomo9696</div>
       </v-ons-list-item>
-      <v-ons-list-item modifier="small">
+      <v-ons-list-item modifier="chevron tappable" @click="openLink('https://insight.is')">
         <div class="center">Bitcoin</div>
         <div class="right">BitPay</div>
+      </v-ons-list-item>
+      <v-ons-list-header>オープンソース</v-ons-list-header>
+      <v-ons-list-item modifier="chevron tappable" @click="openLink('https://github.com/MissMonacoin/monya')">ソースコード</v-ons-list-item>
+      <v-ons-list-item modifier="small">
+        <div class="center">ライセンス</div>
+        <div class="right">GNU GPL v3</div>
       </v-ons-list-item>
     </v-ons-list>
   </div>

@@ -3,6 +3,7 @@ module.exports=require("./settings.html")({
   data(){
     return {
       resetDialog:false,
+      isWebView:false,
       d:{
         includeUnconfirmedFunds:false,
         zaifPay:{
@@ -17,7 +18,8 @@ module.exports=require("./settings.html")({
         monappy:{
           enabled:false,
           myUserId:""
-        }
+        },
+        openInAppBrowser:false
       }
     }
   },
@@ -46,7 +48,7 @@ module.exports=require("./settings.html")({
     }
   },
   mounted(){
-    
+    this.isWebView=this.$ons.isWebView()
     storage.get("settings").then(d=>{
       Object.assign(this.d,d)
     })

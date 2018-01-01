@@ -13,7 +13,8 @@ module.exports = new Vuex.Store({
     monappyEnabled:false,
     sendUrl:"",
     zaifPayInvoiceId:"",
-    hasKeyPairs:false
+    hasKeyPairs:false,
+    openInAppBrowser:false
   },
   mutations: {
     setEntropy(state,ent) {
@@ -29,7 +30,7 @@ module.exports = new Vuex.Store({
       state.fiat=d.fiat||"jpy"
       state.easyUnit=d.useEasyUnit
       state.tsMode=d.absoluteTime?"absolute":"relative"
-      
+      state.openInAppBrowser=d.openInAppBrowser
     },
     setConfirmation(state,payload){
       state.confPayload={

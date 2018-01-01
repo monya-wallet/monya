@@ -87,7 +87,7 @@ module.exports=require("./confirm.html")({
         if(e instanceof errors.NoSolutionError){
           this.insufficientFund=true
         }else{
-          console.log(e)
+          this.$ons.notification.alert("Error:"+e.message)
         }
       })
     }

@@ -29,13 +29,13 @@
       <v-ons-list-item>
         <div class="center">決済の進捗</div>
         <div class="right">
-          <div v-show="res.speed==='new'">請求受付中</div>
-          <div v-show="res.speed==='paid'">送金されたようです</div>
-          <div v-show="res.speed==='confirm'">確認されました。</div>
-          <div v-show="res.speed==='complete'">完了</div>
-          <div v-show="res.speed==='expired'">期限切れ</div>
-          <div v-show="res.speed==='invalid'">失敗</div>
-          <div v-show="res.speed==='canceled'">キャンセルされました</div>
+          <div v-show="res.status==='new'">請求受付中</div>
+          <div v-show="res.status==='paid'">送金されたようです</div>
+          <div v-show="res.status==='confirm'">確認されました。</div>
+          <div v-show="res.status==='complete'">完了</div>
+          <div v-show="res.status==='expired'">期限切れ</div>
+          <div v-show="res.status==='invalid'">失敗</div>
+          <div v-show="res.status==='canceled'">キャンセルされました</div>
         </div>
       </v-ons-list-item>
       <v-ons-list-item>

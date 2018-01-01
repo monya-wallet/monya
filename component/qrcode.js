@@ -36,7 +36,7 @@ module.exports=require("./qrcode.html")({
           this.$emit("pop")
           this.$emit("push",require("./send.js"))
         }else if(res.protocol==="http"||res.protocol==="https"){
-          window.open(res.url)
+          window.open(res.url,this.$store.state.openInAppBrowser?"_blank":"_system")
         }else{
           this.$ons.notification.alert(res.url)
         }

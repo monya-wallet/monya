@@ -12,12 +12,16 @@
 
 ことを目標にしたモナコイン・Monapartyウォレット
 
-# プロダクト名
+## プロダクト名
 金光碧氏がもにゃもにゃ仰っていたので
 [https://twitter.com/KanemitsuMidori/status/914803980856827904](https://twitter.com/KanemitsuMidori/status/914803980856827904)
 
+## アイコン
 
-# License
+DMD様
+[https://monappy.jp/picture_places/view/20695](https://monappy.jp/picture_places/view/20695)
+
+## License
 
 GPLv3
 

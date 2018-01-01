@@ -69,21 +69,20 @@ module.exports=require("./send.html")({
             this.amount=u.amount
             this.label=u.label
             return
-          }
-          
-        }).catch(()=>{
-          currencyList.eachWithPub((cur)=>{
-            if(cur.prefixes.indexOf(this.address[0])>=0){
-              this.possibility.push({
-                name:cur.coinScreenName,
-                coinId:cur.coinId
-              })
-            }
-          })
-          if(this.possibility[0]){
-            this.coinType=this.possibility[0].coinId
           }else{
-            this.coinType=""
+            currencyList.eachWithPub((cur)=>{
+              if(cur.prefixes.indexOf(this.address[0])>=0){
+                this.possibility.push({
+                  name:cur.coinScreenName,
+                  coinId:cur.coinId
+                })
+              }
+            })
+            if(this.possibility[0]){
+              this.coinType=this.possibility[0].coinId
+            }else{
+              this.coinType=""
+            }
           }
         })
       }else{

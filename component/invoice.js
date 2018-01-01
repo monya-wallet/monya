@@ -27,7 +27,7 @@ module.exports=require("./invoice.html")({
   store:require("../js/store.js"),
   methods:{
     copyAddress(){
-      coinUtil.copy(this.address)
+      coinUtil.copy(this.url)
     },
     generateQR(){
       qrcode.toDataURL(this.url,{
