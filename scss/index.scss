@@ -35,6 +35,9 @@ ons-list-item{
   animation: shake 0.72s cubic-bezier(.36,.07,.19,.97) both;
   transform: translate3d(0, 0, 0);
 }
+.transparent{
+  background:transparent;
+}
 
 [data-page="home"]{
   #youHave{
@@ -486,20 +489,16 @@ $zaifPayLogoSize:200px;
 }
 
 [data-page="qrcode"]{
+  .page__background{
+    background:transparent
+  }
   #container{
     width:100%;
     height:100%;
     position:absolute;
     top:0;
     left:0;
-    background-color: #012;
-    video{
-      width:100%;
-      height:100%;
-      position:absolute;
-      top:0;
-      left:0;
-    }
+    background:transparent
     .overlay{
       width:100%;
       height:100%;

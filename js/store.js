@@ -14,7 +14,8 @@ module.exports = new Vuex.Store({
     sendUrl:"",
     zaifPayInvoiceId:"",
     hasKeyPairs:false,
-    openInAppBrowser:false
+    openInAppBrowser:false,
+    transparency:false
   },
   mutations: {
     setEntropy(state,ent) {
@@ -72,6 +73,9 @@ module.exports = new Vuex.Store({
     },
     setKeyPairsExistence(state,flag){
       state.hasKeyPairs=flag
-    }
+    },
+    setTransparency(state,flg) {
+      state.transparency=flg
+    },
   }
 })

@@ -11,6 +11,7 @@
     "bitcoinjs-lib": "^3.2.0",
     "buffer": "^5.0.8",
     "coinselect": "^3.1.11",
+    "cordova-plugin-qrscanner": "^2.5.0",
     "gulp-uglify": "^3.0.0",
     "instascan": "^1.0.0",
     "pump": "^2.0.0",

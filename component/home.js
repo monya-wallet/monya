@@ -13,6 +13,7 @@ module.exports=require("./home.html")({
   },
   methods:{
     qr(){
+      
       this.$emit("push",require("./qrcode.js"))
     },
     load(done){

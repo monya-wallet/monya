@@ -1,4 +1,4 @@
-<v-ons-page data-page="home">
+<v-ons-page data-page="home" v-show="!$store.state.transparency">
   <custom-bar title="ホーム" menu="true">
     <v-ons-toolbar-button @click="load">
       <v-ons-icon icon="fa-refresh"></v-ons-icon>

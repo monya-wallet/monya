@@ -9,7 +9,8 @@ module.exports=require("./showPassphrase.html")({
       password:"",
       requirePassword:false,
       showNext:true,
-      incorrect:false
+      incorrect:false,
+      data:null
     }
   },
   store:require("../js/store.js"),
@@ -25,6 +26,7 @@ module.exports=require("./showPassphrase.html")({
         this.render(
           coinUtil.decrypt(cipher.entropy,this.password)
         )
+        this.data=cipher
         this.requirePassword=false
         this.password=""
       }).catch(()=>{
@@ -33,6 +35,11 @@ module.exports=require("./showPassphrase.html")({
           this.incorrect=false
         },3000)
       })
+    }
+  },
+  computed:{
+    serializedData(){
+      return JSON.stringify(this.data)
     }
   },
   mounted(){

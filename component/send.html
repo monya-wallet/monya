@@ -1,4 +1,4 @@
-<v-ons-page data-page="send">
+<v-ons-page data-page="send" v-show="!$store.state.transparency">
   <custom-bar title="送る" menu="true">
     <v-ons-toolbar-button @click="qr">
       <v-ons-icon icon="fa-qrcode"></v-ons-icon>

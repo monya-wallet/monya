@@ -1,4 +1,4 @@
-const Instascan = require('instascan');
+const QRScanner = window.QRScanner
 const coinUtil=require("../js/coinUtil")
 module.exports=require("./qrcode.html")({
   data:()=>({
@@ -11,53 +11,64 @@ module.exports=require("./qrcode.html")({
   store:require("../js/store.js"),
   methods:{
     back(){
-      if (!this.scanner) {
+      QRScanner.destroy((status)=>{
         this.$emit("pop")
-      }
-      this.scanner.stop().then(()=>{
-        this.$emit("pop")
-      })
+        this.$store.commit("setTransparency",false)
+      });
+      
+      
     },
-    changeCam(){
-      this.scanner.start(this.cameras[(++this.cameraIndex)%this.cameras.length]);
-    }
-  },
-  mounted(){
-    const scn =this.scanner= new Instascan.Scanner({
-      video: this.$refs.qrPreview,
-      backgroundScan:false,
-      scanPeriod:6
-    })
-    scn.addListener('scan',content=>{
-      scn.stop()
+    settings(){
+      QRScanner.openSettings();
+    },
+    parse(content){
       coinUtil.parseUrl(content).then(res=>{
         if(res.isCoinAddress&&res.isPrefixOk&&res.isValidAddress){
           this.$store.commit("setSendUrl",res.url)
-          this.$emit("pop")
-          this.$emit("push",require("./send.js"))
+          QRScanner.destroy((status)=>{
+            this.$emit("pop")
+            this.$store.commit("setTransparency",false)
+            this.$emit("push",require("./send.js"))
+          });
+          
         }else if(res.protocol==="http"||res.protocol==="https"){
           window.open(res.url,this.$store.state.openInAppBrowser?"_blank":"_system")
         }else{
           this.$ons.notification.alert(res.url)
         }
       })
-    });
+    },
+    show(){
 
-    Instascan.Camera.getCameras().then(cameras=>{
-      this.cameras = cameras;
-      if (cameras.length > 0) {
-        let index=0
-        cameras.forEach((v,i)=>{
-          if(v.name&&v.name.toLowerCase().indexOf("back")>0){
-            index=i
-          }
-        })
-        scn.start(cameras[index]);
-      } else {
-        this.$ons.notification.alert('No cameras found.');
+    },
+    hide(){
+      
+    }
+  },
+  mounted(){
+    this.$store.commit("setTransparency",true)
+    QRScanner.prepare((err, status)=>{
+      if (err) {
+        this.$ons.notification.alert("error")
       }
-    }).catch(function (e) {
-      console.error(e);
-    });
+      if (status.authorized) {
+        QRScanner.scan((err,t)=>{
+          if (err) {
+            if(err.code==6){return }
+            this.$ons.notification.alert("error code:"+err.code)
+            return
+          }
+          QRScanner.destroy()
+          this.parse(t)
+        })
+        QRScanner.show()
+      } else if (status.denied) {
+        this.$ons.notification.alert("Please allow Camera")
+      } else {
+        this.back()
+      }
+    })
+    
+    
   }
 })
