@@ -168,7 +168,11 @@ exports.parseUrl=url=>new Promise((resolve,reject)=>{
 })
 
 exports.proxyUrl=url=>{
-  return 'https://zaif-status.herokuapp.com/proxy/'+encodeURIComponent(url)
+  if(window.cordova){
+    return url
+  }else{
+    return 'https://zaif-status.herokuapp.com/proxy/'+encodeURIComponent(url)
+  }
 }
 exports.shortWait=()=>new Promise(r=>{
   setTimeout(r,150)
