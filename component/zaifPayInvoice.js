@@ -29,7 +29,7 @@ module.exports=require("./zaifPayInvoice.html")({
             payload+=encodeURIComponent(v)+"="+encodeURIComponent(payloadObj[v])+"&"
           }
         }
-        axios({
+        return axios({
           method:"POST",
           url:coinUtil.proxyUrl("https://api.zaif.jp/ecapi"),
           data:payload.slice(0,-1)
