@@ -14,19 +14,27 @@ module.exports=require("./zaifPayInvoice.html")({
   methods:{
     getInvoice(){
       this.loading=true;
-      storage.get("settings").then((d)=>
+      
+      storage.get("settings").then((d)=>{
+        const payloadObj = {
+          method:"getInvoice",
+          md5secret:crypto.createHash("md5").update(d.zaifPay.secret).digest("hex"),
+          key:d.zaifPay.apiKey,
+          invoiceId:this.$store.state.zaifPayInvoiceId,
+          nonce:(Date.now()/1000)+""
+        }
+        let payload="";
+        for(let v in payloadObj){
+          if(payloadObj[v]){
+            payload+=encodeURIComponent(v)+"="+encodeURIComponent(payloadObj[v])+"&"
+          }
+        }
         axios({
           method:"POST",
           url:coinUtil.proxyUrl("https://api.zaif.jp/ecapi"),
-          data:{
-            method:"getInvoice",
-            md5secret:crypto.createHash("md5").update(d.zaifPay.secret).digest("hex"),
-            key:d.zaifPay.apiKey,
-            invoiceId:this.$store.state.zaifPayInvoiceId,
-            nonce:(Date.now()/1000)+""
-          }
+          data:payload.slice(0,-1)
         })
-      ).then(res=>{
+      }).then(res=>{
         if(!res.data.success){
           throw new Error("Not successful")
         }
