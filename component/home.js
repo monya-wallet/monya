@@ -38,7 +38,7 @@ module.exports=require("./home.html")({
               unconfirmed:bal.unconfirmed,
               screenName:cur.coinScreenName,
               price:res,
-              icon:cur.icon,
+              icon:cur.icon
             })
             this.loading=false
             typeof(done)==='function'&&done()

@@ -1,5 +1,8 @@
 <v-ons-page data-page="history">
   <custom-bar title="履歴" menu="true">
+    <v-ons-toolbar-button @click="outputJson">
+      <v-ons-icon icon="fa-download"></v-ons-icon>
+    </v-ons-toolbar-button>
     <v-ons-toolbar-button @click="filterDlg=true">
       <v-ons-icon icon="fa-filter"></v-ons-icon>
     </v-ons-toolbar-button>
@@ -48,6 +51,7 @@
           
         </div>
       </v-ons-list-item>
+      <v-ons-list-item v-show="hasMore" @click="loadMore">もっと見る</v-ons-list-item>
     </v-ons-list>
     <v-ons-alert-dialog modifier="rowfooter"
       :visible.sync="filterDlg"
@@ -66,4 +70,10 @@
       </template>
     </v-ons-alert-dialog>
   </div>
+  <v-ons-dialog cancelable
+                :visible.sync="outputDlg"
+                >
+    <p style="text-align: center">現在表示されている履歴のJSONファイルです。</p>
+    <textarea cols="50" rows="20">{{json}}</textarea>
+  </v-ons-dialog>
 </v-ons-page>

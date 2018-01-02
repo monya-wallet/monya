@@ -3,7 +3,7 @@
   <div>
     <div v-if="res">
       <v-ons-list>
-        <v-ons-list-item modifier="">
+        <v-ons-list-item>
           <div class="center">ラベルを設定</div>
           <div class="right">
             <v-ons-input v-model="txLabel" placeholder="名称未設定" @change="saveTxLabel"></v-ons-input>
@@ -44,20 +44,20 @@
       </v-ons-list>
       <v-ons-list modifier="inset">
         <v-ons-list-title>入力</v-ons-list-title>
-        <v-ons-list-item v-for="v in res.vin" @click="txDetail(v.txid)">
+        <v-ons-list-item v-for="v in res.vin">
           <div class="addr" :class="addressClass(v.addr)">{{v.addr}}</div>
-          <div class="w_right">
+          <div class="w_right" @click="txDetail(v.txid)">
             <currency-set :amount="v.value" :ticker="coinId"></currency-set>
           </div>
         </v-ons-list-item>
       </v-ons-list>
       <v-ons-list modifier="inset">
         <v-ons-list-title>出力</v-ons-list-title>
-        <v-ons-list-item v-for="vo in res.vout" @click="txDetail(vo.spentTxId)">
+        <v-ons-list-item v-for="vo in res.vout">
           <div>
             <span v-for="addr in vo.scriptPubKey.addresses" class="addr" :class="addressClass(addr)">{{addr}}</span>
           </div>
-          <div class="w_right">
+          <div class="w_right" @click="txDetail(vo.spentTxId)">
             <currency-set :amount="vo.value" :ticker="coinId"></currency-set>
           </div>
         </v-ons-list-item>

@@ -15,13 +15,14 @@ module.exports=require("./send.html")({
       fiatTicker:this.$store.state.fiat,
       advanced:false,
       label:"",
-      messageToShow:""
+      messageToShow:"",
+      txLabel:""
     }
   },
   store:require("../js/store.js"),
   methods:{
     confirm(){
-      if(!this.address||!this.coinType||isNaN(this.amount*1)||(this.amount*1)<=0||!this.feePerByte||!coinUtil.isValidAddress(this.address)){
+      if(!this.address||!this.coinType||isNaN(this.amount*1)||(this.amount*1)<=0||!this.feePerByte||!coinUtil.isValidAddress(this.address)||(this.message&&Buffer.from(this.message, 'utf8').length>40)){
         
         this.$ons.notification.alert("正しく入力してね！")
         return;
@@ -94,6 +95,11 @@ module.exports=require("./send.html")({
         this.getPrice()
         this.feePerByte = currencyList.get(this.coinType).defaultFeeSatPerByte
       }
+    }
+  },
+  computed:{
+    remainingBytes(){
+      return 40-Buffer.from(this.message||"", 'utf8').length
     }
   },
   mounted(){

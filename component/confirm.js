@@ -3,6 +3,7 @@ const coinUtil=require("../js/coinUtil")
 const currencyList = require("../js/currencyList")
 const bcLib = require('bitcoinjs-lib')
 const errors = require("../js/errors")
+const BigNumber = require('bignumber.js');
 module.exports=require("./confirm.html")({
   data(){
     return {
@@ -55,7 +56,7 @@ module.exports=require("./confirm.html")({
       const cur =this.cur
       const targets = [{
         address:this.address,
-        value:(this.amount*100000000)|0
+        value:(new BigNumber(this.amount)).times(100000000).round().toNumber()
       }];
       if(this.message){
         targets.push({
@@ -71,7 +72,7 @@ module.exports=require("./confirm.html")({
           includeUnconfirmedFunds:data.includeUnconfirmedFunds
         })
       }).then(d=>{
-        this.fee=d.fee/100000000
+        this.fee=(new BigNumber(d.fee)).divToInt(100000000)
         this.utxosToShow=d.utxos
         this.path=d.path
         this.myBalanceBeforeSending=d.balance

@@ -40,7 +40,8 @@ module.exports = new Vuex.Store({
         fiat:parseFloat(payload.fiat),
         feePerByte:parseInt(payload.feePerByte,10),
         message:payload.message,
-        coinType:payload.coinType
+        coinType:payload.coinType,
+        txLabel:payload.txLabel
       }
     },
     setFinishNextPage(state,pageData){

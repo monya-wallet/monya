@@ -63,5 +63,10 @@ module.exports=require("./navigator.html")({
         }
       })
     })
+  },
+  watch:{
+    pageStack(){
+      this.$store.commit("setTransparency",false)
+    }
   }
 })

@@ -49,13 +49,13 @@ module.exports=require("./qrcode.html")({
     this.$store.commit("setTransparency",true)
     QRScanner.prepare((err, status)=>{
       if (err) {
-        this.$ons.notification.alert("error")
+        this.$ons.notification.alert("error"+(err&&err.code))
       }
       if (status.authorized) {
-        QRScanner.scan((err,t)=>{
-          if (err) {
-            if(err.code==6){return }
-            this.$ons.notification.alert("error code:"+err.code)
+        QRScanner.scan((err2,t)=>{
+          if (err2) {
+            if(err2.code===6){return }
+            this.$ons.notification.alert("error code:"+err2.code)
             return
           }
           QRScanner.destroy()

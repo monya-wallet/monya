@@ -1,5 +1,6 @@
 const currencyList = require("../js/currencyList")
 const coinUtil = require("../js/coinUtil")
+const bcLib = require('bitcoinjs-lib')
 module.exports=require("./history.html")({
   data(){
     return {
@@ -11,7 +12,11 @@ module.exports=require("./history.html")({
       txs:[],
       state:"initial",
       error:false,
-      noData:false
+      noData:false,
+      to:20,
+      hasMore:false,
+      outputDlg:false,
+      json:""
     }
   },
   store:require("../js/store.js"),
@@ -22,13 +27,16 @@ module.exports=require("./history.html")({
       this.txs=[]
       const cur =currencyList.get(this.currency[this.currencyIndex].coinId)
 
-      Promise.all([cur.getTxs(0,20), cur.getTxLabel()]).then(data=>{
+      Promise.all([cur.getTxs(0,this.to), cur.getTxLabel()]).then(data=>{
         const res=data[0]
         if(!res.totalItems){
           this.noData=true
           typeof(done)==='function'&&done()
         }
-        for(let i=0;i<res.totalItems;i++){
+
+        this.hasMore=res.totalItems>res.to
+        
+        for(let i=0;i<res.items.length;i++){
           const v=res.items[i]
           const txLbl=data[1][v.txid]
           //isIn=I sent
@@ -37,8 +45,9 @@ module.exports=require("./history.html")({
           let aIn=0
           let aOut=0
           let amount=0
-          let hasMessage=false
-          let direction=""
+          let hasMessage=false,
+              direction="",
+              message=""
           for(let j=0;j<v.vin.length;j++){
             if(cur.getIndexFromAddress(v.vin[j].addr)){
               aIn+=parseFloat(v.vin[j].value)
@@ -49,6 +58,7 @@ module.exports=require("./history.html")({
             const spk=vo.scriptPubKey
             if(spk.hex.substr(0,2)==="6a"){
               hasMessage=true
+              message=bcLib.script.nullData.output.decode(new Buffer(spk.hex,"hex")).toString('utf8')
             }
             if(spk.addresses){
               for(let l=0;l<spk.addresses.length;l++){
@@ -72,6 +82,7 @@ module.exports=require("./history.html")({
             price:txLbl&&txLbl.price,
             inmatureConfirmation:!v.confirmations||v.confirmations<cur.confirmations,
             direction,
+            message,
             aIn,
             aOut,
             hasMessage,
@@ -86,7 +97,18 @@ module.exports=require("./history.html")({
         typeof(done)==='function'&&done()
       })
     },
-    
+    loadMore(){
+      this.to+=20
+      this.load()
+    },
+    outputJson(){
+      this.outputDlg=true;
+      this.json=JSON.stringify(this.txs)
+    },
+    pullToLoad(done){
+      this.to=20
+      this.load(done)
+    },
     filter(tx){
       if((this.dirFilter==="send"&&tx.aIn<tx.aOut)||(this.dirFilter==="receive"&&tx.aIn>tx.aOut)){
         return false

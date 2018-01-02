@@ -110,6 +110,10 @@ ons-list-item{
   .addr{
     font-size:0.8em;
     padding:4px;
+    user-select:text;
+    -webkit-user-select: text;
+    -moz-user-select: text;
+    -ms-user-select: text;
   }
   .addr.receive{
     color:#4a2;

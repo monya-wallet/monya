@@ -1,5 +1,6 @@
 const bcLib = require('bitcoinjs-lib')
 const axios = require('axios');
+const BigNumber = require('bignumber.js');
 const coinSelect = require('coinselect')
 const errors = require("./errors")
 const bip39 = require("bip39")
@@ -83,8 +84,8 @@ module.exports=class{
     return this.getUtxos(this.getChangeAddr(),includeUnconfirmedFunds).then(d=>{
       let newestCnf=Infinity
       let newestAddr=""
-      let bal=0
-      let unconfirmed=0
+      let bal=new BigNumber(0)
+      let unconfirmed=new BigNumber(0)
       const res=d.utxos
       for(let i=0;i<res.length;i++){
         if(res[i].confirmations<newestCnf){
@@ -92,9 +93,9 @@ module.exports=class{
           newestAddr=res[i].address
         }
         if(res[i].confirmations===0){
-          unconfirmed+=res[i].value
+          unconfirmed=unconfirmed.plus(res[i].value)
         }else{
-          bal+=res[i].value
+          bal=bal.plus(res[i].value)
         }
       }
       this.changeIndex=newestAddr?
@@ -129,7 +130,7 @@ module.exports=class{
           const u=v[i]
           if(includeUnconfirmedFunds||u.confirmations!==0){
             utxos.push({
-              value:u.amount*100000000,
+              value:(new BigNumber(u.amount)).times(100000000).round().toNumber(),
               txId:u.txid,
               vout:u.vout,
               address:u.address,

@@ -73,7 +73,7 @@
             <v-ons-icon icon="ion-ios-list-outline"></v-ons-icon>
           </div>
         </v-ons-list-item>
-        <v-ons-list-header>送金手数料(sat/Byte)</v-ons-list-header>
+        <v-ons-list-header>送金手数料(sat/Byte) 少なすぎると危ないよ！</v-ons-list-header>
         <v-ons-list-item>
           <div class="center">
             <v-ons-input type="number" v-model="feePerByte" placeholder="送金手数料(satoshi/Byte)" :disabled="!address||!coinType"></v-ons-input>
@@ -82,13 +82,13 @@
             <currency-set ticker="satByte"></currency-set>
           </div>
         </v-ons-list-item>
-        <v-ons-list-header>メッセージ(任意)</v-ons-list-header>
+        <v-ons-list-header>相手に送るメッセージ(任意)</v-ons-list-header>
         <v-ons-list-item>
           <div class="center">
-            <v-ons-input v-model="message" placeholder="80Byteまで"></v-ons-input>
+            <v-ons-input v-model="message" placeholder="40Byteまで"></v-ons-input>
           </div>
           <div class="right">
-            <v-ons-icon icon="comment"></v-ons-icon>
+            {{remainingBytes}}
           </div>
         </v-ons-list-item>
       </div>
