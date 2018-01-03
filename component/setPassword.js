@@ -23,6 +23,7 @@ module.exports=require("./setPassword.html")({
       }
       if(blacklist.indexOf(this.password)>=0){
         this.$ons.notification.alert(this.password+"は禁止!")
+        return
       }
       this.loading=true
       let cipherPromise=null;
