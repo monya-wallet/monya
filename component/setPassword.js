@@ -2,6 +2,7 @@ const coinUtil = require("../js/coinUtil.js")
 const currencyList = require("../js/currencyList.js")
 const crypto = require('crypto');
 const storage = require("../js/storage.js")
+const blacklist=["123456","114514","password","password2"]
 module.exports=require("./setPassword.html")({
   data(){
     return {
@@ -20,14 +21,8 @@ module.exports=require("./setPassword.html")({
       if(!this.password||this.password!==this.password2||this.password.length<6){
         return;
       }
-      if (this.password==="123456") {
-        this.$ons.notifications("123456は禁止!")
-        return 
-      }
-
-      if (this.password==="114514") {
-        this.$ons.notifications("114514は禁止!")
-        return
+      if(blacklist.indexOf(this.password)>=0){
+        this.$ons.notification.alert(this.password+"は禁止!")
       }
       this.loading=true
       let cipherPromise=null;
