@@ -152,7 +152,7 @@ const defaultCoins=[
     bip21:"fujicoin",
     defaultFeeSatPerByte:200,//will implement dynamic fee
     icon:require("../res/coins/fjc.png"),
-    defaultAPIEndpoint:"http://explorer.fujicoin.org/api",
+    defaultAPIEndpoint:coinUtil.proxyUrl("http://explorer.fujicoin.org/api"),
     network:{
       messagePrefix: '\x19Fujicoin Signed Message:\n',
       bip32: {
