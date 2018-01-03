@@ -17,7 +17,7 @@ module.exports=require("./setPassword.html")({
   store:require("../js/store.js"),
   methods:{
     next(){
-      if(!this.password||this.password!==this.password2||!this.password.length<6){
+      if(!this.password||this.password!==this.password2||this.password.length<6){
         return;
       }
       if (this.password==="123456") {
