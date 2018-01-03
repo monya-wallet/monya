@@ -1,2 +1,0 @@
-鍵導出はBIP44
-account=0はDefault Accountとする

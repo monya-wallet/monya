@@ -55,7 +55,12 @@ gulp.task("watch", function() {
 });
 gulp.task("setCordova", function() {
   return gulp.src(["dist/**"])
-    .pipe(gulp.dest("../monya-app/www/dist"))
+    .pipe(gulp.dest("./cordovaProj/www/dist"))
+});
+
+gulp.task("setDocs", function() {
+  return gulp.src(["dist/**"])
+    .pipe(gulp.dest("./docs/wallet/dist"))
 });
 
 gulp.task("default", function(cb) {
@@ -67,7 +72,7 @@ gulp.task("default", function(cb) {
 gulp.task("prod", function(cb) {
   return runSequence(
     ["lint","webpackProd"],
-    "setCordova",
+    "setCordova","setDocs",
     cb
   );
 });

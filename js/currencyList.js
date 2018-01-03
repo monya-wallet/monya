@@ -174,39 +174,6 @@ const defaultCoins=[
       fiat:"jpy"
     },
     confirmations:6
-  },{
-    coinScreenName:"ジーキャッシュ",
-    coinId:"zec",
-    unit:"ZEC",
-    unitEasy:"ジーキャッシュ",
-    bip44:{
-      coinType:133,
-      account:0
-    },
-    bip21:"zcash",
-    defaultFeeSatPerByte:500,//will implement dynamic fee
-    icon:require("../res/coins/zec.png"),
-    defaultAPIEndpoint:"http://insight.mercerweiss.com/api",
-    network:{
-      bip32: {
-        public: 0x0488b21e,
-        
-        private: 0x0488ade4
-      },
-      messagePrefix: '\x19Zcash Signed Message:\n',
-      pubKeyHash: 7352,// t1
-      scriptHash: 7357,// t3
-      wif: 128
-    },
-    enableSegwit:false,
-    prefixes:["t"],
-    price:{
-      url:coinUtil.proxyUrl("https://www.coingecko.com/price_charts/zcash/jpy/24_hours.json"),
-      json:true,
-      jsonPath:["stats",0,1],
-      fiat:"jpy"
-    },
-    confirmations:6
   }
 ]
 

@@ -28,7 +28,7 @@
     "arrow-parens": 0,
     "no-useless-concat": 1,
     "no-extra-boolean-cast": 1,
-    "no-unused-expressions": 1,
+    "no-unused-expressions": 0,
     "guard-for-in": 1,
     "no-with": 1,
     "accessor-pairs": 1,

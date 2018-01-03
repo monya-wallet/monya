@@ -111,7 +111,6 @@ module.exports=require("./confirm.html")({
         })
         return cur.pushTx(finalTx.toHex())
       }).then((res)=>{
-        const cur =currencyList.get(this.coinType)
         cur.saveTxLabel(res.txid,{label:this.txLabel,price:parseFloat(this.price)})
         this.$store.commit("setFinishNextPage",{page:require("./home.js"),infoId:"sent",payload:{
           txId:res.txid

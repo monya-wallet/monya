@@ -44,11 +44,11 @@ module.exports=require("./qrcode.html")({
     },
     toggleLight(){
       if(this.lightEnabled){
-        QRScanner.disableLight(function(err, status){
+        QRScanner.disableLight((err, status)=>{
           this.$set(this,"lightEnabled",status&&status.lightEnabled)
         });
       }else{
-        QRScanner.enableLight(function(err, status){
+        QRScanner.enableLight((err, status)=>{
           this.$set(this,"lightEnabled",status&&status.lightEnabled)
         });
       }
