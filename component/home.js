@@ -49,7 +49,10 @@ module.exports=require("./home.html")({
             typeof(done)==='function'&&done()
           })
       })
-    }
+    },
+    goToManageCoin(){
+      this.$emit("push",require("./manageCoin.js"))
+    },
   },
   store:require("../js/store.js"),
   mounted(){

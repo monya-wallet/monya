@@ -49,7 +49,7 @@ const defaultCoins=[
       account:0
     },
     bip21:"bitcoin",
-    defaultFeeSatPerByte:100000,
+    defaultFeeSatPerByte:10000,
     icon:require("../res/coins/btc.png"),
     defaultAPIEndpoint:"https://insight.bitpay.com/api",
     network:{
@@ -59,7 +59,7 @@ const defaultCoins=[
         
         private: 0x0488ade4
       },
-      pubKeyHash: 0,// Z
+      pubKeyHash: 0,// 1
       scriptHash: 5,// 3
       wif: 128
     },
@@ -71,7 +71,7 @@ const defaultCoins=[
       jsonPath:["data","last"],
       fiat:"jpy"
     },
-    confirmations:10
+    confirmations:12
   },
   {
     coinScreenName:"ビットゼニー",
@@ -106,6 +106,107 @@ const defaultCoins=[
       fiat:"jpy"
     },
     sound:require("../res/coins/paySound/zny.m4a")
+  },{
+    coinScreenName:"ライトコイン",
+    coinId:"ltc",
+    unit:"LTC",
+    unitEasy:"ライトコイン",
+    bip44:{
+      coinType:2,//from slip44
+      account:0
+    },
+    bip21:"litecoin",
+    defaultFeeSatPerByte:500,//will implement dynamic fee
+    icon:require("../res/coins/ltc.png"),
+    defaultAPIEndpoint:"https://insight.litecore.io/api",
+    network:{
+      messagePrefix: '\x19Litecoin Signed Message:\n',
+      bip32: {
+        public: 0x0488b21e,
+        
+        private: 0x0488ade4
+      },
+      pubKeyHash: 48,// L
+      scriptHash: 5,// 3
+      wif: 176,
+      bech32:"lc1"
+    },
+    enableSegwit:false,
+    prefixes:["L","3"],
+    price:{
+      url:"https://public.bitbank.cc/ltc_btc/ticker",
+      json:true,
+      jsonPath:["data","last"],
+      fiat:"btc"
+    },
+    confirmations:6
+  },{
+    coinScreenName:"フジコイン",
+    coinId:"fjc",
+    unit:"FJC",
+    unitEasy:"フジコイン",
+    bip44:{
+      coinType:75,
+      account:0
+    },
+    bip21:"fujicoin",
+    defaultFeeSatPerByte:200,//will implement dynamic fee
+    icon:require("../res/coins/fjc.png"),
+    defaultAPIEndpoint:"http://explorer.fujicoin.org/api",
+    network:{
+      messagePrefix: '\x19Fujicoin Signed Message:\n',
+      bip32: {
+        public: 0x0488b21e,
+        
+        private: 0x0488ade4
+      },
+      pubKeyHash: 36,// F
+      scriptHash: 17,// 3
+      wif: 164,//not known but i put it 36+128
+      bech32:"fuji1"
+    },
+    enableSegwit:false,
+    prefixes:["F","7"],
+    price:{
+      url:coinUtil.proxyUrl("https://www.coingecko.com/price_charts/fujicoin/jpy/24_hours.json"),
+      json:true,
+      jsonPath:["stats",0,1],
+      fiat:"jpy"
+    },
+    confirmations:6
+  },{
+    coinScreenName:"ジーキャッシュ",
+    coinId:"zec",
+    unit:"ZEC",
+    unitEasy:"ジーキャッシュ",
+    bip44:{
+      coinType:133,
+      account:0
+    },
+    bip21:"zcash",
+    defaultFeeSatPerByte:500,//will implement dynamic fee
+    icon:require("../res/coins/zec.png"),
+    defaultAPIEndpoint:"http://insight.mercerweiss.com/api",
+    network:{
+      bip32: {
+        public: 0x0488b21e,
+        
+        private: 0x0488ade4
+      },
+      messagePrefix: '\x19Zcash Signed Message:\n',
+      pubKeyHash: 7352,// t1
+      scriptHash: 7357,// t3
+      wif: 128
+    },
+    enableSegwit:false,
+    prefixes:["t"],
+    price:{
+      url:coinUtil.proxyUrl("https://www.coingecko.com/price_charts/zcash/jpy/24_hours.json"),
+      json:true,
+      jsonPath:["stats",0,1],
+      fiat:"jpy"
+    },
+    confirmations:6
   }
 ]
 

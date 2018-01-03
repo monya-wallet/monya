@@ -17,8 +17,17 @@ module.exports=require("./setPassword.html")({
   store:require("../js/store.js"),
   methods:{
     next(){
-      if(!this.password||this.password!==this.password2){
+      if(!this.password||this.password!==this.password2||!this.password.length<6){
         return;
+      }
+      if (this.password==="123456") {
+        this.$ons.notifications("123456は禁止!")
+        return 
+      }
+
+      if (this.password==="114514") {
+        this.$ons.notifications("114514は禁止!")
+        return
       }
       this.loading=true
       let cipherPromise=null;

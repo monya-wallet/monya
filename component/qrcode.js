@@ -3,10 +3,14 @@ const coinUtil=require("../js/coinUtil")
 module.exports=require("./qrcode.html")({
   data:()=>({
     cameras:[],
-    loading:false,
+    loading:true,
     error:false,
     scanner:null,
-    cameraIndex:0
+    cameraIndex:0,
+    canEnableLight:false,
+    lightEnabled:false,
+    canChangeCamera:false,
+    currentCamera:0
   }),
   store:require("../js/store.js"),
   methods:{
@@ -38,20 +42,38 @@ module.exports=require("./qrcode.html")({
         }
       })
     },
-    show(){
-
+    toggleLight(){
+      if(this.lightEnabled){
+        QRScanner.disableLight(function(err, status){
+          this.$set(this,"lightEnabled",status&&status.lightEnabled)
+        });
+      }else{
+        QRScanner.enableLight(function(err, status){
+          this.$set(this,"lightEnabled",status&&status.lightEnabled)
+        });
+      }
     },
-    hide(){
-      
+    changeCam(){
+      this.$set(this,"loading",true)
+      QRScanner.useCamera((!this.currentCamera)|0, (err, status)=>{
+        this.$set(this,"currentCamera",status&&status.currentCamera)
+        this.$set(this,"loading",false)
+      });
     }
   },
   mounted(){
     this.$store.commit("setTransparency",true)
+    this.loading=true
     QRScanner.prepare((err, status)=>{
       if (err) {
         this.$ons.notification.alert("error"+(err&&err.code))
       }
       if (status.authorized) {
+        this.$set(this,"canEnableLight",status.canEnableLight)
+        this.$set(this,"canChangeCamera",status.canChangeCamera)
+        this.$set(this,"lightEnabled",status&&status.lightEnabled)
+        this.$set(this,"currentCamera",status.currentCamera)
+        this.$set(this,"loading",false)
         QRScanner.scan((err2,t)=>{
           if (err2) {
             if(err2.code===6){return }

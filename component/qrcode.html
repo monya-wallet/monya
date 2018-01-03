@@ -17,5 +17,23 @@
       :visible="!loading"
     >
       <v-ons-icon icon="fa-cog"></v-ons-icon>
+      
+    </v-ons-fab>
+    <v-ons-fab
+      position="bottom left"
+      @click="toggleLight"
+      :visible="canEnableLight"
+    >
+      <v-ons-icon icon="fa-bolt"></v-ons-icon>
+      
+    </v-ons-fab>
+    <v-ons-fab
+      position="top right"
+      @click="changeCam"
+      :visible="canChangeCamera"
+    >
+      <v-ons-icon icon="fa-camera"></v-ons-icon>
+      <v-ons-icon icon="fa-refresh"></v-ons-icon>
+      
     </v-ons-fab>
 </v-ons-page>

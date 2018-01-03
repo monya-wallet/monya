@@ -21,13 +21,13 @@
         <div id="balanceWrap">
           <currency-set :amount="fiatConv" :ticker="fiat" about="true"></currency-set>
         </div>
-        <div v-show="error">エラーが発生したようです。</div>
+        <div v-show="error">エラーが発生したようです。<br>しばらくしてからもう一度お試しください。</div>
       </div>
       <div v-show="loading" class="spinner"></div>
     </div>
     <div id="coins">
       <v-ons-list>
-        <v-ons-list-item modifier="tappable" v-for="c in curs">
+        <v-ons-list-item v-for="c in curs">
           <div class="left">
             <img :src="c.icon"/>
           </div>
@@ -41,6 +41,9 @@
             <div class="amount" :class='{unconfirmed:c.unconfirmed}'><currency-set :amount="c.balance" :ticker="c.coinId"></currency-set><span v-show="c.unconfirmed">+{{c.unconfirmed}}待機中</span></div>
             <div class="fiatConv"><currency-set :amount="c.balance*c.price" :ticker="fiat" :easy="isEasy"></currency-set></div>
           </div>
+        </v-ons-list-item>
+        <v-ons-list-item @click="goToManageCoin" modifier="tappable chevron">
+          コインを追加
         </v-ons-list-item>
       </v-ons-list>
     </div>
