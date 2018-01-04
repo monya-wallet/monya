@@ -34,7 +34,7 @@
       <v-ons-input placeholder="パスワード" v-model="password" type="password" :class="{shake:incorrect}"></v-ons-input>
       <template slot="footer">
         <div class="alert-dialog-button" @click="$emit('pop')">やめる</div>
-        <div class="alert-dialog-button" @click="decrypt">追加</div>
+        <div class="alert-dialog-button" @click="decrypt">ロック解除</div>
       </template>
     </v-ons-alert-dialog>
   </div>

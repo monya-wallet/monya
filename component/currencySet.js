@@ -21,11 +21,7 @@ module.exports=require("./currencySet.html")({
   computed:{
     tickerCap(){
       if(this.fiatTicker){
-        if(this.easy){
-          return this.getTicker(this.fiatTicker)+"=1"+this.getTicker(this.ticker)
-        }else{
-          return this.getTicker(this.ticker)+"/"+this.getTicker(this.fiatTicker)
-        }
+        return this.getTicker(this.fiatTicker)+"=1"+this.getTicker(this.ticker)
       }else{
         return this.getTicker(this.ticker)
       }
