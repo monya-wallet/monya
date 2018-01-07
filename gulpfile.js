@@ -18,6 +18,7 @@ gulp.task("browserSync", function() {
     open:false
   });
 });
+
 gulp.task("reload",function(){
   browser.reload()
 })
@@ -41,7 +42,6 @@ gulp.task('webpack', function(){
   return gulp.src('js/main.js')
     .pipe(webpack(require("./webpack.config.dev")))
     .pipe(gulp.dest('./'))
-    .pipe(browser.stream());
 });
 gulp.task('webpackProd', function(){
   return gulp.src('js/main.js')
@@ -51,7 +51,7 @@ gulp.task('webpackProd', function(){
 gulp.task("watch", function() {
   gulp.watch("dist/dist.js", ["reload"]);
   gulp.watch("index.html",["reload"]);
-  gulp.watch(["component/*.js","js/*.js"],["lint"]);
+  gulp.watch(["component/*.js","js/*.js"],["reload"]);
 });
 gulp.task("setCordova", function() {
   return gulp.src(["dist/**"])

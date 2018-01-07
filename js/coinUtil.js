@@ -171,7 +171,7 @@ exports.proxyUrl=url=>{
   if(window.cordova){
     return url
   }else{
-    return 'https://zaif-status.herokuapp.com/proxy/'+encodeURIComponent(url)
+    return 'https://zaif-status.herokuapp.com/proxy/?u='+encodeURIComponent(url)
   }
 }
 exports.shortWait=()=>new Promise(r=>{
@@ -197,3 +197,16 @@ exports.setUrlCallback=cb=>{
   }
 }
 exports.hasInitialized=false
+
+exports.buildBuilderfromPubKeyTx=(transaction,network)=>{
+  var txb = new bcLib.TransactionBuilder(network)
+  txb.setVersion(transaction.version)
+  txb.setLockTime(transaction.locktime)
+  transaction.ins.forEach(function (txIn) {
+    txb.addInput(txIn.hash, txIn.index)
+  })
+  transaction.outs.forEach(function (txOut) {
+    txb.addOutput(txOut.script, txOut.value)
+  })
+  return txb
+}

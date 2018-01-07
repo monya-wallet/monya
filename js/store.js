@@ -11,11 +11,15 @@ module.exports = new Vuex.Store({
     detail:{},
     zaifPayEnabled:false,
     monappyEnabled:false,
+    monapartyEnabled:false,
     sendUrl:"",
     zaifPayInvoiceId:"",
     hasKeyPairs:false,
     openInAppBrowser:false,
-    transparency:false
+    transparency:false,
+    tokenInfo:"",
+    coinId:"",
+    addr:""
   },
   mutations: {
     setEntropy(state,ent) {
@@ -28,6 +32,7 @@ module.exports = new Vuex.Store({
       //d can be incomplete,please be careful
       state.zaifPayEnabled=d.zaifPay?d.zaifPay.enabled:false
       state.monappyEnabled=d.monappy?d.monappy.enabled:false
+      state.monapartyEnabled=d.monapartyEnabled
       state.fiat=d.fiat||"jpy"
       state.easyUnit=d.useEasyUnit
       state.tsMode=d.absoluteTime?"absolute":"relative"
@@ -77,6 +82,11 @@ module.exports = new Vuex.Store({
     },
     setTransparency(state,flg) {
       state.transparency=flg
+    },
+    setTokenInfo(state,token){
+      state.tokenInfo=token.token||""
+      state.coinId=token.coinId||""
+      state.addr=token.addr||""
     },
   }
 })

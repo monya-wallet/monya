@@ -1,0 +1,36 @@
+<v-ons-page data-page="makeToken">
+  <custom-bar title="トークンをつくる"></custom-bar>
+  <div>
+    <v-ons-list>
+      
+      <v-ons-list-item>
+        <div class="center">作成するアドレスのラベル</div>
+        <div class="right">
+          <v-ons-select v-model="addressIndex">
+            <option v-for="(l,i) in labels" :value="i">{{l}}</option>
+          </v-ons-select>
+        </div>
+      </v-ons-list-item>
+      <v-ons-list-item>
+        <div class="center"><v-ons-input placeholder="トークン名" v-model="token"></v-ons-input>
+        </div>
+        <div class="right">サブトークンは正式名称</div>
+      </v-ons-list-item>
+      <v-ons-list-item><v-ons-input placeholder="数量" v-model="amount"></v-ons-input></v-ons-list-item>
+      <v-ons-list-item><v-ons-input placeholder="説明" v-model="description"></v-ons-input></v-ons-list-item>
+      <v-ons-list-item>
+        <div class="center">小数点以下を許可</div>
+        <div class="right"><v-ons-switch v-model="divisible"></v-ons-switch></div>
+      </v-ons-list-item>
+      <v-ons-list-item><v-ons-input type="password" placeholder="Password" v-model="password"></v-ons-input></v-ons-list-item>
+      <v-ons-list-item><v-ons-button  @click="createTx" modifier="large">Create Token</v-ons-button></v-ons-list-item>
+    </v-ons-list>
+  </div>
+  <v-ons-modal :visible="loading">
+    <p style="text-align: center">
+      処理中 
+      <br><br>
+      <div class="spinner"></div>
+    </p>
+  </v-ons-modal>
+</v-ons-page>

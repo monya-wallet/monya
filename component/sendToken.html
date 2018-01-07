@@ -1,0 +1,33 @@
+<v-ons-page data-page="sendToken">
+  <custom-bar title="トークンを送る"></custom-bar>
+  <div>
+    <v-ons-list>
+      
+      <v-ons-list-item>
+        <div class="center">送信元アドレスのラベル</div>
+        <div class="right">
+          <v-ons-select v-model="addressIndex">
+            <option v-for="(l,i) in labels" :value="i">{{l}}</option>
+          </v-ons-select>
+        </div>
+      </v-ons-list-item>
+      <v-ons-list-item><v-ons-input v-model="dest" placeholder="送金先アドレス"></v-ons-input></v-ons-list-item>
+      <v-ons-list-item>
+        <div class="center"><v-ons-input placeholder="トークン名" v-model="token"></v-ons-input>
+        </div>
+        <div class="right">サブトークンは正式名称</div>
+      </v-ons-list-item>
+      <v-ons-list-item><v-ons-input placeholder="数量" v-model="sendAmount"></v-ons-input></v-ons-list-item>
+      <v-ons-list-item><v-ons-input placeholder="めも" v-model="sendMemo"></v-ons-input></v-ons-list-item>
+      <v-ons-list-item><v-ons-input type="password" placeholder="Password" v-model="password"></v-ons-input></v-ons-list-item>
+      <v-ons-list-item><v-ons-button @click="createTx" modifier="large">Create Tx</v-ons-button></v-ons-list-item>
+    </v-ons-list>
+  </div>
+  <v-ons-modal :visible="loading">
+    <p style="text-align: center">
+      処理中 
+      <br><br>
+      <div class="spinner"></div>
+    </p>
+  </v-ons-modal>
+</v-ons-page>

@@ -19,7 +19,8 @@ module.exports=require("./settings.html")({
           enabled:false,
           myUserId:""
         },
-        openInAppBrowser:false
+        openInAppBrowser:false,
+        monapartyEnabled:false
       }
     }
   },

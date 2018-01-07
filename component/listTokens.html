@@ -1,0 +1,23 @@
+<v-ons-page data-page="listTokens">
+  <custom-bar title="アドレス検索" menu="true"></custom-bar>
+  <div>
+        <div class="spinner" v-show="loading"></div>
+    <v-ons-list v-if="search">
+      
+      <v-ons-list-item v-for="asset in search" @click="showTokenInfo(asset.asset)">
+        <div class="center"><currency-set :amount="asset.normalized_quantity" :ticker="asset.asset_longname||asset.asset" :notKnown="true"></currency-set></div>
+        <div class="right">
+          <div class="owner" v-show="asset.owner">所有者です</div>
+        </div>
+      </v-ons-list-item>
+     
+    </v-ons-list>
+  </div>
+  <v-ons-modal :visible="loading">
+    <p style="text-align: center">
+      処理中 
+      <br><br>
+      <div class="spinner"></div>
+    </p>
+  </v-ons-modal>
+</v-ons-page>

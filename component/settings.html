@@ -75,7 +75,13 @@
           <div class="center">あなたのMonappy ID</div>
           <div class="right"><span class="atmark">@</span><v-ons-input v-model="d.monappy.myUserId" placeholder="Monappy Id" @change="save"></v-ons-input></div>
         </v-ons-list-item>
+        
       </div>
+      <v-ons-list-header>Monaparty</v-ons-list-header>
+      <v-ons-list-item>
+        <div class="center">Monapartyメニュー</div>
+        <div class="right"><v-ons-switch v-model="d.monapartyEnabled" @change="save"></v-ons-switch></div>
+      </v-ons-list-item>
     </v-ons-list>
   </div>
   <v-ons-alert-dialog modifier="rowfooter"

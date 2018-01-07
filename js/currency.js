@@ -24,6 +24,7 @@ module.exports=class{
     this.defaultFeeSatPerByte = opt.defaultFeeSatPerByte;
     this.confirmations=opt.confirmations||6
     this.sound=opt.sound||""
+    this.counterpartyEndpoint=opt.counterpartyEndpoint
     
     this.hdPubNode=null;
     this.lastPriceTime=0;
@@ -162,6 +163,15 @@ module.exports=class{
       return (this.addresses[addrKey]=this.hdPubNode.derive(change).derive(index).getAddress())
     }
   }
+  getPubKey(change,index){
+    if(this.dummy){return}
+    if(!this.hdPubNode){throw new Error("HDNode isn't specified.")}
+    
+    if(typeof index !=="number"){
+      throw new Error("Please specify index")
+    }
+    return this.hdPubNode.derive(change).derive(index).keyPair.getPublicKeyBuffer().toString("hex")
+  }
   getSegwitAddress(change,index){
     if(this.dummy){return}
     if(!this.hdPubNode){throw new Error("HDNode isn't specified.")}
@@ -229,7 +239,7 @@ module.exports=class{
       const feeRate = option.feeRate
 
       const txb = new bcLib.TransactionBuilder(this.network)
- 
+      
       this.getUtxos(this.getReceiveAddr().concat(this.getChangeAddr()),option.includeUnconfirmedFunds).then(res=>{
         const path=[]
         const { inputs, outputs, fee } = coinSelect(res.utxos, targets, feeRate)
@@ -247,7 +257,7 @@ module.exports=class{
 
           txb.addOutput(output.address, output.value)
         })
-       
+        
         resolve({txBuilder:txb,balance:res.balance,utxos:inputs,path,fee})
       }).catch(reject)
     })
@@ -255,16 +265,21 @@ module.exports=class{
   signTx(option){
     const entropyCipher = option.entropyCipher
     const password= option.password
-    const txb=option.txBuilder
+    let txb=option.txBuilder
     const path=option.path
     
     let seed=
-      bip39.mnemonicToSeed(
-        bip39.entropyToMnemonic(
-          coinUtil.decrypt(entropyCipher,password)
+        bip39.mnemonicToSeed(
+          bip39.entropyToMnemonic(
+            coinUtil.decrypt(entropyCipher,password)
+          )
         )
-      )
     const node = bcLib.HDNode.fromSeedBuffer(seed,this.network)
+
+    if(!txb){
+      txb=coinUtil.buildBuilderfromPubKeyTx(bcLib.Transaction.fromHex(option.hash),this.network)
+    }
+    
     for(let i=0;i<path.length;i++){
       txb.sign(i,node
                .deriveHardened(44)
@@ -275,6 +290,7 @@ module.exports=class{
               )
     }
     return txb.build()
+    
   }
   pushTx(hex){
     if(this.dummy){return Promise.resolve()}
@@ -384,4 +400,39 @@ module.exports=class{
       return storage.set("labels",res)
     })
   }
+
+  callCP(method,params){
+    return axios.post(this.counterpartyEndpoint,{
+      params,
+      id:0,
+      jsonrpc:"2.0",
+      method
+    }).then(r=>{
+      if(r.data.error&&r.data.error.code){
+        throw r.data.error.data
+      }
+      return r.data
+    })
+  }
+  callCPLib(method,params){
+    return axios.post(this.counterpartyEndpoint,{
+      params:{
+        method,
+        params
+      },
+      id:0,
+      jsonrpc:"2.0",
+      method:"proxy_to_counterpartyd"
+    }).then(r=>{
+      if(r.data.error&&r.data.error.code){
+        throw r.data.error.data
+      }
+      return r.data
+    })
+  }
 }
+
+
+
+
+

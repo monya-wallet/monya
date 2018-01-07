@@ -3,11 +3,11 @@ module.exports=require("./currencySet.html")({
   data(){
     return {}
   },
-  props:["amount","ticker","about","fiatTicker"],
+  props:["amount","notKnown","ticker","about","fiatTicker"],
   methods:{
     getTicker(t){
       if(!t){return ""}
-      
+      if(this.notKnown){return t}
       if(t==="jpy"){
         return this.easy?"円":"JPY"
       }

@@ -34,6 +34,9 @@ module.exports=require("./navigator.html")({
     monappy(){
       this.openSide=false;this.$set(this,"pageStack",[require("./monappy.js")])
     },
+    monaparty(){
+      this.openSide=false;this.$set(this,"pageStack",[require("./monaparty.js")])
+    },
     zaifPay(){
       this.openSide=false;this.$set(this,"pageStack",[require("./zaifPay.js")])
     },

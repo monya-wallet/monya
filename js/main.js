@@ -36,6 +36,7 @@ exports.vm= new Vue({
       html.setAttribute('onsflag-iphonex-portrait', '');
       html.setAttribute('onsflag-iphonex-landscape', '');
     }
+    
   }
 })
 const coinUtil=require("../js/coinUtil")
