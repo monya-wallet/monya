@@ -199,7 +199,7 @@ exports.setUrlCallback=cb=>{
 exports.hasInitialized=false
 
 exports.buildBuilderfromPubKeyTx=(transaction,network)=>{
-  var txb = new bcLib.TransactionBuilder(network)
+  let txb = new bcLib.TransactionBuilder(network)
   txb.setVersion(transaction.version)
   txb.setLockTime(transaction.locktime)
   transaction.ins.forEach(function (txIn) {
