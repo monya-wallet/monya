@@ -22,7 +22,7 @@
     <preference name="StatusBarStyle" value="default" />
     <preference name="StatusBarOverlaysWebView" value="true" />
     <platform name="android">
-      <preference name="android-minSdkVersion" value="21" />
+        <preference name="android-minSdkVersion" value="21" />
         <allow-intent href="market:*" />
         <preference name="StatusBarBackgroundColor" value="#ffffeb47" />
         <icon density="ldpi" src="res/icons/android/ldpi.png" />
