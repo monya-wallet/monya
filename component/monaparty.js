@@ -32,7 +32,7 @@ module.exports=require("./monaparty.html")({
         .then(res=>{
           this.assets=res.result
           this.loading=false
-          return axios.get(currencyList.monapartyTitle[this.$store.state.monapartyTitle].detail+res.result.map(v=>v.asset_longname||v.asset).join(","))
+          return axios.get(currencyList.monapartyTitle[this.$store.state.monapartyTitle].url.detail+res.result.map(v=>v.asset_longname||v.asset).join(","))
         }).then(r=>{
           if(r.data&&r.data.details){
             r.data.details.forEach(k=>{

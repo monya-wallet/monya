@@ -1,4 +1,5 @@
 const storage=require("../js/storage")
+const currencyList = require("../js/currencyList")
 module.exports=require("./settings.html")({
   data(){
     return {
@@ -23,9 +24,10 @@ module.exports=require("./settings.html")({
         monaparty:{
           enabled:false,
           bgClass:"sand",
-          title:"monacard_proxy"
+          title:"monacard"
         }
-      }
+      },
+      monapartyTitleList:currencyList.monapartyTitle
     }
   },
   methods:{

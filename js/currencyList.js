@@ -242,11 +242,11 @@ exports.addCurrency=customCoin=>{
 }
 exports.monapartyTitle={
   "monacard":{
-    "detail":"http://card.mona.jp/api/card_detail.php?assets=",
-    "list":"http://card.mona.jp/api/card_list.php"
-  },
-  "monacard_proxy":{
-    "detail":coinUtil.proxyUrl("http://card.mona.jp/api/card_detail.php?assets="),
-    "list":coinUtil.proxyUrl("http://card.mona.jp/api/card_list.php")
+    url:{
+      "detail":"https://card.mona.jp/api/card_detail.php?assets=",
+      "list":"https://card.mona.jp/api/card_list.php"
+    },
+    name:"Monacard"
   }
+  
 }

@@ -45,7 +45,7 @@ module.exports = new Vuex.Store({
       state.tsMode=d.absoluteTime?"absolute":"relative"
       state.openInAppBrowser=d.openInAppBrowser
       state.bgClass=d.monaparty&&d.monaparty.bgClass||"sand"
-      state.monapartyTitle=d.monaparty&&d.monaparty.title||"monacard_proxy"
+      state.monapartyTitle=d.monaparty&&d.monaparty.title||"monacard"
     },
     setConfirmation(state,payload){
       state.confPayload={

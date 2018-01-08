@@ -98,8 +98,7 @@
           <div class="center">タイトル</div>
           <div class="right">
             <v-ons-select v-model="d.monaparty.title" @change="save">
-              <option value="monacard">Monacard</option>
-              <option value="monacard_proxy">Monacard(By proxy)</option>
+              <option v-for="(v,i) in monapartyTitleList" :value="i">{{v.name}}</option>
           </v-ons-select>
           </div>
         </v-ons-list-item>
