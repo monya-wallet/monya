@@ -30,7 +30,7 @@ module.exports=require("./tokenInfo.html")({
         this.history=res[1].result
         this.loading=false
         if(this.coinId==="mona"){
-          return axios.get(currencyList.monapartyTitle[this.$store.state.monapartyTitle].url.detail+this.asset.asset_longname||this.asset.asset)
+          return axios.get(currencyList.monapartyTitle[this.$store.state.monapartyTitle].url.detail+(this.asset.asset_longname||this.asset.asset))
         }
       }).then(r=>{
         if(r&&r.data&&r.data.details){
