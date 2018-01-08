@@ -22,7 +22,8 @@ module.exports=require("./settings.html")({
         openInAppBrowser:false,
         monaparty:{
           enabled:false,
-          bgClass:"sand"
+          bgClass:"sand",
+          title:"monacard_proxy"
         }
       }
     }

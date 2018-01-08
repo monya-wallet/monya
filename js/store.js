@@ -22,7 +22,8 @@ module.exports = new Vuex.Store({
     addr:"",
     sendable:false,
     openSide:false,
-    bgClass:"sand"
+    bgClass:"sand",
+    monapartyTitle:""
   },
   mutations: {
     setEntropy(state,ent) {
@@ -44,6 +45,7 @@ module.exports = new Vuex.Store({
       state.tsMode=d.absoluteTime?"absolute":"relative"
       state.openInAppBrowser=d.openInAppBrowser
       state.bgClass=d.monaparty&&d.monaparty.bgClass||"sand"
+      state.monapartyTitle=d.monaparty&&d.monaparty.title||"monacard_proxy"
     },
     setConfirmation(state,payload){
       state.confPayload={
