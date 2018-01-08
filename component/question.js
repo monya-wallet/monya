@@ -35,6 +35,10 @@ module.exports=require("./question.html")({
             monappy:{
               enabled:false,
               myUserId:""
+            },
+            monaparty:{
+              enabled:true,
+              bgClass:"sand"
             }
           })
           this.$emit("push",require("./generateKeyWarn.js"))

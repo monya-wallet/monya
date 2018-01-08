@@ -121,7 +121,7 @@ module.exports=require("./confirm.html")({
       }).catch(e=>{
         this.loading=false
         if(e.request){
-          this.$ons.notification.alert(e.request.responseText)
+          this.$ons.notification.alert(e.request.responseText||"Network Error.Please try again")
         }else{
           this.incorrect=true
           this.ready=true

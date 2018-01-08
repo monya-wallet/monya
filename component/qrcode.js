@@ -10,7 +10,8 @@ module.exports=require("./qrcode.html")({
     canEnableLight:false,
     lightEnabled:false,
     canChangeCamera:false,
-    currentCamera:0
+    currentCamera:0,
+    result:""
   }),
   store:require("../js/store.js"),
   methods:{
@@ -19,8 +20,6 @@ module.exports=require("./qrcode.html")({
         this.$emit("pop")
         this.$store.commit("setTransparency",false)
       });
-      
-      
     },
     settings(){
       QRScanner.openSettings();
@@ -37,10 +36,18 @@ module.exports=require("./qrcode.html")({
           
         }else if(res.protocol==="http"||res.protocol==="https"){
           window.open(res.url,this.$store.state.openInAppBrowser?"_blank":"_system")
+          QRScanner.destroy((status)=>{
+            this.$emit("pop")
+            this.$store.commit("setTransparency",false)
+          });
         }else{
-          this.$ons.notification.alert(res.url)
+          this.result=res.url
         }
       })
+    },
+    copyResult(){
+      coinUtil.copy(this.result)
+      this.back()
     },
     toggleLight(){
       if(this.lightEnabled){

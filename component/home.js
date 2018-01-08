@@ -53,6 +53,18 @@ module.exports=require("./home.html")({
     goToManageCoin(){
       this.$emit("push",require("./manageCoin.js"))
     },
+    receive(){
+      this.$emit("push",require("./receive.js"))
+    },
+    send(){
+      this.$emit("push",require("./send.js"))
+    },
+    history(){
+      this.$emit("push",require("./history.js"))
+    },
+    settings(){
+      this.$emit("push",require("./settings.js"))
+    },
   },
   store:require("../js/store.js"),
   mounted(){

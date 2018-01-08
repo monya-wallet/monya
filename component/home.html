@@ -25,8 +25,29 @@
       </div>
       <div v-show="loading" class="spinner"></div>
     </div>
+    <div id="actionWrap">
+      <div id="actions">
+        <div class="btns" style="color:#d0021c " @click="receive">
+          <v-ons-icon icon="fa-qrcode"></v-ons-icon>
+          <div class="btnLabel">受け取り</div>
+        </div>
+        <div class="btns" style="color:#7dd321 " @click="send">
+          <v-ons-icon icon="fa-paper-plane"></v-ons-icon>
+          <div class="btnLabel">送金</div>
+        </div>
+        <div class="btns" style="color:#f6a523 " @click="history">
+          <v-ons-icon icon="fa-history"></v-ons-icon>
+          <div class="btnLabel">履歴</div>
+        </div>
+        <div class="btns" style="color:#04c0de " @click="settings">
+          <v-ons-icon icon="fa-cog"></v-ons-icon>
+          <div class="btnLabel">設定</div>
+        </div>
+      </div>
+    </div>
     <div id="coins">
       <v-ons-list>
+        
         <v-ons-list-item v-for="c in curs">
           <div class="left">
             <img :src="c.icon"/>

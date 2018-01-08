@@ -2,7 +2,7 @@
   <custom-bar title="トークンをつくる"></custom-bar>
   <div>
     <v-ons-list>
-      
+      <v-ons-list-item modifier="small">トークンの作成にはスパム対策手数料として0.5XMPが必要です。</v-ons-list-item>
       <v-ons-list-item>
         <div class="center">作成するアドレスのラベル</div>
         <div class="right">
@@ -23,7 +23,7 @@
         <div class="right"><v-ons-switch v-model="divisible"></v-ons-switch></div>
       </v-ons-list-item>
       <v-ons-list-item><v-ons-input type="password" placeholder="Password" v-model="password"></v-ons-input></v-ons-list-item>
-      <v-ons-list-item><v-ons-button  @click="createTx" modifier="large">Create Token</v-ons-button></v-ons-list-item>
+      <v-ons-list-item><v-ons-button  @click="createTx" modifier="large">トークンを作成</v-ons-button></v-ons-list-item>
     </v-ons-list>
   </div>
   <v-ons-modal :visible="loading">

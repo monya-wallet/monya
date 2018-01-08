@@ -2,6 +2,7 @@ const bcLib = require('bitcoinjs-lib')
 const axios = require('axios');
 const BigNumber = require('bignumber.js');
 const coinSelect = require('coinselect')
+const bcMsg = require('bitcoinjs-message')
 const errors = require("./errors")
 const bip39 = require("bip39")
 const coinUtil = require("./coinUtil")
@@ -291,6 +292,22 @@ module.exports=class{
     }
     return txb.build()
     
+  }
+  signMessage(m,entropyCipher,password,path){
+    const kp=bcLib.HDNode.fromSeedBuffer(bip39.mnemonicToSeed(
+          bip39.entropyToMnemonic(
+            coinUtil.decrypt(entropyCipher,password)
+          )
+        ),this.network)
+               .deriveHardened(44)
+               .deriveHardened(this.bip44.coinType)
+               .deriveHardened(this.bip44.account)
+               .derive(path[0]|0)
+          .derive(path[1]|0).keyPair
+    return bcMsg.sign(m,kp.d.toBuffer(32),kp.compressed,this.network.messagePrefix).toString("base64")
+  }
+  verifyMessage(m,a,s){
+    return bcMsg.verify(m,a,s,this.network.messagePrefix)
   }
   pushTx(hex){
     if(this.dummy){return Promise.resolve()}

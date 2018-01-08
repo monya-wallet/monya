@@ -21,12 +21,16 @@ module.exports=require("./makeToken.html")({
       this.loading=true
       const cur = currencyList.get(this.coinId)
       let hex=""
+      let qty=(new BigNumber(this.amount)).toNumber()
+      if(this.divisible){
+        qty*=100000000
+      }
       cur.callCPLib("create_issuance",{
         source:cur.getAddress(0,this.addressIndex|0),
         allow_unconfirmed_inputs:false,
         destination:this.dest,
         asset:this.token.toUpperCase(),
-        quantity:(new BigNumber(this.amount)).times(100000000).toNumber(),//satoshi
+        quantity:qty,//satoshi
         description:this.description,
         fee_per_kb:cur.defaultFeeSatPerByte*1024,
         disable_utxo_locks:true,

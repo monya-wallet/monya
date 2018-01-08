@@ -52,6 +52,7 @@
       swipeable
       :page-stack="pageStack"
       :options="{animation:'slide'}"
+      :class="bgClass"
       @push="pageStack = [...pageStack, $event]"
       @reset="pageStack = [pageStack[0]]"
       @replace="pageStack=[$event]"

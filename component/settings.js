@@ -20,13 +20,19 @@ module.exports=require("./settings.html")({
           myUserId:""
         },
         openInAppBrowser:false,
-        monapartyEnabled:false
+        monaparty:{
+          enabled:false,
+          bgClass:"sand"
+        }
       }
     }
   },
   methods:{
     goToShowPassphrase(){
       this.$emit("push",require("./showPassphrase.js"))
+    },
+    goToSign(){
+      this.$emit("push",require("./sign.js"))
     },
     goToSetPassword(){
       this.$emit("push",require("./setPassword.js"))

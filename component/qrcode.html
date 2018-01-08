@@ -36,4 +36,14 @@
       <v-ons-icon icon="fa-refresh"></v-ons-icon>
       
     </v-ons-fab>
+    <v-ons-alert-dialog modifier="rowfooter"
+                        :visible="!!result"
+                        >
+      <span slot="title">読み取り結果</span>
+      <p>{{result}}</p>
+      <template slot="footer">
+        <div class="alert-dialog-button" @click="copyResult">コピー</div>
+        <div class="alert-dialog-button" @click="back">コピーしない</div>
+      </template>
+    </v-ons-alert-dialog>
 </v-ons-page>

@@ -37,7 +37,7 @@ module.exports=require("./setPassword.html")({
         currencyList.init([])
         cipherPromise=storage.get("settings").then(s=>{
           if(!s){
-            storage.set("settings",{monappy:{},zaifPay:{}})
+            storage.set("settings",{monappy:{},zaifPay:{},monaparty:{enabled:true}})
           }
           return coinUtil.makePairsAndEncrypt({
             entropy:this.$store.state.entropy,

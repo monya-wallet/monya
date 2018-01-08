@@ -4,9 +4,10 @@ module.exports=require("./customBar.html")({
   },
   methods:{
     menuOpen(){
-      this.$parent.$parent.$parent.$parent.$parent.$parent.openSide=true;//助けて
+      this.$store.commit("openSide",true)
     }
   },
+  store:require("../js/store.js"),
   computed:{
     mod(){
       return this.modifier

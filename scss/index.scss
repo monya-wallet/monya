@@ -65,6 +65,42 @@ ons-list-item{
       }
     }
   }
+  #actionWrap{
+    margin:-20px 20px 20px;
+    
+    position:relative;
+    $radiusSize:5px;
+    #actions{
+      position:relative;
+      display:table;
+      width:100%;
+      border-radius:$radiusSize;
+      table-layout:fixed;
+      background:white;
+      box-shadow:0px 6px 19px -10px rgba(0,0,0,0.5);
+      .btns{
+        display:table-cell;
+        text-align:center;
+        padding:10px;
+        ons-icon{
+          font-size:1.2em;
+        }
+        .btnLabel{
+          color:#777;
+          font-size:0.7em;
+        }
+        &:active{
+          background-color:#ccc;
+        }
+        &:first-of-type{
+          border-radius:$radiusSize 0 0 $radiusSize;
+        }
+        &:last-of-type{
+          border-radius:0 $radiusSize $radiusSize 0;
+        }
+      }
+    }
+  }
   #coins{
     .w_right{
       margin-left:auto;
@@ -513,6 +549,106 @@ $zaifPayLogoSize:200px;
     }
   }
 }
+[data-page="sign"]{
+  textarea,ons-input{
+    width:100%;
+  }
+}
+[data-page="monaparty"]{
+  
+  #tokens{
+    text-align:center;
+    .token{
+      height:200px;
+      width:140px;
+      display:inline-block;
+      margin:5px;
+      position:relative;
+      background-repeat: no-repeat no-repeat;
+      background-position:center center;
+      background-size:cover;
+      .owner{
+        position:absolute;
+        bottom:0;
+        left:0;
+        padding:3px;
+        color:#ffee58;
+      }
+      .cur{
+        position:absolute;
+        bottom:0;
+        right:0;
+        padding:2px;
+        background:rgba(255,255,255,0.8);
+        border-radius: 3px 0 0 0;
+        .currencySet{
+          .amount{
+            display: block;
+          }
+          .ticker{
+            display: block;
+            font-size:0.7em;
+          }
+        }
+      }
+    }
+  }
+}
+[data-page="tokenInfo"]{
+  #cardArea{
+    margin:10px;
+    height:350px;
+    #card{
+      width:100%;
+      height:100%;
+      text-align:center;
+      img{
+        max-width: 100%;
+        max-height: 100%;
+      }
+    }
+  }
+}
+[data-page="tokenInfo"],[data-page="monaparty"],[data-page="sendToken"],[data-page="makeToken"]{
+  ons-toolbar{
+    background:linear-gradient(to bottom, #9e3429 0%,#6b2f27 100%);
+    ons-icon,.toolbar__title,.back-button__icon{
+      color: white;
+      fill:white;
+    }
+  }
+  .page__background{
+    background-size:auto;
+  }
+  ons-navigator.sand & .page__background{
+    background-image:url(../res/sand.jpg);
+    background-position:center center;
+    background-repeat:repeat;
+  }
+  ons-navigator.washi & .page__background{
+    background-image:url(../res/washi.jpg);
+    background-position:center center;
+    background-repeat:repeat;
+  }
+  ons-navigator.leather & .page__background{
+    background-image:url(../res/leather.jpg);
+    background-position:center center;
+    background-repeat:repeat;
+  }
+  ons-navigator.realmona & .page__background{
+    background-color:#f40298;
+    background-image:url(../res/realmona.png);
+    background-position:right bottom;
+    background-repeat:no-repeat;
+  }
+  ons-input{
+    width:100%;
+  }
+  ons-button{
+    background:linear-gradient(to bottom, #9e3429 0%,#6b2f27 100%);
+  }
+}
+
 
 @keyframes shake {
   10%, 90% {

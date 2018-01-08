@@ -5,7 +5,6 @@ module.exports=require("./navigator.html")({
   data(){
     return {
       pageStack:[],
-      openSide:false,
       pageParam:null,
       dataLoaded:false
     }
@@ -54,6 +53,20 @@ module.exports=require("./navigator.html")({
     storage.get("settings").then((data)=>{
       this.$store.commit("setSettings",data||{})
     })
+  },
+  computed:{
+    openSide:{
+      get(){
+        return this.$store.state.openSide
+      },
+      set(v){
+        this.$store.commit("openSide",v)
+        return v
+      }
+    },
+    bgClass(){
+      return this.$store.state.bgClass
+    }
   },
   mounted(){
     coinUtil.setUrlCallback(url=>{

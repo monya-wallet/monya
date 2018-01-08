@@ -1,5 +1,9 @@
-<v-ons-page data-page="receive">
-  <custom-bar title="受け取り" menu="true"></custom-bar>
+<v-ons-page data-page="receive" v-show="!$store.state.transparency">
+  <custom-bar title="受け取り" menu="true">
+    <v-ons-toolbar-button @click="qr">
+      <v-ons-icon icon="fa-qrcode"></v-ons-icon>
+    </v-ons-toolbar-button>
+  </custom-bar>
   <div>
     <div id="currencySelector">
       <v-ons-carousel swipeable overscrollable direction="horizontal" item-height="50px" item-width="50px" :index="currencyIndex">
@@ -43,8 +47,8 @@
       </v-ons-list>
     </div>
     <v-ons-alert-dialog modifier="rowfooter"
-      :visible.sync="dialogVisible"
-    >
+                        :visible.sync="dialogVisible"
+                        >
       <span slot="title">ラベルを追加</span>
       <p>ラベルをつけて下さい。derive/<i>change</i>/<i>index</i> フォーマットを入力すると、アドレスを導出します</p>
       <v-ons-input placeholder="ラベル" v-model="labelInput"></v-ons-input>
