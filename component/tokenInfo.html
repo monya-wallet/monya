@@ -8,7 +8,7 @@
       </div>
     </div>
     <v-ons-list modifier="inset">
-      <v-ons-list-item>
+      <v-ons-list-item v-show="asset&&asset.asset&&sendable">
           <v-ons-button @click="sendToken" modifier="large">これを送る</v-ons-button>
         </v-ons-list-item>
       <div v-if="card">

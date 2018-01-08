@@ -6,7 +6,8 @@ module.exports=require("./sendToken.html")({
   data(){
     return {
     token:this.$store.state.tokenInfo,
-    coinId:this.$store.state.coinId,
+      coinId:this.$store.state.coinId,
+      divisible:this.$store.state.divisible,
     labels:[],
     addressIndex:0,
     loading:false,
@@ -23,12 +24,16 @@ module.exports=require("./sendToken.html")({
       this.loading=true
       const cur = currencyList.get(this.coinId)
       let hex=""
+      let qty=(new BigNumber(this.sendAmount)).toNumber()
+      if(this.divisible){
+        qty*=100000000
+      }
       cur.callCPLib("create_send",{
         source:cur.getAddress(0,this.addressIndex|0),
-        allow_unconfirmed_inputs:false,
+        allow_unconfirmed_inputs:this.$store.state.includeUnconfirmedFunds,
         destination:this.dest,
         asset:this.token.toUpperCase(),
-        quantity:(new BigNumber(this.sendAmount)).times(100000000).toNumber(),//satoshi
+        quantity:qty,
         memo:this.sendMemo,
         fee_per_kb:cur.defaultFeeSatPerByte*1024,
         disable_utxo_locks:true,

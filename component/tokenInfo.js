@@ -4,6 +4,7 @@ module.exports=require("./tokenInfo.html")({
   data(){return{
     token:this.$store.state.tokenInfo,
     coinId:this.$store.state.coinId,
+    sendable:this.$store.state.sendable,
     asset:null,
     history:[],
     loading:true,
@@ -12,6 +13,7 @@ module.exports=require("./tokenInfo.html")({
   store:require("../js/store.js"),
   methods:{
     sendToken(){
+      this.$store.commit("setTokenInfo",{token:this.token.toUpperCase(),coinId:this.coinId,sendable:this.sendable,divisible:this.asset.divisible})
       this.$emit("push",require("./sendToken.js"))
     }
   },

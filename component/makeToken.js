@@ -27,7 +27,7 @@ module.exports=require("./makeToken.html")({
       }
       cur.callCPLib("create_issuance",{
         source:cur.getAddress(0,this.addressIndex|0),
-        allow_unconfirmed_inputs:false,
+        allow_unconfirmed_inputs:this.$store.state.includeUnconfirmedFunds,
         destination:this.dest,
         asset:this.token.toUpperCase(),
         quantity:qty,//satoshi

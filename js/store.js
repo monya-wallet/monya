@@ -23,7 +23,9 @@ module.exports = new Vuex.Store({
     sendable:false,
     openSide:false,
     bgClass:"sand",
-    monapartyTitle:""
+    monapartyTitle:"",
+    divisible:false,
+    includeUnconfirmedFunds:false
   },
   mutations: {
     setEntropy(state,ent) {
@@ -46,6 +48,7 @@ module.exports = new Vuex.Store({
       state.openInAppBrowser=d.openInAppBrowser
       state.bgClass=d.monaparty&&d.monaparty.bgClass||"sand"
       state.monapartyTitle=d.monaparty&&d.monaparty.title||"monacard"
+      state.includeUnconfirmedFunds=d.includeUnconfirmedFunds
     },
     setConfirmation(state,payload){
       state.confPayload={
@@ -97,6 +100,7 @@ module.exports = new Vuex.Store({
       state.coinId=token.coinId||""
       state.addr=token.addr||""
       state.sendable=token.sendable||""
+      state.divisible=token.divisible||""
     },
   }
 })
