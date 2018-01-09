@@ -76,7 +76,7 @@ gulp.task("default", function(cb) {
 gulp.task("prod", function(cb) {
   return runSequence(
     ["lint","webpackProd"],
-    "setCordova","setDocs","setChrome"
+    "setCordova","setDocs","setChrome",
     cb
   );
 });
