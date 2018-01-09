@@ -1,25 +1,20 @@
 <v-ons-page data-page="monaparty">
-  <custom-bar title="Monaparty" menu="true" modifier="transparent">
+  <custom-bar title="Monaparty" menu="true">
     <v-ons-toolbar-button @click="goToMakeToken"><v-ons-icon icon="fa-plus"></v-ons-icon></v-ons-toolbar-button>
-    <v-ons-toolbar-button @click="showSearch=!showSearch"><v-ons-icon icon="fa-search"></v-ons-icon></v-ons-toolbar-button>
     <v-ons-toolbar-button @click="getMyAssets">
       <v-ons-icon icon="fa-refresh"></v-ons-icon>
     </v-ons-toolbar-button>
   </custom-bar>
   <div>
-    <v-ons-list v-show="showSearch">
-      <v-ons-list-header>アドレスのトークンを検索</v-ons-list-header>
-      <v-ons-list-item>
-        <div class="center"><v-ons-input placeholder="アドレスを入力" v-model="searchAddr"></v-ons-input></div>
-        <div class="right"><v-ons-button @click="goToListTokens">Search</v-ons-button></div>
-      </v-ons-list-item>
-      
-      <v-ons-list-header>トークンを検索</v-ons-list-header>
-      <v-ons-list-item>
-        <div class="center"><v-ons-input placeholder="トークン名、サブトークンはNG" v-model="assetName"></v-ons-input></div>
-        <div class="right"><v-ons-button @click="showTokenInfo(assetName)">Search</v-ons-button></div>
-      </v-ons-list-item>
-    </v-ons-list>
+    <div id="wrap">
+      <v-ons-select v-model="titleId">
+        <option value="" v-for="(v,i) in titles" :value="i">{{v.titleName}}</option>
+      </v-ons-select>
+      <div id="searchBox">
+        <input v-model="searchKeyword" placeholder="アドレス,トークン名" @change="searchByKeyword">
+        <v-ons-button @click="searchByKeyword"><v-ons-icon icon="fa-search"></v-ons-icon></v-ons-button>
+      </div>
+    </div>
     <div id="tokens">
       <div v-if="!assets.length">トークンがありません。受け取るには、メニュー→受け取り→モナコインアイコン で受け取りアドレスを取得しましょう。</div>
       <div v-for="asset in assets" @click="showTokenInfo(asset.asset,true)" class="token" :style="asset.image">

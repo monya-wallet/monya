@@ -65,6 +65,7 @@
         <option value="send">送金</option>
         <option value="receive">受け取り</option>
       </v-ons-select>
+      <v-ons-input placeholder="これ以下の取引を隠す" v-model="threshold"></v-ons-input>
       <template slot="footer">
         <div class="alert-dialog-button" @click="filterDlg=false">閉じる</div>
       </template>

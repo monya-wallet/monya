@@ -45,7 +45,13 @@
         </v-ons-col>
       </v-ons-list-item>
     </v-ons-list>
-    
+    <div id="qrArea" v-show="qrDataUrl">
+        <div id="qrcode">
+          <img :src="qrDataUrl||''" alt="QR code" id="qrcodeImage"/>
+          <div id="currentCurIcon" :style="{'background-image':'url('+currentCurIcon+')'}"></div>
+        </div>
+        <div class="address">{{url}}</div>
+      </div>
   </div>
   <v-ons-alert-dialog modifier="rowfooter"
       :visible.sync="dlg"

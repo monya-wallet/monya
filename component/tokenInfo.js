@@ -1,4 +1,5 @@
 const currencyList = require("../js/currencyList")
+const titleList = require("../js/titleList")
 const axios = require("axios")
 module.exports=require("./tokenInfo.html")({
   data(){return{
@@ -17,47 +18,27 @@ module.exports=require("./tokenInfo.html")({
       this.$emit("push",require("./sendToken.js"))
     }
   },
-  mounted(){
-    let promises
-    if(this.token==='XMP'){
-      promises=[
-        Promise.resolve({
-          result:[{
-            asset:"XMP",
-            supply:0,
-            divisible:true,
-            issuer:"MMonapartyMMMMMMMMMMMMMMMMMMMUzGgh",
-            owner:"MMonapartyMMMMMMMMMMMMMMMMMMMUzGgh",
-            locked:true,
-            description:""
-          }]
-        }),Promise.resolve({
-          result:{details:[]}
-        })
-      ]
-    }else{
-      promises=[
-        currencyList.get(this.coinId).callCP("get_assets_info",{
-          assetsList:[this.token]
-        }),currencyList.get(this.coinId).callCP("get_asset_history",{
-          asset:this.token
-        })]
+  computed:{
+    titleId:{
+      get(){
+        return this.$store.state.monapartyTitle
+      },
+      set(v){
+        this.$store.commit("setTitle",v)
+        return v
+      }
     }
-    
-    Promise.all(promises)
-      .then(res=>{
-        this.asset=res[0].result[0]
-        this.history=res[1].result
-        this.loading=false
-        if(this.coinId==="mona"){
-          return axios.get(currencyList.monapartyTitle[this.$store.state.monapartyTitle].url.detail+(this.asset.asset_longname||this.asset.asset))
-        }
-      }).then(r=>{
-        if(r&&r.data&&r.data.details){
-          this.card=r.data.details[0]
-        }
-      }).catch(e=>{
-        this.$ons.notification.alert("Error: "+e.message)
-      })
+  },
+  mounted(){
+    const title = titleList.get(this.titleId)
+    title.getToken(this.token).then(r=>{
+      this.asset=r.asset[0]
+      this.history=r.history
+      this.card=r.card[0]
+      this.loading=false
+    }).catch(e=>{
+      this.loading=false
+      this.$ons.notification.alert("Error: "+e.message)
+    })
   }      
 })

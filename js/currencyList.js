@@ -53,7 +53,7 @@ const defaultCoins=[
     icon:require("../res/coins/btc.png"),
     defaultAPIEndpoint:"https://insight.bitpay.com/api",
     network:{
-      messagePrefix: '\x19Bitcoin Signed Message:\n',
+      messagePrefix: '\x18Bitcoin Signed Message:\n',
       bip32: {
         public: 0x0488b21e,
         
@@ -87,7 +87,7 @@ const defaultCoins=[
     icon:require("../res/coins/zny.png"),
     defaultAPIEndpoint:"https://zenyinsight.tomotomo9696.xyz/api",
     network:{
-      messagePrefix: '\x19Bitzeny Signed Message:\n',
+      messagePrefix: '\x18Bitcoin Signed Message:\n',
       bip32: {
         public: 0x0488b21e,
         
@@ -239,14 +239,4 @@ exports.init =customCoins=>{
 }
 exports.addCurrency=customCoin=>{
   coins[customCoin.coinId]=customCoin
-}
-exports.monapartyTitle={
-  "monacard":{
-    url:{
-      "detail":"https://card.mona.jp/api/card_detail.php?assets=",
-      "list":"https://card.mona.jp/api/card_list.php"
-    },
-    name:"Monacard"
-  }
-  
 }

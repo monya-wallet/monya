@@ -23,8 +23,7 @@ module.exports=require("./settings.html")({
         openInAppBrowser:false,
         monaparty:{
           enabled:false,
-          bgClass:"sand",
-          title:"monacard"
+          bgClass:"sand"
         }
       },
       monapartyTitleList:currencyList.monapartyTitle
@@ -33,6 +32,9 @@ module.exports=require("./settings.html")({
   methods:{
     goToShowPassphrase(){
       this.$emit("push",require("./showPassphrase.js"))
+    },
+    goToEditOrder(){
+      this.$emit("push",require("./editOrder.js"))
     },
     goToSign(){
       this.$emit("push",require("./sign.js"))

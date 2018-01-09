@@ -1,10 +1,10 @@
 <v-ons-page data-page="tokenInfo">
-  <custom-bar title="トークン" menu="true" modifier="transparent"></custom-bar>
+  <custom-bar title="トークン" menu="true"></custom-bar>
   <div>
     <div class="spinner" v-show="loading"></div>
     <div v-if="card" id="cardArea">
       <div id="card">
-        <img alt="Card Image" :src="card.imgur_url"/>
+        <img alt="Card Image" :src="card.imageUrl"/>
       </div>
     </div>
     <v-ons-list modifier="inset">
@@ -15,23 +15,23 @@
         <v-ons-list-header>カードの詳細</v-ons-list-header>
         <v-ons-list-item>
           <div class="center">カード名</div>
-          <div class="right">{{card.card_name}}</div>
+          <div class="right">{{card.cardName}}</div>
         </v-ons-list-item>
         <v-ons-list-item>
           <div class="center">作者名</div>
-          <div class="right">{{card.owner_name}}</div>
+          <div class="right">{{card.ownerName}}</div>
         </v-ons-list-item>
         <v-ons-list-item>
           <div class="center">作者Twitterアカウント名</div>
-          <div class="right">{{card.tw_name}}</div>
+          <div class="right">{{card.twitterScreenName}}</div>
         </v-ons-list-item>
         <v-ons-list-item>
           <div class="center">説明文</div>
-          <div class="right">{{card.add_description}}</div>
+          <div class="right">{{card.description}}</div>
         </v-ons-list-item>
         <v-ons-list-item>
           <div class="center">画像URL</div>
-          <div class="right">{{card.imgur_url}}</div>
+          <div class="right">{{card.imageUrl}}</div>
         </v-ons-list-item>
       </div>
       <div v-if="asset&&asset.asset">

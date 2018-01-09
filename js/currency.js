@@ -428,7 +428,7 @@ module.exports=class{
       if(r.data.error&&r.data.error.code){
         throw r.data.error.data
       }
-      return r.data
+      return r.data.result
     })
   }
   callCPLib(method,params){
@@ -444,7 +444,7 @@ module.exports=class{
       if(r.data.error&&r.data.error.code){
         throw r.data.error.data
       }
-      return r.data
+      return r.data.result
     })
   }
 }

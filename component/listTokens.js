@@ -2,13 +2,12 @@ const currencyList = require("../js/currencyList")
 const BigNumber = require('bignumber.js');
 const storage = require("../js/storage")
 
-const COIN_ID="mona"
-
 module.exports=require("./listTokens.html")({
   data(){
     return {
       search:[],
       searchAddr:this.$store.state.addr,
+      coinId:this.$store.state.coinId,
       loading:false,
       
     }
@@ -17,15 +16,15 @@ module.exports=require("./listTokens.html")({
   methods:{
     searchAssets(){
       this.loading=true
-      currencyList.get(COIN_ID).callCP("get_normalized_balances",{
+      currencyList.get(this.coinId).callCP("get_normalized_balances",{
         addresses:[this.searchAddr]
       }).then(res=>{
-        this.search=res.result
+        this.search=res
         this.loading=false
       })
     },
     showTokenInfo(token){
-      this.$store.commit("setTokenInfo",{token:token.toUpperCase(),coinId:COIN_ID})
+      this.$store.commit("setTokenInfo",{token:token.toUpperCase(),coinId:this.coinId})
       this.$emit("push",require("./tokenInfo.js"))
     }
   },

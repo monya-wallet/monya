@@ -1,6 +1,6 @@
 <v-ons-page data-page="invoice">
   <custom-bar title="請求する" menu="true">
-    <v-ons-toolbar-button v-show="$store.state.zaifPayEnabled" @click="zaifPay">Zaif</v-ons-toolbar-button>
+    <v-ons-toolbar-button @click="orderDlg=true"><v-ons-icon icon="ion-ios-cart"></v-ons-icon></v-ons-toolbar-button>
   </custom-bar>
   <div>
     <div id="currencySelector">
@@ -70,5 +70,32 @@
       </v-ons-list>
     </div>
   </div>
-  
+  <v-ons-dialog cancelable
+                :visible.sync="orderDlg"
+                >
+    <v-ons-list>
+      <v-ons-list-item v-for="v in orders">
+        <div class="left"><v-ons-checkbox
+            :value="v.price"
+            v-model="onOrder"
+          >
+          </v-ons-checkbox></div>
+        <div class="center">{{v.name}}</div>
+        <div class="right"><currency-set :amount="v.price" :ticker="ticker"></currency-set></div>
+      </v-ons-list-item>
+      <v-ons-list-header></v-ons-list-header>
+      <v-ons-list-item>
+        <div class="center">小計</div>
+        <div class="right"><currency-set :amount="subtotal" ticker="jpy"></currency-set></div>
+      </v-ons-list-item>
+      <v-ons-list-item>
+        <div class="center">税 8%</div>
+        <div class="right"><currency-set :amount="tax" ticker="jpy"></currency-set></div>
+      </v-ons-list-item>
+      <v-ons-list-item>
+        <div class="center"><v-ons-button @click="fiat=total;calcCur();orderDlg=false">確定</v-ons-button></div>
+        <div class="right"><currency-set :amount="total" ticker="jpy"></currency-set></div>
+      </v-ons-list-item>
+    </v-ons-list>
+  </v-ons-dialog>
 </v-ons-page>

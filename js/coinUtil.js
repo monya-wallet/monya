@@ -133,6 +133,7 @@ exports.parseUrl=url=>new Promise((resolve,reject)=>{
     message:"",
     amount:0,
     opReturn:"",
+    signature:"",
     label:"",
     isValidUrl:false
   }
@@ -161,6 +162,7 @@ exports.parseUrl=url=>new Promise((resolve,reject)=>{
       ret.label=raw.searchParams.get("label")
       ret.amount=raw.searchParams.get("amount")
       ret.opReturn=raw.searchParams.get("req-opreturn")
+      ret.signature=raw.searchParams.get("req-signature")
     }
   })
   

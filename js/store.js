@@ -50,6 +50,9 @@ module.exports = new Vuex.Store({
       state.monapartyTitle=d.monaparty&&d.monaparty.title||"monacard"
       state.includeUnconfirmedFunds=d.includeUnconfirmedFunds
     },
+    setTitle(s,title){
+      s.monapartyTitle=title||"monacard"
+    },
     setConfirmation(state,payload){
       state.confPayload={
         address:payload.address,

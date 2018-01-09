@@ -25,12 +25,17 @@ $spinnerSize:90px;
   }
 }
 ons-list-item{
-    .w_right{
-      margin-left:auto;
-      text-align:right;
-    }
+  .w_right{
+    margin-left:auto;
+    text-align:right;
+  }
 }
-
+ons-dialog .dialog{
+    max-height:100%;
+    max-width:100%;
+    overflow:scroll;
+  
+}
 .shake{
   animation: shake 0.72s cubic-bezier(.36,.07,.19,.97) both;
   transform: translate3d(0, 0, 0);
@@ -66,7 +71,7 @@ ons-list-item{
     }
   }
   #actionWrap{
-    margin:-20px 20px 20px;
+    margin:-10px 20px 20px;
     
     position:relative;
     $radiusSize:5px;
@@ -539,7 +544,7 @@ $zaifPayLogoSize:200px;
     top:0;
     left:0;
     background:transparent
-    .overlay{
+                 .overlay{
       width:100%;
       height:100%;
       position:absolute;
@@ -553,9 +558,63 @@ $zaifPayLogoSize:200px;
   textarea,ons-input{
     width:100%;
   }
+  #qrcode{
+    width: 250px;
+    height: 250px;
+    background-color:#aaa;
+    display:inline-block;
+    margin:10px;
+    position:relative;
+    #qrcodeImage{
+      width:100%;
+      height:100%;
+    }
+    #currentCurIcon{
+      position:absolute;
+      width:$qrCurIconPercent;
+      height:$qrCurIconPercent;
+      top:50%;
+      left:50%;
+      margin-left:-$qrCurIconPercent / 2;
+      margin-top:-$qrCurIconPercent / 2;
+      background-position:center center;
+      background-size:contain;
+      background-repeat:no-repeat;
+    }
+  }
 }
 [data-page="monaparty"]{
-  
+  #wrap{
+    margin:10px;
+    background-color: white;
+    border-radius:3px;
+    ons-select{
+      width:100%;
+    }
+    position:relative;
+    #searchBox{
+      border-top:1px solid #9a7571;
+      height:36px;
+      width:100%;
+      position:relative;
+      input{
+        display:block;
+        width:100%;
+        height:100%;
+        margin:0;
+        border:0;
+        border-radius:3px;
+        box-sizing:border-box;
+        font-size:18px;
+      }
+      ons-button{
+        height:100%;
+        position:absolute;
+        right:0;
+        bottom:0;
+      }
+    }
+  }
   #tokens{
     text-align:center;
     .token{

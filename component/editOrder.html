@@ -1,0 +1,25 @@
+<v-ons-page data-page="editOrder">
+  <custom-bar title="メニューを編集"></custom-bar>
+  <div>
+    <v-ons-list>
+      <v-ons-list-item v-for="(o,i) in orders">
+        <div class="left" @click="remove(i)">
+          <v-ons-icon icon="ion-close"></v-ons-icon>
+        </div>
+        <div class="center">
+          <v-ons-input v-model="o.name"></v-ons-input>
+        </div>
+        <div class="right">
+          <v-ons-input v-model="o.price" type="number"></v-ons-input>
+        </div>
+      </v-ons-list-item>
+      <v-ons-list-item>
+        <v-ons-button modifier="large" @click="add">追加</v-ons-button>
+      </v-ons-list-item>
+      <v-ons-list-item>
+        <v-ons-button modifier="large" @click="save">保存</v-ons-button>
+      </v-ons-list-item>
+    </v-ons-list>
+    
+  </div>
+</v-ons-page>

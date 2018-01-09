@@ -6,6 +6,7 @@
       <v-ons-list-item modifier="tappable chevron" @click="goToManageCoin"><div class="center">コインの管理</div></v-ons-list-item>
       <v-ons-list-item modifier="tappable chevron" @click="goToShowPassphrase"><div class="center">パスフレーズの表示</div></v-ons-list-item>
       <v-ons-list-item modifier="tappable chevron" @click="goToSetPassword"><div class="center">パスワードを変更</div></v-ons-list-item>
+      <v-ons-list-item modifier="tappable chevron" @click="goToEditOrder"><div class="center">メニューの管理</div></v-ons-list-item>
       <v-ons-list-item modifier="tappable chevron" @click="resetDialog=true"><div class="center">全データ消去</div></v-ons-list-item>
 
       <v-ons-list-header>お金</v-ons-list-header>
@@ -91,14 +92,6 @@
               <option value="sand">砂</option>
               <option value="washi">和紙</option>
               <option value="realmona">リアルモナコインちゃん</option>
-          </v-ons-select>
-          </div>
-        </v-ons-list-item>
-        <v-ons-list-item>
-          <div class="center">タイトル</div>
-          <div class="right">
-            <v-ons-select v-model="d.monaparty.title" @change="save">
-              <option v-for="(v,i) in monapartyTitleList" :value="i">{{v.name}}</option>
           </v-ons-select>
           </div>
         </v-ons-list-item>

@@ -16,7 +16,8 @@ module.exports=require("./history.html")({
       to:20,
       hasMore:false,
       outputDlg:false,
-      json:""
+      json:"",
+      threshold:0
     }
   },
   store:require("../js/store.js"),
@@ -110,7 +111,9 @@ module.exports=require("./history.html")({
       this.load(done)
     },
     filter(tx){
-      if((this.dirFilter==="send"&&tx.aIn<tx.aOut)||(this.dirFilter==="receive"&&tx.aIn>tx.aOut)){
+      const s = this.sub(tx.aOut,tx.aIn)
+      if((this.dirFilter==="send"&&tx.aIn<tx.aOut)||(this.dirFilter==="receive"&&tx.aIn>tx.aOut)
+         ||((s>0)?s:-s)<this.threshold){
         return false
       }
       return true

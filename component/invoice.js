@@ -21,7 +21,10 @@ module.exports=require("./invoice.html")({
       fiatTicker:this.$store.state.fiat,
       requestMonappy:false,
       monappyEnabled:false,
-      monappyDestination:""
+      monappyDestination:"",
+      orderDlg:false,
+      orders:[],
+      onOrder:[]
     }
   },
   store:require("../js/store.js"),
@@ -86,14 +89,25 @@ module.exports=require("./invoice.html")({
         return this.currency[this.currencyIndex].coinId
       }
       return ""
+    },
+    subtotal(){
+      return this.onOrder.length?this.onOrder.reduce((a,c)=>(a|0)+(c|0)):0
+    },
+    tax(){
+      return Math.round(this.subtotal*0.08)
+    },
+    total(){
+      return Math.round(this.subtotal*1.08)
     }
   },
   watch:{
     currencyIndex(){
       this.generateQR()
-      currencyList.get(this.currency[this.currencyIndex].coinId).getLabels().then(res=>{
-        this.$set(this,"labels",res)
-      })
+      if(this.currencyIndex!==-1){
+        currencyList.get(this.currency[this.currencyIndex].coinId).getLabels().then(res=>{
+          this.$set(this,"labels",res)
+        })
+      }
       this.getPrice()
     }
   },
@@ -113,5 +127,9 @@ module.exports=require("./invoice.html")({
     })
     this.generateQR()
     this.getPrice()
+
+    storage.get("orders").then(r=>{
+      this.orders=r||[]
+    })
   }
 })

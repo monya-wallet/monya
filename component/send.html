@@ -6,7 +6,13 @@
   </custom-bar>
   <div>
     <v-ons-list>
-      <v-ons-list-item v-show="messageToShow">
+      <v-ons-list-item modifier="small" v-show="signature&&!verifyResult">
+        署名の検証に失敗しました。
+      </v-ons-list-item>
+      <v-ons-list-item modifier="small" v-show="signature&&verifyResult">
+        署名の検証に成功しました。
+      </v-ons-list-item>
+      <v-ons-list-item modifier="small" v-show="messageToShow">
         <div class="center">{{messageToShow}}</div>
       </v-ons-list-item>
       <v-ons-list-header>送金先</v-ons-list-header>

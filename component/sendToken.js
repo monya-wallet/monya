@@ -41,7 +41,7 @@ module.exports=require("./sendToken.html")({
         extended_tx_info:true,
         pubkey:[cur.getPubKey(0,this.addressIndex|0)]
       }).then(res=>{
-        hex=res.result.tx_hex
+        hex=res.tx_hex
         return storage.get("keyPairs")
       }).then(cipher=>{
         const signedTx=cur.signTx({
@@ -53,7 +53,7 @@ module.exports=require("./sendToken.html")({
         return cur.callCP("broadcast_tx",{signed_tx_hex:signedTx.toHex()})
       }).then(r=>{
         this.loading=false
-        this.$ons.notification.alert("Successfully sent transaction.Transaction ID is: "+r.result)
+        this.$ons.notification.alert("Successfully sent transaction.Transaction ID is: "+r)
       }).catch(e=>{
         this.loading=false
         this.$ons.notification.alert("Error: "+e.message)

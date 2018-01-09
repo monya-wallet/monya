@@ -16,7 +16,9 @@ module.exports=require("./send.html")({
       advanced:false,
       label:"",
       messageToShow:"",
-      txLabel:""
+      txLabel:"",
+      verifyResult:true,
+      signature:false
     }
   },
   store:require("../js/store.js"),
@@ -59,11 +61,16 @@ module.exports=require("./send.html")({
       if(this.address){
         coinUtil.parseUrl(this.address).then(u=>{
           if(u.isCoinAddress&&u.isPrefixOk&&u.isValidAddress){
+            const cur=currencyList.get(u.coinId)
             this.coinType=u.coinId
             this.possibility.push({
-              name:currencyList.get(u.coinId).coinScreenName,
+              name:cur.coinScreenName,
               coinId:u.coinId
             })
+            this.signature=u.signature
+            if(u.signature){
+              this.verifyResult=cur.verifyMessage(u.message,u.address,u.signature)
+            }
             this.address=u.address
             this.message=u.opReturn
             this.messageToShow=u.message
