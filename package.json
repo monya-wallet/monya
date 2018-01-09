@@ -52,7 +52,8 @@
   },
   "scripts": {
     "start": "gulp",
-    "lint": "eslint ./js/*.js"
+    "lint": "eslint ./js/*.js",
+    "build": "gulp prod"
   },
   "author": "",
   "license": "ISC"

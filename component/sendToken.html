@@ -13,14 +13,13 @@
       </v-ons-list-item>
       <v-ons-list-item><v-ons-input v-model="dest" placeholder="送金先アドレス"></v-ons-input></v-ons-list-item>
       <v-ons-list-item>
-        <div class="center"><v-ons-input placeholder="トークン名" v-model="token"></v-ons-input>
-        </div>
+        <div class="center">{{token}}</div>
         <div class="right">サブトークンは正式名称</div>
       </v-ons-list-item>
       <v-ons-list-item><v-ons-input placeholder="数量" v-model="sendAmount"></v-ons-input></v-ons-list-item>
       <v-ons-list-item><v-ons-input placeholder="めも" v-model="sendMemo"></v-ons-input></v-ons-list-item>
       <v-ons-list-item><v-ons-input type="password" placeholder="Password" v-model="password"></v-ons-input></v-ons-list-item>
-      <v-ons-list-item><v-ons-button @click="createTx" modifier="large">Create Tx</v-ons-button></v-ons-list-item>
+      <v-ons-list-item><v-ons-button @click="createTx" modifier="large" :disabled="!dest||!sendAmount||!password">送る</v-ons-button></v-ons-list-item>
     </v-ons-list>
   </div>
   <v-ons-modal :visible="loading">

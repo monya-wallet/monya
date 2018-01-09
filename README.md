@@ -10,7 +10,7 @@
 * Monapartyトークンも扱え
 * 業務用モナコイン決済ツールとしても使える
 
-ことを目標にしたモナコイン・Monapartyウォレット
+~~ことを目標にした~~モナコイン・Monapartyウォレット(目標を達成しました!)
 
 ## プロダクト名
 金光碧氏がもにゃもにゃ仰っていたので
@@ -20,6 +20,24 @@
 
 DMD様
 [https://monappy.jp/picture_places/view/20695](https://monappy.jp/picture_places/view/20695)
+
+
+## ビルド
+
+### 初期設定とアセットビルド
+
+1. `git clone https://github.com/MissMonacoin/monya`
+1. `npm install`
+1. `npm run build`
+
+`npm run start`で開発用になります。browser-syncあります
+
+### Cordovaビルド
+
+1. `npm install -g cordova@7.1.0` **注意: Cordovaのバージョンは7.1.0です。8.0以上ではありません。**
+1. `cd cordovaProj`
+1. `cordova platform add <platformName>` platformNameは`ios`や`android`など
+1. `cordova build <platformName> --release`
 
 ## License
 

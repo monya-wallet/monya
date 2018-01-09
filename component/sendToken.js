@@ -24,16 +24,16 @@ module.exports=require("./sendToken.html")({
       this.loading=true
       const cur = currencyList.get(this.coinId)
       let hex=""
-      let qty=(new BigNumber(this.sendAmount)).toNumber()
+      let qty=(new BigNumber(this.sendAmount))
       if(this.divisible){
-        qty*=100000000
+        qty=qty.times(100000000)
       }
       cur.callCPLib("create_send",{
         source:cur.getAddress(0,this.addressIndex|0),
         allow_unconfirmed_inputs:this.$store.state.includeUnconfirmedFunds,
         destination:this.dest,
         asset:this.token.toUpperCase(),
-        quantity:qty,
+        quantity:qty.toNumber(),
         memo:this.sendMemo,
         fee_per_kb:cur.defaultFeeSatPerByte*1024,
         disable_utxo_locks:true,

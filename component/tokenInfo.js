@@ -18,12 +18,32 @@ module.exports=require("./tokenInfo.html")({
     }
   },
   mounted(){
-    const promises=[
-      currencyList.get(this.coinId).callCP("get_assets_info",{
-        assetsList:[this.token]
-      }),currencyList.get(this.coinId).callCP("get_asset_history",{
-        asset:this.token
-      })]
+    let promises
+    if(this.token==='XMP'){
+      promises=[
+        Promise.resolve({
+          result:[{
+            asset:"XMP",
+            supply:0,
+            divisible:true,
+            issuer:"MMonapartyMMMMMMMMMMMMMMMMMMMUzGgh",
+            owner:"MMonapartyMMMMMMMMMMMMMMMMMMMUzGgh",
+            locked:true,
+            description:""
+          }]
+        }),Promise.resolve({
+          result:{details:[]}
+        })
+      ]
+    }else{
+      promises=[
+        currencyList.get(this.coinId).callCP("get_assets_info",{
+          assetsList:[this.token]
+        }),currencyList.get(this.coinId).callCP("get_asset_history",{
+          asset:this.token
+        })]
+    }
+    
     Promise.all(promises)
       .then(res=>{
         this.asset=res[0].result[0]
