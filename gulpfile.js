@@ -62,6 +62,10 @@ gulp.task("setDocs", function() {
   return gulp.src(["dist/**"])
     .pipe(gulp.dest("./docs/wallet/dist"))
 });
+gulp.task("setChrome", function() {
+  return gulp.src(["dist/**"])
+    .pipe(gulp.dest("./chrome_extension/dist"))
+});
 
 gulp.task("default", function(cb) {
   return runSequence(
@@ -72,8 +76,7 @@ gulp.task("default", function(cb) {
 gulp.task("prod", function(cb) {
   return runSequence(
     ["lint","webpackProd"],
-    "setCordova","setDocs",
+    "setCordova","setDocs","setChrome",
     cb
   );
 });
-

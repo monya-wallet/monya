@@ -1,0 +1,23 @@
+{
+	"name": "もにゃ",
+	"description": "A Simple Monacoin Mobile Wallet",
+	"version": "0.0.1",
+	"manifest_version": 2,
+	"icons": {
+					"16": "16.png",
+					"36": "36.png",
+					"48": "48.png",
+					"72": "72.png",
+					"96": "96.png",
+					"144": "144.png",
+					"192": "192.png"
+	},
+	"permissions": ["tabs"],
+	"background": {
+		"presistant": false,
+		"scripts": ["chrome.js"]
+	},
+	"browser_action": {
+		"default_title": "Monya"
+	}
+}
