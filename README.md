@@ -39,6 +39,12 @@ DMD様
 1. `cordova platform add <platformName>` platformNameは`ios`や`android`など
 1. `cordova build <platformName> --release`
 
+### Chrome拡張機能ビルド
+
+1. `npm run build` で`chrome_extension`以下にChrome拡張機能用のディレクトリが生成されます。
+1. Google Chromeの拡張機能のページから「拡張機能をパッケージ化」というボタンをクリックし、上記のディレクトリを指定してください。また、既に一度パッケージ化を行っている場合には、前回生成された鍵をここで指定してください。そうでないと、ストアで署名が認識されません。
+1. パッケージ化が完了すると、拡張機能の実態である`.crx`ファイルと、初回のみ鍵がダウンロードされます。`.crx`ファイルはストアにアップロードする際に使用し、鍵は大事に保管しておいてください。
+
 ## License
 
 GPLv3
