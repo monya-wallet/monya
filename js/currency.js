@@ -279,6 +279,17 @@ module.exports=class{
 
     if(!txb){
       txb=coinUtil.buildBuilderfromPubKeyTx(bcLib.Transaction.fromHex(option.hash),this.network)
+
+      for(let i=0;i<txb.inputs.length;i++){
+      txb.sign(i,node
+               .deriveHardened(44)
+               .deriveHardened(this.bip44.coinType)
+               .deriveHardened(this.bip44.account)
+               .derive(path[0][0]|0)
+               .derive(path[0][1]|0).keyPair
+              )
+      }
+      return txb.build()
     }
     
     for(let i=0;i<path.length;i++){

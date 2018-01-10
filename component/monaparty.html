@@ -17,7 +17,7 @@
     </div>
     <div id="tokens">
       <div v-if="!assets.length">トークンがありません。受け取るには、メニュー→受け取り→モナコインアイコン で受け取りアドレスを取得しましょう。</div>
-      <div v-for="asset in assets" @click="showTokenInfo(asset.asset,true)" class="token" :style="asset.image">
+      <div v-for="asset in assets" @click="showTokenInfo(asset.asset_longname||asset.asset,true)" class="token" :style="asset.image">
         <div class="cur"><currency-set :amount="asset.normalized_quantity" :ticker="asset.asset_longname||asset.asset" :notKnown="true"></currency-set></div>
         <div class="owner" v-show="asset.owner"><v-ons-icon icon="fa-bookmark"></v-ons-icon></div>
       </div>

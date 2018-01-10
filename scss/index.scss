@@ -33,7 +33,8 @@ ons-list-item{
 ons-dialog .dialog{
     max-height:100%;
     max-width:100%;
-    overflow:scroll;
+    overflow-y:scroll;
+    overflow-y:auto;
   
 }
 .shake{

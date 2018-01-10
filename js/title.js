@@ -17,8 +17,6 @@ module.exports=class{
     return this.cp.callCPLib(m,p)
   }
   getToken(token){
-    token=token.toUpperCase()
-    
     let promises
     if(token==='XMP'){
       promises=[
@@ -36,17 +34,19 @@ module.exports=class{
       promises=[
         this.callCP("get_assets_info",{
           assetsList:[token]
-        }),this.callCP("get_asset_history",{
-          asset:token
         }),this.getCardDetail(token)]
     }
     let ret
     return Promise.all(promises).then(r=>{
       return {
         asset:r[0],
-        history:r[1],
-        card:r[2]
+        card:r[1]
       }
+    })
+  }
+  getTokenHistory(token){
+    return this.callCP("get_asset_history",{
+      asset:token
     })
   }
   getCardDetailV1(token){
@@ -55,23 +55,22 @@ module.exports=class{
     }
     return axios.get(this.apiEndpoint+"/card_detail.php?assets="+token).then(r=>{
       const arr=[]
-      if(r.data.error){
-        //error but ignore because other promise stop
-      }
-      r.data.details.forEach(k=>{
-        arr.push({
-          description:k.add_description,
-          asset:k.asset,
-          assetCommonName:k.asset_common_name,
-          assetLongName:k.asset_longname,
-          cardName:k.card_name,
-          imageUrl:k.imgur_url,
-          ownerName:k.owner_name,
-          twitterId:k.tw_id,
-          twitterScreenName:k.tw_name,
-          timestamp:parseInt(k.update_time,10)
+      if(!r.data.error){
+        r.data.details.forEach(k=>{
+          arr.push({
+            description:k.add_description,
+            asset:k.asset,
+            assetCommonName:k.asset_common_name,
+            assetLongName:k.asset_longname,
+            cardName:k.card_name,
+            imageUrl:k.imgur_url,
+            ownerName:k.owner_name,
+            twitterId:k.tw_id,
+            twitterScreenName:k.tw_name,
+            timestamp:parseInt(k.update_time,10)
+          })
         })
-      })
+      }//error but ignore because other promise stop
       return arr
     })
   }

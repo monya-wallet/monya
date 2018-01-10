@@ -30,7 +30,7 @@ module.exports=require("./monaparty.html")({
           this.loading=false
           return title.getCardDetail(res.map(v=>v.asset_longname||v.asset))
         }).then(r=>{
-          if(r.length){
+          if(r.length&&this.assets.length){
             r.forEach(k=>{
               this.assets.forEach(v=>{
                 if(v.asset===k.asset){
@@ -55,8 +55,11 @@ module.exports=require("./monaparty.html")({
         this.goToListTokens(this.searchKeyword)
       }
     },
-    showTokenInfo(token,sendable=false){
-      this.$store.commit("setTokenInfo",{token:token.toUpperCase(),coinId:titleList.get(this.titleId).cpCoinId,sendable})
+    showTokenInfo(tokenRaw,sendable=false){
+      const t = tokenRaw.split(".")
+      t[0]=t[0].toUpperCase()
+      const token = t.join(".")
+      this.$store.commit("setTokenInfo",{token,coinId:titleList.get(this.titleId).cpCoinId,sendable})
       this.$emit("push",require("./tokenInfo.js"))
     },
     goToListTokens(addr){
