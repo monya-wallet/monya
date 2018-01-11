@@ -45,6 +45,12 @@ DMD様
 1. Google Chromeの拡張機能のページから「拡張機能をパッケージ化」というボタンをクリックし、上記のディレクトリを指定してください。また、既に一度パッケージ化を行っている場合には、前回生成された鍵をここで指定してください。そうでないと、ストアで署名が認識されません。
 1. パッケージ化が完了すると、拡張機能の実態である`.crx`ファイルと、初回のみ鍵がダウンロードされます。`.crx`ファイルはストアにアップロードする際に使用し、鍵は大事に保管しておいてください。
 
+## webp作成
+
+```
+$ find assets|sed -e 's/assets\///'|grep -e '\(\.png\|\.jpg\)'|while read a;do cwebp -q 90 -z 9 -mt -af -progress -v assets/$a -o assets-webp/$(echo $a|sed -e 's/\(\.png\|\.jpg\)//').webp;done
+```
+
 ## License
 
 GPLv3
