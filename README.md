@@ -47,8 +47,9 @@ DMD様
 
 ## webp作成
 
+git cloneした先のディレクトリ（README.mdがあるディレクトリ）で以下を実行してください。
 ```
-$ find assets|sed -e 's/assets\///'|grep -e '\(\.png\|\.jpg\)'|while read a;do cwebp -q 90 -z 9 -mt -af -progress -v assets/$a -o assets-webp/$(echo $a|sed -e 's/\(\.png\|\.jpg\)//').webp;done
+$ cd dist && find assets|sed -e 's/assets\///'|grep -e '\(\.png\|\.jpg\)'|while read a;do cwebp -q 90 -z 9 -mt -af -progress -v assets/$a -o ../chrome_extension/assets-webp/$(echo $a|sed -e 's/\(\.png\|\.jpg\)//').webp;done
 ```
 
 ## License
