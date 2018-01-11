@@ -97,6 +97,12 @@
             {{remainingBytes}}
           </div>
         </v-ons-list-item>
+         <v-ons-list-header>UTXOを手動指定</v-ons-list-header>
+        <v-ons-list-item>
+          <div class="center">
+            <v-ons-input v-model="utxoStr" placeholder="規定の形式、詳しくはソースコード"></v-ons-input>
+          </div>
+        </v-ons-list-item>
       </div>
     </v-ons-list>
     

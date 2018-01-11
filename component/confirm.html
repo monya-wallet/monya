@@ -41,6 +41,12 @@
       <v-ons-list-item>
         <v-ons-button :class="{shake:incorrect}" modifier="large" @click="next" :disabled="!ready||!password">送金</v-ons-button>
       </v-ons-list-item>
+      <div v-show="hash">
+        <v-ons-list-header>署名済みデータがあります</v-ons-list-header>
+        <v-ons-list-item>
+          <v-ons-input placeholder="ごめんなさい嘘です" :value="hash"></v-ons-input>
+        </v-ons-list-item>
+      </div>
     </v-ons-list>
   </div>
   <v-ons-modal :visible="loading">

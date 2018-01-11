@@ -25,7 +25,8 @@ module.exports = new Vuex.Store({
     bgClass:"sand",
     monapartyTitle:"",
     divisible:false,
-    includeUnconfirmedFunds:false
+    includeUnconfirmedFunds:false,
+    utxoStr:""
   },
   mutations: {
     setEntropy(state,ent) {
@@ -61,7 +62,8 @@ module.exports = new Vuex.Store({
         feePerByte:parseInt(payload.feePerByte,10),
         message:payload.message,
         coinType:payload.coinType,
-        txLabel:payload.txLabel
+        txLabel:payload.txLabel,
+        utxoStr:payload.utxoStr
       }
     },
     setFinishNextPage(state,pageData){

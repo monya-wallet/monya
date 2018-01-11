@@ -119,35 +119,42 @@ module.exports=class{
   }
   
   getUtxos(addressList,includeUnconfirmedFunds=false){
-    return axios({
-      url:this.apiEndpoint+"/addrs/"+addressList.join(",")+"/utxo",
-      json:true,
-      method:"GET"}).then(res=>{
-        const v=res.data
-        const utxos=[]
-        let bal=0;
-        let unconfirmed=0;
-        for(let i=0;i<v.length;i++){
-          bal+=v[i].amount
-          const u=v[i]
-          if(includeUnconfirmedFunds||u.confirmations!==0){
-            utxos.push({
-              value:(new BigNumber(u.amount)).times(100000000).round().toNumber(),
-              txId:u.txid,
-              vout:u.vout,
-              address:u.address,
-              confirmations:u.confirmations
-            })
-          }else{
-            unconfirmed+=u.amount
-          }
+    let promise
+    if(typeof(addressList[0])==="string"){//address mode
+      promise=axios({
+        url:this.apiEndpoint+"/addrs/"+addressList.join(",")+"/utxo",
+        json:true,
+        method:"GET"})
+    }else{// manual utxo mode
+      promise=Promise.resolve({data:addressList})
+    }
+    
+    return promise.then(res=>{
+      const v=res.data
+      const utxos=[]
+      let bal=0;
+      let unconfirmed=0;
+      for(let i=0;i<v.length;i++){
+        bal+=v[i].amount
+        const u=v[i]
+        if(includeUnconfirmedFunds||u.confirmations!==0){
+          utxos.push({
+            value:(new BigNumber(u.amount)).times(100000000).round().toNumber(),
+            txId:u.txid,
+            vout:u.vout,
+            address:u.address,
+            confirmations:u.confirmations
+          })
+        }else{
+          unconfirmed+=u.amount
         }
-        return {
-          balance:bal,
-          utxos,
-          unconfirmed
-        }
-      })
+      }
+      return {
+        balance:bal,
+        utxos,
+        unconfirmed
+      }
+    })
   }
   
   getAddress(change,index){
@@ -240,8 +247,15 @@ module.exports=class{
       const feeRate = option.feeRate
 
       const txb = new bcLib.TransactionBuilder(this.network)
+
+      let param
+      if(option.utxoStr){
+        param=JSON.parse(option.utxoStr)
+      }else{
+        param=this.getReceiveAddr().concat(this.getChangeAddr())
+      }
       
-      this.getUtxos(this.getReceiveAddr().concat(this.getChangeAddr()),option.includeUnconfirmedFunds).then(res=>{
+      this.getUtxos(param,option.includeUnconfirmedFunds).then(res=>{
         const path=[]
         const { inputs, outputs, fee } = coinSelect(res.utxos, targets, feeRate)
         if (!inputs || !outputs) throw new errors.NoSolutionError()

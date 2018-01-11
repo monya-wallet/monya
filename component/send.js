@@ -18,7 +18,8 @@ module.exports=require("./send.html")({
       messageToShow:"",
       txLabel:"",
       verifyResult:true,
-      signature:false
+      signature:false,
+      utxoStr:""
     }
   },
   store:require("../js/store.js"),
@@ -36,7 +37,8 @@ module.exports=require("./send.html")({
         feePerByte:this.feePerByte,
         message:this.message,
         coinType:this.coinType,
-        txLabel:this.txLabel
+        txLabel:this.txLabel,
+        utxoStr:this.utxoStr
       })
       this.$emit("push",require("./confirm.js"))
     },

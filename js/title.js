@@ -1,4 +1,6 @@
 const currencyList=require("./currencyList")
+const BigNumber = require('bignumber.js');
+const storage = require("../js/storage")
 const axios = require("axios")
 module.exports=class{
   constructor(opt){
@@ -21,14 +23,14 @@ module.exports=class{
     if(token==='XMP'){
       promises=[
         Promise.resolve([{
-            asset:"XMP",
-            supply:0,
-            divisible:true,
-            issuer:"MMonapartyMMMMMMMMMMMMMMMMMMMUzGgh",
-            owner:"MMonapartyMMMMMMMMMMMMMMMMMMMUzGgh",
-            locked:true,
-            description:""
-          }]),Promise.resolve([]),Promise.resolve([])
+          asset:"XMP",
+          supply:0,
+          divisible:true,
+          issuer:"MMonapartyMMMMMMMMMMMMMMMMMMMUzGgh",
+          owner:"MMonapartyMMMMMMMMMMMMMMMMMMMUzGgh",
+          locked:true,
+          description:""
+        }]),Promise.resolve([]),Promise.resolve([])
       ]
     }else{
       promises=[
@@ -45,6 +47,9 @@ module.exports=class{
     })
   }
   getTokenHistory(token){
+    if(token==='XMP'){
+      return Promise.resolve([])
+    }
     return this.callCP("get_asset_history",{
       asset:token
     })
@@ -91,6 +96,62 @@ module.exports=class{
       default:
         return this.getCardDetailV2(token)
     }
+  }
+  createCommand(paramName,param,opt){
+    const addressIndex = opt.addressIndex|0
+    const includeUnconfirmedFunds = opt.includeUnconfirmedFunds
+    const feePerByte=opt.feePerByte|0
+    
+    const cur = this.cp
+    return cur.callCPLib("create_"+paramName,Object.assign({
+      allow_unconfirmed_inputs:includeUnconfirmedFunds,
+      fee_per_kb:feePerByte*1024,
+      disable_utxo_locks:true,
+      encoding:"auto",
+      extended_tx_info:true,
+      pubkey:[cur.getPubKey(0,addressIndex)]
+    },param))
+  }
+  createTx(opt){
+    const divisible=opt.divisible
+    const sendAmount = opt.sendAmount
+    const addressIndex = opt.addressIndex|0
+    const dest = opt.dest
+    const token = opt.token
+    const includeUnconfirmedFunds = opt.includeUnconfirmedFunds
+    const password=opt.password
+    const memo=opt.memo
+    const feePerByte = opt.feePerByte || this.defaultFeeSatPerByte
+    
+    const cur = this.cp
+    let hex=""
+    let qty=(new BigNumber(sendAmount))
+    if(divisible){
+      qty=qty.times(100000000)
+    }
+
+    return this.createCommand("send",{
+      source:cur.getAddress(0,addressIndex),
+      destination:dest,
+      asset:token,
+      quantity:qty.toNumber(),
+      memo
+    },{
+      addressIndex,
+      includeUnconfirmedFunds,
+      feePerByte
+    }).then(res=>{
+      hex=res.tx_hex
+      return storage.get("keyPairs")
+    }).then(cipher=>{
+      const signedTx=cur.signTx({
+        hash:hex,
+        password:password,
+        path:[[0,addressIndex]],
+        entropyCipher:cipher.entropy
+      })
+      return cur.callCP("broadcast_tx",{signed_tx_hex:signedTx.toHex()})
+    })
   }
 }
 
