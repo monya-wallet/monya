@@ -8,6 +8,12 @@ const defaultTitles=[{
   titleName:"Monacard",
   apiVer:1,
   apiEndpoint:"https://card.mona.jp/api"
+},{
+  cpCoinId:"mona",//Monaparty
+  titleId:"scamgirs",
+  titleName:"Scam Girls",
+  apiVer:2,
+  apiEndpoint:"https://zaif-status.herokuapp.com/scamgirls/api"
 }]
 
 const titles={}

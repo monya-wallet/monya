@@ -15,7 +15,7 @@ module.exports = {
     rules: [
       {
         test: /\.js$/,
-        exclude: /node_modules/,
+        exclude: /node_modules\/(?!(bech32))/,
         use: {
           loader: 'babel-loader',
           options: {
@@ -57,6 +57,7 @@ module.exports = {
     new Uglify({
       uglifyOptions:{
         mangle:{
+          safari10: true,
           reserved:['BigInteger','ECPair','Point']
         }
       }
