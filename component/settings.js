@@ -22,7 +22,7 @@ module.exports=require("./settings.html")({
         },
         openInAppBrowser:false,
         monaparty:{
-          enabled:false,
+          enabled:true,
           bgClass:"sand"
         }
       },

@@ -21,33 +21,41 @@ module.exports=require("./home.html")({
       this.fiatConv=0
       this.loading=true;
       this.error=false
+      let timer=setTimeout(()=>{
+        this.loading=false
+      },10000)
+      const promises=[]
       currencyList.eachWithPub(cur=>{
+        let obj={
+          coinId:cur.coinId,
+          balance:0,
+          unconfirmed:0,
+          screenName:cur.coinScreenName,
+          price:0,
+          icon:cur.icon
+        }
         
-        let bal=null;
-        cur.getWholeBalanceOfThisAccount()
+        promises.push(cur.getWholeBalanceOfThisAccount()
           .then(res=>{
-            bal=res
-            
+            obj.balance=res.balance
+            obj.unconfirmed=res.unconfirmed
+            this.curs.push(obj)
             return coinUtil.getPrice(cur.coinId,this.$store.state.fiat)
-          })
-          .then(res=>{
-            this.fiatConv += res*bal.balance
-            this.curs.push({
-              coinId:cur.coinId,
-              balance:bal.balance,
-              unconfirmed:bal.unconfirmed,
-              screenName:cur.coinScreenName,
-              price:res,
-              icon:cur.icon
-            })
-            this.loading=false
-            typeof(done)==='function'&&done()
-          })
-          .catch(()=>{
+          }).then(res=>{
+            this.fiatConv += res*obj.balance
+            obj.price=res
+            return obj
+          }).catch(()=>{
             this.error=true
-            this.loading=false
-            typeof(done)==='function'&&done()
-          })
+            obj.screenName=""
+            return obj
+          }))
+      })
+      Promise.all(promises).then(data=>{
+        this.curs=data
+        this.loading=false
+        clearTimeout(timer)
+        typeof(done)==='function'&&done()
       })
     },
     goToManageCoin(){

@@ -53,7 +53,7 @@
             <img :src="c.icon"/>
           </div>
           <div >
-            <div class="screenName">{{c.screenName}}</div>
+            <div class="screenName">{{c.screenName||"取得失敗"}}</div>
             <div class="price">
               <currency-set :amount="c.price" :ticker="c.coinId" :fiatTicker="fiat"></currency-set>
             </div>
