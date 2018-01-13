@@ -1,6 +1,6 @@
 require("../scss/index.scss")
-require('../dist/onsenui/css/onsenui.css')
-require('../dist/onsenui/css/onsen-css-components.css')
+require('../dist/onsenui/css/onsenui.min.css')
+require('../dist/onsenui/css/onsen-css-components.min.css')
 const Vue = require("vue/dist/vue.runtime.min")
 //const VueOnsen = require("vue-onsenui")
 const Vuex = require("vuex")

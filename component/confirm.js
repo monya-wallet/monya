@@ -91,7 +91,7 @@ module.exports=require("./confirm.html")({
         if(e instanceof errors.NoSolutionError){
           this.insufficientFund=true
         }else{
-          this.$ons.notification.alert("Error:"+e.message)
+          this.$store.commit("setError",e.message)
         }
       })
     }
@@ -125,7 +125,8 @@ module.exports=require("./confirm.html")({
       }).catch(e=>{
         this.loading=false
         if(e.request){
-          this.$ons.notification.alert(e.request.responseText||"Network Error.Please try again")
+          this.$store.commit("setError",e.request.responseText||"Network Error.Please try again")
+          
         }else{
           this.incorrect=true
           this.ready=true

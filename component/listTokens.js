@@ -22,7 +22,10 @@ module.exports=require("./listTokens.html")({
       }).then(res=>{
         this.search=res
         this.loading=false
-      })
+      }).catch(e=>{
+          this.loading=false
+          this.$store.commit("setError",e.message)
+        })
     },
     showTokenInfo(token){
       this.$store.commit("setTokenInfo",{token:token.toUpperCase(),coinId:this.coinId})

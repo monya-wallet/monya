@@ -30,6 +30,11 @@ ons-list-item{
     text-align:right;
   }
 }
+
+.toolbar-button .ons-icon{
+  vertical-align:top;
+}
+
 ons-dialog .dialog{
     max-height:100%;
     max-width:100%;
@@ -184,15 +189,14 @@ ons-dialog .dialog{
     text-align:center;
   }
 }
-[data-page="showLabel"],[data-page="receive"],[data-page="history"],[data-page="invoice"]{
+[data-page="showLabel"],[data-page="sweep"],[data-page="receive"],[data-page="history"],[data-page="invoice"]{
   #currencySelector{
     width:100%;
     margin:none;
     padding:none;
     .currencyIcon{
-      margin:3px;
-      width:$currencySelectorHeight - 3px;
-      height:$currencySelectorHeight - 3px;
+      width:$currencySelectorHeight;
+      height:$currencySelectorHeight;
       background-position:center center;
       background-size:contain;
       background-repeat:no-repeat;

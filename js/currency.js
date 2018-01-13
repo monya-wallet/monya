@@ -227,7 +227,11 @@ module.exports=class{
           let temp = res.data
           if(this.price.json){
             this.price.jsonPath.forEach(v=>{
-              temp = temp[v]
+              if(v<0){
+                temp = temp[temp.length+v]
+              }else{
+                temp = temp[v]
+              }
             })
           }
           this.priceCache=temp
@@ -472,9 +476,18 @@ module.exports=class{
       return r.data.result
     })
   }
+  sweep(priv,addr,fee){
+    const keyPair=bcLib.ECPair.fromWIF(priv,this.network)
+    return this.getUtxos([keyPair.getAddress()]).then(r=>{
+      const txb = new bcLib.TransactionBuilder(this.network)
+      
+      
+      txb.addOutput(addr,(new BigNumber(r.balance)).minus(fee).toNumber())
+      r.utxos.forEach((v,i)=>{
+        txb.addInput(v.txId,v.vout)
+        txb.sign(i,keyPair)
+      })
+      return this.pushTx(txb.build().toHex())
+    })
+  }
 }
-
-
-
-
-

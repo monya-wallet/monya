@@ -79,7 +79,7 @@ module.exports=require("./login.html")({
       }
       coinUtil.hasInitialized=true
     }).catch(e=>{
-      this.$ons.notification.alert("An error occured."+e.message)
+      this.$store.commit("setError",e.message)
     })
   }
 })

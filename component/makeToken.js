@@ -1,6 +1,7 @@
 const currencyList = require("../js/currencyList")
 const BigNumber = require('bignumber.js');
 const storage = require("../js/storage")
+const titleList = require("../js/titleList")
 
 module.exports=require("./makeToken.html")({
   data(){
@@ -10,8 +11,11 @@ module.exports=require("./makeToken.html")({
     labels:[],
     addressIndex:0,
     loading:false,
-      divisible:true,
-    password:""
+      divisible:false,
+      password:"",
+      feePerByte:"",
+      description:"",
+      transferDest:""
     }
   },
   store:require("../js/store.js"),
@@ -19,42 +23,24 @@ module.exports=require("./makeToken.html")({
     
     createTx(){
       this.loading=true
-      const cur = currencyList.get(this.coinId)
-      let hex=""
-      let qty=(new BigNumber(this.amount)).toNumber()
-      if(this.divisible){
-        qty*=100000000
-      }
-      cur.callCPLib("create_issuance",{
-        source:cur.getAddress(0,this.addressIndex|0),
-        allow_unconfirmed_inputs:this.$store.state.includeUnconfirmedFunds,
-        destination:this.dest,
-        asset:this.token.toUpperCase(),
-        quantity:qty,//satoshi
-        description:this.description,
-        fee_per_kb:cur.defaultFeeSatPerByte*1024,
-        disable_utxo_locks:true,
-        encoding:"auto",
-        extended_tx_info:true,
+      titleList.get(this.titleId).createIssuance({
         divisible:this.divisible,
-        pubkey:[cur.getPubKey(0,this.addressIndex|0)]
-      }).then(res=>{
-        hex=res.result.tx_hex
-        return storage.get("keyPairs")
-      }).then(cipher=>{
-        const signedTx=cur.signTx({
-          hash:hex,
-          password:this.password,
-          path:[[0,this.addressIndex|0]],
-          entropyCipher:cipher.entropy
-        })
-        return cur.callCP("broadcast_tx",{signed_tx_hex:signedTx.toHex()})
+        amount:this.amount,
+        addressIndex:this.addressIndex,
+        token:this.token,
+        includeUnconfirmedFunds:this.$store.state.includeUnconfirmedFunds,
+        password:this.password,
+        memo:this.sendMemo,
+        feePerByte:this.feePerByte,
+        description:this.description,
+        transferDest:this.transferDest
       }).then(r=>{
         this.loading=false
-        this.$ons.notification.alert("Successfully sent transaction.Transaction ID is: "+r.result)
+        this.$ons.notification.alert("Successfully sent transaction.Transaction ID is: "+r)
       }).catch(e=>{
         this.loading=false
-        this.$ons.notification.alert("Error: "+e.message)
+        this.$store.commit("setError",e.message)
+
       })
     },
     
@@ -66,5 +52,15 @@ module.exports=require("./makeToken.html")({
   },
   mounted(){
     this.getAddrLabel()
+  },computed:{
+    titleId:{
+      get(){
+        return this.$store.state.monapartyTitle
+      },
+      set(v){
+        this.$store.commit("setTitle",v)
+        return v
+      }
+    }
   }
 })

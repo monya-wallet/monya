@@ -33,6 +33,9 @@ module.exports=require("./settings.html")({
     goToShowPassphrase(){
       this.$emit("push",require("./showPassphrase.js"))
     },
+    goToSweep(){
+      this.$emit("push",require("./sweep.js"))
+    },
     goToEditOrder(){
       this.$emit("push",require("./editOrder.js"))
     },

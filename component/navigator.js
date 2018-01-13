@@ -1,6 +1,17 @@
 const storage = require("../js/storage.js")
 const coinUtil = require("../js/coinUtil.js")
 
+// Error message translation Start 
+const translationTable={
+  "insufficient":"不足",
+  "fund":"お金",
+  "priority":"手数料",
+  "unable to decrypt data":"パスワードが間違っています",
+  "unconfirmed": "まだ処理されていない"
+}
+const regexp = new RegExp(Object.keys(translationTable).join("|"),"gim")
+// Error message translation End
+
 module.exports=require("./navigator.html")({
   data(){
     return {
@@ -66,6 +77,15 @@ module.exports=require("./navigator.html")({
     },
     bgClass(){
       return this.$store.state.bgClass
+    },
+    error:{
+      get(){
+        return this.$store.state.error
+      },
+      set(v){
+        this.$store.commit("setError",v)
+        return v
+      }
     }
   },
   mounted(){
@@ -83,6 +103,14 @@ module.exports=require("./navigator.html")({
   watch:{
     pageStack(){
       this.$store.commit("setTransparency",false)
+    }
+  },
+  filters:{
+    translate(v){
+      v=v.toString()
+      return v.replace(regexp,(match)=>{
+        return match+"("+translationTable[match.toLowerCase()]+")"
+      })
     }
   }
 })

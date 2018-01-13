@@ -16,11 +16,16 @@
         </div>
         <div class="right">サブトークンは正式名称</div>
       </v-ons-list-item>
-      <v-ons-list-item><v-ons-input placeholder="数量" v-model="amount"></v-ons-input></v-ons-list-item>
+      <v-ons-list-item><v-ons-input placeholder="数量" type="number" v-model="amount"></v-ons-input></v-ons-list-item>
       <v-ons-list-item><v-ons-input placeholder="説明" v-model="description"></v-ons-input></v-ons-list-item>
+      <v-ons-list-item><v-ons-input placeholder="トークンの所有権移動をしたい時のみ移転先アドレス" v-model="transferDest"></v-ons-input></v-ons-list-item>
       <v-ons-list-item>
         <div class="center">小数点以下を許可</div>
         <div class="right"><v-ons-switch v-model="divisible"></v-ons-switch></div>
+      </v-ons-list-item>
+      <v-ons-list-item>
+        <div class="center">手数料(sat/B)</div>
+        <div class="right"><v-ons-input type="number" placeholder="satoshi/Byte" v-model="feePerByte"></v-ons-input></div>
       </v-ons-list-item>
       <v-ons-list-item><v-ons-input type="password" placeholder="Password" v-model="password"></v-ons-input></v-ons-list-item>
       <v-ons-list-item><v-ons-button  @click="createTx" modifier="large">トークンを作成</v-ons-button></v-ons-list-item>

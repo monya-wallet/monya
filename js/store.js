@@ -26,7 +26,8 @@ module.exports = new Vuex.Store({
     monapartyTitle:"",
     divisible:false,
     includeUnconfirmedFunds:false,
-    utxoStr:""
+    utxoStr:"",
+    error:""
   },
   mutations: {
     setEntropy(state,ent) {
@@ -107,5 +108,8 @@ module.exports = new Vuex.Store({
       state.sendable=token.sendable||""
       state.divisible=token.divisible||""
     },
+    setError(s,e){
+      s.error=e
+    }
   }
 })

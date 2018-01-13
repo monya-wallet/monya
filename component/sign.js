@@ -28,7 +28,7 @@ module.exports=require("./sign.html")({
         "req-signature":this.signature
       }))
       }).catch(e=>{
-        this.$ons.notification.alert(e.message||"Error.Please try again")
+        this.$store.commit("setError",e.message||"Unknown")
       })
     },
     verify(){

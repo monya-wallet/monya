@@ -35,12 +35,16 @@ module.exports=require("./tokenInfo.html")({
       this.asset=r.asset[0]
       this.card=r.card[0]
       this.loading=false
-      return title.getTokenHistory(this.asset.asset)
+      if(this.asset){
+        return title.getTokenHistory(this.asset.asset)
+      }else{
+        return {}
+      }
     }).then(r=>{
       this.history=r
     }).catch(e=>{
-      this.loading=false
-      this.$ons.notification.alert("Error: "+e.message)
-    })
+          this.loading=false
+          this.$store.commit("setError",e.message)
+        })
   }      
 })

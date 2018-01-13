@@ -73,7 +73,7 @@ module.exports=require("./qrcode.html")({
     this.loading=true
     QRScanner.prepare((err, status)=>{
       if (err) {
-        this.$ons.notification.alert("error"+(err&&err.code))
+        return this.$store.commit("setError","error code:"+err&&err.code)
       }
       if (status.authorized) {
         this.$set(this,"canEnableLight",status.canEnableLight)
@@ -84,7 +84,7 @@ module.exports=require("./qrcode.html")({
         QRScanner.scan((err2,t)=>{
           if (err2) {
             if(err2.code===6){return }
-            this.$ons.notification.alert("error code:"+err2.code)
+            this.$store.commit("setError","error code:"+err2.code)
             return
           }
           QRScanner.destroy()

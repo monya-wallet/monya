@@ -101,14 +101,15 @@ module.exports=class{
     const addressIndex = opt.addressIndex|0
     const includeUnconfirmedFunds = opt.includeUnconfirmedFunds
     const feePerByte=opt.feePerByte|0
-    
+    const disable_utxo_locks=!!opt.disableUtxoLocks;
+    const extended_tx_info = true
     const cur = this.cp
     return cur.callCPLib("create_"+paramName,Object.assign({
       allow_unconfirmed_inputs:includeUnconfirmedFunds,
       fee_per_kb:feePerByte*1024,
-      disable_utxo_locks:true,
+      disable_utxo_locks,
       encoding:"auto",
-      extended_tx_info:true,
+      extended_tx_info,
       pubkey:[cur.getPubKey(0,addressIndex)]
     },param))
   }
@@ -139,7 +140,52 @@ module.exports=class{
     },{
       addressIndex,
       includeUnconfirmedFunds,
-      feePerByte
+      feePerByte,
+      disableUtxoLocks:true,
+      extendedTxInfo:true
+    }).then(res=>{
+      hex=res.tx_hex
+      return storage.get("keyPairs")
+    }).then(cipher=>{
+      const signedTx=cur.signTx({
+        hash:hex,
+        password:password,
+        path:[[0,addressIndex]],
+        entropyCipher:cipher.entropy
+      })
+      return cur.callCP("broadcast_tx",{signed_tx_hex:signedTx.toHex()})
+    })
+  }
+  createIssuance(opt){
+    const divisible=opt.divisible
+    const amount = opt.amount
+    const addressIndex = opt.addressIndex|0
+    const token = opt.token
+    const includeUnconfirmedFunds = opt.includeUnconfirmedFunds
+    const password=opt.password
+    const description=opt.description
+    const feePerByte = opt.feePerByte || this.defaultFeeSatPerByte
+    const transferDest = opt.transferDest
+    
+    const cur = this.cp
+    let hex=""
+    let qty=(new BigNumber(amount))
+    if(divisible){
+      qty=qty.times(100000000)
+    }
+
+    return this.createCommand("issuance",{
+      source:cur.getAddress(0,addressIndex),
+      asset:token,
+      quantity:qty.toNumber(),
+      description,
+      divisible,
+      transfer_destination:transferDest||null
+    },{
+      addressIndex,
+      includeUnconfirmedFunds,
+      feePerByte,disableUtxoLocks:true,
+      extendedTxInfo:true
     }).then(res=>{
       hex=res.tx_hex
       return storage.get("keyPairs")

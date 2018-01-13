@@ -46,7 +46,7 @@
       <v-ons-list-header>相手に送金する金額</v-ons-list-header>
       <v-ons-list-item>
         <div class="center">
-          <v-ons-input v-model="amount" @input="calcFiat" placeholder="相手に送金する金額" :disabled="!address||!coinType"></v-ons-input>
+          <v-ons-input v-model="amount" type="number" @input="calcFiat" placeholder="相手に送金する金額" :disabled="!address||!coinType"></v-ons-input>
         </div>
         <div class="right">
           <currency-set :ticker="coinType"></currency-set>
@@ -55,7 +55,7 @@
       <v-ons-list-header>法定通貨換算</v-ons-list-header>
       <v-ons-list-item>
         <div class="center">
-          <v-ons-input v-model="fiat" @input="calcCur" placeholder="日本円" :disabled="!address||!coinType"></v-ons-input>
+          <v-ons-input v-model="fiat" type="number" @input="calcCur" placeholder="日本円" :disabled="!address||!coinType"></v-ons-input>
         </div>
         <div class="right">
           <currency-set :ticker="fiatTicker"></currency-set>

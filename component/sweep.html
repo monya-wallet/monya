@@ -1,0 +1,19 @@
+<v-ons-page data-page="sweep">
+  <custom-bar title="吸出し">
+  </custom-bar>
+  <div>
+    <div id="currencySelector">
+      <v-ons-carousel swipeable overscrollable direction="horizontal" item-height="50px" item-width="50px" :index="currencyIndex">
+        <v-ons-carousel-item v-for="(crc,i) in currency" class="currencyIcon" :style="{'background-image':'url('+crc.icon+')'}" @click="currencyIndex=i">
+          <div class="checked" v-show="currencyIndex==i"></div>
+        </v-ons-carousel-item>
+      </v-ons-carousel>
+    </div>
+    <v-ons-list>
+      <v-ons-list-item><v-ons-input placeholder="秘密鍵" v-model="private"></v-ons-input></v-ons-list-item>
+      <v-ons-list-item><v-ons-input placeholder="送金先アドレス" v-model="address"></v-ons-input></v-ons-list-item>
+      <v-ons-list-item><v-ons-input placeholder="手数料" v-model="fee"></v-ons-input></v-ons-list-item>
+      <v-ons-list-item><v-ons-button @click="send" modifier="large">送信</v-ons-button></v-ons-list-item>
+    </v-ons-list>
+  </div>
+</v-ons-page>

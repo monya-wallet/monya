@@ -43,7 +43,7 @@ module.exports=require("./monaparty.html")({
           }
         }).catch(e=>{
           this.loading=false
-          this.$ons.notification.alert("Error: "+e.message)
+          this.$store.commit("setError",e.message)
         })
     },
     searchByKeyword(){

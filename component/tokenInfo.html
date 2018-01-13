@@ -8,9 +8,12 @@
       </div>
     </div>
     <v-ons-list modifier="inset">
+      <v-ons-list-item v-show="!asset&&!loading">
+        何もないみたいです
+      </v-ons-list-item>
       <v-ons-list-item v-show="asset&&asset.asset&&sendable">
-          <v-ons-button @click="sendToken" modifier="large">これを送る</v-ons-button>
-        </v-ons-list-item>
+        <v-ons-button @click="sendToken" modifier="large">これを送る</v-ons-button>
+      </v-ons-list-item>
       <div v-if="card">
         <v-ons-list-header>カードの詳細</v-ons-list-header>
         <v-ons-list-item>

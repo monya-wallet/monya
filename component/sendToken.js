@@ -37,7 +37,7 @@ module.exports=require("./sendToken.html")({
         this.$ons.notification.alert("Successfully sent transaction.Transaction ID is: "+r)
       }).catch(e=>{
         this.loading=false
-        this.$ons.notification.alert("Error: "+e.message)
+        this.$store.commit("setError",e.message)
       })
     },
     

@@ -60,4 +60,15 @@
       >
     </v-ons-navigator>
   </v-ons-splitter-content>
+   <v-ons-alert-dialog
+      modifier="rowfooter"
+      :visible="!!error"
+                        >
+      <span slot="title">困ったな…</span>
+      <p>申し訳ありません。問題が発生したようです。心当たりがある場合、原因を取り除き、どうしても解決できない、あるいは明らかなバグである場合、ヘルプからお問い合わせください。詳細は以下の通りです。</p>
+      <p>{{error | translate}}</p>
+      <template slot="footer">
+        <div class="alert-dialog-button" @click="error=''">戻る</div>
+      </template>
+    </v-ons-alert-dialog>
 </v-ons-splitter>
