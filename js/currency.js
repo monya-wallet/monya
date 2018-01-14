@@ -397,10 +397,12 @@ module.exports=class{
       if(txs){
         payload.price&&(txs.price=payload.price)
         payload.label&&(txs.label=payload.label)
+        payload.read&&(txs.read=true)
       }else{
         res[this.coinId][txId]={
           price:payload.price||0,
-          label:payload.label||""
+          label:payload.label||"",
+          read:true
         }
       }
       return storage.set("txLabels",res)
@@ -489,5 +491,11 @@ module.exports=class{
       })
       return this.pushTx(txb.build().toHex())
     })
+  }
+  getBlocks(){
+    return axios({
+        url:this.apiEndpoint+"/blocks?limit=3",
+        json:true,
+      method:"GET"}).then(r=>r.data.blocks)
   }
 }

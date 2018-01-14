@@ -9,7 +9,7 @@ module.exports=require("./sweep.html")({
       currencyIndex:0,
       private:"",
       address:"",
-      fee:0.0002
+      fee:0.0005
     }
   },
   store:require("../js/store.js"),

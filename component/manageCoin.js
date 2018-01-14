@@ -7,7 +7,14 @@ module.exports=require("./manageCoin.html")({
     loading:false,
     requirePassword:false,
     password:"",
-    incorrect:false
+    incorrect:false,
+    infoDlg:false,
+    info:{
+      blocks:[],
+      coinId:"",
+      unit:"",
+      apiEndpoint:""
+    }
   }),
   methods:{
     push(){
@@ -60,6 +67,19 @@ module.exports=require("./manageCoin.html")({
     },
     customCoin(){
       this.$emit("push",require("./customCoin.js"))
+    },
+    showInfo(coinId){
+      this.infoDlg=true
+      const cur=currencyList.get(coinId)
+      Object.assign(this.info,{
+        blocks:[],
+        coinId:cur.coinId,
+        unit:cur.unit,
+        apiEndpoint:cur.apiEndpoint
+      })
+      cur.getBlocks().then(r=>{
+        this.info.blocks=r
+      })
     }
   },
   

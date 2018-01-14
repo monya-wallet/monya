@@ -45,6 +45,8 @@
             <v-ons-icon icon="fa-comment" class="hasMsg" v-show="tx.hasMessage"></v-ons-icon>
             <v-ons-icon icon="fa-money" class="hasPrice" v-show="tx.price"></v-ons-icon>
             <v-ons-icon icon="fa-exclamation" class="inmatureConfirmation" v-show="tx.inmatureConfirmation"></v-ons-icon>
+            <v-ons-icon icon="fa-bell" class="unread" v-show="!tx.read&&sub(tx.aOut,tx.aIn)>0&&!tx.price&&!tx.txLabel"></v-ons-icon>
+
           </span>
           
           <currency-set :amount="sub(tx.aOut,tx.aIn)" :ticker="coinId"></currency-set>
@@ -66,6 +68,8 @@
         <option value="receive">受け取り</option>
       </v-ons-select>
       <v-ons-input placeholder="これ以下の取引を隠す" v-model="threshold"></v-ons-input>
+      <br/>
+      <v-ons-checkbox v-model="hideDustSend"></v-ons-checkbox>Monapartyっぽい出金を隠す
       <template slot="footer">
         <div class="alert-dialog-button" @click="filterDlg=false">閉じる</div>
       </template>

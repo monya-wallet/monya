@@ -10,6 +10,7 @@ module.exports=require("./txDetail.html")({
       price:0,
       txId:this.$store.state.detail.txId,
       txLabel:""
+      
     }
   },
   mounted(){
@@ -20,7 +21,7 @@ module.exports=require("./txDetail.html")({
     load(){
       const cur = currencyList.get(this.coinId)
       this.coinId=cur.coinId
-      cur.getTx(this.txId).then(v=>{
+      const txProm = cur.getTx(this.txId).then(v=>{
         this.res=v
         v.vout.forEach(o=>{
           if(o.scriptPubKey.hex.substr(0,2)==="6a"){
@@ -28,9 +29,12 @@ module.exports=require("./txDetail.html")({
           }
         })
       })
-      cur.getTxLabel(this.txId).then(res=>{
+      const labelProm=cur.getTxLabel(this.txId).then(res=>{
         this.price=res.price||""
         this.txLabel=res.label
+      })
+      Promise.all([txProm,labelProm]).then(()=>{
+        this.saveTxLabel()
       })
     },
     txDetail(txId){
@@ -49,7 +53,7 @@ module.exports=require("./txDetail.html")({
       if(parseInt(addrTuple[0],10)===1)return "change"
     },
     saveTxLabel(){
-      currencyList.get(this.coinId).saveTxLabel(this.txId,{label:this.txLabel,price:parseFloat(this.price)})
+      currencyList.get(this.coinId).saveTxLabel(this.txId,{read:true,label:this.txLabel,price:parseFloat(this.price)})
     }
   }
 })
