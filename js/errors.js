@@ -15,3 +15,4 @@ function createError(errorName){
 
 exports.NoSolutionError=createError("NoSolutionError")
 exports.LabelNotFoundError=createError("LabelNotFoundError")
+exports.MonappyError=createError("MonappyError")

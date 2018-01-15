@@ -270,6 +270,9 @@ ons-dialog .dialog{
   .currencyIcon.monappy{
     background-image:url(../res/monappy.png);
   }
+  .monappyNotExist{
+    background-color:#fdc;
+  }
 }
 $iconSize:100px;
 [data-page="first"]{
@@ -679,6 +682,12 @@ $zaifPayLogoSize:200px;
     }
   }
 }
+[data-page="settings"]{
+  .monappyNotExist{
+    background-color:#fdc;
+  }
+  
+}
 [data-page="tokenInfo"],[data-page="monaparty"],[data-page="sendToken"],[data-page="makeToken"]{
   ons-toolbar{
     background:linear-gradient(to bottom, #9e3429 0%,#6b2f27 100%);
@@ -710,6 +719,12 @@ $zaifPayLogoSize:200px;
     background-image:url(../res/realmona.png);
     background-position:right bottom;
     background-repeat:no-repeat;
+  }
+  ons-navigator.white & .page__background{
+    background-color:#fff;
+  }
+  ons-navigator.blue & .page__background{
+    background-color:#123456;
   }
   ons-input{
     width:100%;

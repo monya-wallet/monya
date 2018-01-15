@@ -30,7 +30,6 @@ const defaultCoins=[
     },
     sound:require("../res/coins/paySound/mona.m4a"),
     enableSegwit:false,
-    prefixes:["M","P"],
     price:{
       url:"https://public.bitbank.cc/mona_jpy/ticker",
       json:true,
@@ -64,7 +63,6 @@ const defaultCoins=[
       wif: 128
     },
     enableSegwit:false,
-    prefixes:["1","3"],
     price:{
       url:"https://public.bitbank.cc/btc_jpy/ticker",
       json:true,
@@ -98,7 +96,6 @@ const defaultCoins=[
       wif: 128
     },
     enableSegwit:false,
-    prefixes:["Z","3"],
     price:{
       url:coinUtil.proxyUrl("https://www.coingecko.com/price_charts/bitzeny/jpy/24_hours.json"),
       json:true,
@@ -132,7 +129,6 @@ const defaultCoins=[
       bech32:"lc1"
     },
     enableSegwit:false,
-    prefixes:["L","3"],
     price:{
       url:"https://public.bitbank.cc/ltc_btc/ticker",
       json:true,
@@ -161,18 +157,120 @@ const defaultCoins=[
         private: 0x0488ade4
       },
       pubKeyHash: 36,// F
-      scriptHash: 17,// 3
-      wif: 164,//not known but i put it 36+128
-      bech32:"fuji1"
+      scriptHash: 16,// 7
+      wif: 164
     },
     enableSegwit:false,
-    prefixes:["F","7"],
     price:{
       url:coinUtil.proxyUrl("https://www.coingecko.com/price_charts/fujicoin/jpy/24_hours.json"),
       json:true,
       jsonPath:["stats",-1,1],
       fiat:"jpy"
     },
+    confirmations:6
+  },{
+    coinScreenName:"クマコイン",
+    coinId:"kuma",
+    unit:"KUMA",
+    unitEasy:"クマ",
+    bip44:{
+      coinType:2000,//not from slip44, if it is not in slip44, set from 2000
+      account:0
+    },
+    bip21:"kumacoin",
+    defaultFeeSatPerByte:200,//will implement dynamic fee
+    icon:require("../res/coins/kuma.png"),
+    defaultAPIEndpoint:"http://namuyan.dip.jp/MultiLightBlockExplorer/apis.php?data=kuma/api",
+    network:{
+      messagePrefix: '\x19Kumacoin Signed Message:\n',
+      bip32: {
+        public: 0x0488b21e,
+        
+        private: 0x0488ade4
+      },
+      pubKeyHash: 45,
+      scriptHash: 8,
+      wif: 173
+    },
+    enableSegwit:false,
+    confirmations:6
+  },{
+    coinScreenName:"リンゴ",
+    coinId:"ringo",
+    unit:"RIN",
+    unitEasy:"リンゴ",
+    bip44:{
+      coinType:2001,//not from slip44, if it is not in slip44, set from 2000
+      account:0
+    },
+    bip21:"ringo",
+    defaultFeeSatPerByte:200,//will implement dynamic fee
+    icon:require("../res/coins/rin.png"),
+    defaultAPIEndpoint:"http://namuyan.dip.jp/MultiLightBlockExplorer/apis.php?data=ringo/api",
+    network:{
+      messagePrefix: '\x16Ringo Signed Message:\n',
+      bip32: {
+        public: 0x0488b21e,
+        
+        private: 0x0488ade4
+      },
+      pubKeyHash: 60,
+      scriptHash: 85,
+      wif: 188
+    },
+    enableSegwit:false,
+    confirmations:6
+  },{
+    coinScreenName:"SHA1コイン",
+    coinId:"sha1",
+    unit:"SHA1",
+    unitEasy:"SHA1",
+    bip44:{
+      coinType:2002,//not from slip44, if it is not in slip44, set from 2000
+      account:0
+    },
+    bip21:"sha1coin",
+    defaultFeeSatPerByte:200,//will implement dynamic fee
+    icon:require("../res/coins/sha1.png"),
+    defaultAPIEndpoint:"http://namuyan.dip.jp/MultiLightBlockExplorer/apis.php?data=sha1/api",
+    network:{
+      messagePrefix: '\x19Sha1coin Signed Message:\n',
+      bip32: {
+        public: 0x0488b21e,
+        
+        private: 0x0488ade4
+      },
+      pubKeyHash: 63,
+      scriptHash: 5,
+      wif: 191
+    },
+    enableSegwit:false,
+    confirmations:6
+  },{
+    coinScreenName:"サヤコイン",
+    coinId:"saya",
+    unit:"SAYA",
+    unitEasy:"さや",
+    bip44:{
+      coinType:2003,//not from slip44, if it is not in slip44, set from 2000
+      account:0
+    },
+    bip21:"sayacoin",
+    defaultFeeSatPerByte:200,//will implement dynamic fee
+    icon:require("../res/coins/saya.png"),
+    defaultAPIEndpoint:"http://namuyan.dip.jp/MultiLightBlockExplorer/apis.php?data=saya/api",
+    network:{
+      messagePrefix: '\x19Sayacoin Signed Message:\n',
+      bip32: {
+        public: 0x0488b21e,
+        
+        private: 0x0488ade4
+      },
+      pubKeyHash: 63,
+      scriptHash: 5,
+      wif: 128
+    },
+    enableSegwit:false,
     confirmations:6
   }
 ]

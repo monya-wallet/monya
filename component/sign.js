@@ -51,7 +51,9 @@ module.exports=require("./sign.html")({
       if(this.address){
         
         currencyList.eachWithPub((cur)=>{
-          if(cur.prefixes.indexOf(this.address[0])>=0){
+          const ver = coinUtil.getAddrVersion(this.address)
+          if(ver===cur.network.pubKeyHash||
+             ver===cur.network.scriptHash){
             this.possibility.push({
               name:cur.coinScreenName,
               coinId:cur.coinId

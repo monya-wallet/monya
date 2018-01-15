@@ -18,6 +18,7 @@
     "instascan": "^1.0.0",
     "pump": "^2.0.0",
     "qrcode": "^1.0.0",
+    "qs": "^6.5.1",
     "uglify-es": "^3.3.3",
     "uglifyjs-webpack-plugin": "^1.0.0-beta.1",
     "vue": "^2.5.13",

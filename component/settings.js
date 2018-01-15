@@ -1,10 +1,12 @@
 const storage=require("../js/storage")
+const monappyApi=require("../js/monappyApi")
 const currencyList = require("../js/currencyList")
 module.exports=require("./settings.html")({
   data(){
     return {
       resetDialog:false,
       isWebView:false,
+      monappyNotExist:false,
       d:{
         includeUnconfirmedFunds:false,
         zaifPay:{
@@ -53,6 +55,18 @@ module.exports=require("./settings.html")({
         storage.set("settings",this.d)
         this.$store.commit("setSettings",this.d)
       })
+    },
+    changeMonappy(){
+      this.save()
+      if (this.d.monappy.myUserId) {
+        monappyApi.getAddress(this.d.monappy.myUserId).then(r=>{
+          this.monappyNotExist=!r
+        }).catch(r=>{
+          this.monappyNotExist=true
+        })
+      }else{
+        this.monappyNotExist=false
+      }
     },
     reset(){
       Promise.all(["keyPairs","labels","txLabels","settings","customCoins","addresses","zaifPayInvoice"].map(v=>storage.set(v,null))).then(()=>{

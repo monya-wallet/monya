@@ -3,8 +3,9 @@ const axios = require('axios');
 const BigNumber = require('bignumber.js');
 const coinSelect = require('coinselect')
 const bcMsg = require('bitcoinjs-message')
-const errors = require("./errors")
 const bip39 = require("bip39")
+const qs= require("qs")
+const errors = require("./errors")
 const coinUtil = require("./coinUtil")
 const storage = require("./storage")
 module.exports=class{
@@ -20,7 +21,6 @@ module.exports=class{
     this.price = opt.price;
     this.dummy=!!opt.dummy
     this.icon = opt.icon;
-    this.prefixes=opt.prefixes;
     this.bip21=opt.bip21;
     this.defaultFeeSatPerByte = opt.defaultFeeSatPerByte;
     this.confirmations=opt.confirmations||6
@@ -45,7 +45,7 @@ module.exports=class{
   getAddressProp(propName,address){
     if(this.dummy){return Promise.resolve()}
     return axios({
-      url:this.apiEndpoint+"/addr/"+address+"/"+propName,
+      url:this.apiEndpoint+"/addr/"+address+(propName?"/"+propName:""),
       json:true,
       method:"GET"}).then(res=>{
         return res.data
@@ -218,6 +218,10 @@ module.exports=class{
   }
   getPrice(){
     return new Promise((resolve, reject) => {
+      if(!this.price){
+        return resolve(0)
+      }
+      
       if(this.lastPriceTime+1000*60<Date.now()){
         axios({
           method:this.price.method||"get",
@@ -342,7 +346,7 @@ module.exports=class{
     if(this.dummy){return Promise.resolve()}
     return axios({
       url:this.apiEndpoint+"/tx/send",
-      data:{rawtx:hex},
+      data:qs.stringify({rawtx:hex}),
       method:"POST"}).then(res=>{
         return res.data
       })
@@ -352,13 +356,13 @@ module.exports=class{
     if(this.dummy){return Promise.resolve()}
     return axios({
       url:this.apiEndpoint+"/addrs/txs",
-      data:{
+      data:qs.stringify({
         noAsm:1,
         noScriptSig:1,
         noSpent:0,
         from,to,
         addrs:this.getReceiveAddr().concat(this.getChangeAddr()).join(",")
-      },
+      }),
       method:"POST"}).then(res=>{
         return res.data
       })
@@ -482,13 +486,14 @@ module.exports=class{
     const keyPair=bcLib.ECPair.fromWIF(priv,this.network)
     return this.getUtxos([keyPair.getAddress()]).then(r=>{
       const txb = new bcLib.TransactionBuilder(this.network)
-      
-      
-      txb.addOutput(addr,(new BigNumber(r.balance)).minus(fee).toNumber())
       r.utxos.forEach((v,i)=>{
         txb.addInput(v.txId,v.vout)
+      })
+      txb.addOutput(addr,(new BigNumber(r.balance)).minus(fee).times(100000000).toNumber())
+      r.utxos.forEach((v,i)=>{
         txb.sign(i,keyPair)
       })
+      
       return this.pushTx(txb.build().toHex())
     })
   }

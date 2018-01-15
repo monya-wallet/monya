@@ -18,12 +18,23 @@ exports.isValidAddress=(addr)=>{
     return false
   }
 };
+exports.getAddrVersion=(addr)=>{
+  try{
+    return bcLib.address.fromBase58Check(addr).version
+  }catch(e){
+    return null
+  }
+};
 exports.getPrice=(cryptoId,fiatId)=>{
   let currencyPath = []
   let prevId =cryptoId;//reverse seek is not implemented
   while(prevId!==fiatId){
-    currencyPath.push(currencyList.get(prevId).getPrice())
-    prevId=currencyList.get(prevId).price.fiat
+    const cur = currencyList.get(prevId)
+    if(!cur.price){
+      return Promise.resolve(0)
+    }
+    currencyPath.push(cur.getPrice())
+    prevId=cur.price.fiat
   }
   return Promise.all(currencyPath).then(v=>{
     let price=1
@@ -151,11 +162,9 @@ exports.parseUrl=url=>new Promise((resolve,reject)=>{
       ret.isCoinAddress=true
       ret.coinId=v.coinId
       ret.address=raw.pathname
-      for(let i=v.prefixes.length-1;i>=0;i--){
-        if(v.prefixes[i]===ret.address[0]){
-          ret.isPrefixOk=true
-          break
-        }
+      const ver = exports.getAddrVersion(ret.address)
+      if (v.network.pubKeyHash===ver||v.network.scriptHash===ver) {
+        ret.isPrefixOk=true
       }
       ret.isValidAddress=exports.isValidAddress(ret.address)
       ret.message=raw.searchParams.get("message")

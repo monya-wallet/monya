@@ -37,7 +37,7 @@
         <v-ons-list-item v-show="currencyIndex===-1">
           <div class="center">送金先Monappy ID</div>
           <div class="right">
-            <span class="atmark">@</span><v-ons-input v-model="monappyDestination" placeholder="Monappy ID" @input="generateQR"></v-ons-input>
+            <span class="atmark">@</span><v-ons-input v-model="monappyDestination" placeholder="Monappy ID" @change="changeMonappy" @input="monappyNotExist=false;generateQR()" :class="{monappyNotExist:monappyNotExist}"></v-ons-input>
           </div>
         </v-ons-list-item>
         <v-ons-list-item v-show="currencyIndex!==-1">

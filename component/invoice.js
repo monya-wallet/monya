@@ -2,6 +2,8 @@ const qrcode = require("qrcode")
 const currencyList = require("../js/currencyList")
 const storage = require("../js/storage")
 const coinUtil = require("../js/coinUtil")
+const monappyApi=require("../js/monappyApi")
+
 module.exports=require("./invoice.html")({
   data(){
     return {
@@ -24,7 +26,8 @@ module.exports=require("./invoice.html")({
       monappyDestination:"",
       orderDlg:false,
       orders:[],
-      onOrder:[]
+      onOrder:[],
+      monappyNotExist:false
     }
   },
   store:require("../js/store.js"),
@@ -63,6 +66,17 @@ module.exports=require("./invoice.html")({
     },
     zaifPay(){
       this.$emit("push",require("./zaifPay.js"))
+    },
+    changeMonappy(){
+      this.generateQR()
+      this.monappyNotExist=false
+      if (this.monappyDestination) {
+        monappyApi.getAddress(this.monappyDestination).then(r=>{
+          this.monappyNotExist=!r
+        }).catch(r=>{
+          this.monappyNotExist=true
+        })
+      }
     }
   },
   computed:{
