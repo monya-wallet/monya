@@ -2252,110 +2252,6 @@ const defaultCoins=[
       fiat:"jpy"
     },
     confirmations:6
-  },{
-    coinScreenName:"クマコイン",
-    coinId:"kuma",
-    unit:"KUMA",
-    unitEasy:"クマ",
-    bip44:{
-      coinType:2000,//not from slip44, if it is not in slip44, set from 2000
-      account:0
-    },
-    bip21:"kumacoin",
-    defaultFeeSatPerByte:200,//will implement dynamic fee
-    icon:__webpack_require__(439),
-    defaultAPIEndpoint:"http://namuyan.dip.jp/MultiLightBlockExplorer/apis.php?data=kuma/api",
-    network:{
-      messagePrefix: '\x19Kumacoin Signed Message:\n',
-      bip32: {
-        public: 0x0488b21e,
-        
-        private: 0x0488ade4
-      },
-      pubKeyHash: 45,
-      scriptHash: 8,
-      wif: 173
-    },
-    enableSegwit:false,
-    confirmations:6
-  },{
-    coinScreenName:"リンゴ",
-    coinId:"ringo",
-    unit:"RIN",
-    unitEasy:"リンゴ",
-    bip44:{
-      coinType:2001,//not from slip44, if it is not in slip44, set from 2000
-      account:0
-    },
-    bip21:"ringo",
-    defaultFeeSatPerByte:200,//will implement dynamic fee
-    icon:__webpack_require__(440),
-    defaultAPIEndpoint:"http://namuyan.dip.jp/MultiLightBlockExplorer/apis.php?data=ringo/api",
-    network:{
-      messagePrefix: '\x16Ringo Signed Message:\n',
-      bip32: {
-        public: 0x0488b21e,
-        
-        private: 0x0488ade4
-      },
-      pubKeyHash: 60,
-      scriptHash: 85,
-      wif: 188
-    },
-    enableSegwit:false,
-    confirmations:6
-  },{
-    coinScreenName:"SHA1コイン",
-    coinId:"sha1",
-    unit:"SHA1",
-    unitEasy:"SHA1",
-    bip44:{
-      coinType:2002,//not from slip44, if it is not in slip44, set from 2000
-      account:0
-    },
-    bip21:"sha1coin",
-    defaultFeeSatPerByte:200,//will implement dynamic fee
-    icon:__webpack_require__(441),
-    defaultAPIEndpoint:"http://namuyan.dip.jp/MultiLightBlockExplorer/apis.php?data=sha1/api",
-    network:{
-      messagePrefix: '\x19Sha1coin Signed Message:\n',
-      bip32: {
-        public: 0x0488b21e,
-        
-        private: 0x0488ade4
-      },
-      pubKeyHash: 63,
-      scriptHash: 5,
-      wif: 191
-    },
-    enableSegwit:false,
-    confirmations:6
-  },{
-    coinScreenName:"サヤコイン",
-    coinId:"saya",
-    unit:"SAYA",
-    unitEasy:"さや",
-    bip44:{
-      coinType:2003,//not from slip44, if it is not in slip44, set from 2000
-      account:0
-    },
-    bip21:"sayacoin",
-    defaultFeeSatPerByte:200,//will implement dynamic fee
-    icon:__webpack_require__(442),
-    defaultAPIEndpoint:"http://namuyan.dip.jp/MultiLightBlockExplorer/apis.php?data=saya/api",
-    network:{
-      messagePrefix: '\x19Sayacoin Signed Message:\n',
-      bip32: {
-        public: 0x0488b21e,
-        
-        private: 0x0488ade4
-      },
-      pubKeyHash: 63,
-      scriptHash: 5,
-      wif: 128
-    },
-    enableSegwit:false,
-    confirmations:6
   }
 ]
 
@@ -47980,30 +47876,10 @@ exports.getNicknameFromTwitter = twId =>axios.get(MONAPPY_API_ENDPOINT+"users/ge
 
 
 /***/ }),
-/* 439 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__.p + "dist/assets/b8f6b927573f95966711b1268a2041bd.png";
-
-/***/ }),
-/* 440 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__.p + "dist/assets/55e98cd5475ef1357d1d75993921934c.png";
-
-/***/ }),
-/* 441 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__.p + "dist/assets/7a51964bd2f3ee0c38051179ddfc39ae.png";
-
-/***/ }),
-/* 442 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__.p + "dist/assets/71c2a90fbbf9188d300096c2572b8380.png";
-
-/***/ }),
+/* 439 */,
+/* 440 */,
+/* 441 */,
+/* 442 */,
 /* 443 */
 /***/ (function(module, exports, __webpack_require__) {
 
