@@ -275,7 +275,7 @@ module.exports=class{
         })
         outputs.forEach(output => {
           if (!output.address) {
-            output.address = this.getAddress(1,this.changeIndex+1)
+            output.address = this.getAddress(1,(this.changeIndex+1)%coinUtil.GAP_LIMIT_FOR_CHANGE)
           }
 
           txb.addOutput(output.address, output.value)
