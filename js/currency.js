@@ -80,7 +80,7 @@ module.exports=class{
     return false
   }
   getReceiveBalance(includeUnconfirmedFunds){
-    return this.getUtxos(this.getReceiveAddr(includeUnconfirmedFunds))
+    return this.getUtxos(this.getReceiveAddr(),includeUnconfirmedFunds)
   }
   getChangeBalance(includeUnconfirmedFunds){
     return this.getUtxos(this.getChangeAddr(),includeUnconfirmedFunds).then(d=>{
