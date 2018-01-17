@@ -199,6 +199,77 @@ module.exports=class{
       return cur.callCP("broadcast_tx",{signed_tx_hex:signedTx.toHex()})
     })
   }
+  createOrder(opt){
+    const divisible=opt.divisible
+    const addressIndex = opt.addressIndex|0
+    const includeUnconfirmedFunds = opt.includeUnconfirmedFunds
+    const password=opt.password
+    const feePerByte = opt.feePerByte || this.defaultFeeSatPerByte
+    const give_amount=opt.giveAmt
+    const give_asset=opt.giveToken
+    const get_amount=opt.getAmt
+    const get_asset=opt.getToken
+    const expiration=opt.expiration
+    
+    const cur = this.cp
+    let hex=""
+
+    return this.createCommand("order",{
+      source:cur.getAddress(0,addressIndex),
+      give_amount,
+      give_asset,
+      get_amount,
+      get_asset,
+      expiration
+    },{
+      addressIndex,
+      includeUnconfirmedFunds,
+      feePerByte,disableUtxoLocks:true,
+      extendedTxInfo:true
+    }).then(res=>{
+      hex=res.tx_hex
+      return storage.get("keyPairs")
+    }).then(cipher=>{
+      const signedTx=cur.signTx({
+        hash:hex,
+        password:password,
+        path:[[0,addressIndex]],
+        entropyCipher:cipher.entropy
+      })
+      return cur.callCP("broadcast_tx",{signed_tx_hex:signedTx.toHex()})
+    })
+  }
+  createCancel(opt){
+    const addressIndex = opt.addressIndex|0
+    const includeUnconfirmedFunds = opt.includeUnconfirmedFunds
+    const password=opt.password
+    const feePerByte = opt.feePerByte || this.defaultFeeSatPerByte
+    const offer_hash=opt.txid
+    
+    const cur = this.cp
+    let hex=""
+
+    return this.createCommand("order",{
+      source:cur.getAddress(0,addressIndex),
+      offer_hash
+    },{
+      addressIndex,
+      includeUnconfirmedFunds,
+      feePerByte,disableUtxoLocks:true,
+      extendedTxInfo:true
+    }).then(res=>{
+      hex=res.tx_hex
+      return storage.get("keyPairs")
+    }).then(cipher=>{
+      const signedTx=cur.signTx({
+        hash:hex,
+        password:password,
+        path:[[0,addressIndex]],
+        entropyCipher:cipher.entropy
+      })
+      return cur.callCP("broadcast_tx",{signed_tx_hex:signedTx.toHex()})
+    })
+  }
 }
 
 

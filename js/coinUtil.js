@@ -29,6 +29,11 @@ exports.getPrice=(cryptoId,fiatId)=>{
   let currencyPath = []
   let prevId =cryptoId;//reverse seek is not implemented
   while(prevId!==fiatId){
+    if(prevId==="jpy"){
+      currencyPath.push(currencyList.get("mona").getPrice().then(r=>r?1/r:1))
+      prevId="mona"
+      continue
+    }
     const cur = currencyList.get(prevId)
     if(!cur.price){
       return Promise.resolve(0)
