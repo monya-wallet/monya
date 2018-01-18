@@ -44,6 +44,10 @@
           <div class="right">{{asset.asset_longname||asset.asset}}</div>
         </v-ons-list-item>
         <v-ons-list-item>
+          <div class="center">トークン正式名称</div>
+          <div class="right"><v-ons-input :value="asset.asset"></v-ons-input></div>
+        </v-ons-list-item>
+        <v-ons-list-item>
           <div class="center">流通総量</div>
           <div class="right">{{asset.supply}}</div>
         </v-ons-list-item>

@@ -200,32 +200,33 @@ module.exports=class{
     })
   }
   createOrder(opt){
-    const divisible=opt.divisible
     const addressIndex = opt.addressIndex|0
     const includeUnconfirmedFunds = opt.includeUnconfirmedFunds
     const password=opt.password
     const feePerByte = opt.feePerByte || this.defaultFeeSatPerByte
-    const give_amount=opt.giveAmt
+    const give_quantity=(opt.giveAmt)|0
     const give_asset=opt.giveToken
-    const get_amount=opt.getAmt
+    const get_quantity=(opt.getAmt)|0
     const get_asset=opt.getToken
-    const expiration=opt.expiration
+    const expiration=15000
     
     const cur = this.cp
     let hex=""
 
     return this.createCommand("order",{
       source:cur.getAddress(0,addressIndex),
-      give_amount,
+      give_quantity,
       give_asset,
-      get_amount,
+      get_quantity,
       get_asset,
-      expiration
+      expiration,
+      fee_provided:0,fee_required:0
     },{
       addressIndex,
       includeUnconfirmedFunds,
       feePerByte,disableUtxoLocks:true,
-      extendedTxInfo:true
+      extendedTxInfo:true,
+      
     }).then(res=>{
       hex=res.tx_hex
       return storage.get("keyPairs")
