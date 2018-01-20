@@ -202,38 +202,6 @@ const defaultCoins=[
     },
     confirmations:6,
     counterpartyEndpoint:"https://wallet-testnet.monaparty.me/_api"
-  },{
-    coinScreenName:"Bitcoin(Segwit Enabled)",
-    coinId:"btcsw",
-    unit:"BTC(Segwit)",
-    unitEasy:"BTC(Segwit)",
-    bip44:{
-      coinType:0,
-      account:0
-    },
-    bip21:"bitcoin",
-    defaultFeeSatPerByte:10000,
-    icon:require("../res/coins/btc.png"),
-    defaultAPIEndpoint:"https://insight.bitpay.com/api",
-    network:{
-      messagePrefix: '\x18Bitcoin Signed Message:\n',
-      bip32: {
-        public: 0x0488b21e,
-        private: 0x0488ade4
-      },
-      pubKeyHash: 0,// 1
-      scriptHash: 5,// 3
-      wif: 128,
-      bech32:"bc"
-    },
-    enableSegwit:true,
-    price:{
-      url:"https://public.bitbank.cc/btc_jpy/ticker",
-      json:true,
-      jsonPath:["data","last"],
-      fiat:"jpy"
-    },
-    confirmations:12
   }
 ]
 
