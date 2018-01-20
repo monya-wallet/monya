@@ -26,6 +26,7 @@ module.exports=class{
     this.confirmations=opt.confirmations||6
     this.sound=opt.sound||""
     this.counterpartyEndpoint=opt.counterpartyEndpoint
+    this.enableSegwit=opt.enableSegwit
     
     this.hdPubNode=null;
     this.lastPriceTime=0;
@@ -168,6 +169,9 @@ module.exports=class{
     if(this.addresses[addrKey]){
       return this.addresses[addrKey]
     }else{
+      if(this.enableSegwit){
+        return (this.addresses[addrKey]=this.getSegwitAddress(change,index))
+      }
       return (this.addresses[addrKey]=this.hdPubNode.derive(change).derive(index).getAddress())
     }
   }
@@ -191,6 +195,7 @@ module.exports=class{
     const witnessPubKey = bcLib.script.witnessPubKeyHash.output.encode(bcLib.crypto.hash160(keyPair.getPublicKeyBuffer()))
     
     const address = bcLib.address.fromOutputScript(witnessPubKey,this.network)
+    return address
   }
   seedToPubB58(privSeed){
     if(this.dummy){return}
