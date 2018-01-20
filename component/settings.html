@@ -8,7 +8,7 @@
       <v-ons-list-item modifier="tappable chevron" @click="goToSetPassword"><div class="center">パスワードを変更</div></v-ons-list-item>
       <v-ons-list-item modifier="tappable chevron" @click="goToEditOrder"><div class="center">メニューの管理</div></v-ons-list-item>
       <v-ons-list-item modifier="tappable chevron" @click="goToSweep"><div class="center">スイープ</div></v-ons-list-item>
-      <v-ons-list-item modifier="tappable chevron" @click="resetDialog=true"><div class="center">全データ消去</div></v-ons-list-item>
+      <v-ons-list-item modifier="tappable chevron" @click="resetDialogConfirm=true"><div class="center">全データ消去</div></v-ons-list-item>
 
       <v-ons-list-header>お金</v-ons-list-header>
       <v-ons-list-item>
@@ -103,6 +103,16 @@
       </div>
     </v-ons-list>
   </div>
+  <v-ons-alert-dialog modifier="rowfooter"
+      :visible.sync="resetDialogConfirm"
+    >
+      <span slot="title">全データ消去</span>
+      <p>全データを消去します。パスフレーズがあれば残高を復旧できますが、ラベル、取引情報は失われます。</p>
+      <template slot="footer">
+        <div class="alert-dialog-button" @click="resetDialogConfirm = false">やめる</div>
+        <div class="alert-dialog-button" @click="resetDialogConfirm=false;resetDialog=true">理解しました</div>
+      </template>
+    </v-ons-alert-dialog>
   <v-ons-alert-dialog modifier="rowfooter"
       :visible.sync="resetDialog"
     >

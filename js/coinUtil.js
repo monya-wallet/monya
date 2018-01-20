@@ -194,10 +194,12 @@ exports.shortWait=()=>new Promise(r=>{
   setTimeout(r,150)
 })
 exports._url=""
-exports._urlCb=()=>{}
+exports._urlCb=null
 exports.queueUrl=url=>{
   exports._url=url
-  exports._urlCb(url)
+  if(exports.hasInitialized){
+    exports._urlCb&&exports._urlCb(exports._url)
+  }
 }
 exports.getQueuedUrl=()=>{
   return exports._url
@@ -213,6 +215,13 @@ exports.setUrlCallback=cb=>{
   }
 }
 exports.hasInitialized=false
+exports.setInitialized=(flag)=>{
+  
+  if(exports.hasInitialized!==flag){
+    exports.hasInitialized=flag
+    exports._urlCb&&exports._urlCb(exports._url)
+  }
+}
 
 exports.buildBuilderfromPubKeyTx=(transaction,network)=>{
   let txb = new bcLib.TransactionBuilder(network)

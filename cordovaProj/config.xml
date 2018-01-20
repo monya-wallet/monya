@@ -25,6 +25,7 @@
         <preference name="android-minSdkVersion" value="21" />
         <allow-intent href="market:*" />
         <preference name="StatusBarBackgroundColor" value="#ffffeb47" />
+        <preference name="SplashShowOnlyFirstTime" value="false" />
         <icon density="ldpi" src="res/icons/android/ldpi.png" />
         <icon density="mdpi" src="res/icons/android/mdpi.png" />
         <icon density="hdpi" src="res/icons/android/hdpi.png" />

@@ -62,22 +62,8 @@ module.exports=require("./login.html")({
       })
       return storage.set("addresses",addrs)
     }).then(()=>{
-      const url = coinUtil.getQueuedUrl()
-      if (url) {
-        coinUtil.parseUrl(url).then(res=>{
-        if(res.isCoinAddress&&res.isPrefixOk&&res.isValidAddress){
-          this.$store.commit("setSendUrl",res.url)
-          this.$emit("push",require("./send.js"))
-        }else if(res.protocol==="http"||res.protocol==="https"){
-          window.open(res.url)
-        }else{
-          this.$ons.notification.alert(res.url)
-        }
-      })
-      }else{
-        this.$emit("replace",require("./home.js"))
-      }
-      coinUtil.hasInitialized=true
+      this.$emit("replace",require("./home.js"))
+      coinUtil.setInitialized(true)
     }).catch(e=>{
       this.$store.commit("setError",e.message)
     })

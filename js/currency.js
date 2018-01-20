@@ -112,7 +112,7 @@ module.exports=class{
   
   getWholeBalanceOfThisAccount(){
     if(this.dummy){return Promise.resolve()}
-    return Promise.all([this.getReceiveBalance(true),this.getChangeBalance(true)]).then(vals=>({
+    return Promise.all([this.getReceiveBalance(false),this.getChangeBalance(false)]).then(vals=>({
       balance:vals[0].balance+vals[1].balance/100000000,
       unconfirmed:vals[0].unconfirmed+vals[1].unconfirmed/100000000
     }))

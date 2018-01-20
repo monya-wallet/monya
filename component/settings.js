@@ -5,6 +5,7 @@ module.exports=require("./settings.html")({
   data(){
     return {
       resetDialog:false,
+      resetDialogConfirm:false,
       isWebView:false,
       monappyNotExist:false,
       d:{
