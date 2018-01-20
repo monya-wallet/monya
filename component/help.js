@@ -9,6 +9,9 @@ module.exports=require("./help.html")({
     about(){
       this.$emit("push",require("./about.js"))
     },
+    atomicswap(){
+      this.$emit("push",require("./atomicswap.js"))
+    },
     openLink(url){
        window.open(url,this.$store.state.openInAppBrowser?"_blank":"_system")
     },

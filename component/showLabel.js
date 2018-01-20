@@ -11,7 +11,8 @@ module.exports=require("./showLabel.html")({
       label:"",
       edit:false,
       balance:0,
-      labelInput:""
+      labelInput:"",
+      pubKey:""
     }
   },
   store:require("../js/store.js"),
@@ -38,6 +39,7 @@ module.exports=require("./showLabel.html")({
     this.label = p.name
     this.labelInput=p.name
     this.address=cur.getAddress(p.change,p.index)
+    this.pubKey=cur.getPubKey(p.change,p.index)
     qrcode.toDataURL(cur.bip21+":"+this.address,{
       errorCorrectionLevel: 'M',
       type: 'image/png'

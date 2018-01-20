@@ -1,0 +1,28 @@
+<v-ons-page data-page="atomicswap">
+  <custom-bar title="Atomic Swap Demo" menu="true"></custom-bar>
+  <div>
+    <v-ons-list>
+      <v-ons-list-item>
+        <v-ons-input placeholder="Alice secret hex" v-model="aliceSecret"></v-ons-input>
+      </v-ons-list-item>
+     
+      <v-ons-list-item>
+        <v-ons-input placeholder="Alice Pub hex" v-model="alicePubHex"></v-ons-input>
+      </v-ons-list-item>
+      <v-ons-list-item>
+        <v-ons-input placeholder="Bob Pub hex" v-model="bobPubHex"></v-ons-input>
+      </v-ons-list-item>
+      <v-ons-list-item>
+        <v-ons-input placeholder="Alice to Bob P2SH" :value="aliceToBobP2sh"></v-ons-input>
+      </v-ons-list-item>
+      <v-ons-list-item>
+        <v-ons-input placeholder="Bob to Alice P2SH" :value="bobToAliceP2sh"></v-ons-input>
+      </v-ons-list-item>
+       <v-ons-list-item>
+        <v-ons-input placeholder="Alice secret hash" :value="aliceSecretHash.toString('hex')"></v-ons-input>
+      </v-ons-list-item>
+      <v-ons-list-item><v-ons-button modifier="large" @click="getP2sh">Get P2SH Address</v-ons-button></v-ons-list-item>
+    </v-ons-list>
+    
+  </div>
+</v-ons-page>
