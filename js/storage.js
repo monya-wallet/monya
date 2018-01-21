@@ -21,7 +21,7 @@ exports.set = (key,value) => new Promise((resolve, reject) => {
 
 exports.setBiometricPassword= (credential)=> new Promise((resolve, reject) => {
   if (window.plugins) {
-    window.plugins.touchid.verify("password", credential, (password)=> {
+    window.plugins.touchid.save("password", credential, (password)=> {
       resolve(true)
     },m=>{
       reject(new errors.BiometricError("Failed to set."))

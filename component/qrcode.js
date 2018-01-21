@@ -91,6 +91,9 @@ module.exports=require("./qrcode.html")({
             this.parse(t)
           })
         })
+        if(window.cordova){ // ios Quirks
+          QRScanner.show()
+        }
         
       } else if (status.denied) {
         this.$ons.notification.alert("Please allow Camera")
