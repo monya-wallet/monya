@@ -15,7 +15,7 @@ module.exports=require("./editOrder.html")({
   methods:{
     save(){
       storage.set("orders",this.orders).then(r=>{
-        this.$ons.notification.alert("Saved!")
+        this.$emit("pop")
       })
     },
     add(){

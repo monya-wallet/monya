@@ -87,8 +87,9 @@ module.exports=require("./qrcode.html")({
             this.$store.commit("setError","error code:"+err2.code)
             return
           }
-          QRScanner.destroy()
-          this.parse(t)
+          QRScanner.destroy(status=>{
+            this.parse(t)
+          })
         })
         QRScanner.show()
       } else if (status.denied) {
