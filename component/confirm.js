@@ -45,6 +45,11 @@ module.exports=require("./confirm.html")({
         this.destHasUsed=true
       }
     })
+    storage.verifyBiometric().then(pwd=>{
+      this.password=pwd
+    }).catch(()=>{
+      // noop
+    })
   },
   computed:{
     afterSent(){

@@ -91,7 +91,7 @@ module.exports=require("./qrcode.html")({
             this.parse(t)
           })
         })
-        QRScanner.show()
+        
       } else if (status.denied) {
         this.$ons.notification.alert("Please allow Camera")
       } else {
