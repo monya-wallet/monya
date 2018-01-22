@@ -31,6 +31,12 @@ exports.vm= new Vue({
   },
   store:require("../js/store.js"),
   beforeMount() {
+    if(this.$ons.platform.isAndroid()&&window.StatusBar){
+      window.StatusBar.styleDefault()
+      window.StatusBar.overlaysWebView(true)
+      document.body.classList.add("ons-force-status-bar")
+    }
+    this.$ons.enableAutoStatusBarFill()
     const html = document.documentElement;
     if (this.$ons.platform.isIPhoneX()) {
       html.setAttribute('onsflag-iphonex-portrait', '');
