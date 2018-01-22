@@ -14,7 +14,8 @@ module.exports=require("./setPassword.html")({
       change:false,
       error:false,
       loading:false,
-      biometric:true
+      biometric:true,
+      biometricAvailable:false
     }
   },
   store:require("../js/store.js"),
@@ -74,6 +75,7 @@ module.exports=require("./setPassword.html")({
     }
     storage.isBiometricAvailable().then(flag=>{
       this.biometricAvailable=flag
+      this.biometric=flag
     })
   }
 })
