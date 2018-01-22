@@ -19,7 +19,9 @@
     "cordova-plugin-splashscreen": "^4.1.0",
     "cordova-plugin-statusbar": "^2.4.1",
     "cordova-plugin-swift-support": "^3.1.1",
-    "cordova-plugin-whitelist": "^1.3.3"
+    "cordova-plugin-whitelist": "^1.3.3",
+    "danielsogl-cordova-plugin-clipboard": "^1.0.2",
+    "com.danielsogl.cordova.clipboard": "~1.0.2"
   },
   "cordova": {
     "plugins": {
@@ -31,7 +33,8 @@
       "cordova-plugin-inappbrowser": {},
       "cordova-plugin-statusbar": {},
       "cordova-plugin-keychain-touch-id": {},
-      "cordova-plugin-qrscanner-monya": {}
+      "cordova-plugin-qrscanner-monya": {},
+      "com.danielsogl.cordova.clipboard": {}
     },
     "platforms": [
       "ios"

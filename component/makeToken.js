@@ -52,7 +52,11 @@ module.exports=require("./makeToken.html")({
   },
   mounted(){
     this.getAddrLabel()
-  },computed:{
+    if(window.StatusBar){
+      window.StatusBar.styleLightContent();
+    }
+  },
+  computed:{
     titleId:{
       get(){
         return this.$store.state.monapartyTitle

@@ -107,23 +107,27 @@ exports.decryptKeys=(option)=>new Promise((resolve, reject) => {
 });
   
 exports.copy=data=>{
-  const temp = document.createElement('div');
+  if (window.cordova) {
+    window.cordova.plugins.clipboard.copy(data)
+  }else{
+    const temp = document.createElement('div');
 
-  temp.textContent = data;
+    temp.textContent = data;
 
-  const s = temp.style;
-  s.position = 'fixed';
-  s.left = '-100%';
-  s.userSelect="text"
+    const s = temp.style;
+    s.position = 'fixed';
+    s.left = '-100%';
+    s.userSelect="text"
 
-  document.body.appendChild(temp);
-  document.getSelection().selectAllChildren(temp);
+    document.body.appendChild(temp);
+    document.getSelection().selectAllChildren(temp);
 
-  const result = document.execCommand('copy');
+    const result = document.execCommand('copy');
 
-  document.body.removeChild(temp);
-  // true なら実行できている falseなら失敗か対応していないか
-  return result;
+    document.body.removeChild(temp);
+    // true なら実行できている falseなら失敗か対応していないか
+    return result;
+  }
 }
 
 exports.getBip21=(bip21Urn,address,query)=>{
@@ -177,6 +181,7 @@ exports.parseUrl=url=>new Promise((resolve,reject)=>{
       ret.amount=raw.searchParams.get("amount")
       ret.opReturn=raw.searchParams.get("req-opreturn")
       ret.signature=raw.searchParams.get("req-signature")
+      ret.utxo=raw.searchParams.get("req-utxo")
     }
   })
   

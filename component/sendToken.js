@@ -66,5 +66,8 @@ module.exports=require("./sendToken.html")({
     }).catch(()=>{
       // noop
     })
+    if(window.StatusBar){
+      window.StatusBar.styleLightContent();
+    }
   }
 })

@@ -16,7 +16,8 @@ module.exports=class{
     this.unit = opt.unit;
     this.unitEasy = opt.unitEasy;
     this.bip44 = opt.bip44;
-    this.apiEndpoint = opt.defaultAPIEndpoint;
+    this.apiEndpoints=opt.apiEndpoints||[opt.defaultAPIEndpoint]
+    this.apiEndpoint = opt.defaultAPIEndpoint||this.apiEndpoints[0];
     this.network = opt.network;
     this.price = opt.price;
     this.dummy=!!opt.dummy
@@ -507,5 +508,11 @@ module.exports=class{
         url:this.apiEndpoint+"/blocks?limit=3",
         json:true,
       method:"GET"}).then(r=>r.data.blocks)
+  }
+  changeApiEndpoint(index){
+    if (typeof(index)!=="number"){
+      index=(this.apiEndpoints.indexOf(this.apiEndpoint)+1)%this.apiEndpoints.length
+    }
+    this.apiEndpoint = this.apiEndpoints[index]
   }
 }

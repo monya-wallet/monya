@@ -30,7 +30,7 @@ exports.setBiometricPassword= (credential)=> new Promise((resolve, reject) => {
     throw new errors.BiometricError("Biometrics is not supported on your device.")
   }
 });
-exports.isBiometricAvailable= (key,credential)=> new Promise((resolve, reject) => {
+exports.isBiometricAvailable= ()=> new Promise((resolve, reject) => {
   if (window.plugins) {
     window.plugins.touchid.isAvailable(()=> {
       resolve(true)

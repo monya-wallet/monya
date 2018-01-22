@@ -13,7 +13,8 @@ module.exports=require("./setPassword.html")({
       password2:"",
       change:false,
       error:false,
-      loading:false
+      loading:false,
+      biometric:true
     }
   },
   store:require("../js/store.js"),
@@ -52,7 +53,9 @@ module.exports=require("./setPassword.html")({
           this.$store.commit("deleteEntropy")
           this.$store.commit("setFinishNextPage",{page:require("./login.js"),infoId:"createdWallet"})
           this.$emit("replace",require("./finished.js"))
-          return storage.setBiometricPassword(this.password)
+          if(this.biometric){
+            return storage.setBiometricPassword(this.password)
+          }
         })
         .catch(e=>{
           if(!(e instanceof errors.BiometricError)){
@@ -69,5 +72,8 @@ module.exports=require("./setPassword.html")({
     }else{
       this.change=true
     }
+    storage.isBiometricAvailable().then(flag=>{
+      this.biometricAvailable=flag
+    })
   }
 })

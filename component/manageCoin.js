@@ -80,6 +80,11 @@ module.exports=require("./manageCoin.html")({
       cur.getBlocks().then(r=>{
         this.info.blocks=r
       })
+    },
+    changeServer(){
+      const cur=currencyList.get(this.info.coinId)
+      cur.changeApiEndpoint()
+      this.showInfo(this.info.coinId)
     }
   },
   
