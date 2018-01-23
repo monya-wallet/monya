@@ -1,6 +1,10 @@
 
 const currencyList = require("../js/currencyList")
+const xmp = currencyList.get("mona")
 const bitcoin = require("bitcoinjs-lib")
+const storage = require("../js/storage")
+const bip39 = require("bip39")
+const coinUtil = require("../js/coinUtil")
 const OP_INT_BASE = 80;
 function makeScript (aliceSecretHash,bobPubBuf,alicePubBuf,network){
   const ret= {}
@@ -57,7 +61,7 @@ const signClaimTxWithSecret = function(txb, privKey, redeemScript, secret) {
     bitcoin.opcodes.OP_TRUE
   ]);
 
-  scriptSig = bitcoin.script.scriptHashInput(scriptSig, redeemScript);
+  scriptSig = bitcoin.script.scriptHash.input.encode(scriptSig, redeemScript);
   tx.setInputScript(0, scriptSig);
 
   return tx;
@@ -94,7 +98,17 @@ module.exports=require("./atomicswap.html")({
 
       aliceToBobP2sh:"",
       bobToAliceP2sh:"",
-      aliceSecretHash:""
+      aliceSecretHash:"",
+
+      fromAddr:"",
+      fromAddrChange:0,
+      fromAddrIndex:0,
+      toAddr:"",
+      redeemAmount:0,
+      signedTx:"",
+      password:"",
+
+      ret:null
     }
   },
   methods:{
@@ -103,10 +117,46 @@ module.exports=require("./atomicswap.html")({
       const ret =makeScript(this.aliceSecretHash,
                             Buffer.from(this.bobPubHex,"hex"),
                             Buffer.from(this.alicePubHex,"hex"),
-                            currencyList.get("mona").network)
+                            xmp.network)
       this.aliceToBobP2sh=ret.aliceToBob.p2shAddr
       this.bobToAliceP2sh=ret.bobToAlice.p2shAddr
-      
+      this.ret=ret
+    },
+    createRedeemTx(){
+      let hex=""
+      xmp.callCPLib("create_send",{
+        allow_unconfirmed_inputs:true,
+        fee_per_kb:128*1024,// fixed for now
+        encoding:"auto",
+        extended_tx_info:true,
+        source:this.fromAddr,
+        destination:this.toAddr,
+        asset:"MONA",
+        quantity:this.redeemAmount|0
+      }).then(res=>{
+        hex=res.tx_hex
+        return storage.get("keyPairs")
+      }).then(cipher=>{
+        let seed=
+        bip39.mnemonicToSeed(
+          bip39.entropyToMnemonic(
+            coinUtil.decrypt(cipher.entropy,this.password)
+          )
+        )
+        const node = bitcoin.HDNode.fromSeedBuffer(seed,this.network)
+        var unsignedTx = bitcoin.Transaction.fromHex(hex);
+        var txb = bitcoin.TransactionBuilder.fromTransaction(unsignedTx, xmp.network);
+        var signedTx = signClaimTxWithSecret(
+          txb,
+          node
+            .deriveHardened(44)
+            .deriveHardened(xmp.bip44.coinType)
+            .deriveHardened(xmp.bip44.account)
+            .derive(this.fromAddrChange|0)
+            .derive(this.fromAddrIndex|0).keyPair, this.ret.bobToAlice.redeemScript, Buffer.from(this.aliceSecret,"hex"));
+        
+        this.signedTx=signedTx.toHex()
+      })
     }
   },
   

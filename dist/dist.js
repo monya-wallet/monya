@@ -2084,7 +2084,7 @@ module.exports = new Vuex.Store({
 
 const Currency = __webpack_require__(87)
 const axios = __webpack_require__(18);
-const coinUtil=__webpack_require__(5)
+const coinUtil=__webpack_require__(6)
 
 const defaultCoins=[
   {//key = coinId that is lowercase ticker symbol
@@ -2168,6 +2168,7 @@ const defaultCoins=[
     defaultFeeSatPerByte:200,
     icon:__webpack_require__(358),
     defaultAPIEndpoint:"https://zenyinsight.tomotomo9696.xyz/api",
+    apiEndpoints:["https://zenyinsight.tomotomo9696.xyz/api","https://zeny.insight.monaco-ex.org/api"],
     network:{
       messagePrefix: '\x18BitZeny Signed Message:\n',
       bip32: {
@@ -2210,7 +2211,7 @@ const defaultCoins=[
       pubKeyHash: 48,// L
       scriptHash: 5,// 3
       wif: 176,
-      bech32:"lc1"
+      bech32:"lc"
     },
     enableSegwit:false,
     price:{
@@ -2269,7 +2270,6 @@ const defaultCoins=[
       messagePrefix: '\x19Monacoin Signed Message:\n',
       bip32: {
         public: 0x043587cf,
-        
         private: 0x04358394
       },
       pubKeyHash: 111,// M
@@ -2359,12 +2359,72 @@ exports.addCurrency=customCoin=>{
 /* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
+const KEY_NAME = "data"
+const errors=__webpack_require__(31)
+exports.get = (key) => new Promise((resolve, reject) => {
+  const data=JSON.parse(localStorage.getItem(KEY_NAME))
+  if(data){
+    resolve(data[key])
+  }else{
+    resolve(null)
+  }
+});
+
+exports.set = (key,value) => new Promise((resolve, reject) => {
+  let data=JSON.parse(localStorage.getItem(KEY_NAME))
+  if(!data){
+    data={}
+  }
+  data[key]=value
+  localStorage.setItem(KEY_NAME,JSON.stringify(data))
+  resolve()
+});
+
+exports.setBiometricPassword= (credential)=> new Promise((resolve, reject) => {
+  if (window.plugins) {
+    window.plugins.touchid.save("password", credential, (password)=> {
+      resolve(true)
+    },m=>{
+      reject(new errors.BiometricError("Failed to set."))
+    });
+  }else{
+    throw new errors.BiometricError("Biometrics is not supported on your device.")
+  }
+});
+exports.isBiometricAvailable= ()=> new Promise((resolve, reject) => {
+  if (window.plugins) {
+    window.plugins.touchid.isAvailable(()=> {
+      resolve(true)
+    }, function(msg) {
+      resolve(false)
+    });
+  }else{
+    resolve(false)
+  }
+});
+exports.verifyBiometric= ()=> new Promise((resolve, reject) => {
+  if (window.plugins) {
+    window.plugins.touchid.verify("password", "Password", password=>{
+      resolve(password)
+    },m=>{
+      reject(new errors.BiometricVerificationError(m))
+    });
+  }else{
+    throw new errors.BiometricError("Biometrics is not supported on your device.")
+  }
+});
+
+
+/***/ }),
+/* 6 */
+/***/ (function(module, exports, __webpack_require__) {
+
 const currencyList = __webpack_require__(4)
 const bcLib = __webpack_require__(27)
-const bip39 = __webpack_require__(49)
-const crypto = __webpack_require__(36);
-const storage = __webpack_require__(7)
-const errors=__webpack_require__(50)
+const bip39 = __webpack_require__(50)
+const crypto = __webpack_require__(37);
+const storage = __webpack_require__(5)
+const errors=__webpack_require__(31)
 
 
 exports.DEFAULT_LABEL_NAME = "Default"
@@ -2468,23 +2528,27 @@ exports.decryptKeys=(option)=>new Promise((resolve, reject) => {
 });
   
 exports.copy=data=>{
-  const temp = document.createElement('div');
+  if (window.cordova) {
+    window.cordova.plugins.clipboard.copy(data)
+  }else{
+    const temp = document.createElement('div');
 
-  temp.textContent = data;
+    temp.textContent = data;
 
-  const s = temp.style;
-  s.position = 'fixed';
-  s.left = '-100%';
-  s.userSelect="text"
+    const s = temp.style;
+    s.position = 'fixed';
+    s.left = '-100%';
+    s.userSelect="text"
 
-  document.body.appendChild(temp);
-  document.getSelection().selectAllChildren(temp);
+    document.body.appendChild(temp);
+    document.getSelection().selectAllChildren(temp);
 
-  const result = document.execCommand('copy');
+    const result = document.execCommand('copy');
 
-  document.body.removeChild(temp);
-  // true なら実行できている falseなら失敗か対応していないか
-  return result;
+    document.body.removeChild(temp);
+    // true なら実行できている falseなら失敗か対応していないか
+    return result;
+  }
 }
 
 exports.getBip21=(bip21Urn,address,query)=>{
@@ -2538,6 +2602,7 @@ exports.parseUrl=url=>new Promise((resolve,reject)=>{
       ret.amount=raw.searchParams.get("amount")
       ret.opReturn=raw.searchParams.get("req-opreturn")
       ret.signature=raw.searchParams.get("req-signature")
+      ret.utxo=raw.searchParams.get("req-utxo")
     }
   })
   
@@ -2601,7 +2666,7 @@ exports.buildBuilderfromPubKeyTx=(transaction,network)=>{
 
 
 /***/ }),
-/* 6 */
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var ERRORS = __webpack_require__(95)
@@ -2837,31 +2902,6 @@ typeforce.TfTypeError = TfTypeError
 typeforce.TfPropertyTypeError = TfPropertyTypeError
 
 module.exports = typeforce
-
-
-/***/ }),
-/* 7 */
-/***/ (function(module, exports) {
-
-const KEY_NAME = "data"
-exports.get = (key) => new Promise((resolve, reject) => {
-  const data=JSON.parse(localStorage.getItem(KEY_NAME))
-  if(data){
-    resolve(data[key])
-  }else{
-    resolve(null)
-  }
-});
-
-exports.set = (key,value) => new Promise((resolve, reject) => {
-  let data=JSON.parse(localStorage.getItem(KEY_NAME))
-  if(!data){
-    data={}
-  }
-  data[key]=value
-  localStorage.setItem(KEY_NAME,JSON.stringify(data))
-  resolve()
-});
 
 
 /***/ }),
@@ -6305,7 +6345,7 @@ exports.set = (key,value) => new Promise((resolve, reject) => {
 var Buffer = __webpack_require__(2).Buffer
 var bip66 = __webpack_require__(65)
 var pushdata = __webpack_require__(96)
-var typeforce = __webpack_require__(6)
+var typeforce = __webpack_require__(7)
 var types = __webpack_require__(10)
 var scriptNumber = __webpack_require__(97)
 
@@ -6527,7 +6567,7 @@ for (var key in templates) {
 /* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var typeforce = __webpack_require__(6)
+var typeforce = __webpack_require__(7)
 
 var UINT31_MAX = Math.pow(2, 31) - 1
 function UInt31 (value) {
@@ -6600,7 +6640,7 @@ var elliptic = exports;
 elliptic.version = __webpack_require__(277).version;
 elliptic.utils = __webpack_require__(278);
 elliptic.rand = __webpack_require__(110);
-elliptic.curve = __webpack_require__(48);
+elliptic.curve = __webpack_require__(49);
 elliptic.curves = __webpack_require__(284);
 
 // Protocols
@@ -7483,7 +7523,7 @@ exports.shr64_lo = shr64_lo;
 /***/ (function(module, exports, __webpack_require__) {
 
 var Buffer = __webpack_require__(2).Buffer
-var Transform = __webpack_require__(43).Transform
+var Transform = __webpack_require__(44).Transform
 var StringDecoder = __webpack_require__(61).StringDecoder
 var inherits = __webpack_require__(1)
 
@@ -7664,7 +7704,7 @@ function randomBytes (size, cb) {
 
 /*<replacement>*/
 
-var processNextTick = __webpack_require__(44);
+var processNextTick = __webpack_require__(45);
 /*</replacement>*/
 
 /*<replacement>*/
@@ -7679,7 +7719,7 @@ var objectKeys = Object.keys || function (obj) {
 module.exports = Duplex;
 
 /*<replacement>*/
-var util = __webpack_require__(33);
+var util = __webpack_require__(34);
 util.inherits = __webpack_require__(1);
 /*</replacement>*/
 
@@ -8109,7 +8149,7 @@ module.exports = {
   address: __webpack_require__(67),
   bufferutils: __webpack_require__(99), // TODO: remove in 4.0.0
   crypto: __webpack_require__(28),
-  networks: __webpack_require__(34),
+  networks: __webpack_require__(35),
   opcodes: __webpack_require__(11),
   script: __webpack_require__(9)
 }
@@ -10970,9 +11010,35 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/*! bignumber.js v5.0.0 https://github.com/Mik
 
 /***/ }),
 /* 31 */
+/***/ (function(module, exports) {
+
+function createError(errorName){
+  const e=function(message) {
+    this.message = message||(errorName+" has occured.");
+    const last_part = new Error().stack.match(/[^\s]+$/);
+    this.stack = `${this.name} at ${last_part}`;
+  }
+  Object.setPrototypeOf(e, Error);
+  e.prototype = Object.create(Error.prototype);
+  e.prototype.name = errorName;
+  e.prototype.message = "";
+  e.prototype.constructor = e;
+  return e
+}
+
+
+exports.NoSolutionError=createError("NoSolutionError")
+exports.LabelNotFoundError=createError("LabelNotFoundError")
+exports.MonappyError=createError("MonappyError")
+exports.BiometricError=createError("BiometricError")
+exports.BiometricVerificationError=createError("BiometricVerificationError")
+
+
+/***/ }),
+/* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(Buffer) {const coinUtil=__webpack_require__(5)
+/* WEBPACK VAR INJECTION */(function(Buffer) {const coinUtil=__webpack_require__(6)
 const currencyList=__webpack_require__(4)
 module.exports=__webpack_require__(370)({
   data(){
@@ -11052,6 +11118,7 @@ module.exports=__webpack_require__(370)({
             this.messageToShow=u.message
             this.amount=u.amount
             this.label=u.label
+            this.utxoStr=u.utxo
             return
           }else{
             currencyList.eachWithPub((cur)=>{
@@ -11101,7 +11168,7 @@ module.exports=__webpack_require__(370)({
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0).Buffer))
 
 /***/ }),
-/* 32 */
+/* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11620,7 +11687,7 @@ module.exports = Buffer
 
 
 /***/ }),
-/* 33 */
+/* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(Buffer) {// Copyright Joyent, Inc. and other Node contributors.
@@ -11734,7 +11801,7 @@ function objectToString(o) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0).Buffer))
 
 /***/ }),
-/* 34 */
+/* 35 */
 /***/ (function(module, exports) {
 
 // https://en.bitcoin.it/wiki/List_of_address_prefixes
@@ -11777,7 +11844,7 @@ module.exports = {
 
 
 /***/ }),
-/* 35 */
+/* 36 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11876,7 +11943,7 @@ BlockHash.prototype._pad = function pad() {
 
 
 /***/ }),
-/* 36 */
+/* 37 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11884,7 +11951,7 @@ BlockHash.prototype._pad = function pad() {
 
 exports.randomBytes = exports.rng = exports.pseudoRandomBytes = exports.prng = __webpack_require__(21)
 exports.createHash = exports.Hash = __webpack_require__(17)
-exports.createHmac = exports.Hmac = __webpack_require__(47)
+exports.createHmac = exports.Hmac = __webpack_require__(48)
 
 var algos = __webpack_require__(311)
 var algoKeys = Object.keys(algos)
@@ -11980,7 +12047,7 @@ exports.constants = {
 
 
 /***/ }),
-/* 37 */
+/* 38 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(Buffer) {module.exports = function xor (a, b) {
@@ -11997,7 +12064,7 @@ exports.constants = {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0).Buffer))
 
 /***/ }),
-/* 38 */
+/* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var asn1 = exports;
@@ -12005,14 +12072,14 @@ var asn1 = exports;
 asn1.bignum = __webpack_require__(8);
 
 asn1.define = __webpack_require__(337).define;
-asn1.base = __webpack_require__(39);
+asn1.base = __webpack_require__(40);
 asn1.constants = __webpack_require__(128);
 asn1.decoders = __webpack_require__(343);
 asn1.encoders = __webpack_require__(345);
 
 
 /***/ }),
-/* 39 */
+/* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var base = exports;
@@ -12024,11 +12091,11 @@ base.Node = __webpack_require__(341);
 
 
 /***/ }),
-/* 40 */
+/* 41 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const currencyList = __webpack_require__(4)
-const coinUtil = __webpack_require__(5)
+const coinUtil = __webpack_require__(6)
 module.exports=__webpack_require__(368)({
   data(){
     return {
@@ -12094,7 +12161,7 @@ module.exports=__webpack_require__(368)({
       this.$emit("push",__webpack_require__(137))
     },
     send(){
-      this.$emit("push",__webpack_require__(31))
+      this.$emit("push",__webpack_require__(32))
     },
     history(){
       this.$emit("push",__webpack_require__(145))
@@ -12111,7 +12178,7 @@ module.exports=__webpack_require__(368)({
 
 
 /***/ }),
-/* 41 */
+/* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var QRCode = __webpack_require__(378)
@@ -12163,12 +12230,12 @@ exports.toString = renderCanvas.bind(null, function (data, _, opts) {
 
 
 /***/ }),
-/* 42 */
+/* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Title = __webpack_require__(438)
 const axios = __webpack_require__(18);
-const coinUtil=__webpack_require__(5)
+const coinUtil=__webpack_require__(6)
 
 const defaultTitles=[{
   cpCoinId:"mona",//Monaparty
@@ -12229,7 +12296,7 @@ exports.addTitle=customTitle=>{
 
 
 /***/ }),
-/* 43 */
+/* 44 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // Copyright Joyent, Inc. and other Node contributors.
@@ -12362,7 +12429,7 @@ Stream.prototype.pipe = function(dest, options) {
 
 
 /***/ }),
-/* 44 */
+/* 45 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12413,7 +12480,7 @@ function nextTick(fn, arg1, arg2, arg3) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(13)))
 
 /***/ }),
-/* 45 */
+/* 46 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12510,7 +12577,7 @@ module.exports = { encode: encode, decode: decode, encodingLength: encodingLengt
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0).Buffer))
 
 /***/ }),
-/* 46 */
+/* 47 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12572,7 +12639,7 @@ module.exports = {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0).Buffer))
 
 /***/ }),
-/* 47 */
+/* 48 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12641,7 +12708,7 @@ module.exports = function createHmac (alg, key) {
 
 
 /***/ }),
-/* 48 */
+/* 49 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12656,7 +12723,7 @@ curve.edwards = __webpack_require__(283);
 
 
 /***/ }),
-/* 49 */
+/* 50 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var Buffer = __webpack_require__(2).Buffer
@@ -12813,30 +12880,6 @@ module.exports = {
     spanish: SPANISH_WORDLIST
   }
 }
-
-
-/***/ }),
-/* 50 */
-/***/ (function(module, exports) {
-
-function createError(errorName){
-  const e=function(message) {
-    this.message = message||(errorName+" has occured.");
-    const last_part = new Error().stack.match(/[^\s]+$/);
-    this.stack = `${this.name} at ${last_part}`;
-  }
-  Object.setPrototypeOf(e, Error);
-  e.prototype = Object.create(Error.prototype);
-  e.prototype.name = errorName;
-  e.prototype.message = "";
-  e.prototype.constructor = e;
-  return e
-}
-
-
-exports.NoSolutionError=createError("NoSolutionError")
-exports.LabelNotFoundError=createError("LabelNotFoundError")
-exports.MonappyError=createError("MonappyError")
 
 
 /***/ }),
@@ -13241,7 +13284,7 @@ function decrypt (data, password) {
 /* 54 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const coinUtil = __webpack_require__(5)
+const coinUtil = __webpack_require__(6)
 module.exports=__webpack_require__(373)({
   data(){
     return {
@@ -14441,7 +14484,7 @@ exports.PassThrough = __webpack_require__(199);
 
 /*<replacement>*/
 
-var processNextTick = __webpack_require__(44);
+var processNextTick = __webpack_require__(45);
 /*</replacement>*/
 
 module.exports = Writable;
@@ -14478,7 +14521,7 @@ var Duplex;
 Writable.WritableState = WritableState;
 
 /*<replacement>*/
-var util = __webpack_require__(33);
+var util = __webpack_require__(34);
 util.inherits = __webpack_require__(1);
 /*</replacement>*/
 
@@ -15413,9 +15456,9 @@ var bcrypto = __webpack_require__(28)
 var bscript = __webpack_require__(9)
 var bufferutils = __webpack_require__(99)
 var opcodes = __webpack_require__(11)
-var typeforce = __webpack_require__(6)
+var typeforce = __webpack_require__(7)
 var types = __webpack_require__(10)
-var varuint = __webpack_require__(45)
+var varuint = __webpack_require__(46)
 
 function varSliceSize (someScript) {
   var length = someScript.length
@@ -16029,11 +16072,11 @@ var baddress = __webpack_require__(67)
 var bcrypto = __webpack_require__(28)
 var ecdsa = __webpack_require__(235)
 var randomBytes = __webpack_require__(21)
-var typeforce = __webpack_require__(6)
+var typeforce = __webpack_require__(7)
 var types = __webpack_require__(10)
 var wif = __webpack_require__(244)
 
-var NETWORKS = __webpack_require__(34)
+var NETWORKS = __webpack_require__(35)
 var BigInteger = __webpack_require__(23)
 
 var ecurve = __webpack_require__(70)
@@ -16164,10 +16207,10 @@ module.exports = ECPair
 
 var Buffer = __webpack_require__(2).Buffer
 var bech32 = __webpack_require__(232)
-var bs58check = __webpack_require__(46)
+var bs58check = __webpack_require__(47)
 var bscript = __webpack_require__(9)
-var networks = __webpack_require__(34)
-var typeforce = __webpack_require__(6)
+var networks = __webpack_require__(35)
+var typeforce = __webpack_require__(7)
 var types = __webpack_require__(10)
 
 function fromBase58Check (address) {
@@ -16763,7 +16806,7 @@ var objectKeys = Object.keys || function (obj) {
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(Buffer) {var bip66 = __webpack_require__(65)
-var typeforce = __webpack_require__(6)
+var typeforce = __webpack_require__(7)
 var types = __webpack_require__(10)
 
 var BigInteger = __webpack_require__(23)
@@ -17054,7 +17097,7 @@ module.exports = {
 var hash = exports;
 
 hash.utils = __webpack_require__(19);
-hash.common = __webpack_require__(35);
+hash.common = __webpack_require__(36);
 hash.sha = __webpack_require__(285);
 hash.ripemd = __webpack_require__(289);
 hash.hmac = __webpack_require__(290);
@@ -17187,7 +17230,7 @@ function getr(priv) {
 /***/ (function(module, exports, __webpack_require__) {
 
 const QRScanner = window.QRScanner
-const coinUtil=__webpack_require__(5)
+const coinUtil=__webpack_require__(6)
 module.exports=__webpack_require__(369)({
   data:()=>({
     cameras:[],
@@ -17219,7 +17262,7 @@ module.exports=__webpack_require__(369)({
           QRScanner.destroy((status)=>{
             this.$emit("pop")
             this.$store.commit("setTransparency",false)
-            this.$emit("push",__webpack_require__(31))
+            this.$emit("push",__webpack_require__(32))
           });
           
         }else if(res.protocol==="http"||res.protocol==="https"){
@@ -17275,10 +17318,14 @@ module.exports=__webpack_require__(369)({
             this.$store.commit("setError","error code:"+err2.code)
             return
           }
-          QRScanner.destroy()
-          this.parse(t)
+          QRScanner.destroy(()=>{
+            this.parse(t)
+          })
         })
-        QRScanner.show()
+        if(window.cordova){ // ios Quirks
+          QRScanner.show()
+        }
+        
       } else if (status.denied) {
         this.$ons.notification.alert("Please allow Camera")
       } else {
@@ -17295,9 +17342,9 @@ module.exports=__webpack_require__(369)({
 /* 80 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const storage = __webpack_require__(7)
+const storage = __webpack_require__(5)
 const currencyList = __webpack_require__(4)
-const coinUtil = __webpack_require__(5)
+const coinUtil = __webpack_require__(6)
 module.exports=__webpack_require__(375)({
   data(){
     return {
@@ -17324,7 +17371,7 @@ module.exports=__webpack_require__(375)({
           }
         })
 
-        this.$emit("replace",__webpack_require__(40))
+        this.$emit("replace",__webpack_require__(41))
       }).catch(()=>{
         this.loading=false
         this.incorrect=true;
@@ -17359,7 +17406,7 @@ module.exports=__webpack_require__(375)({
       })
       return storage.set("addresses",addrs)
     }).then(()=>{
-      this.$emit("replace",__webpack_require__(40))
+      this.$emit("replace",__webpack_require__(41))
       coinUtil.setInitialized(true)
     }).catch(e=>{
       this.$store.commit("setError",e.message)
@@ -17439,10 +17486,11 @@ exports.from = function from (value, defaultValue) {
 /* 83 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const coinUtil = __webpack_require__(5)
+const coinUtil = __webpack_require__(6)
 const currencyList = __webpack_require__(4)
-const crypto = __webpack_require__(36);
-const storage = __webpack_require__(7)
+const crypto = __webpack_require__(37);
+const storage = __webpack_require__(5)
+const errors=__webpack_require__(31)
 const blacklist=["123456","114514","password","password2"]
 module.exports=__webpack_require__(413)({
   data(){
@@ -17453,7 +17501,9 @@ module.exports=__webpack_require__(413)({
       password2:"",
       change:false,
       error:false,
-      loading:false
+      loading:false,
+      biometric:true,
+      biometricAvailable:false
     }
   },
   store:__webpack_require__(3),
@@ -17492,10 +17542,15 @@ module.exports=__webpack_require__(413)({
           this.$store.commit("deleteEntropy")
           this.$store.commit("setFinishNextPage",{page:__webpack_require__(80),infoId:"createdWallet"})
           this.$emit("replace",__webpack_require__(54))
-          
-        }).catch(e=>{
-          this.error=e.message||true
-          this.loading=false
+          if(this.biometric){
+            return storage.setBiometricPassword(this.password)
+          }
+        })
+        .catch(e=>{
+          if(!(e instanceof errors.BiometricError)){
+            this.error=e.message||true
+            this.loading=false
+          }
         })
     }
     
@@ -17506,9 +17561,10 @@ module.exports=__webpack_require__(413)({
     }else{
       this.change=true
     }
-  },
-  components:{
-    
+    storage.isBiometricAvailable().then(flag=>{
+      this.biometricAvailable=flag
+      this.biometric=flag
+    })
   }
 })
 
@@ -18534,11 +18590,11 @@ const axios = __webpack_require__(18);
 const BigNumber = __webpack_require__(30);
 const coinSelect = __webpack_require__(265)
 const bcMsg = __webpack_require__(268)
-const bip39 = __webpack_require__(49)
+const bip39 = __webpack_require__(50)
 const qs= __webpack_require__(308)
-const errors = __webpack_require__(50)
-const coinUtil = __webpack_require__(5)
-const storage = __webpack_require__(7)
+const errors = __webpack_require__(31)
+const coinUtil = __webpack_require__(6)
+const storage = __webpack_require__(5)
 module.exports=class{
   
   constructor(opt){
@@ -18547,7 +18603,8 @@ module.exports=class{
     this.unit = opt.unit;
     this.unitEasy = opt.unitEasy;
     this.bip44 = opt.bip44;
-    this.apiEndpoint = opt.defaultAPIEndpoint;
+    this.apiEndpoints=opt.apiEndpoints||[opt.defaultAPIEndpoint]
+    this.apiEndpoint = opt.defaultAPIEndpoint||this.apiEndpoints[0];
     this.network = opt.network;
     this.price = opt.price;
     this.dummy=!!opt.dummy
@@ -18557,6 +18614,7 @@ module.exports=class{
     this.confirmations=opt.confirmations||6
     this.sound=opt.sound||""
     this.counterpartyEndpoint=opt.counterpartyEndpoint
+    this.enableSegwit=opt.enableSegwit
     
     this.hdPubNode=null;
     this.lastPriceTime=0;
@@ -18699,6 +18757,9 @@ module.exports=class{
     if(this.addresses[addrKey]){
       return this.addresses[addrKey]
     }else{
+      if(this.enableSegwit){
+        return (this.addresses[addrKey]=this.getSegwitAddress(change,index))
+      }
       return (this.addresses[addrKey]=this.hdPubNode.derive(change).derive(index).getAddress())
     }
   }
@@ -18722,6 +18783,7 @@ module.exports=class{
     const witnessPubKey = bcLib.script.witnessPubKeyHash.output.encode(bcLib.crypto.hash160(keyPair.getPublicKeyBuffer()))
     
     const address = bcLib.address.fromOutputScript(witnessPubKey,this.network)
+    return address
   }
   seedToPubB58(privSeed){
     if(this.dummy){return}
@@ -19034,6 +19096,12 @@ module.exports=class{
         json:true,
       method:"GET"}).then(r=>r.data.blocks)
   }
+  changeApiEndpoint(index){
+    if (typeof(index)!=="number"){
+      index=(this.apiEndpoints.indexOf(this.apiEndpoint)+1)%this.apiEndpoints.length
+    }
+    this.apiEndpoint = this.apiEndpoints[index]
+  }
 }
 
 
@@ -19078,7 +19146,7 @@ module.exports = Array.isArray || function (arr) {
 
 /*<replacement>*/
 
-var processNextTick = __webpack_require__(44);
+var processNextTick = __webpack_require__(45);
 /*</replacement>*/
 
 module.exports = Readable;
@@ -19119,7 +19187,7 @@ function _isUint8Array(obj) {
 /*</replacement>*/
 
 /*<replacement>*/
-var util = __webpack_require__(33);
+var util = __webpack_require__(34);
 util.inherits = __webpack_require__(1);
 /*</replacement>*/
 
@@ -20078,7 +20146,7 @@ module.exports = __webpack_require__(58).EventEmitter;
 
 /*<replacement>*/
 
-var processNextTick = __webpack_require__(44);
+var processNextTick = __webpack_require__(45);
 /*</replacement>*/
 
 // undocumented cb() API, needed for core, not for public API
@@ -20222,7 +20290,7 @@ module.exports = Transform;
 var Duplex = __webpack_require__(22);
 
 /*<replacement>*/
-var util = __webpack_require__(33);
+var util = __webpack_require__(34);
 util.inherits = __webpack_require__(1);
 /*</replacement>*/
 
@@ -21049,7 +21117,7 @@ module.exports = {
 
 var Buffer = __webpack_require__(2).Buffer
 var bscript = __webpack_require__(9)
-var typeforce = __webpack_require__(6)
+var typeforce = __webpack_require__(7)
 
 function check (script, allowIncomplete) {
   var chunks = bscript.decompile(script)
@@ -21119,7 +21187,7 @@ module.exports = {
 /***/ (function(module, exports, __webpack_require__) {
 
 var pushdata = __webpack_require__(96)
-var varuint = __webpack_require__(45)
+var varuint = __webpack_require__(46)
 
 // https://github.com/feross/buffer/blob/master/index.js#L1127
 function verifuint (value, max) {
@@ -23499,7 +23567,7 @@ exports.g1_256 = g1_256;
 
 
 var utils = __webpack_require__(19);
-var common = __webpack_require__(35);
+var common = __webpack_require__(36);
 var shaCommon = __webpack_require__(111);
 var assert = __webpack_require__(15);
 
@@ -23611,7 +23679,7 @@ SHA256.prototype._digest = function digest(enc) {
 
 
 var utils = __webpack_require__(19);
-var common = __webpack_require__(35);
+var common = __webpack_require__(36);
 var assert = __webpack_require__(15);
 
 var rotr64_hi = utils.rotr64_hi;
@@ -24332,7 +24400,7 @@ module.exports = {"sha224WithRSAEncryption":{"sign":"rsa","hash":"sha224","id":"
 /* 120 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var xor = __webpack_require__(37)
+var xor = __webpack_require__(38)
 var Buffer = __webpack_require__(2).Buffer
 var incr32 = __webpack_require__(121)
 
@@ -24400,7 +24468,7 @@ var Buffer = __webpack_require__(2).Buffer
 var Transform = __webpack_require__(20)
 var inherits = __webpack_require__(1)
 var GHASH = __webpack_require__(322)
-var xor = __webpack_require__(37)
+var xor = __webpack_require__(38)
 var incr32 = __webpack_require__(121)
 
 function xorTest (a, b) {
@@ -24784,7 +24852,7 @@ MillerRabin.prototype.getDivisor = function getDivisor(n, k) {
 /***/ (function(module, exports, __webpack_require__) {
 
 var inherits = __webpack_require__(1);
-var Reporter = __webpack_require__(39).Reporter;
+var Reporter = __webpack_require__(40).Reporter;
 var Buffer = __webpack_require__(0).Buffer;
 
 function DecoderBuffer(base, options) {
@@ -24932,7 +25000,7 @@ constants.der = __webpack_require__(342);
 
 var inherits = __webpack_require__(1);
 
-var asn1 = __webpack_require__(38);
+var asn1 = __webpack_require__(39);
 var base = asn1.base;
 var bignum = asn1.bignum;
 
@@ -25263,7 +25331,7 @@ function derDecodeLen(buf, primitive, fail) {
 var inherits = __webpack_require__(1);
 var Buffer = __webpack_require__(0).Buffer;
 
-var asn1 = __webpack_require__(38);
+var asn1 = __webpack_require__(39);
 var base = asn1.base;
 
 // Import DER constants
@@ -25625,8 +25693,8 @@ module.exports = __webpack_require__.p + "dist/assets/5d1eb75b276b287613fe172877
 /***/ (function(module, exports, __webpack_require__) {
 
 const currencyList = __webpack_require__(4)
-const storage = __webpack_require__(7)
-const coinUtil = __webpack_require__(5)
+const storage = __webpack_require__(5)
+const coinUtil = __webpack_require__(6)
 module.exports=__webpack_require__(374)({
   data:()=>({
     coins:[],
@@ -25644,7 +25712,7 @@ module.exports=__webpack_require__(374)({
   }),
   methods:{
     push(){
-      this.$emit("push",__webpack_require__(31))
+      this.$emit("push",__webpack_require__(32))
     },
     load(){
       this.curs=[]
@@ -25706,6 +25774,11 @@ module.exports=__webpack_require__(374)({
       cur.getBlocks().then(r=>{
         this.info.blocks=r
       })
+    },
+    changeServer(){
+      const cur=currencyList.get(this.info.coinId)
+      cur.changeApiEndpoint()
+      this.showInfo(this.info.coinId)
     }
   },
   
@@ -25720,11 +25793,11 @@ module.exports=__webpack_require__(374)({
 /* 137 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const qrcode = __webpack_require__(41)
+const qrcode = __webpack_require__(42)
 const currencyList = __webpack_require__(4)
-const storage = __webpack_require__(7)
+const storage = __webpack_require__(5)
 const Currency = __webpack_require__(87)
-const coinUtil = __webpack_require__(5)
+const coinUtil = __webpack_require__(6)
 
 module.exports=__webpack_require__(396)({
   data(){
@@ -26254,8 +26327,8 @@ exports.qrToImageData = function qrToImageData (imgData, qr, margin, scale, colo
 /***/ (function(module, exports, __webpack_require__) {
 
 const axios = __webpack_require__(18)
-const errors=__webpack_require__(50)
-const coinUtil = __webpack_require__(5)
+const errors=__webpack_require__(31)
+const coinUtil = __webpack_require__(6)
 
 const MONAPPY_API_ENDPOINT = coinUtil.proxyUrl("https://api.monappy.jp/v1/")
 
@@ -26280,10 +26353,10 @@ exports.getNicknameFromTwitter = twId =>axios.get(MONAPPY_API_ENDPOINT+"users/ge
 /* 143 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const storage = __webpack_require__(7)
+const storage = __webpack_require__(5)
 const axios = __webpack_require__(18)
-const coinUtil = __webpack_require__(5)
-const crypto = __webpack_require__(36)
+const coinUtil = __webpack_require__(6)
+const crypto = __webpack_require__(37)
 module.exports=__webpack_require__(401)({
   data:()=>({
     hasCredentials:false,
@@ -26388,12 +26461,12 @@ module.exports=__webpack_require__(401)({
 /* 144 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const storage = __webpack_require__(7)
+const storage = __webpack_require__(5)
 const axios = __webpack_require__(18)
-const qrcode = __webpack_require__(41)
+const qrcode = __webpack_require__(42)
 const currencyList = __webpack_require__(4)
-const coinUtil = __webpack_require__(5)
-const crypto = __webpack_require__(36)
+const coinUtil = __webpack_require__(6)
+const crypto = __webpack_require__(37)
 module.exports=__webpack_require__(402)({
   data:()=>({
     hasCredentials:false,
@@ -26475,7 +26548,7 @@ module.exports=__webpack_require__(402)({
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(Buffer) {const currencyList = __webpack_require__(4)
-const coinUtil = __webpack_require__(5)
+const coinUtil = __webpack_require__(6)
 const bcLib = __webpack_require__(27)
 module.exports=__webpack_require__(408)({
   data(){
@@ -26635,7 +26708,7 @@ module.exports=__webpack_require__(408)({
 /* 146 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const storage=__webpack_require__(7)
+const storage=__webpack_require__(5)
 const monappyApi=__webpack_require__(142)
 const currencyList = __webpack_require__(4)
 module.exports=__webpack_require__(411)({
@@ -26727,9 +26800,9 @@ module.exports=__webpack_require__(411)({
 /* 147 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const bip39 = __webpack_require__(49)
-const storage = __webpack_require__(7)
-const coinUtil = __webpack_require__(5)
+const bip39 = __webpack_require__(50)
+const storage = __webpack_require__(5)
+const coinUtil = __webpack_require__(6)
 module.exports=__webpack_require__(412)({
   data(){
     return {
@@ -26811,7 +26884,7 @@ module.exports=__webpack_require__(420)({
 /***/ (function(module, exports, __webpack_require__) {
 
 const currencyList = __webpack_require__(4)
-const titleList = __webpack_require__(42)
+const titleList = __webpack_require__(43)
 const axios = __webpack_require__(18)
 module.exports=__webpack_require__(440)({
   data(){return{
@@ -26855,9 +26928,12 @@ module.exports=__webpack_require__(440)({
     }).then(r=>{
       this.history=r
     }).catch(e=>{
-          this.loading=false
-          this.$store.commit("setError",e.message)
-        })
+      this.loading=false
+      this.$store.commit("setError",e.message)
+    })
+    if(window.StatusBar){
+      window.StatusBar.styleLightContent();
+    }
   }      
 })
 
@@ -26899,6 +26975,13 @@ exports.vm= new Vue({
   },
   store:__webpack_require__(3),
   beforeMount() {
+    if(this.$ons.platform.isAndroid()&&window.StatusBar){
+      window.StatusBar.backgroundColorByHexString("#60000000");
+      window.StatusBar.overlaysWebView(true)
+      window.StatusBar.styleLightContent()
+      document.body.classList.add("ons-force-status-bar")
+    }
+    this.$ons.enableAutoStatusBarFill()
     const html = document.documentElement;
     if (this.$ons.platform.isIPhoneX()) {
       html.setAttribute('onsflag-iphonex-portrait', '');
@@ -26907,7 +26990,7 @@ exports.vm= new Vue({
     
   }
 })
-const coinUtil=__webpack_require__(5)
+const coinUtil=__webpack_require__(6)
 window.handleOpenURL=function(url) {
   coinUtil.queueUrl(url)
 }
@@ -26953,7 +27036,7 @@ exports = module.exports = __webpack_require__(26)(undefined);
 
 
 // module
-exports.push([module.i, ".spinner {\n  width: 90px;\n  height: 90px;\n  animation-name: spin;\n  animation-duration: 4s;\n  animation-timing-function: ease;\n  animation-iteration-count: infinite;\n  background-image: url(" + __webpack_require__(153) + ");\n  background-repeat: no-repeat no-repeat;\n  background-position: center center;\n  background-size: contain;\n  display: inline-block; }\n\n.list-item--small .list-item--small__left, .list-item--small .list-item--small__center, .list-item--small .list-item--small__right {\n  min-height: 0px;\n  padding-top: 4px;\n  padding-bottom: 4px; }\n\nons-list-item .w_right {\n  margin-left: auto;\n  text-align: right; }\n\n.toolbar-button .ons-icon {\n  vertical-align: top; }\n\nons-dialog .dialog {\n  max-height: 100%;\n  max-width: 100%;\n  overflow-y: scroll;\n  overflow-y: auto; }\n\n.shake {\n  animation: shake 0.72s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;\n  transform: translate3d(0, 0, 0); }\n\n.transparent {\n  background: transparent; }\n\n[data-page=\"home\"] #youHave {\n  width: 100%;\n  background-color: #ffeb47;\n  padding: 2% 0%;\n  color: #7c5702;\n  background-image: url(" + __webpack_require__(154) + ");\n  background-repeat: no-repeat;\n  background-position: bottom right;\n  text-align: center; }\n  [data-page=\"home\"] #youHave .label {\n    color: #7b7442; }\n  [data-page=\"home\"] #youHave .currencySet {\n    margin: 5% 0;\n    display: inline-block; }\n    [data-page=\"home\"] #youHave .currencySet .amount {\n      font-size: 1.6em;\n      margin: 3px; }\n    [data-page=\"home\"] #youHave .currencySet .ticker {\n      font-size: 0.9em; }\n\n[data-page=\"home\"] #actionWrap {\n  margin: -10px 20px 20px;\n  position: relative; }\n  [data-page=\"home\"] #actionWrap #actions {\n    position: relative;\n    display: table;\n    width: 100%;\n    border-radius: 5px;\n    table-layout: fixed;\n    background: white;\n    box-shadow: 0px 6px 19px -10px rgba(0, 0, 0, 0.5); }\n    [data-page=\"home\"] #actionWrap #actions .btns {\n      display: table-cell;\n      text-align: center;\n      padding: 10px; }\n      [data-page=\"home\"] #actionWrap #actions .btns ons-icon {\n        font-size: 1.2em; }\n      [data-page=\"home\"] #actionWrap #actions .btns .btnLabel {\n        color: #777;\n        font-size: 0.7em; }\n      [data-page=\"home\"] #actionWrap #actions .btns:active {\n        background-color: #ccc; }\n      [data-page=\"home\"] #actionWrap #actions .btns:first-of-type {\n        border-radius: 5px 0 0 5px; }\n      [data-page=\"home\"] #actionWrap #actions .btns:last-of-type {\n        border-radius: 0 5px 5px 0; }\n\n[data-page=\"home\"] #coins .w_right {\n  margin-left: auto; }\n  [data-page=\"home\"] #coins .w_right .fiatConv {\n    color: #555;\n    font-size: 0.76em; }\n  [data-page=\"home\"] #coins .w_right .amount .ticker {\n    font-size: 0.8em; }\n  [data-page=\"home\"] #coins .w_right .unconfirmed {\n    color: red; }\n\n[data-page=\"home\"] #coins .price {\n  font-size: 0.85em; }\n  [data-page=\"home\"] #coins .price .ticker {\n    color: #555;\n    font-size: 0.85em; }\n\n[data-page=\"home\"] #coins .left img {\n  width: 38px;\n  height: 38px; }\n\n[data-page=\"manageCoin\"] .left img {\n  width: 38px;\n  height: 38px; }\n\n[data-page=\"txDetail\"] .list--inset {\n  margin-top: 10px; }\n\n[data-page=\"txDetail\"] .addr {\n  font-size: 0.8em;\n  padding: 4px;\n  user-select: text;\n  -webkit-user-select: text;\n  -moz-user-select: text;\n  -ms-user-select: text; }\n\n[data-page=\"txDetail\"] .addr.receive {\n  color: #4a2; }\n\n[data-page=\"txDetail\"] .addr.change {\n  color: #29a; }\n\n[data-page=\"history\"] ons-list-item .destAddress {\n  font-size: 0.8em; }\n\n[data-page=\"history\"] ons-list-item .date {\n  font-size: 0.85em; }\n\n[data-page=\"history\"] ons-list-item .hasMsg {\n  color: #81d4fa; }\n\n[data-page=\"history\"] ons-list-item .hasPrice {\n  color: #4caf50; }\n\n[data-page=\"history\"] ons-list-item .inmatureConfirmation {\n  color: #ff0000; }\n\n[data-page=\"history\"] ons-list-item .unread {\n  color: #ff9900; }\n\n[data-page=\"history\"] .container {\n  text-align: center; }\n\n[data-page=\"showLabel\"] #currencySelector, [data-page=\"sweep\"] #currencySelector, [data-page=\"receive\"] #currencySelector, [data-page=\"history\"] #currencySelector, [data-page=\"invoice\"] #currencySelector {\n  width: 100%;\n  margin: none;\n  padding: none; }\n  [data-page=\"showLabel\"] #currencySelector .currencyIcon, [data-page=\"sweep\"] #currencySelector .currencyIcon, [data-page=\"receive\"] #currencySelector .currencyIcon, [data-page=\"history\"] #currencySelector .currencyIcon, [data-page=\"invoice\"] #currencySelector .currencyIcon {\n    width: 50px;\n    height: 50px;\n    background-position: center center;\n    background-size: contain;\n    background-repeat: no-repeat; }\n    [data-page=\"showLabel\"] #currencySelector .currencyIcon .checked, [data-page=\"sweep\"] #currencySelector .currencyIcon .checked, [data-page=\"receive\"] #currencySelector .currencyIcon .checked, [data-page=\"history\"] #currencySelector .currencyIcon .checked, [data-page=\"invoice\"] #currencySelector .currencyIcon .checked {\n      position: absolute;\n      bottom: 0;\n      right: 0;\n      width: 25px;\n      height: 25px;\n      background-position: center center;\n      background-size: contain;\n      background-repeat: no-repeat;\n      background-image: url(" + __webpack_require__(155) + "); }\n\n[data-page=\"showLabel\"], [data-page=\"invoice\"], [data-page=\"receive\"] {\n  text-align: center; }\n  [data-page=\"showLabel\"] #simple .label, [data-page=\"invoice\"] #simple .label, [data-page=\"receive\"] #simple .label {\n    margin: 10px;\n    color: #888; }\n  [data-page=\"showLabel\"] #simple #qrArea #qrcode, [data-page=\"invoice\"] #simple #qrArea #qrcode, [data-page=\"receive\"] #simple #qrArea #qrcode {\n    width: 250px;\n    height: 250px;\n    background-color: #aaa;\n    display: inline-block;\n    margin: 10px;\n    position: relative; }\n    [data-page=\"showLabel\"] #simple #qrArea #qrcode #qrcodeImage, [data-page=\"invoice\"] #simple #qrArea #qrcode #qrcodeImage, [data-page=\"receive\"] #simple #qrArea #qrcode #qrcodeImage {\n      width: 100%;\n      height: 100%; }\n    [data-page=\"showLabel\"] #simple #qrArea #qrcode #currentCurIcon, [data-page=\"invoice\"] #simple #qrArea #qrcode #currentCurIcon, [data-page=\"receive\"] #simple #qrArea #qrcode #currentCurIcon {\n      position: absolute;\n      width: 20%;\n      height: 20%;\n      top: 50%;\n      left: 50%;\n      margin-left: -10%;\n      margin-top: -10%;\n      background-position: center center;\n      background-size: contain;\n      background-repeat: no-repeat; }\n  [data-page=\"showLabel\"] #simple #qrArea .address, [data-page=\"invoice\"] #simple #qrArea .address, [data-page=\"receive\"] #simple #qrArea .address {\n    display: block;\n    user-select: text;\n    -webkit-user-select: text;\n    -moz-user-select: text;\n    -ms-user-select: text;\n    word-wrap: break-word;\n    word-break: break-all;\n    white-space: pre-wrap; }\n\n[data-page=\"invoice\"] .currencyIcon.monappy {\n  background-image: url(" + __webpack_require__(156) + "); }\n\n[data-page=\"invoice\"] .monappyNotExist {\n  background-color: #fdc; }\n\n[data-page=\"first\"] .wrap {\n  width: 100%;\n  height: 100%;\n  background-color: #ffeb47; }\n  [data-page=\"first\"] .wrap .logo {\n    position: absolute;\n    top: 20%;\n    width: 100%;\n    text-align: center; }\n    [data-page=\"first\"] .wrap .logo .icon {\n      display: inline-block;\n      background-image: url(" + __webpack_require__(157) + ");\n      background-position: center center;\n      background-repeat: no-repeat;\n      background-size: contain;\n      width: 100px;\n      height: 100px; }\n    [data-page=\"first\"] .wrap .logo .appName {\n      font-size: 2em;\n      color: #7c5702; }\n    [data-page=\"first\"] .wrap .logo .label {\n      color: #7c5702;\n      opacity: 0.5; }\n  [data-page=\"first\"] .wrap .buttons {\n    margin: 50px auto;\n    width: 50%; }\n    [data-page=\"first\"] .wrap .buttons ons-button {\n      margin: 10px 0;\n      width: 100%; }\n\n[data-page=\"restorePassphrase\"] #wordArea {\n  background-color: white;\n  width: 100%; }\n  [data-page=\"restorePassphrase\"] #wordArea .word {\n    display: inline-block;\n    margin: 5px;\n    padding: 4px;\n    border: #ddd 1px solid;\n    border-radius: 3.5px; }\n    [data-page=\"restorePassphrase\"] #wordArea .word .wd {\n      color: black; }\n    [data-page=\"restorePassphrase\"] #wordArea .word .deleteBtn {\n      color: #aaa; }\n    [data-page=\"restorePassphrase\"] #wordArea .word input {\n      border: none;\n      background: transparent;\n      font-size: 1em;\n      width: 5em;\n      margin: 0px;\n      padding: 0px;\n      ime-mode: disabled; }\n    [data-page=\"restorePassphrase\"] #wordArea .word.noMatch {\n      background-color: #fdc; }\n\n[data-page=\"restorePassphrase\"] #suggestion {\n  position: fixed;\n  bottom: 0;\n  width: 100%;\n  background-color: white;\n  border-top: #c3c3c8 1px solid; }\n  [data-page=\"restorePassphrase\"] #suggestion .sgst {\n    display: inline-block;\n    padding: 9px;\n    border-right: #c3c3c8 1px solid; }\n\n[data-page=\"restorePassphrase\"] #nextWrap {\n  padding: 10px; }\n\n[data-page=\"question\"] .questionItem {\n  text-align: center;\n  padding: 3%; }\n  [data-page=\"question\"] .questionItem .questionText {\n    padding: 3%;\n    border-radius: 8px;\n    border: 1px solid #7c5702;\n    color: #7c5702;\n    background-color: white; }\n  [data-page=\"question\"] .questionItem .answers .answer {\n    border-radius: 6px;\n    background-color: #ffeb47;\n    color: #7c5702;\n    margin: 8px 0;\n    padding: 6px; }\n\n[data-page=\"generateKeyWarn\"] .wrap {\n  padding: 10px; }\n  [data-page=\"generateKeyWarn\"] .wrap .check {\n    padding: 12px; }\n    [data-page=\"generateKeyWarn\"] .wrap .check input {\n      font-size: 1.5em; }\n\n[data-page=\"generateKey\"] .touchArea {\n  height: 50%;\n  background: #50aba0;\n  color: white;\n  font-size: 2em;\n  text-align: center;\n  padding: 30% 10%; }\n\n[data-page=\"send\"] ons-list-item ons-input {\n  width: 100%;\n  display: block; }\n\n[data-page=\"confirm\"] .insufficientFund {\n  color: red; }\n\n[data-page=\"finished\"] .succeeded {\n  height: 300px;\n  margin: 50px 0;\n  background-repeat: no-repeat no-repeat;\n  background-size: contain;\n  background-position: center center; }\n  [data-page=\"finished\"] .succeeded[data-img=\"0\"] {\n    background-image: url(" + __webpack_require__(158) + "); }\n  [data-page=\"finished\"] .succeeded[data-img=\"1\"] {\n    background-image: url(" + __webpack_require__(159) + "); }\n  [data-page=\"finished\"] .succeeded[data-img=\"2\"] {\n    background-image: url(" + __webpack_require__(160) + "); }\n\n[data-page=\"finished\"] .wrap {\n  padding: 40px;\n  text-align: center; }\n\n[data-page=\"login\"] .wrap {\n  padding: 40px;\n  text-align: center; }\n  [data-page=\"login\"] .wrap .passwordBox {\n    line-height: 35px;\n    font-size: 35px;\n    display: grid;\n    grid-template-columns: 1fr 35px;\n    background: white;\n    border-radius: 8px;\n    padding: 5px;\n    margin: 50px 5px; }\n    [data-page=\"login\"] .wrap .passwordBox input {\n      font-size: 35px;\n      background: transparent;\n      border: none; }\n    [data-page=\"login\"] .wrap .passwordBox ons-button {\n      line-height: 35px; }\n    [data-page=\"login\"] .wrap .passwordBox.incorrect {\n      animation: shake 0.72s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;\n      transform: translate3d(0, 0, 0); }\n\n[data-page=\"zaifPay\"] .hasNoCredentials {\n  text-align: center; }\n  [data-page=\"zaifPay\"] .hasNoCredentials .logo {\n    display: inline-block;\n    width: 200px;\n    height: 200px;\n    background-image: url(" + __webpack_require__(161) + ");\n    background-repeat: no-repeat;\n    background-size: contain;\n    background-position: center center; }\n\n[data-page=\"zaifHealth\"] {\n  text-align: center; }\n  [data-page=\"zaifHealth\"] #score {\n    font-size: xx-large; }\n  [data-page=\"zaifHealth\"] #zaifIcon {\n    display: inline-block;\n    width: 200px;\n    height: 200px;\n    background-repeat: no-repeat;\n    background-size: contain;\n    background-position: center center; }\n\n[data-page=\"zaifPayInvoice\"] .label {\n  margin: 10px;\n  color: #888; }\n\n[data-page=\"zaifPayInvoice\"] #qrArea #qrcode {\n  width: 250px;\n  height: 250px;\n  background-color: #aaa;\n  display: inline-block;\n  margin: 10px;\n  position: relative; }\n  [data-page=\"zaifPayInvoice\"] #qrArea #qrcode #qrcodeImage {\n    width: 100%;\n    height: 100%; }\n  [data-page=\"zaifPayInvoice\"] #qrArea #qrcode #currentCurIcon {\n    position: absolute;\n    width: 20%;\n    height: 20%;\n    top: 50%;\n    left: 50%;\n    margin-left: -10%;\n    margin-top: -10%;\n    background-position: center center;\n    background-size: contain;\n    background-repeat: no-repeat; }\n\n[data-page=\"zaifPayInvoice\"] #qrArea .address {\n  display: block;\n  user-select: text;\n  -webkit-user-select: text;\n  -moz-user-select: text;\n  -ms-user-select: text;\n  word-wrap: break-word;\n  word-break: break-all;\n  white-space: pre-wrap; }\n\n[data-page=\"qrcode\"] .page__background {\n  background: transparent; }\n\n[data-page=\"qrcode\"] #container {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n  top: 0;\n  left: 0; }\n  [data-page=\"qrcode\"] #container background:transparent\n.overlay {\n    width: 100%;\n    height: 100%;\n    position: absolute;\n    top: 0;\n    left: 0; }\n\n[data-page=\"sign\"] textarea, [data-page=\"sign\"] ons-input {\n  width: 100%; }\n\n[data-page=\"sign\"] #qrcode {\n  width: 250px;\n  height: 250px;\n  background-color: #aaa;\n  display: inline-block;\n  margin: 10px;\n  position: relative; }\n  [data-page=\"sign\"] #qrcode #qrcodeImage {\n    width: 100%;\n    height: 100%; }\n  [data-page=\"sign\"] #qrcode #currentCurIcon {\n    position: absolute;\n    width: 20%;\n    height: 20%;\n    top: 50%;\n    left: 50%;\n    margin-left: -10%;\n    margin-top: -10%;\n    background-position: center center;\n    background-size: contain;\n    background-repeat: no-repeat; }\n\n[data-page=\"monaparty\"] #wrap {\n  margin: 10px;\n  background-color: white;\n  border-radius: 3px;\n  position: relative; }\n  [data-page=\"monaparty\"] #wrap ons-select {\n    width: 100%; }\n  [data-page=\"monaparty\"] #wrap #searchBox {\n    border-top: 1px solid #9a7571;\n    height: 36px;\n    width: 100%;\n    position: relative; }\n    [data-page=\"monaparty\"] #wrap #searchBox input {\n      display: block;\n      width: 100%;\n      height: 100%;\n      margin: 0;\n      border: 0;\n      border-radius: 3px;\n      box-sizing: border-box;\n      font-size: 18px; }\n    [data-page=\"monaparty\"] #wrap #searchBox ons-button {\n      height: 100%;\n      position: absolute;\n      right: 0;\n      bottom: 0; }\n\n[data-page=\"monaparty\"] #tokens {\n  text-align: center; }\n  [data-page=\"monaparty\"] #tokens .token {\n    height: 200px;\n    width: 140px;\n    display: inline-block;\n    margin: 5px;\n    position: relative;\n    background-repeat: no-repeat no-repeat;\n    background-position: center center;\n    background-size: cover; }\n    [data-page=\"monaparty\"] #tokens .token .owner {\n      position: absolute;\n      bottom: 0;\n      left: 0;\n      padding: 3px;\n      color: #ffee58; }\n    [data-page=\"monaparty\"] #tokens .token .cur {\n      position: absolute;\n      bottom: 0;\n      right: 0;\n      padding: 2px;\n      background: rgba(255, 255, 255, 0.8);\n      border-radius: 3px 0 0 0; }\n      [data-page=\"monaparty\"] #tokens .token .cur .currencySet .amount {\n        display: block; }\n      [data-page=\"monaparty\"] #tokens .token .cur .currencySet .ticker {\n        display: block;\n        font-size: 0.7em; }\n\n[data-page=\"tokenInfo\"] #cardArea {\n  margin: 10px;\n  height: 350px; }\n  [data-page=\"tokenInfo\"] #cardArea #card {\n    width: 100%;\n    height: 100%;\n    text-align: center; }\n    [data-page=\"tokenInfo\"] #cardArea #card img {\n      max-width: 100%;\n      max-height: 100%; }\n\n[data-page=\"settings\"] .monappyNotExist {\n  background-color: #fdc; }\n\n[data-page=\"tokenInfo\"] ons-toolbar, [data-page=\"monaparty\"] ons-toolbar, [data-page=\"sendToken\"] ons-toolbar, [data-page=\"makeToken\"] ons-toolbar, [data-page=\"dexOrder\"] ons-toolbar {\n  background: linear-gradient(to bottom, #9e3429 0%, #6b2f27 100%); }\n  [data-page=\"tokenInfo\"] ons-toolbar ons-icon, [data-page=\"tokenInfo\"] ons-toolbar .toolbar__title, [data-page=\"tokenInfo\"] ons-toolbar .back-button__icon, [data-page=\"monaparty\"] ons-toolbar ons-icon, [data-page=\"monaparty\"] ons-toolbar .toolbar__title, [data-page=\"monaparty\"] ons-toolbar .back-button__icon, [data-page=\"sendToken\"] ons-toolbar ons-icon, [data-page=\"sendToken\"] ons-toolbar .toolbar__title, [data-page=\"sendToken\"] ons-toolbar .back-button__icon, [data-page=\"makeToken\"] ons-toolbar ons-icon, [data-page=\"makeToken\"] ons-toolbar .toolbar__title, [data-page=\"makeToken\"] ons-toolbar .back-button__icon, [data-page=\"dexOrder\"] ons-toolbar ons-icon, [data-page=\"dexOrder\"] ons-toolbar .toolbar__title, [data-page=\"dexOrder\"] ons-toolbar .back-button__icon {\n    color: white;\n    fill: white; }\n\n[data-page=\"tokenInfo\"] .page__background, [data-page=\"monaparty\"] .page__background, [data-page=\"sendToken\"] .page__background, [data-page=\"makeToken\"] .page__background, [data-page=\"dexOrder\"] .page__background {\n  background-size: auto; }\n\nons-navigator.sand [data-page=\"tokenInfo\"] .page__background, ons-navigator.sand [data-page=\"monaparty\"] .page__background, ons-navigator.sand [data-page=\"sendToken\"] .page__background, ons-navigator.sand [data-page=\"makeToken\"] .page__background, ons-navigator.sand [data-page=\"dexOrder\"] .page__background {\n  background-image: url(" + __webpack_require__(162) + ");\n  background-position: center center;\n  background-repeat: repeat; }\n\nons-navigator.washi [data-page=\"tokenInfo\"] .page__background, ons-navigator.washi [data-page=\"monaparty\"] .page__background, ons-navigator.washi [data-page=\"sendToken\"] .page__background, ons-navigator.washi [data-page=\"makeToken\"] .page__background, ons-navigator.washi [data-page=\"dexOrder\"] .page__background {\n  background-image: url(" + __webpack_require__(163) + ");\n  background-position: center center;\n  background-repeat: repeat; }\n\nons-navigator.leather [data-page=\"tokenInfo\"] .page__background, ons-navigator.leather [data-page=\"monaparty\"] .page__background, ons-navigator.leather [data-page=\"sendToken\"] .page__background, ons-navigator.leather [data-page=\"makeToken\"] .page__background, ons-navigator.leather [data-page=\"dexOrder\"] .page__background {\n  background-image: url(" + __webpack_require__(164) + ");\n  background-position: center center;\n  background-repeat: repeat; }\n\nons-navigator.realmona [data-page=\"tokenInfo\"] .page__background, ons-navigator.realmona [data-page=\"monaparty\"] .page__background, ons-navigator.realmona [data-page=\"sendToken\"] .page__background, ons-navigator.realmona [data-page=\"makeToken\"] .page__background, ons-navigator.realmona [data-page=\"dexOrder\"] .page__background {\n  background-color: #f40298;\n  background-image: url(" + __webpack_require__(165) + ");\n  background-position: right bottom;\n  background-repeat: no-repeat; }\n\nons-navigator.white [data-page=\"tokenInfo\"] .page__background, ons-navigator.white [data-page=\"monaparty\"] .page__background, ons-navigator.white [data-page=\"sendToken\"] .page__background, ons-navigator.white [data-page=\"makeToken\"] .page__background, ons-navigator.white [data-page=\"dexOrder\"] .page__background {\n  background-color: #fff; }\n\nons-navigator.blue [data-page=\"tokenInfo\"] .page__background, ons-navigator.blue [data-page=\"monaparty\"] .page__background, ons-navigator.blue [data-page=\"sendToken\"] .page__background, ons-navigator.blue [data-page=\"makeToken\"] .page__background, ons-navigator.blue [data-page=\"dexOrder\"] .page__background {\n  background-color: #123456; }\n\n[data-page=\"tokenInfo\"] ons-input, [data-page=\"monaparty\"] ons-input, [data-page=\"sendToken\"] ons-input, [data-page=\"makeToken\"] ons-input, [data-page=\"dexOrder\"] ons-input {\n  width: 100%; }\n\n[data-page=\"tokenInfo\"] ons-button, [data-page=\"monaparty\"] ons-button, [data-page=\"sendToken\"] ons-button, [data-page=\"makeToken\"] ons-button, [data-page=\"dexOrder\"] ons-button {\n  background: linear-gradient(to bottom, #9e3429 0%, #6b2f27 100%); }\n\n@keyframes shake {\n  10%, 90% {\n    transform: translate3d(-1px, 0, 0); }\n  20%, 80% {\n    transform: translate3d(2px, 0, 0); }\n  30%, 50%, 70% {\n    transform: translate3d(-4px, 0, 0); }\n  40%, 60% {\n    transform: translate3d(4px, 0, 0); } }\n\n@keyframes spin {\n  0% {\n    transform: rotatez(0deg); }\n  25% {\n    transform: rotatez(90deg); }\n  50% {\n    transform: rotatez(180deg); }\n  75% {\n    transform: rotatez(270deg); }\n  100% {\n    transform: rotatez(360deg); } }\n", ""]);
+exports.push([module.i, ".spinner {\n  width: 90px;\n  height: 90px;\n  animation-name: spin;\n  animation-duration: 4s;\n  animation-timing-function: ease;\n  animation-iteration-count: infinite;\n  background-image: url(" + __webpack_require__(153) + ");\n  background-repeat: no-repeat no-repeat;\n  background-position: center center;\n  background-size: contain;\n  display: inline-block; }\n\n.list-item--small .list-item--small__left, .list-item--small .list-item--small__center, .list-item--small .list-item--small__right {\n  min-height: 0px;\n  padding-top: 4px;\n  padding-bottom: 4px; }\n\nons-list-item .w_right {\n  margin-left: auto;\n  text-align: right; }\n\n.toolbar-button .ons-icon {\n  vertical-align: top; }\n\nons-dialog .dialog {\n  max-height: 100%;\n  max-width: 100%;\n  overflow-y: scroll;\n  overflow-y: auto; }\n\n.shake {\n  animation: shake 0.72s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;\n  transform: translate3d(0, 0, 0); }\n\n.transparent {\n  background: transparent; }\n\n[data-page=\"home\"] #youHave {\n  width: 100%;\n  background-color: #ffeb47;\n  padding: 2% 0%;\n  color: #7c5702;\n  background-image: url(" + __webpack_require__(154) + ");\n  background-repeat: no-repeat;\n  background-position: bottom right;\n  text-align: center; }\n  [data-page=\"home\"] #youHave .label {\n    color: #7b7442; }\n  [data-page=\"home\"] #youHave .currencySet {\n    margin: 5% 0;\n    display: inline-block; }\n    [data-page=\"home\"] #youHave .currencySet .amount {\n      font-size: 1.6em;\n      margin: 3px; }\n    [data-page=\"home\"] #youHave .currencySet .ticker {\n      font-size: 0.9em; }\n\n[data-page=\"home\"] #actionWrap {\n  margin: -10px 20px 20px;\n  position: relative; }\n  [data-page=\"home\"] #actionWrap #actions {\n    position: relative;\n    display: table;\n    width: 100%;\n    border-radius: 5px;\n    table-layout: fixed;\n    background: white;\n    box-shadow: 0px 6px 19px -10px rgba(0, 0, 0, 0.5); }\n    [data-page=\"home\"] #actionWrap #actions .btns {\n      display: table-cell;\n      text-align: center;\n      padding: 10px; }\n      [data-page=\"home\"] #actionWrap #actions .btns ons-icon {\n        font-size: 1.2em; }\n      [data-page=\"home\"] #actionWrap #actions .btns .btnLabel {\n        color: #777;\n        font-size: 0.7em; }\n      [data-page=\"home\"] #actionWrap #actions .btns:active {\n        background-color: #ccc; }\n      [data-page=\"home\"] #actionWrap #actions .btns:first-of-type {\n        border-radius: 5px 0 0 5px; }\n      [data-page=\"home\"] #actionWrap #actions .btns:last-of-type {\n        border-radius: 0 5px 5px 0; }\n\n[data-page=\"home\"] #coins .w_right {\n  margin-left: auto; }\n  [data-page=\"home\"] #coins .w_right .fiatConv {\n    color: #555;\n    font-size: 0.76em; }\n  [data-page=\"home\"] #coins .w_right .amount .ticker {\n    font-size: 0.8em; }\n  [data-page=\"home\"] #coins .w_right .unconfirmed {\n    color: red; }\n\n[data-page=\"home\"] #coins .price {\n  font-size: 0.85em; }\n  [data-page=\"home\"] #coins .price .ticker {\n    color: #555;\n    font-size: 0.85em; }\n\n[data-page=\"home\"] #coins .left img {\n  width: 38px;\n  height: 38px; }\n\n[data-page=\"manageCoin\"] .left img {\n  width: 38px;\n  height: 38px; }\n\n[data-page=\"txDetail\"] .list--inset {\n  margin-top: 10px; }\n\n[data-page=\"txDetail\"] .addr {\n  font-size: 0.8em;\n  padding: 4px;\n  user-select: text;\n  -webkit-user-select: text;\n  -moz-user-select: text;\n  -ms-user-select: text; }\n\n[data-page=\"txDetail\"] .addr.receive {\n  color: #4a2; }\n\n[data-page=\"txDetail\"] .addr.change {\n  color: #29a; }\n\n[data-page=\"history\"] ons-list-item .destAddress {\n  font-size: 0.8em; }\n\n[data-page=\"history\"] ons-list-item .date {\n  font-size: 0.85em; }\n\n[data-page=\"history\"] ons-list-item .hasMsg {\n  color: #81d4fa; }\n\n[data-page=\"history\"] ons-list-item .hasPrice {\n  color: #4caf50; }\n\n[data-page=\"history\"] ons-list-item .inmatureConfirmation {\n  color: #ff0000; }\n\n[data-page=\"history\"] ons-list-item .unread {\n  color: #ff9900; }\n\n[data-page=\"history\"] .container {\n  text-align: center; }\n\n[data-page=\"showLabel\"] #currencySelector, [data-page=\"sweep\"] #currencySelector, [data-page=\"receive\"] #currencySelector, [data-page=\"history\"] #currencySelector, [data-page=\"invoice\"] #currencySelector {\n  width: 100%;\n  margin: none;\n  padding: none; }\n  [data-page=\"showLabel\"] #currencySelector .currencyIcon, [data-page=\"sweep\"] #currencySelector .currencyIcon, [data-page=\"receive\"] #currencySelector .currencyIcon, [data-page=\"history\"] #currencySelector .currencyIcon, [data-page=\"invoice\"] #currencySelector .currencyIcon {\n    width: 50px;\n    height: 50px;\n    background-position: center center;\n    background-size: contain;\n    background-repeat: no-repeat; }\n    [data-page=\"showLabel\"] #currencySelector .currencyIcon .checked, [data-page=\"sweep\"] #currencySelector .currencyIcon .checked, [data-page=\"receive\"] #currencySelector .currencyIcon .checked, [data-page=\"history\"] #currencySelector .currencyIcon .checked, [data-page=\"invoice\"] #currencySelector .currencyIcon .checked {\n      position: absolute;\n      bottom: 0;\n      right: 0;\n      width: 25px;\n      height: 25px;\n      background-position: center center;\n      background-size: contain;\n      background-repeat: no-repeat;\n      background-image: url(" + __webpack_require__(155) + "); }\n\n[data-page=\"showLabel\"], [data-page=\"invoice\"], [data-page=\"receive\"] {\n  text-align: center; }\n  [data-page=\"showLabel\"] #simple .label, [data-page=\"invoice\"] #simple .label, [data-page=\"receive\"] #simple .label {\n    margin: 10px;\n    color: #888; }\n  [data-page=\"showLabel\"] #simple #qrArea #qrcode, [data-page=\"invoice\"] #simple #qrArea #qrcode, [data-page=\"receive\"] #simple #qrArea #qrcode {\n    width: 250px;\n    height: 250px;\n    background-color: #aaa;\n    display: inline-block;\n    margin: 10px;\n    position: relative; }\n    [data-page=\"showLabel\"] #simple #qrArea #qrcode #qrcodeImage, [data-page=\"invoice\"] #simple #qrArea #qrcode #qrcodeImage, [data-page=\"receive\"] #simple #qrArea #qrcode #qrcodeImage {\n      width: 100%;\n      height: 100%; }\n    [data-page=\"showLabel\"] #simple #qrArea #qrcode #currentCurIcon, [data-page=\"invoice\"] #simple #qrArea #qrcode #currentCurIcon, [data-page=\"receive\"] #simple #qrArea #qrcode #currentCurIcon {\n      position: absolute;\n      width: 20%;\n      height: 20%;\n      top: 50%;\n      left: 50%;\n      margin-left: -10%;\n      margin-top: -10%;\n      background-position: center center;\n      background-size: contain;\n      background-repeat: no-repeat; }\n  [data-page=\"showLabel\"] #simple #qrArea .address, [data-page=\"invoice\"] #simple #qrArea .address, [data-page=\"receive\"] #simple #qrArea .address {\n    display: block;\n    user-select: text;\n    -webkit-user-select: text;\n    -moz-user-select: text;\n    -ms-user-select: text;\n    word-wrap: break-word;\n    word-break: break-all;\n    white-space: pre-wrap; }\n\n[data-page=\"invoice\"] .currencyIcon.monappy {\n  background-image: url(" + __webpack_require__(156) + "); }\n\n[data-page=\"invoice\"] .monappyNotExist {\n  background-color: #fdc; }\n\n[data-page=\"first\"] .wrap {\n  width: 100%;\n  height: 100%;\n  background-color: #ffeb47; }\n  [data-page=\"first\"] .wrap .logo {\n    position: absolute;\n    top: 20%;\n    width: 100%;\n    text-align: center; }\n    [data-page=\"first\"] .wrap .logo .icon {\n      display: inline-block;\n      background-image: url(" + __webpack_require__(157) + ");\n      background-position: center center;\n      background-repeat: no-repeat;\n      background-size: contain;\n      width: 100px;\n      height: 100px; }\n    [data-page=\"first\"] .wrap .logo .appName {\n      font-size: 2em;\n      color: #7c5702; }\n    [data-page=\"first\"] .wrap .logo .label {\n      color: #7c5702;\n      opacity: 0.5; }\n  [data-page=\"first\"] .wrap .buttons {\n    margin: 50px auto;\n    width: 50%; }\n    [data-page=\"first\"] .wrap .buttons ons-button {\n      margin: 10px 0;\n      width: 100%; }\n\n[data-page=\"restorePassphrase\"] #wordArea {\n  background-color: white;\n  width: 100%; }\n  [data-page=\"restorePassphrase\"] #wordArea .word {\n    display: inline-block;\n    margin: 5px;\n    padding: 4px;\n    border: #ddd 1px solid;\n    border-radius: 3.5px; }\n    [data-page=\"restorePassphrase\"] #wordArea .word .wd {\n      color: black; }\n    [data-page=\"restorePassphrase\"] #wordArea .word .deleteBtn {\n      color: #aaa; }\n    [data-page=\"restorePassphrase\"] #wordArea .word input {\n      border: none;\n      background: transparent;\n      font-size: 1em;\n      width: 5em;\n      margin: 0px;\n      padding: 0px;\n      ime-mode: disabled; }\n    [data-page=\"restorePassphrase\"] #wordArea .word.noMatch {\n      background-color: #fdc; }\n\n[data-page=\"restorePassphrase\"] #suggestion {\n  position: fixed;\n  bottom: 0;\n  width: 100%;\n  background-color: white;\n  border-top: #c3c3c8 1px solid; }\n  [data-page=\"restorePassphrase\"] #suggestion .sgst {\n    display: inline-block;\n    padding: 9px;\n    border-right: #c3c3c8 1px solid; }\n\n[data-page=\"restorePassphrase\"] #nextWrap {\n  padding: 10px; }\n\n[data-page=\"question\"] .questionItem {\n  text-align: center;\n  padding: 3%; }\n  [data-page=\"question\"] .questionItem .questionText {\n    padding: 3%;\n    border-radius: 8px;\n    border: 1px solid #7c5702;\n    color: #7c5702;\n    background-color: white; }\n  [data-page=\"question\"] .questionItem .answers .answer {\n    border-radius: 6px;\n    background-color: #ffeb47;\n    color: #7c5702;\n    margin: 8px 0;\n    padding: 6px; }\n\n[data-page=\"generateKeyWarn\"] .wrap {\n  padding: 10px; }\n  [data-page=\"generateKeyWarn\"] .wrap .check {\n    padding: 12px; }\n    [data-page=\"generateKeyWarn\"] .wrap .check input {\n      font-size: 1.5em; }\n\n[data-page=\"generateKey\"] .touchArea {\n  height: 50%;\n  background: #50aba0;\n  color: white;\n  font-size: 2em;\n  text-align: center;\n  padding: 30% 10%; }\n\n[data-page=\"send\"] ons-list-item ons-input {\n  width: 100%;\n  display: block; }\n\n[data-page=\"confirm\"] .insufficientFund {\n  color: red; }\n\n[data-page=\"finished\"] .succeeded {\n  height: 300px;\n  margin: 50px 0;\n  background-repeat: no-repeat no-repeat;\n  background-size: contain;\n  background-position: center center; }\n  [data-page=\"finished\"] .succeeded[data-img=\"0\"] {\n    background-image: url(" + __webpack_require__(158) + "); }\n  [data-page=\"finished\"] .succeeded[data-img=\"1\"] {\n    background-image: url(" + __webpack_require__(159) + "); }\n  [data-page=\"finished\"] .succeeded[data-img=\"2\"] {\n    background-image: url(" + __webpack_require__(160) + "); }\n\n[data-page=\"finished\"] .wrap {\n  padding: 40px;\n  text-align: center; }\n\n[data-page=\"setPassword\"] ons-input {\n  width: 100%; }\n\n[data-page=\"login\"] .wrap {\n  padding: 40px;\n  text-align: center; }\n  [data-page=\"login\"] .wrap .passwordBox {\n    line-height: 35px;\n    font-size: 35px;\n    display: grid;\n    grid-template-columns: 1fr 35px;\n    background: white;\n    border-radius: 8px;\n    padding: 5px;\n    margin: 50px 5px; }\n    [data-page=\"login\"] .wrap .passwordBox input {\n      font-size: 35px;\n      background: transparent;\n      border: none; }\n    [data-page=\"login\"] .wrap .passwordBox ons-button {\n      line-height: 35px; }\n    [data-page=\"login\"] .wrap .passwordBox.incorrect {\n      animation: shake 0.72s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;\n      transform: translate3d(0, 0, 0); }\n\n[data-page=\"zaifPay\"] .hasNoCredentials {\n  text-align: center; }\n  [data-page=\"zaifPay\"] .hasNoCredentials .logo {\n    display: inline-block;\n    width: 200px;\n    height: 200px;\n    background-image: url(" + __webpack_require__(161) + ");\n    background-repeat: no-repeat;\n    background-size: contain;\n    background-position: center center; }\n\n[data-page=\"zaifHealth\"] {\n  text-align: center; }\n  [data-page=\"zaifHealth\"] #score {\n    font-size: xx-large; }\n  [data-page=\"zaifHealth\"] #zaifIcon {\n    display: inline-block;\n    width: 200px;\n    height: 200px;\n    background-repeat: no-repeat;\n    background-size: contain;\n    background-position: center center; }\n\n[data-page=\"zaifPayInvoice\"] .label {\n  margin: 10px;\n  color: #888; }\n\n[data-page=\"zaifPayInvoice\"] #qrArea #qrcode {\n  width: 250px;\n  height: 250px;\n  background-color: #aaa;\n  display: inline-block;\n  margin: 10px;\n  position: relative; }\n  [data-page=\"zaifPayInvoice\"] #qrArea #qrcode #qrcodeImage {\n    width: 100%;\n    height: 100%; }\n  [data-page=\"zaifPayInvoice\"] #qrArea #qrcode #currentCurIcon {\n    position: absolute;\n    width: 20%;\n    height: 20%;\n    top: 50%;\n    left: 50%;\n    margin-left: -10%;\n    margin-top: -10%;\n    background-position: center center;\n    background-size: contain;\n    background-repeat: no-repeat; }\n\n[data-page=\"zaifPayInvoice\"] #qrArea .address {\n  display: block;\n  user-select: text;\n  -webkit-user-select: text;\n  -moz-user-select: text;\n  -ms-user-select: text;\n  word-wrap: break-word;\n  word-break: break-all;\n  white-space: pre-wrap; }\n\n[data-page=\"qrcode\"] .page__background {\n  background: transparent; }\n\n[data-page=\"qrcode\"] #container {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n  top: 0;\n  left: 0; }\n  [data-page=\"qrcode\"] #container background:transparent\n.overlay {\n    width: 100%;\n    height: 100%;\n    position: absolute;\n    top: 0;\n    left: 0; }\n\n[data-page=\"sign\"] textarea, [data-page=\"sign\"] ons-input {\n  width: 100%; }\n\n[data-page=\"sign\"] #qrcode {\n  width: 250px;\n  height: 250px;\n  background-color: #aaa;\n  display: inline-block;\n  margin: 10px;\n  position: relative; }\n  [data-page=\"sign\"] #qrcode #qrcodeImage {\n    width: 100%;\n    height: 100%; }\n  [data-page=\"sign\"] #qrcode #currentCurIcon {\n    position: absolute;\n    width: 20%;\n    height: 20%;\n    top: 50%;\n    left: 50%;\n    margin-left: -10%;\n    margin-top: -10%;\n    background-position: center center;\n    background-size: contain;\n    background-repeat: no-repeat; }\n\n[data-page=\"monaparty\"] .toolbar__right {\n  width: 50%; }\n\n[data-page=\"monaparty\"] #wrap {\n  margin: 10px;\n  background-color: white;\n  border-radius: 3px;\n  position: relative; }\n  [data-page=\"monaparty\"] #wrap ons-select {\n    width: 100%; }\n  [data-page=\"monaparty\"] #wrap #searchBox {\n    border-top: 1px solid #9a7571;\n    height: 36px;\n    width: 100%;\n    position: relative; }\n    [data-page=\"monaparty\"] #wrap #searchBox input {\n      display: block;\n      width: 100%;\n      height: 100%;\n      margin: 0;\n      border: 0;\n      border-radius: 3px;\n      box-sizing: border-box;\n      font-size: 18px; }\n    [data-page=\"monaparty\"] #wrap #searchBox ons-button {\n      height: 100%;\n      position: absolute;\n      right: 0;\n      bottom: 0; }\n\n[data-page=\"monaparty\"] #tokens {\n  text-align: center; }\n  [data-page=\"monaparty\"] #tokens .token {\n    height: 200px;\n    width: 140px;\n    display: inline-block;\n    margin: 5px;\n    position: relative;\n    background-repeat: no-repeat no-repeat;\n    background-position: center center;\n    background-size: cover; }\n    [data-page=\"monaparty\"] #tokens .token .owner {\n      position: absolute;\n      bottom: 0;\n      left: 0;\n      padding: 3px;\n      color: #ffee58; }\n    [data-page=\"monaparty\"] #tokens .token .cur {\n      position: absolute;\n      bottom: 0;\n      right: 0;\n      padding: 2px;\n      background: rgba(255, 255, 255, 0.8);\n      border-radius: 3px 0 0 0; }\n      [data-page=\"monaparty\"] #tokens .token .cur .currencySet .amount {\n        display: block; }\n      [data-page=\"monaparty\"] #tokens .token .cur .currencySet .ticker {\n        display: block;\n        font-size: 0.7em; }\n\n[data-page=\"tokenInfo\"] #cardArea {\n  margin: 10px;\n  height: 350px; }\n  [data-page=\"tokenInfo\"] #cardArea #card {\n    width: 100%;\n    height: 100%;\n    text-align: center; }\n    [data-page=\"tokenInfo\"] #cardArea #card img {\n      max-width: 100%;\n      max-height: 100%; }\n\n[data-page=\"settings\"] .monappyNotExist {\n  background-color: #fdc; }\n\n[data-page=\"tokenInfo\"] ons-toolbar, [data-page=\"monaparty\"] ons-toolbar, [data-page=\"sendToken\"] ons-toolbar, [data-page=\"makeToken\"] ons-toolbar, [data-page=\"dexOrder\"] ons-toolbar {\n  background: linear-gradient(to bottom, #9e3429 0%, #6b2f27 100%); }\n  [data-page=\"tokenInfo\"] ons-toolbar ons-icon, [data-page=\"tokenInfo\"] ons-toolbar .toolbar__title, [data-page=\"tokenInfo\"] ons-toolbar .back-button__icon, [data-page=\"monaparty\"] ons-toolbar ons-icon, [data-page=\"monaparty\"] ons-toolbar .toolbar__title, [data-page=\"monaparty\"] ons-toolbar .back-button__icon, [data-page=\"sendToken\"] ons-toolbar ons-icon, [data-page=\"sendToken\"] ons-toolbar .toolbar__title, [data-page=\"sendToken\"] ons-toolbar .back-button__icon, [data-page=\"makeToken\"] ons-toolbar ons-icon, [data-page=\"makeToken\"] ons-toolbar .toolbar__title, [data-page=\"makeToken\"] ons-toolbar .back-button__icon, [data-page=\"dexOrder\"] ons-toolbar ons-icon, [data-page=\"dexOrder\"] ons-toolbar .toolbar__title, [data-page=\"dexOrder\"] ons-toolbar .back-button__icon {\n    color: white;\n    fill: white; }\n\n[data-page=\"tokenInfo\"] .page__background, [data-page=\"monaparty\"] .page__background, [data-page=\"sendToken\"] .page__background, [data-page=\"makeToken\"] .page__background, [data-page=\"dexOrder\"] .page__background {\n  background-size: auto; }\n\nons-navigator.sand [data-page=\"tokenInfo\"] .page__background, ons-navigator.sand [data-page=\"monaparty\"] .page__background, ons-navigator.sand [data-page=\"sendToken\"] .page__background, ons-navigator.sand [data-page=\"makeToken\"] .page__background, ons-navigator.sand [data-page=\"dexOrder\"] .page__background {\n  background-image: url(" + __webpack_require__(162) + ");\n  background-position: center center;\n  background-repeat: repeat; }\n\nons-navigator.washi [data-page=\"tokenInfo\"] .page__background, ons-navigator.washi [data-page=\"monaparty\"] .page__background, ons-navigator.washi [data-page=\"sendToken\"] .page__background, ons-navigator.washi [data-page=\"makeToken\"] .page__background, ons-navigator.washi [data-page=\"dexOrder\"] .page__background {\n  background-image: url(" + __webpack_require__(163) + ");\n  background-position: center center;\n  background-repeat: repeat; }\n\nons-navigator.leather [data-page=\"tokenInfo\"] .page__background, ons-navigator.leather [data-page=\"monaparty\"] .page__background, ons-navigator.leather [data-page=\"sendToken\"] .page__background, ons-navigator.leather [data-page=\"makeToken\"] .page__background, ons-navigator.leather [data-page=\"dexOrder\"] .page__background {\n  background-image: url(" + __webpack_require__(164) + ");\n  background-position: center center;\n  background-repeat: repeat; }\n\nons-navigator.realmona [data-page=\"tokenInfo\"] .page__background, ons-navigator.realmona [data-page=\"monaparty\"] .page__background, ons-navigator.realmona [data-page=\"sendToken\"] .page__background, ons-navigator.realmona [data-page=\"makeToken\"] .page__background, ons-navigator.realmona [data-page=\"dexOrder\"] .page__background {\n  background-color: #f40298;\n  background-image: url(" + __webpack_require__(165) + ");\n  background-position: right bottom;\n  background-repeat: no-repeat; }\n\nons-navigator.white [data-page=\"tokenInfo\"] .page__background, ons-navigator.white [data-page=\"monaparty\"] .page__background, ons-navigator.white [data-page=\"sendToken\"] .page__background, ons-navigator.white [data-page=\"makeToken\"] .page__background, ons-navigator.white [data-page=\"dexOrder\"] .page__background {\n  background-color: #fff; }\n\nons-navigator.blue [data-page=\"tokenInfo\"] .page__background, ons-navigator.blue [data-page=\"monaparty\"] .page__background, ons-navigator.blue [data-page=\"sendToken\"] .page__background, ons-navigator.blue [data-page=\"makeToken\"] .page__background, ons-navigator.blue [data-page=\"dexOrder\"] .page__background {\n  background-color: #123456; }\n\n[data-page=\"tokenInfo\"] ons-input, [data-page=\"monaparty\"] ons-input, [data-page=\"sendToken\"] ons-input, [data-page=\"makeToken\"] ons-input, [data-page=\"dexOrder\"] ons-input {\n  width: 100%; }\n\n[data-page=\"tokenInfo\"] ons-button, [data-page=\"monaparty\"] ons-button, [data-page=\"sendToken\"] ons-button, [data-page=\"makeToken\"] ons-button, [data-page=\"dexOrder\"] ons-button {\n  background: linear-gradient(to bottom, #9e3429 0%, #6b2f27 100%); }\n\n@keyframes shake {\n  10%, 90% {\n    transform: translate3d(-1px, 0, 0); }\n  20%, 80% {\n    transform: translate3d(2px, 0, 0); }\n  30%, 50%, 70% {\n    transform: translate3d(-4px, 0, 0); }\n  40%, 60% {\n    transform: translate3d(4px, 0, 0); } }\n\n@keyframes spin {\n  0% {\n    transform: rotatez(0deg); }\n  25% {\n    transform: rotatez(90deg); }\n  50% {\n    transform: rotatez(180deg); }\n  75% {\n    transform: rotatez(270deg); }\n  100% {\n    transform: rotatez(360deg); } }\n", ""]);
 
 // exports
 
@@ -27644,9 +27727,9 @@ module.exports=__webpack_require__(363)({
 var Buffer = __webpack_require__(2).Buffer
 var bcrypto = __webpack_require__(28)
 var fastMerkleRoot = __webpack_require__(208)
-var typeforce = __webpack_require__(6)
+var typeforce = __webpack_require__(7)
 var types = __webpack_require__(10)
-var varuint = __webpack_require__(45)
+var varuint = __webpack_require__(46)
 
 var Transaction = __webpack_require__(64)
 
@@ -28075,7 +28158,7 @@ module.exports = function hash (buf, fn) {
 
 "use strict";
 /* WEBPACK VAR INJECTION */(function(Buffer) {
-var Transform = __webpack_require__(43).Transform
+var Transform = __webpack_require__(44).Transform
 var inherits = __webpack_require__(1)
 
 function HashBase (blockSize) {
@@ -28357,7 +28440,7 @@ module.exports = PassThrough;
 var Transform = __webpack_require__(92);
 
 /*<replacement>*/
-var util = __webpack_require__(33);
+var util = __webpack_require__(34);
 util.inherits = __webpack_require__(1);
 /*</replacement>*/
 
@@ -28949,7 +29032,7 @@ module.exports = {
 
 var Buffer = __webpack_require__(2).Buffer
 var bscript = __webpack_require__(9)
-var typeforce = __webpack_require__(6)
+var typeforce = __webpack_require__(7)
 var OPS = __webpack_require__(11)
 
 function partialSignature (value) {
@@ -29025,7 +29108,7 @@ module.exports = {
 
 var bscript = __webpack_require__(9)
 var types = __webpack_require__(10)
-var typeforce = __webpack_require__(6)
+var typeforce = __webpack_require__(7)
 var OPS = __webpack_require__(11)
 var OP_INT_BASE = OPS.OP_RESERVED // OP_1 - 1
 
@@ -29095,7 +29178,7 @@ module.exports = {
 
 var bscript = __webpack_require__(9)
 var types = __webpack_require__(10)
-var typeforce = __webpack_require__(6)
+var typeforce = __webpack_require__(7)
 var OPS = __webpack_require__(11)
 
 function check (script) {
@@ -29144,7 +29227,7 @@ module.exports = {
 // {signature}
 
 var bscript = __webpack_require__(9)
-var typeforce = __webpack_require__(6)
+var typeforce = __webpack_require__(7)
 
 function check (script) {
   var chunks = bscript.decompile(script)
@@ -29189,7 +29272,7 @@ module.exports = {
 // {pubKey} OP_CHECKSIG
 
 var bscript = __webpack_require__(9)
-var typeforce = __webpack_require__(6)
+var typeforce = __webpack_require__(7)
 var OPS = __webpack_require__(11)
 
 function check (script) {
@@ -29238,7 +29321,7 @@ module.exports = {
 // {signature} {pubKey}
 
 var bscript = __webpack_require__(9)
-var typeforce = __webpack_require__(6)
+var typeforce = __webpack_require__(7)
 
 function check (script) {
   var chunks = bscript.decompile(script)
@@ -29296,7 +29379,7 @@ module.exports = {
 
 var bscript = __webpack_require__(9)
 var types = __webpack_require__(10)
-var typeforce = __webpack_require__(6)
+var typeforce = __webpack_require__(7)
 var OPS = __webpack_require__(11)
 
 function check (script) {
@@ -29354,7 +29437,7 @@ module.exports = {
 
 var bscript = __webpack_require__(9)
 var types = __webpack_require__(10)
-var typeforce = __webpack_require__(6)
+var typeforce = __webpack_require__(7)
 var OPS = __webpack_require__(11)
 
 function check (script) {
@@ -29403,7 +29486,7 @@ module.exports = {
 // {signature} {pubKey}
 
 var bscript = __webpack_require__(9)
-var typeforce = __webpack_require__(6)
+var typeforce = __webpack_require__(7)
 
 function isCompressedCanonicalPubKey (pubKey) {
   return bscript.isCanonicalPubKey(pubKey) && pubKey.length === 33
@@ -29454,7 +29537,7 @@ module.exports = {
 
 var bscript = __webpack_require__(9)
 var types = __webpack_require__(10)
-var typeforce = __webpack_require__(6)
+var typeforce = __webpack_require__(7)
 var OPS = __webpack_require__(11)
 
 function check (script) {
@@ -29518,7 +29601,7 @@ module.exports = {
 
 var bscript = __webpack_require__(9)
 var types = __webpack_require__(10)
-var typeforce = __webpack_require__(6)
+var typeforce = __webpack_require__(7)
 var OPS = __webpack_require__(11)
 
 function check (script) {
@@ -29567,7 +29650,7 @@ module.exports = {
 var Buffer = __webpack_require__(2).Buffer
 var bscript = __webpack_require__(9)
 var types = __webpack_require__(10)
-var typeforce = __webpack_require__(6)
+var typeforce = __webpack_require__(7)
 var OPS = __webpack_require__(11)
 
 var HEADER = Buffer.from('aa21a9ed', 'hex')
@@ -29864,8 +29947,8 @@ module.exports = function base (ALPHABET) {
 /***/ (function(module, exports, __webpack_require__) {
 
 var Buffer = __webpack_require__(2).Buffer
-var createHmac = __webpack_require__(47)
-var typeforce = __webpack_require__(6)
+var createHmac = __webpack_require__(48)
+var typeforce = __webpack_require__(7)
 var types = __webpack_require__(10)
 
 var BigInteger = __webpack_require__(23)
@@ -30853,7 +30936,7 @@ module.exports = {"secp128r1":{"p":"fffffffdffffffffffffffffffffffff","a":"fffff
 /* 244 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(Buffer) {var bs58check = __webpack_require__(46)
+/* WEBPACK VAR INJECTION */(function(Buffer) {var bs58check = __webpack_require__(47)
 
 function decodeRaw (buffer, version) {
   // check version only if defined
@@ -30924,12 +31007,12 @@ module.exports = {
 /***/ (function(module, exports, __webpack_require__) {
 
 var Buffer = __webpack_require__(2).Buffer
-var base58check = __webpack_require__(46)
+var base58check = __webpack_require__(47)
 var bcrypto = __webpack_require__(28)
-var createHmac = __webpack_require__(47)
-var typeforce = __webpack_require__(6)
+var createHmac = __webpack_require__(48)
+var typeforce = __webpack_require__(7)
 var types = __webpack_require__(10)
-var NETWORKS = __webpack_require__(34)
+var NETWORKS = __webpack_require__(35)
 
 var BigInteger = __webpack_require__(23)
 var ECPair = __webpack_require__(66)
@@ -31249,9 +31332,9 @@ var Buffer = __webpack_require__(2).Buffer
 var baddress = __webpack_require__(67)
 var bcrypto = __webpack_require__(28)
 var bscript = __webpack_require__(9)
-var networks = __webpack_require__(34)
+var networks = __webpack_require__(35)
 var ops = __webpack_require__(11)
-var typeforce = __webpack_require__(6)
+var typeforce = __webpack_require__(7)
 var types = __webpack_require__(10)
 var scriptTypes = bscript.types
 var SIGNABLE = [bscript.types.P2PKH, bscript.types.P2PK, bscript.types.MULTISIG]
@@ -33013,11 +33096,11 @@ module.exports = function blackjack (utxos, outputs, feeRate) {
 /* 268 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(Buffer) {var bs58check = __webpack_require__(46)
+/* WEBPACK VAR INJECTION */(function(Buffer) {var bs58check = __webpack_require__(47)
 var bufferEquals = __webpack_require__(269)
 var createHash = __webpack_require__(17)
 var secp256k1 = __webpack_require__(270)
-var varuint = __webpack_require__(45)
+var varuint = __webpack_require__(46)
 
 function sha256 (b) {
   return createHash('sha256').update(b).digest()
@@ -34436,7 +34519,7 @@ BasePoint.prototype.dblp = function dblp(k) {
 "use strict";
 
 
-var curve = __webpack_require__(48);
+var curve = __webpack_require__(49);
 var elliptic = __webpack_require__(12);
 var BN = __webpack_require__(8);
 var inherits = __webpack_require__(1);
@@ -35381,7 +35464,7 @@ JPoint.prototype.isInfinity = function isInfinity() {
 "use strict";
 
 
-var curve = __webpack_require__(48);
+var curve = __webpack_require__(49);
 var BN = __webpack_require__(8);
 var inherits = __webpack_require__(1);
 var Base = curve.base;
@@ -35568,7 +35651,7 @@ Point.prototype.getX = function getX() {
 "use strict";
 
 
-var curve = __webpack_require__(48);
+var curve = __webpack_require__(49);
 var elliptic = __webpack_require__(12);
 var BN = __webpack_require__(8);
 var inherits = __webpack_require__(1);
@@ -36235,7 +36318,7 @@ exports.sha512 = __webpack_require__(113);
 
 
 var utils = __webpack_require__(19);
-var common = __webpack_require__(35);
+var common = __webpack_require__(36);
 var shaCommon = __webpack_require__(111);
 
 var rotl32 = utils.rotl32;
@@ -36395,7 +36478,7 @@ SHA384.prototype._digest = function digest(enc) {
 
 
 var utils = __webpack_require__(19);
-var common = __webpack_require__(35);
+var common = __webpack_require__(36);
 
 var rotl32 = utils.rotl32;
 var sum32 = utils.sum32;
@@ -39573,7 +39656,7 @@ module.exports = MD5
 "use strict";
 
 var Buffer = __webpack_require__(2).Buffer
-var Transform = __webpack_require__(43).Transform
+var Transform = __webpack_require__(44).Transform
 var inherits = __webpack_require__(1)
 
 function throwIfNotStringOrBuffer (val, prefix) {
@@ -39805,7 +39888,7 @@ exports.decrypt = function (self, block) {
 /* 317 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var xor = __webpack_require__(37)
+var xor = __webpack_require__(38)
 
 exports.encrypt = function (self, block) {
   var data = xor(block, self._prev)
@@ -39829,7 +39912,7 @@ exports.decrypt = function (self, block) {
 /***/ (function(module, exports, __webpack_require__) {
 
 var Buffer = __webpack_require__(2).Buffer
-var xor = __webpack_require__(37)
+var xor = __webpack_require__(38)
 
 function encryptStart (self, data, decrypt) {
   var len = data.length
@@ -39946,7 +40029,7 @@ exports.encrypt = function (self, chunk, decrypt) {
 /* 321 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(Buffer) {var xor = __webpack_require__(37)
+/* WEBPACK VAR INJECTION */(function(Buffer) {var xor = __webpack_require__(38)
 
 function getBlock (self) {
   self._prev = self._cipher.encryptBlock(self._prev)
@@ -41193,7 +41276,7 @@ function formatReturnValue(bn, enc) {
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(Buffer) {var createHash = __webpack_require__(17)
-var stream = __webpack_require__(43)
+var stream = __webpack_require__(44)
 var inherits = __webpack_require__(1)
 var sign = __webpack_require__(335)
 var verify = __webpack_require__(350)
@@ -41291,7 +41374,7 @@ module.exports = {
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(Buffer) {// much of this based on https://github.com/indutny/self-signed/blob/gh-pages/lib/rsa.js
-var createHmac = __webpack_require__(47)
+var createHmac = __webpack_require__(48)
 var crt = __webpack_require__(78)
 var EC = __webpack_require__(12).ec
 var BN = __webpack_require__(8)
@@ -41447,7 +41530,7 @@ module.exports.makeKey = makeKey
 // Fedor, you are amazing.
 
 
-var asn1 = __webpack_require__(38)
+var asn1 = __webpack_require__(39)
 
 exports.certificate = __webpack_require__(347)
 
@@ -41571,7 +41654,7 @@ exports.signature = asn1.define('signature', function () {
 /* 337 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var asn1 = __webpack_require__(38);
+var asn1 = __webpack_require__(39);
 var inherits = __webpack_require__(1);
 
 var api = exports;
@@ -41924,9 +42007,9 @@ ReporterError.prototype.rethrow = function rethrow(msg) {
 /* 341 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var Reporter = __webpack_require__(39).Reporter;
-var EncoderBuffer = __webpack_require__(39).EncoderBuffer;
-var DecoderBuffer = __webpack_require__(39).DecoderBuffer;
+var Reporter = __webpack_require__(40).Reporter;
+var EncoderBuffer = __webpack_require__(40).EncoderBuffer;
+var DecoderBuffer = __webpack_require__(40).DecoderBuffer;
 var assert = __webpack_require__(15);
 
 // Supported tags
@@ -42720,7 +42803,7 @@ PEMEncoder.prototype.encode = function encode(data, options) {
 
 
 
-var asn = __webpack_require__(38)
+var asn = __webpack_require__(39)
 
 var Time = asn.define('Time', function () {
   this.choice({
@@ -43570,8 +43653,8 @@ if (false) {(function () {
 /* 366 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const storage = __webpack_require__(7)
-const coinUtil = __webpack_require__(5)
+const storage = __webpack_require__(5)
+const coinUtil = __webpack_require__(6)
 
 // Error message translation Start 
 const translationTable={
@@ -43596,13 +43679,13 @@ module.exports=__webpack_require__(367)({
   methods:{
 
     home(){
-      this.openSide=false;this.$set(this,"pageStack",[__webpack_require__(40)])
+      this.openSide=false;this.$set(this,"pageStack",[__webpack_require__(41)])
     },
     receive(){
       this.openSide=false;this.$set(this,"pageStack",[__webpack_require__(137)])
     },
     send(){
-      this.openSide=false;this.$set(this,"pageStack",[__webpack_require__(31)])
+      this.openSide=false;this.$set(this,"pageStack",[__webpack_require__(32)])
     },
     history(){
       this.openSide=false;this.$set(this,"pageStack",[__webpack_require__(145)])
@@ -43665,7 +43748,7 @@ module.exports=__webpack_require__(367)({
       coinUtil.parseUrl(url).then(res=>{
         if(res.isCoinAddress&&res.isPrefixOk&&res.isValidAddress){
           this.$store.commit("setSendUrl",res.url)
-          this.pageStack.push(__webpack_require__(31))
+          this.pageStack.push(__webpack_require__(32))
         }else if(res.url){
           this.$ons.notification.alert(res.url)
         }
@@ -43674,6 +43757,9 @@ module.exports=__webpack_require__(367)({
   },
   watch:{
     pageStack(){
+      if(this.$ons.platform.isIOS()&&window.StatusBar&&this.pageStack.length===1){
+        window.StatusBar.styleDefault();
+      }
       this.$store.commit("setTransparency",false)
     }
   },
@@ -43721,7 +43807,7 @@ if (false) {(function () {
 /* 368 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var render = function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('v-ons-page',{directives:[{name:"show",rawName:"v-show",value:(!_vm.$store.state.transparency),expression:"!$store.state.transparency"}],attrs:{"data-page":"home"}},[_c('custom-bar',{attrs:{"title":"ホーム","menu":"true"}},[_c('v-ons-toolbar-button',{on:{"click":_vm.load}},[_c('v-ons-icon',{attrs:{"icon":"fa-refresh"}})],1),_vm._v(" "),_c('v-ons-toolbar-button',{on:{"click":_vm.qr}},[_c('v-ons-icon',{attrs:{"icon":"fa-qrcode"}})],1)],1),_vm._v(" "),_c('div',[_c('v-ons-pull-hook',{attrs:{"action":_vm.load},on:{"changestate":function($event){_vm.state = $event.state}}},[_c('span',{directives:[{name:"show",rawName:"v-show",value:(_vm.state === 'initial'),expression:"state === 'initial'"}]},[_vm._v("引っ張って更新!")]),_vm._v(" "),_c('span',{directives:[{name:"show",rawName:"v-show",value:(_vm.state === 'preaction'),expression:"state === 'preaction'"}]},[_vm._v("今だ！離せ！")]),_vm._v(" "),_c('span',{directives:[{name:"show",rawName:"v-show",value:(_vm.state === 'action'),expression:"state === 'action'"}]},[_vm._v("Loading...")])]),_vm._v(" "),_c('div',{attrs:{"id":"youHave"}},[_c('div',{directives:[{name:"show",rawName:"v-show",value:(!_vm.loading),expression:"!loading"}]},[_c('div',{staticClass:"label"},[_vm._v("あなたが今持っているのは")]),_vm._v(" "),_c('div',{attrs:{"id":"balanceWrap"}},[_c('currency-set',{attrs:{"amount":_vm.fiatConv,"ticker":_vm.fiat,"about":"true"}})],1),_vm._v(" "),_c('div',{directives:[{name:"show",rawName:"v-show",value:(_vm.error),expression:"error"}]},[_vm._v("エラーが発生したようです。"),_c('br'),_vm._v("しばらくしてからもう一度お試しください。")])]),_vm._v(" "),_c('div',{directives:[{name:"show",rawName:"v-show",value:(_vm.loading),expression:"loading"}],staticClass:"spinner"})]),_vm._v(" "),_c('div',{attrs:{"id":"actionWrap"}},[_c('div',{attrs:{"id":"actions"}},[_c('div',{staticClass:"btns",staticStyle:{"color":"#d0021c"},on:{"click":_vm.receive}},[_c('v-ons-icon',{attrs:{"icon":"fa-qrcode"}}),_vm._v(" "),_c('div',{staticClass:"btnLabel"},[_vm._v("受け取り")])],1),_vm._v(" "),_c('div',{staticClass:"btns",staticStyle:{"color":"#7dd321"},on:{"click":_vm.send}},[_c('v-ons-icon',{attrs:{"icon":"fa-paper-plane"}}),_vm._v(" "),_c('div',{staticClass:"btnLabel"},[_vm._v("送金")])],1),_vm._v(" "),_c('div',{staticClass:"btns",staticStyle:{"color":"#f6a523"},on:{"click":_vm.history}},[_c('v-ons-icon',{attrs:{"icon":"fa-history"}}),_vm._v(" "),_c('div',{staticClass:"btnLabel"},[_vm._v("履歴")])],1),_vm._v(" "),_c('div',{staticClass:"btns",staticStyle:{"color":"#04c0de"},on:{"click":_vm.settings}},[_c('v-ons-icon',{attrs:{"icon":"fa-cog"}}),_vm._v(" "),_c('div',{staticClass:"btnLabel"},[_vm._v("設定")])],1)])]),_vm._v(" "),_c('div',{attrs:{"id":"coins"}},[_c('v-ons-list',[_vm._l((_vm.curs),function(c){return _c('v-ons-list-item',[_c('div',{staticClass:"left"},[_c('img',{attrs:{"src":c.icon}})]),_vm._v(" "),_c('div',[_c('div',{staticClass:"screenName"},[_vm._v(_vm._s(c.screenName||"取得失敗"))]),_vm._v(" "),_c('div',{staticClass:"price"},[_c('currency-set',{attrs:{"amount":c.price,"ticker":c.coinId,"fiatTicker":_vm.fiat}})],1)]),_vm._v(" "),_c('div',{staticClass:"w_right"},[_c('div',{staticClass:"amount",class:{unconfirmed:c.unconfirmed}},[_c('currency-set',{attrs:{"amount":c.balance,"ticker":c.coinId}}),_c('span',{directives:[{name:"show",rawName:"v-show",value:(c.unconfirmed),expression:"c.unconfirmed"}]},[_vm._v("+"+_vm._s(c.unconfirmed)+"待機中")])],1),_vm._v(" "),_c('div',{staticClass:"fiatConv"},[_c('currency-set',{attrs:{"amount":c.balance*c.price,"ticker":_vm.fiat,"easy":_vm.isEasy}})],1)])])}),_vm._v(" "),_c('v-ons-list-item',{attrs:{"modifier":"tappable chevron"},on:{"click":_vm.goToManageCoin}},[_vm._v("\n          コインを追加\n        ")])],2)],1)],1)],1)}
+var render = function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('v-ons-page',{directives:[{name:"show",rawName:"v-show",value:(!_vm.$store.state.transparency),expression:"!$store.state.transparency"}],attrs:{"data-page":"home"}},[_c('custom-bar',{attrs:{"title":"ホーム","menu":"true"}},[_c('v-ons-toolbar-button',{on:{"click":_vm.load}},[_c('v-ons-icon',{attrs:{"icon":"ion-ios-loop-strong"}})],1),_vm._v(" "),_c('v-ons-toolbar-button',{on:{"click":_vm.qr}},[_c('v-ons-icon',{attrs:{"icon":"ion-qr-scanner"}})],1)],1),_vm._v(" "),_c('div',[_c('v-ons-pull-hook',{attrs:{"action":_vm.load},on:{"changestate":function($event){_vm.state = $event.state}}},[_c('span',{directives:[{name:"show",rawName:"v-show",value:(_vm.state === 'initial'),expression:"state === 'initial'"}]},[_vm._v("引っ張って更新!")]),_vm._v(" "),_c('span',{directives:[{name:"show",rawName:"v-show",value:(_vm.state === 'preaction'),expression:"state === 'preaction'"}]},[_vm._v("今だ！離せ！")]),_vm._v(" "),_c('span',{directives:[{name:"show",rawName:"v-show",value:(_vm.state === 'action'),expression:"state === 'action'"}]},[_vm._v("Loading...")])]),_vm._v(" "),_c('div',{attrs:{"id":"youHave"}},[_c('div',{directives:[{name:"show",rawName:"v-show",value:(!_vm.loading),expression:"!loading"}]},[_c('div',{staticClass:"label"},[_vm._v("あなたが今持っているのは")]),_vm._v(" "),_c('div',{attrs:{"id":"balanceWrap"}},[_c('currency-set',{attrs:{"amount":_vm.fiatConv,"ticker":_vm.fiat,"about":"true"}})],1),_vm._v(" "),_c('div',{directives:[{name:"show",rawName:"v-show",value:(_vm.error),expression:"error"}]},[_vm._v("エラーが発生したようです。"),_c('br'),_vm._v("しばらくしてからもう一度お試しください。")])]),_vm._v(" "),_c('div',{directives:[{name:"show",rawName:"v-show",value:(_vm.loading),expression:"loading"}],staticClass:"spinner"})]),_vm._v(" "),_c('div',{attrs:{"id":"actionWrap"}},[_c('div',{attrs:{"id":"actions"}},[_c('div',{staticClass:"btns",staticStyle:{"color":"#d0021c"},on:{"click":_vm.receive}},[_c('v-ons-icon',{attrs:{"icon":"fa-qrcode"}}),_vm._v(" "),_c('div',{staticClass:"btnLabel"},[_vm._v("受け取り")])],1),_vm._v(" "),_c('div',{staticClass:"btns",staticStyle:{"color":"#7dd321"},on:{"click":_vm.send}},[_c('v-ons-icon',{attrs:{"icon":"fa-paper-plane"}}),_vm._v(" "),_c('div',{staticClass:"btnLabel"},[_vm._v("送金")])],1),_vm._v(" "),_c('div',{staticClass:"btns",staticStyle:{"color":"#f6a523"},on:{"click":_vm.history}},[_c('v-ons-icon',{attrs:{"icon":"fa-history"}}),_vm._v(" "),_c('div',{staticClass:"btnLabel"},[_vm._v("履歴")])],1),_vm._v(" "),_c('div',{staticClass:"btns",staticStyle:{"color":"#04c0de"},on:{"click":_vm.settings}},[_c('v-ons-icon',{attrs:{"icon":"fa-cog"}}),_vm._v(" "),_c('div',{staticClass:"btnLabel"},[_vm._v("設定")])],1)])]),_vm._v(" "),_c('div',{attrs:{"id":"coins"}},[_c('v-ons-list',[_vm._l((_vm.curs),function(c){return _c('v-ons-list-item',[_c('div',{staticClass:"left"},[_c('img',{attrs:{"src":c.icon}})]),_vm._v(" "),_c('div',[_c('div',{staticClass:"screenName"},[_vm._v(_vm._s(c.screenName||"取得失敗"))]),_vm._v(" "),_c('div',{staticClass:"price"},[_c('currency-set',{attrs:{"amount":c.price,"ticker":c.coinId,"fiatTicker":_vm.fiat}})],1)]),_vm._v(" "),_c('div',{staticClass:"w_right"},[_c('div',{staticClass:"amount",class:{unconfirmed:c.unconfirmed}},[_c('currency-set',{attrs:{"amount":c.balance,"ticker":c.coinId}}),_c('span',{directives:[{name:"show",rawName:"v-show",value:(c.unconfirmed),expression:"c.unconfirmed"}]},[_vm._v("+"+_vm._s(c.unconfirmed)+"待機中")])],1),_vm._v(" "),_c('div',{staticClass:"fiatConv"},[_c('currency-set',{attrs:{"amount":c.balance*c.price,"ticker":_vm.fiat,"easy":_vm.isEasy}})],1)])])}),_vm._v(" "),_c('v-ons-list-item',{attrs:{"modifier":"tappable chevron"},on:{"click":_vm.goToManageCoin}},[_vm._v("\n          コインを追加\n        ")])],2)],1)],1)],1)}
 var staticRenderFns = []
 module.exports = function (_exports) {
   var options = typeof _exports === 'function'
@@ -43779,7 +43865,7 @@ if (false) {(function () {
 /* 370 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var render = function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('v-ons-page',{directives:[{name:"show",rawName:"v-show",value:(!_vm.$store.state.transparency),expression:"!$store.state.transparency"}],attrs:{"data-page":"send"}},[_c('custom-bar',{attrs:{"title":"送る","menu":"true"}},[_c('v-ons-toolbar-button',{on:{"click":_vm.qr}},[_c('v-ons-icon',{attrs:{"icon":"fa-qrcode"}})],1)],1),_vm._v(" "),_c('div',[_c('v-ons-list',[_c('v-ons-list-item',{directives:[{name:"show",rawName:"v-show",value:(_vm.signature&&!_vm.verifyResult),expression:"signature&&!verifyResult"}],attrs:{"modifier":"small"}},[_vm._v("\n        署名の検証に失敗しました。\n      ")]),_vm._v(" "),_c('v-ons-list-item',{directives:[{name:"show",rawName:"v-show",value:(_vm.signature&&_vm.verifyResult),expression:"signature&&verifyResult"}],attrs:{"modifier":"small"}},[_vm._v("\n        署名の検証に成功しました。\n      ")]),_vm._v(" "),_c('v-ons-list-item',{directives:[{name:"show",rawName:"v-show",value:(_vm.messageToShow),expression:"messageToShow"}],attrs:{"modifier":"small"}},[_c('div',{staticClass:"center"},[_vm._v(_vm._s(_vm.messageToShow))])]),_vm._v(" "),_c('v-ons-list-header',[_vm._v("送金先")]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_c('v-ons-list-item',[_c('v-ons-input',{attrs:{"placeholder":"送金先アドレス"},model:{value:(_vm.address),callback:function ($$v) {_vm.address=$$v},expression:"address"}})],1)],1),_vm._v(" "),_c('div',{staticClass:"right"},[_c('v-ons-icon',{directives:[{name:"show",rawName:"v-show",value:(!_vm.label),expression:"!label"}],attrs:{"icon":"fa-address-card"}}),_vm._v(" "),_c('span',{directives:[{name:"show",rawName:"v-show",value:(_vm.label),expression:"label"}]},[_vm._v(_vm._s(_vm.label))])],1)]),_vm._v(" "),_c('v-ons-list-header',[_vm._v("コイン種類")]),_vm._v(" "),_vm._l((_vm.possibility),function(co){return _c('v-ons-list-item',[_c('div',{staticClass:"left"},[_c('v-ons-radio',{attrs:{"input-id":'coinType-'+co.coinId,"value":co.coinId},model:{value:(_vm.coinType),callback:function ($$v) {_vm.coinType=$$v},expression:"coinType"}})],1),_vm._v(" "),_c('label',{staticClass:"center",attrs:{"for":'coinType-'+co.coinId}},[_vm._v("\n          "+_vm._s(co.name)+"\n        ")]),_vm._v(" "),_c('div',{staticClass:"right"},[_c('currency-set',{attrs:{"ticker":co.coinId}})],1)])}),_vm._v(" "),_c('v-ons-list-item',{directives:[{name:"show",rawName:"v-show",value:(_vm.possibility.length<=0),expression:"possibility.length<=0"}]},[_c('div',{staticClass:"left"}),_vm._v(" "),_c('label',{staticClass:"center"},[_vm._v("まずは出金先アドレスを指定してください。")])]),_vm._v(" "),_c('v-ons-list-header',[_vm._v("相手に送金する金額")]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_c('v-ons-input',{attrs:{"type":"number","placeholder":"相手に送金する金額","disabled":!_vm.address||!_vm.coinType},on:{"input":_vm.calcFiat},model:{value:(_vm.amount),callback:function ($$v) {_vm.amount=$$v},expression:"amount"}})],1),_vm._v(" "),_c('div',{staticClass:"right"},[_c('currency-set',{attrs:{"ticker":_vm.coinType}})],1)]),_vm._v(" "),_c('v-ons-list-header',[_vm._v("法定通貨換算")]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_c('v-ons-input',{attrs:{"type":"number","placeholder":"日本円","disabled":!_vm.address||!_vm.coinType},on:{"input":_vm.calcCur},model:{value:(_vm.fiat),callback:function ($$v) {_vm.fiat=$$v},expression:"fiat"}})],1),_vm._v(" "),_c('div',{staticClass:"right"},[_c('currency-set',{attrs:{"ticker":_vm.fiatTicker}})],1)]),_vm._v(" "),_c('v-ons-list-item',[_c('v-ons-button',{attrs:{"modifier":"large","disabled":!_vm.address||!_vm.amount||!_vm.feePerByte},on:{"click":_vm.confirm}},[_vm._v("確認画面へ")])],1),_vm._v(" "),_c('v-ons-list-item',{directives:[{name:"show",rawName:"v-show",value:(!_vm.advanced),expression:"!advanced"}],on:{"click":function($event){_vm.advanced=true}}},[_c('div',{staticClass:"left"},[_c('v-ons-icon',{attrs:{"icon":"fa-caret-down"}})],1),_vm._v(" "),_c('div',{staticClass:"center"},[_vm._v("詳細オプション")])]),_vm._v(" "),_c('div',{directives:[{name:"show",rawName:"v-show",value:(_vm.advanced),expression:"advanced"}]},[_c('v-ons-list-header',[_vm._v("取引の説明(任意)")]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_c('v-ons-input',{attrs:{"placeholder":"履歴で確認できます。"},model:{value:(_vm.txLabel),callback:function ($$v) {_vm.txLabel=$$v},expression:"txLabel"}})],1),_vm._v(" "),_c('div',{staticClass:"right"},[_c('v-ons-icon',{attrs:{"icon":"ion-ios-list-outline"}})],1)]),_vm._v(" "),_c('v-ons-list-header',[_vm._v("送金手数料(sat/Byte) 少なすぎると危ないよ！")]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_c('v-ons-input',{attrs:{"type":"number","placeholder":"送金手数料(satoshi/Byte)","disabled":!_vm.address||!_vm.coinType},model:{value:(_vm.feePerByte),callback:function ($$v) {_vm.feePerByte=$$v},expression:"feePerByte"}})],1),_vm._v(" "),_c('div',{staticClass:"right"},[_c('currency-set',{attrs:{"ticker":"satByte"}})],1)]),_vm._v(" "),_c('v-ons-list-header',[_vm._v("相手に送るメッセージ(任意)")]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_c('v-ons-input',{attrs:{"placeholder":"40Byteまで"},model:{value:(_vm.message),callback:function ($$v) {_vm.message=$$v},expression:"message"}})],1),_vm._v(" "),_c('div',{staticClass:"right"},[_vm._v("\n            "+_vm._s(_vm.remainingBytes)+"\n          ")])]),_vm._v(" "),_c('v-ons-list-header',[_vm._v("UTXOを手動指定")]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_c('v-ons-input',{attrs:{"placeholder":"規定の形式、詳しくはソースコード"},model:{value:(_vm.utxoStr),callback:function ($$v) {_vm.utxoStr=$$v},expression:"utxoStr"}})],1)])],1)],2)],1)],1)}
+var render = function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('v-ons-page',{directives:[{name:"show",rawName:"v-show",value:(!_vm.$store.state.transparency),expression:"!$store.state.transparency"}],attrs:{"data-page":"send"}},[_c('custom-bar',{attrs:{"title":"送る","menu":"true"}},[_c('v-ons-toolbar-button',{on:{"click":_vm.qr}},[_c('v-ons-icon',{attrs:{"icon":"ion-qr-scanner"}})],1)],1),_vm._v(" "),_c('div',[_c('v-ons-list',[_c('v-ons-list-item',{directives:[{name:"show",rawName:"v-show",value:(_vm.signature&&!_vm.verifyResult),expression:"signature&&!verifyResult"}],attrs:{"modifier":"small"}},[_vm._v("\n        署名の検証に失敗しました。\n      ")]),_vm._v(" "),_c('v-ons-list-item',{directives:[{name:"show",rawName:"v-show",value:(_vm.signature&&_vm.verifyResult),expression:"signature&&verifyResult"}],attrs:{"modifier":"small"}},[_vm._v("\n        署名の検証に成功しました。\n      ")]),_vm._v(" "),_c('v-ons-list-item',{directives:[{name:"show",rawName:"v-show",value:(_vm.messageToShow),expression:"messageToShow"}],attrs:{"modifier":"small"}},[_c('div',{staticClass:"center"},[_vm._v(_vm._s(_vm.messageToShow))])]),_vm._v(" "),_c('v-ons-list-header',[_vm._v("送金先")]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_c('v-ons-list-item',[_c('v-ons-input',{attrs:{"placeholder":"送金先アドレス"},model:{value:(_vm.address),callback:function ($$v) {_vm.address=$$v},expression:"address"}})],1)],1),_vm._v(" "),_c('div',{staticClass:"right"},[_c('span',{directives:[{name:"show",rawName:"v-show",value:(_vm.label),expression:"label"}]},[_vm._v(_vm._s(_vm.label))])])]),_vm._v(" "),_c('v-ons-list-header',[_vm._v("コイン種類")]),_vm._v(" "),_vm._l((_vm.possibility),function(co){return _c('v-ons-list-item',[_c('div',{staticClass:"left"},[_c('v-ons-radio',{attrs:{"input-id":'coinType-'+co.coinId,"value":co.coinId},model:{value:(_vm.coinType),callback:function ($$v) {_vm.coinType=$$v},expression:"coinType"}})],1),_vm._v(" "),_c('label',{staticClass:"center",attrs:{"for":'coinType-'+co.coinId}},[_vm._v("\n          "+_vm._s(co.name)+"\n        ")]),_vm._v(" "),_c('div',{staticClass:"right"},[_c('currency-set',{attrs:{"ticker":co.coinId}})],1)])}),_vm._v(" "),_c('v-ons-list-item',{directives:[{name:"show",rawName:"v-show",value:(_vm.possibility.length<=0),expression:"possibility.length<=0"}]},[_c('div',{staticClass:"left"}),_vm._v(" "),_c('label',{staticClass:"center"},[_vm._v("まずは出金先アドレスを指定してください。")])]),_vm._v(" "),_c('v-ons-list-header',[_vm._v("相手に送金する金額")]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_c('v-ons-input',{attrs:{"type":"number","placeholder":"相手に送金する金額","disabled":!_vm.address||!_vm.coinType},on:{"input":_vm.calcFiat},model:{value:(_vm.amount),callback:function ($$v) {_vm.amount=$$v},expression:"amount"}})],1),_vm._v(" "),_c('div',{staticClass:"right"},[_c('currency-set',{attrs:{"ticker":_vm.coinType}})],1)]),_vm._v(" "),_c('v-ons-list-header',[_vm._v("法定通貨換算")]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_c('v-ons-input',{attrs:{"type":"number","placeholder":"日本円","disabled":!_vm.address||!_vm.coinType},on:{"input":_vm.calcCur},model:{value:(_vm.fiat),callback:function ($$v) {_vm.fiat=$$v},expression:"fiat"}})],1),_vm._v(" "),_c('div',{staticClass:"right"},[_c('currency-set',{attrs:{"ticker":_vm.fiatTicker}})],1)]),_vm._v(" "),_c('v-ons-list-item',[_c('v-ons-button',{attrs:{"modifier":"large","disabled":!_vm.address||!_vm.amount||!_vm.feePerByte},on:{"click":_vm.confirm}},[_vm._v("確認画面へ")])],1),_vm._v(" "),_c('v-ons-list-item',{directives:[{name:"show",rawName:"v-show",value:(!_vm.advanced),expression:"!advanced"}],on:{"click":function($event){_vm.advanced=true}}},[_c('div',{staticClass:"left"},[_c('v-ons-icon',{attrs:{"icon":"fa-caret-down"}})],1),_vm._v(" "),_c('div',{staticClass:"center"},[_vm._v("詳細オプション")])]),_vm._v(" "),_c('div',{directives:[{name:"show",rawName:"v-show",value:(_vm.advanced),expression:"advanced"}]},[_c('v-ons-list-header',[_vm._v("取引の説明(任意)")]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_c('v-ons-input',{attrs:{"placeholder":"履歴で確認できます。"},model:{value:(_vm.txLabel),callback:function ($$v) {_vm.txLabel=$$v},expression:"txLabel"}})],1),_vm._v(" "),_c('div',{staticClass:"right"},[_c('v-ons-icon',{attrs:{"icon":"ion-ios-list-outline"}})],1)]),_vm._v(" "),_c('v-ons-list-header',[_vm._v("送金手数料(sat/Byte) 少なすぎると危ないよ！")]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_c('v-ons-input',{attrs:{"type":"number","placeholder":"送金手数料(satoshi/Byte)","disabled":!_vm.address||!_vm.coinType},model:{value:(_vm.feePerByte),callback:function ($$v) {_vm.feePerByte=$$v},expression:"feePerByte"}})],1),_vm._v(" "),_c('div',{staticClass:"right"},[_c('currency-set',{attrs:{"ticker":"satByte"}})],1)]),_vm._v(" "),_c('v-ons-list-header',[_vm._v("相手に送るメッセージ(任意)")]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_c('v-ons-input',{attrs:{"placeholder":"40Byteまで"},model:{value:(_vm.message),callback:function ($$v) {_vm.message=$$v},expression:"message"}})],1),_vm._v(" "),_c('div',{staticClass:"right"},[_vm._v("\n            "+_vm._s(_vm.remainingBytes)+"\n          ")])]),_vm._v(" "),_c('v-ons-list-header',[_vm._v("UTXOを手動指定")]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_c('v-ons-input',{attrs:{"placeholder":"規定の形式、詳しくはソースコード"},model:{value:(_vm.utxoStr),callback:function ($$v) {_vm.utxoStr=$$v},expression:"utxoStr"}})],1)])],1)],2)],1)],1)}
 var staticRenderFns = []
 module.exports = function (_exports) {
   var options = typeof _exports === 'function'
@@ -43808,11 +43894,11 @@ if (false) {(function () {
 /* 371 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(Buffer) {const storage = __webpack_require__(7)
-const coinUtil=__webpack_require__(5)
+/* WEBPACK VAR INJECTION */(function(Buffer) {const storage = __webpack_require__(5)
+const coinUtil=__webpack_require__(6)
 const currencyList = __webpack_require__(4)
 const bcLib = __webpack_require__(27)
-const errors = __webpack_require__(50)
+const errors = __webpack_require__(31)
 const BigNumber = __webpack_require__(30);
 module.exports=__webpack_require__(372)({
   data(){
@@ -43854,6 +43940,11 @@ module.exports=__webpack_require__(372)({
       if(res|0){
         this.destHasUsed=true
       }
+    })
+    storage.verifyBiometric().then(pwd=>{
+      this.password=pwd
+    }).catch(()=>{
+      // noop
     })
   },
   computed:{
@@ -43926,7 +44017,7 @@ module.exports=__webpack_require__(372)({
         return cur.pushTx(this.hash)
       }).then((res)=>{
         cur.saveTxLabel(res.txid,{label:this.txLabel,price:parseFloat(this.price)})
-        this.$store.commit("setFinishNextPage",{page:__webpack_require__(40),infoId:"sent",payload:{
+        this.$store.commit("setFinishNextPage",{page:__webpack_require__(41),infoId:"sent",payload:{
           txId:res.txid
         }})
         this.$emit("replace",__webpack_require__(54))
@@ -44013,7 +44104,7 @@ if (false) {(function () {
 /* 374 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var render = function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('v-ons-page',{attrs:{"data-page":"manageCoin"}},[_c('custom-bar',{attrs:{"title":"コインの管理"}},[_c('v-ons-toolbar-button',{on:{"click":_vm.customCoin}},[_c('v-ons-icon',{attrs:{"icon":"ion-plus"}})],1),_vm._v(" "),_c('v-ons-toolbar-button',{on:{"click":function($event){_vm.requirePassword=true}}},[_c('v-ons-icon',{attrs:{"icon":"ion-checkmark"}})],1)],1),_vm._v(" "),_c('v-ons-list',[_c('v-ons-list-header',[_vm._v("利用可能")]),_vm._v(" "),_vm._l((_vm.coins),function(c){return (c.usable)?_c('v-ons-list-item',{staticClass:"coin"},[_c('div',{staticClass:"left"},[_c('img',{attrs:{"src":c.icon}})]),_vm._v(" "),_c('div',{staticClass:"center"},[_c('div',{staticClass:"screenName"},[_vm._v(_vm._s(c.screenName))]),_vm._v(" "),_c('v-ons-button',{attrs:{"modifier":"quiet"},on:{"click":function($event){_vm.showInfo(c.coinId)}}},[_c('v-ons-icon',{attrs:{"icon":"ion-ios-information"}})],1)],1),_vm._v(" "),_c('div',{staticClass:"right"},[_c('v-ons-checkbox',{model:{value:(c.usable),callback:function ($$v) {_vm.$set(c, "usable", $$v)},expression:"c.usable"}})],1)]):_vm._e()}),_vm._v(" "),_c('v-ons-list-header',[_vm._v("無効")]),_vm._v(" "),_vm._l((_vm.coins),function(c){return (!c.usable)?_c('v-ons-list-item',{staticClass:"coin"},[_c('div',{staticClass:"left"},[_c('img',{attrs:{"src":c.icon}})]),_vm._v(" "),_c('div',{staticClass:"center"},[_c('div',{staticClass:"screenName"},[_vm._v(_vm._s(c.screenName))]),_vm._v(" "),_c('v-ons-button',{attrs:{"modifier":"quiet"},on:{"click":function($event){_vm.showInfo(c.coinId)}}},[_c('v-ons-icon',{attrs:{"icon":"ion-ios-information"}})],1)],1),_vm._v(" "),_c('div',{staticClass:"right"},[_c('v-ons-checkbox',{model:{value:(c.usable),callback:function ($$v) {_vm.$set(c, "usable", $$v)},expression:"c.usable"}})],1)]):_vm._e()})],2),_vm._v(" "),_c('v-ons-alert-dialog',{attrs:{"modifier":"rowfooter","visible":_vm.requirePassword},on:{"update:visible":function($event){_vm.requirePassword=$event}}},[_c('span',{attrs:{"slot":"title"},slot:"title"},[_vm._v("パスワード")]),_vm._v(" "),_c('p',[_vm._v("パスワードを入力してください。コインを削除すると、残高は失われませんが、ラベルなど、その他の情報は失われる可能性があります。")]),_vm._v(" "),_c('v-ons-input',{class:{shake:_vm.incorrect},attrs:{"placeholder":"パスワード","type":"password"},model:{value:(_vm.password),callback:function ($$v) {_vm.password=$$v},expression:"password"}}),_vm._v(" "),_c('template',{slot:"footer"},[_c('div',{staticClass:"alert-dialog-button",on:{"click":function($event){_vm.requirePassword=false}}},[_vm._v("やめる")]),_vm._v(" "),_c('div',{staticClass:"alert-dialog-button",on:{"click":_vm.operateCoins}},[_vm._v("続行")])])],2),_vm._v(" "),_c('v-ons-modal',{attrs:{"visible":_vm.loading}},[_c('p',{staticStyle:{"text-align":"center"}},[_vm._v("\n        計算中。計算能力により時間がかかりますが終了しないでください。 \n        "),_c('br'),_c('br')]),_c('div',{staticClass:"spinner"}),_vm._v(" "),_c('p')]),_vm._v(" "),_c('v-ons-dialog',{attrs:{"cancelable":"","visible":_vm.infoDlg},on:{"update:visible":function($event){_vm.infoDlg=$event}}},[_c('v-ons-list',[_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_vm._v("コインID")]),_vm._v(" "),_c('div',{staticClass:"right"},[_vm._v(_vm._s(_vm.info.coinId))])]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_vm._v("単位")]),_vm._v(" "),_c('div',{staticClass:"right"},[_vm._v(_vm._s(_vm.info.unit))])]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_vm._v("APIエンドポイント")]),_vm._v(" "),_c('div',{staticClass:"right"},[_vm._v(_vm._s(_vm.info.apiEndpoint))])]),_vm._v(" "),_c('v-ons-list-header',[_vm._v("ブロック")]),_vm._v(" "),_vm._l((_vm.info.blocks),function(b){return _c('v-ons-list-item',[_c('div',{staticClass:"center"},[_vm._v(_vm._s(b.height))]),_vm._v(" "),_c('div',{staticClass:"right"},[_c('timestamp',{attrs:{"timestamp":b.time}})],1)])})],2)],1)],1)}
+var render = function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('v-ons-page',{attrs:{"data-page":"manageCoin"}},[_c('custom-bar',{attrs:{"title":"コインの管理"}},[_c('v-ons-toolbar-button',{on:{"click":_vm.customCoin}},[_c('v-ons-icon',{attrs:{"icon":"ion-plus"}})],1),_vm._v(" "),_c('v-ons-toolbar-button',{on:{"click":function($event){_vm.requirePassword=true}}},[_c('v-ons-icon',{attrs:{"icon":"ion-checkmark"}})],1)],1),_vm._v(" "),_c('v-ons-list',[_c('v-ons-list-header',[_vm._v("利用可能")]),_vm._v(" "),_vm._l((_vm.coins),function(c){return (c.usable)?_c('v-ons-list-item',{staticClass:"coin"},[_c('div',{staticClass:"left"},[_c('img',{attrs:{"src":c.icon}})]),_vm._v(" "),_c('div',{staticClass:"center"},[_c('div',{staticClass:"screenName"},[_vm._v(_vm._s(c.screenName))]),_vm._v(" "),_c('v-ons-button',{attrs:{"modifier":"quiet"},on:{"click":function($event){_vm.showInfo(c.coinId)}}},[_c('v-ons-icon',{attrs:{"icon":"ion-ios-information"}})],1)],1),_vm._v(" "),_c('div',{staticClass:"right"},[_c('v-ons-checkbox',{model:{value:(c.usable),callback:function ($$v) {_vm.$set(c, "usable", $$v)},expression:"c.usable"}})],1)]):_vm._e()}),_vm._v(" "),_c('v-ons-list-header',[_vm._v("無効")]),_vm._v(" "),_vm._l((_vm.coins),function(c){return (!c.usable)?_c('v-ons-list-item',{staticClass:"coin"},[_c('div',{staticClass:"left"},[_c('img',{attrs:{"src":c.icon}})]),_vm._v(" "),_c('div',{staticClass:"center"},[_c('div',{staticClass:"screenName"},[_vm._v(_vm._s(c.screenName))]),_vm._v(" "),_c('v-ons-button',{attrs:{"modifier":"quiet"},on:{"click":function($event){_vm.showInfo(c.coinId)}}},[_c('v-ons-icon',{attrs:{"icon":"ion-ios-information"}})],1)],1),_vm._v(" "),_c('div',{staticClass:"right"},[_c('v-ons-checkbox',{model:{value:(c.usable),callback:function ($$v) {_vm.$set(c, "usable", $$v)},expression:"c.usable"}})],1)]):_vm._e()})],2),_vm._v(" "),_c('v-ons-alert-dialog',{attrs:{"modifier":"rowfooter","visible":_vm.requirePassword},on:{"update:visible":function($event){_vm.requirePassword=$event}}},[_c('span',{attrs:{"slot":"title"},slot:"title"},[_vm._v("パスワード")]),_vm._v(" "),_c('p',[_vm._v("パスワードを入力してください。コインを削除すると、残高は失われませんが、ラベルなど、その他の情報は失われる可能性があります。")]),_vm._v(" "),_c('v-ons-input',{class:{shake:_vm.incorrect},attrs:{"placeholder":"パスワード","type":"password"},model:{value:(_vm.password),callback:function ($$v) {_vm.password=$$v},expression:"password"}}),_vm._v(" "),_c('template',{slot:"footer"},[_c('div',{staticClass:"alert-dialog-button",on:{"click":function($event){_vm.requirePassword=false}}},[_vm._v("やめる")]),_vm._v(" "),_c('div',{staticClass:"alert-dialog-button",on:{"click":_vm.operateCoins}},[_vm._v("続行")])])],2),_vm._v(" "),_c('v-ons-modal',{attrs:{"visible":_vm.loading}},[_c('p',{staticStyle:{"text-align":"center"}},[_vm._v("\n        計算中。計算能力により時間がかかりますが終了しないでください。 \n        "),_c('br'),_c('br')]),_c('div',{staticClass:"spinner"}),_vm._v(" "),_c('p')]),_vm._v(" "),_c('v-ons-dialog',{attrs:{"cancelable":"","visible":_vm.infoDlg},on:{"update:visible":function($event){_vm.infoDlg=$event}}},[_c('v-ons-list',[_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_vm._v("コインID")]),_vm._v(" "),_c('div',{staticClass:"right"},[_vm._v(_vm._s(_vm.info.coinId))])]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_vm._v("単位")]),_vm._v(" "),_c('div',{staticClass:"right"},[_vm._v(_vm._s(_vm.info.unit))])]),_vm._v(" "),_c('v-ons-list-item',{on:{"click":_vm.changeServer}},[_c('div',{staticClass:"center"},[_vm._v("APIエンドポイント")]),_vm._v(" "),_c('div',{staticClass:"right"},[_vm._v(_vm._s(_vm.info.apiEndpoint))])]),_vm._v(" "),_c('v-ons-list-header',[_vm._v("ブロック")]),_vm._v(" "),_vm._l((_vm.info.blocks),function(b){return _c('v-ons-list-item',[_c('div',{staticClass:"center"},[_vm._v(_vm._s(b.height))]),_vm._v(" "),_c('div',{staticClass:"right"},[_c('timestamp',{attrs:{"timestamp":b.time}})],1)])})],2)],1)],1)}
 var staticRenderFns = []
 module.exports = function (_exports) {
   var options = typeof _exports === 'function'
@@ -44071,7 +44162,7 @@ if (false) {(function () {
 /* 376 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const storage = __webpack_require__(7)
+const storage = __webpack_require__(5)
 const currencyList = __webpack_require__(4)
 module.exports = __webpack_require__(377)({
   data:()=>({
@@ -44136,7 +44227,7 @@ if (false) {(function () {
 /* 378 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var Buffer = __webpack_require__(32)
+var Buffer = __webpack_require__(33)
 var Utils = __webpack_require__(24)
 var ECLevel = __webpack_require__(82)
 var BitBuffer = __webpack_require__(379)
@@ -44684,7 +44775,7 @@ module.exports = BitBuffer
 /* 380 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var Buffer = __webpack_require__(32)
+var Buffer = __webpack_require__(33)
 
 /**
  * Helper class to handle QR Code symbol modules
@@ -45116,7 +45207,7 @@ exports.getBestMask = function getBestMask (data, setupFormatFunc) {
 /* 384 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var Buffer = __webpack_require__(32)
+var Buffer = __webpack_require__(33)
 var Polynomial = __webpack_require__(385)
 
 function ReedSolomonEncoder (degree) {
@@ -45181,7 +45272,7 @@ module.exports = ReedSolomonEncoder
 /* 385 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var Buffer = __webpack_require__(32)
+var Buffer = __webpack_require__(33)
 var GF = __webpack_require__(386)
 
 /**
@@ -45251,7 +45342,7 @@ exports.generateECPolynomial = function generateECPolynomial (degree) {
 /* 386 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var Buffer = __webpack_require__(32)
+var Buffer = __webpack_require__(33)
 
 var EXP_TABLE = new Buffer(512)
 var LOG_TABLE = new Buffer(256)
@@ -45814,7 +45905,7 @@ module.exports = AlphanumericData
 /* 391 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var Buffer = __webpack_require__(32)
+var Buffer = __webpack_require__(33)
 var Mode = __webpack_require__(25)
 
 function ByteData (data) {
@@ -46196,7 +46287,7 @@ exports.render = function render (qrData, options) {
 /* 396 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var render = function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('v-ons-page',{directives:[{name:"show",rawName:"v-show",value:(!_vm.$store.state.transparency),expression:"!$store.state.transparency"}],attrs:{"data-page":"receive"}},[_c('custom-bar',{attrs:{"title":"受け取り","menu":"true"}},[_c('v-ons-toolbar-button',{on:{"click":_vm.qr}},[_c('v-ons-icon',{attrs:{"icon":"fa-qrcode"}})],1)],1),_vm._v(" "),_c('div',[_c('div',{attrs:{"id":"currencySelector"}},[_c('v-ons-carousel',{attrs:{"swipeable":"","overscrollable":"","direction":"horizontal","item-height":"50px","item-width":"50px","index":_vm.currencyIndex}},_vm._l((_vm.currency),function(crc,i){return _c('v-ons-carousel-item',{staticClass:"currencyIcon",style:({'background-image':'url('+crc.icon+')'}),on:{"click":function($event){_vm.currencyIndex=i}}},[_c('div',{directives:[{name:"show",rawName:"v-show",value:(_vm.currencyIndex==i),expression:"currencyIndex==i"}],staticClass:"checked"})])}))],1),_vm._v(" "),_c('div',{attrs:{"id":"simple"}},[_c('div',{staticClass:"label"},[_vm._v("とりあえず送ってもらう")]),_vm._v(" "),_c('div',{attrs:{"id":"qrArea"}},[_c('div',{attrs:{"id":"qrcode"}},[_c('img',{attrs:{"src":_vm.qrDataUrl,"alt":"QR code","id":"qrcodeImage"}}),_vm._v(" "),_c('div',{style:({'background-image':'url('+_vm.currentCurIcon+')'}),attrs:{"id":"currentCurIcon"}})]),_vm._v(" "),_c('div',{staticClass:"address"},[_vm._v(_vm._s(_vm.mainAddress||"読み込み中"))])]),_vm._v(" "),_c('v-ons-button',{on:{"click":_vm.copyAddress}},[_c('v-ons-icon',{attrs:{"icon":"fa-clipboard"}}),_vm._v("\n        アドレスコピー\n      ")],1),_vm._v(" "),(_vm.isNative)?_c('div',[_c('v-ons-button',[_c('v-ons-icon',{attrs:{"icon":"fa-share"}}),_vm._v("共有\n        ")],1)],1):_vm._e()],1),_vm._v(" "),_c('div',{attrs:{"id":"addresses"}},[_c('v-ons-list',[_c('v-ons-list-header',[_vm._v("ラベル付きアドレス")]),_vm._v(" "),_vm._l((_vm.labels),function(l,index){return _c('v-ons-list-item',{attrs:{"modifier":"tappable chevron"},on:{"click":function($event){_vm.showLabel(_vm.currency[_vm.currencyIndex].coinId,l,0,index)}}},[_vm._v("\n          "+_vm._s(l)+"\n        ")])}),_vm._v(" "),_c('v-ons-list-item',{directives:[{name:"show",rawName:"v-show",value:(_vm.labels.length<=_vm.maxLabel),expression:"labels.length<=maxLabel"}],attrs:{"modifier":"tappable chevron"},on:{"click":function($event){_vm.dialogVisible=true}}},[_c('div',{staticClass:"left"},[_c('v-ons-icon',{attrs:{"icon":"ion-plus"}})],1),_vm._v(" "),_c('div',{staticClass:"center"},[_vm._v("ラベル追加")])]),_vm._v(" "),_c('v-ons-list-header',[_vm._v("請求書")]),_vm._v(" "),_c('v-ons-list-item',{attrs:{"modifier":"tappable chevron"},on:{"click":_vm.createInvoice}},[_vm._v("請求書のQRコードを作る")])],2)],1),_vm._v(" "),_c('v-ons-alert-dialog',{attrs:{"modifier":"rowfooter","visible":_vm.dialogVisible},on:{"update:visible":function($event){_vm.dialogVisible=$event}}},[_c('span',{attrs:{"slot":"title"},slot:"title"},[_vm._v("ラベルを追加")]),_vm._v(" "),_c('p',[_vm._v("ラベルをつけて下さい。derive/"),_c('i',[_vm._v("change")]),_vm._v("/"),_c('i',[_vm._v("index")]),_vm._v(" フォーマットを入力すると、アドレスを導出します")]),_vm._v(" "),_c('v-ons-input',{attrs:{"placeholder":"ラベル"},model:{value:(_vm.labelInput),callback:function ($$v) {_vm.labelInput=$$v},expression:"labelInput"}}),_vm._v(" "),_c('template',{slot:"footer"},[_c('div',{staticClass:"alert-dialog-button",on:{"click":function($event){_vm.dialogVisible = false}}},[_vm._v("やめる")]),_vm._v(" "),_c('div',{staticClass:"alert-dialog-button",on:{"click":_vm.createLabel}},[_vm._v("追加")])])],2)],1)],1)}
+var render = function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('v-ons-page',{directives:[{name:"show",rawName:"v-show",value:(!_vm.$store.state.transparency),expression:"!$store.state.transparency"}],attrs:{"data-page":"receive"}},[_c('custom-bar',{attrs:{"title":"受け取り","menu":"true"}},[_c('v-ons-toolbar-button',{on:{"click":_vm.qr}},[_c('v-ons-icon',{attrs:{"icon":"ion-qr-scanner"}})],1)],1),_vm._v(" "),_c('div',[_c('div',{attrs:{"id":"currencySelector"}},[_c('v-ons-carousel',{attrs:{"swipeable":"","overscrollable":"","direction":"horizontal","item-height":"50px","item-width":"50px","index":_vm.currencyIndex}},_vm._l((_vm.currency),function(crc,i){return _c('v-ons-carousel-item',{staticClass:"currencyIcon",style:({'background-image':'url('+crc.icon+')'}),on:{"click":function($event){_vm.currencyIndex=i}}},[_c('div',{directives:[{name:"show",rawName:"v-show",value:(_vm.currencyIndex==i),expression:"currencyIndex==i"}],staticClass:"checked"})])}))],1),_vm._v(" "),_c('div',{attrs:{"id":"simple"}},[_c('div',{staticClass:"label"},[_vm._v("とりあえず送ってもらう")]),_vm._v(" "),_c('div',{attrs:{"id":"qrArea"}},[_c('div',{attrs:{"id":"qrcode"}},[_c('img',{attrs:{"src":_vm.qrDataUrl,"alt":"QR code","id":"qrcodeImage"}}),_vm._v(" "),_c('div',{style:({'background-image':'url('+_vm.currentCurIcon+')'}),attrs:{"id":"currentCurIcon"}})]),_vm._v(" "),_c('div',{staticClass:"address"},[_vm._v(_vm._s(_vm.mainAddress||"読み込み中"))])]),_vm._v(" "),_c('v-ons-button',{on:{"click":_vm.copyAddress}},[_c('v-ons-icon',{attrs:{"icon":"fa-clipboard"}}),_vm._v("\n        アドレスコピー\n      ")],1),_vm._v(" "),(_vm.isNative)?_c('div',[_c('v-ons-button',[_c('v-ons-icon',{attrs:{"icon":"fa-share"}}),_vm._v("共有\n        ")],1)],1):_vm._e()],1),_vm._v(" "),_c('div',{attrs:{"id":"addresses"}},[_c('v-ons-list',[_c('v-ons-list-header',[_vm._v("ラベル付きアドレス")]),_vm._v(" "),_vm._l((_vm.labels),function(l,index){return _c('v-ons-list-item',{attrs:{"modifier":"tappable chevron"},on:{"click":function($event){_vm.showLabel(_vm.currency[_vm.currencyIndex].coinId,l,0,index)}}},[_vm._v("\n          "+_vm._s(l)+"\n        ")])}),_vm._v(" "),_c('v-ons-list-item',{directives:[{name:"show",rawName:"v-show",value:(_vm.labels.length<=_vm.maxLabel),expression:"labels.length<=maxLabel"}],attrs:{"modifier":"tappable chevron"},on:{"click":function($event){_vm.dialogVisible=true}}},[_c('div',{staticClass:"left"},[_c('v-ons-icon',{attrs:{"icon":"ion-plus"}})],1),_vm._v(" "),_c('div',{staticClass:"center"},[_vm._v("ラベル追加")])]),_vm._v(" "),_c('v-ons-list-header',[_vm._v("請求書")]),_vm._v(" "),_c('v-ons-list-item',{attrs:{"modifier":"tappable chevron"},on:{"click":_vm.createInvoice}},[_vm._v("請求書のQRコードを作る")])],2)],1),_vm._v(" "),_c('v-ons-alert-dialog',{attrs:{"modifier":"rowfooter","visible":_vm.dialogVisible},on:{"update:visible":function($event){_vm.dialogVisible=$event}}},[_c('span',{attrs:{"slot":"title"},slot:"title"},[_vm._v("ラベルを追加")]),_vm._v(" "),_c('p',[_vm._v("ラベルをつけて下さい。derive/"),_c('i',[_vm._v("change")]),_vm._v("/"),_c('i',[_vm._v("index")]),_vm._v(" フォーマットを入力すると、アドレスを導出します")]),_vm._v(" "),_c('v-ons-input',{attrs:{"placeholder":"ラベル"},model:{value:(_vm.labelInput),callback:function ($$v) {_vm.labelInput=$$v},expression:"labelInput"}}),_vm._v(" "),_c('template',{slot:"footer"},[_c('div',{staticClass:"alert-dialog-button",on:{"click":function($event){_vm.dialogVisible = false}}},[_vm._v("やめる")]),_vm._v(" "),_c('div',{staticClass:"alert-dialog-button",on:{"click":_vm.createLabel}},[_vm._v("追加")])])],2)],1)],1)}
 var staticRenderFns = []
 module.exports = function (_exports) {
   var options = typeof _exports === 'function'
@@ -46225,10 +46316,10 @@ if (false) {(function () {
 /* 397 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const qrcode = __webpack_require__(41)
+const qrcode = __webpack_require__(42)
 const currencyList = __webpack_require__(4)
-const storage = __webpack_require__(7)
-const coinUtil = __webpack_require__(5)
+const storage = __webpack_require__(5)
+const coinUtil = __webpack_require__(6)
 module.exports=__webpack_require__(398)({
   data(){
     return {
@@ -46324,10 +46415,10 @@ if (false) {(function () {
 /* 399 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const qrcode = __webpack_require__(41)
+const qrcode = __webpack_require__(42)
 const currencyList = __webpack_require__(4)
-const storage = __webpack_require__(7)
-const coinUtil = __webpack_require__(5)
+const storage = __webpack_require__(5)
+const coinUtil = __webpack_require__(6)
 const monappyApi=__webpack_require__(142)
 
 module.exports=__webpack_require__(400)({
@@ -46567,8 +46658,8 @@ if (false) {(function () {
 /***/ (function(module, exports, __webpack_require__) {
 
 const axios = __webpack_require__(18)
-const coinUtil = __webpack_require__(5)
-const crypto = __webpack_require__(36)
+const coinUtil = __webpack_require__(6)
+const crypto = __webpack_require__(37)
 
 const icons=[
   __webpack_require__(404),
@@ -46846,7 +46937,7 @@ if (false) {(function () {
 /* 413 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var render = function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('v-ons-page',{attrs:{"data-page":"setPassword"}},[_c('custom-bar',{attrs:{"title":"パスワード設定"}}),_vm._v(" "),_c('div',{staticClass:"wrap"},[_c('ul',[_c('li',[_vm._v("パスワードを設定します。")]),_vm._v(" "),_c('li',[_vm._v("6文字以上")]),_vm._v(" "),_c('li',[_vm._v("秘密鍵を保護するために使用されます。")]),_vm._v(" "),_c('li',[_vm._v("他人に知れ渡ると、勝手にアプリケーションを利用される可能性があります。")])]),_vm._v(" "),_c('v-ons-list',[_c('v-ons-list-item',{directives:[{name:"show",rawName:"v-show",value:(_vm.error),expression:"error"}]},[_vm._v("エラーが発生しました。再度お試し下さい。エラー内容:"+_vm._s(_vm.error))]),_vm._v(" "),_c('div',{directives:[{name:"show",rawName:"v-show",value:(_vm.change),expression:"change"}]},[_c('v-ons-list-header',[_vm._v("現在のパスワード")]),_vm._v(" "),_c('v-ons-list-item',[_c('v-ons-input',{attrs:{"type":"password","placeholder":"現在のパスワード"},model:{value:(_vm.currentPassword),callback:function ($$v) {_vm.currentPassword=$$v},expression:"currentPassword"}})],1)],1),_vm._v(" "),_c('v-ons-list-header',[_vm._v("パスワードの種類")]),_vm._v(" "),_c('v-ons-list-item',[_c('label',{staticClass:"left"},[_c('v-ons-radio',{attrs:{"input-id":"password","value":"password"},model:{value:(_vm.passwordType),callback:function ($$v) {_vm.passwordType=$$v},expression:"passwordType"}})],1),_vm._v(" "),_c('label',{staticClass:"center",attrs:{"for":"password"}},[_vm._v("半角英数字のパスワード")])]),_vm._v(" "),_c('div',{directives:[{name:"show",rawName:"v-show",value:(_vm.passwordType==='password'),expression:"passwordType==='password'"}]},[_c('v-ons-list-header',[_vm._v("パスワード")]),_vm._v(" "),_c('v-ons-list-item',[_c('v-ons-input',{attrs:{"placeholder":"Password","type":"password"},model:{value:(_vm.password),callback:function ($$v) {_vm.password=$$v},expression:"password"}})],1),_vm._v(" "),_c('v-ons-list-item',[_c('v-ons-input',{attrs:{"placeholder":"Retype Password","type":"password"},model:{value:(_vm.password2),callback:function ($$v) {_vm.password2=$$v},expression:"password2"}})],1),_vm._v(" "),_c('v-ons-list-item',[_c('v-ons-button',{attrs:{"modifier":"large","disabled":!_vm.password||_vm.password!==_vm.password2||_vm.password.length<6},on:{"click":_vm.next}},[_vm._v("続行")])],1)],1),_vm._v(" "),_c('div',{directives:[{name:"show",rawName:"v-show",value:(_vm.passwordType==='pin'),expression:"passwordType==='pin'"}]},[_c('v-ons-list',[_c('v-ons-list-header',[_vm._v("PINコード")]),_vm._v(" "),_c('v-ons-list',[_vm._v("Coming soon...")])],1)],1)],1)],1)],1)}
+var render = function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('v-ons-page',{attrs:{"data-page":"setPassword"}},[_c('custom-bar',{attrs:{"title":"パスワード設定"}}),_vm._v(" "),_c('div',{staticClass:"wrap"},[_c('ul',[_c('li',[_vm._v("パスワードを設定します。")]),_vm._v(" "),_c('li',[_vm._v("6文字以上")]),_vm._v(" "),_c('li',[_vm._v("秘密鍵を保護するために使用されます。")]),_vm._v(" "),_c('li',[_vm._v("他人に知れ渡ると、勝手にアプリケーションを利用される可能性があります。")])]),_vm._v(" "),_c('v-ons-list',[_c('v-ons-list-item',{directives:[{name:"show",rawName:"v-show",value:(_vm.error),expression:"error"}]},[_vm._v("エラーが発生しました。再度お試し下さい。エラー内容:"+_vm._s(_vm.error))]),_vm._v(" "),_c('div',{directives:[{name:"show",rawName:"v-show",value:(_vm.change),expression:"change"}]},[_c('v-ons-list-header',[_vm._v("現在のパスワード")]),_vm._v(" "),_c('v-ons-list-item',[_c('v-ons-input',{attrs:{"type":"password","placeholder":"現在のパスワード"},model:{value:(_vm.currentPassword),callback:function ($$v) {_vm.currentPassword=$$v},expression:"currentPassword"}})],1)],1),_vm._v(" "),_c('v-ons-list-header',[_vm._v("パスワードの種類")]),_vm._v(" "),_c('v-ons-list-item',[_c('label',{staticClass:"left"},[_c('v-ons-radio',{attrs:{"input-id":"password","value":"password"},model:{value:(_vm.passwordType),callback:function ($$v) {_vm.passwordType=$$v},expression:"passwordType"}})],1),_vm._v(" "),_c('label',{staticClass:"center",attrs:{"for":"password"}},[_vm._v("半角英数字のパスワード")])]),_vm._v(" "),_c('div',{directives:[{name:"show",rawName:"v-show",value:(_vm.passwordType==='password'),expression:"passwordType==='password'"}]},[_c('v-ons-list-header',[_vm._v("パスワード")]),_vm._v(" "),_c('v-ons-list-item',[_c('v-ons-input',{attrs:{"placeholder":"Password","type":"password"},model:{value:(_vm.password),callback:function ($$v) {_vm.password=$$v},expression:"password"}})],1),_vm._v(" "),_c('v-ons-list-item',[_c('v-ons-input',{attrs:{"placeholder":"Retype Password","type":"password"},model:{value:(_vm.password2),callback:function ($$v) {_vm.password2=$$v},expression:"password2"}})],1),_vm._v(" "),_c('v-ons-list-item',{directives:[{name:"show",rawName:"v-show",value:(_vm.biometricAvailable),expression:"biometricAvailable"}]},[_c('div',{staticClass:"left"},[_c('v-ons-icon',{attrs:{"icon":"ion-qr-scanner"}})],1),_vm._v(" "),_c('div',{staticClass:"center"},[_vm._v("指紋認証を使う")]),_vm._v(" "),_c('div',{staticClass:"right"},[_c('v-ons-switch',{model:{value:(_vm.biometric),callback:function ($$v) {_vm.biometric=$$v},expression:"biometric"}})],1)]),_vm._v(" "),_c('v-ons-list-item',[_c('v-ons-button',{attrs:{"modifier":"large","disabled":!_vm.password||_vm.password!==_vm.password2||_vm.password.length<6},on:{"click":_vm.next}},[_vm._v("続行")])],1)],1),_vm._v(" "),_c('div',{directives:[{name:"show",rawName:"v-show",value:(_vm.passwordType==='pin'),expression:"passwordType==='pin'"}]},[_c('v-ons-list',[_c('v-ons-list-header',[_vm._v("PINコード")]),_vm._v(" "),_c('v-ons-list',[_vm._v("Coming soon...")])],1)],1)],1)],1)],1)}
 var staticRenderFns = []
 module.exports = function (_exports) {
   var options = typeof _exports === 'function'
@@ -46876,8 +46967,8 @@ if (false) {(function () {
 /***/ (function(module, exports, __webpack_require__) {
 
 const currencyList = __webpack_require__(4)
-const storage = __webpack_require__(7)
-const coinUtil = __webpack_require__(5)
+const storage = __webpack_require__(5)
+const coinUtil = __webpack_require__(6)
 
 module.exports=__webpack_require__(415)({
   data(){
@@ -46896,7 +46987,7 @@ module.exports=__webpack_require__(415)({
         const cur = currencyList.get(this.currency[this.currencyIndex].coinId)
         cur.sweep(this.private,this.address,this.fee).then((res)=>{
           cur.saveTxLabel(res.txid,{label:this.txLabel,price:parseFloat(this.price)})
-          this.$store.commit("setFinishNextPage",{page:__webpack_require__(40),infoId:"sent",payload:{
+          this.$store.commit("setFinishNextPage",{page:__webpack_require__(41),infoId:"sent",payload:{
             txId:res.txid
           }})
           this.$emit("replace",__webpack_require__(54))
@@ -46962,7 +47053,7 @@ if (false) {(function () {
 /* 416 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const storage = __webpack_require__(7)
+const storage = __webpack_require__(5)
 module.exports=__webpack_require__(417)({
   data:()=>({
     orders:[]
@@ -46979,7 +47070,7 @@ module.exports=__webpack_require__(417)({
   methods:{
     save(){
       storage.set("orders",this.orders).then(r=>{
-        this.$ons.notification.alert("Saved!")
+        this.$emit("pop")
       })
     },
     add(){
@@ -47001,7 +47092,7 @@ module.exports=__webpack_require__(417)({
 /* 417 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var render = function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('v-ons-page',{attrs:{"data-page":"editOrder"}},[_c('custom-bar',{attrs:{"title":"メニューを編集"}}),_vm._v(" "),_c('div',[_c('v-ons-list',[_vm._l((_vm.orders),function(o,i){return _c('v-ons-list-item',[_c('div',{staticClass:"left",on:{"click":function($event){_vm.remove(i)}}},[_c('v-ons-icon',{attrs:{"icon":"ion-close"}})],1),_vm._v(" "),_c('div',{staticClass:"center"},[_c('v-ons-input',{model:{value:(o.name),callback:function ($$v) {_vm.$set(o, "name", $$v)},expression:"o.name"}})],1),_vm._v(" "),_c('div',{staticClass:"right"},[_c('v-ons-input',{attrs:{"type":"number"},model:{value:(o.price),callback:function ($$v) {_vm.$set(o, "price", $$v)},expression:"o.price"}})],1)])}),_vm._v(" "),_c('v-ons-list-item',[_c('v-ons-button',{attrs:{"modifier":"large"},on:{"click":_vm.add}},[_vm._v("追加")])],1),_vm._v(" "),_c('v-ons-list-item',[_c('v-ons-button',{attrs:{"modifier":"large"},on:{"click":_vm.save}},[_vm._v("保存")])],1)],2)],1)],1)}
+var render = function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('v-ons-page',{attrs:{"data-page":"editOrder"}},[_c('custom-bar',{attrs:{"title":"メニューを編集"}}),_vm._v(" "),_c('div',[_c('v-ons-list',[_vm._l((_vm.orders),function(o,i){return _c('v-ons-list-item',[_c('div',{staticClass:"left",on:{"click":function($event){_vm.remove(i)}}},[_c('v-ons-icon',{attrs:{"icon":"ion-close"}})],1),_vm._v(" "),_c('div',{staticClass:"center"},[_c('v-ons-input',{attrs:{"placeholder":"品名"},model:{value:(o.name),callback:function ($$v) {_vm.$set(o, "name", $$v)},expression:"o.name"}})],1),_vm._v(" "),_c('div',{staticClass:"right"},[_c('v-ons-input',{attrs:{"type":"number","placeholder":"金額(日本円)"},model:{value:(o.price),callback:function ($$v) {_vm.$set(o, "price", $$v)},expression:"o.price"}})],1)])}),_vm._v(" "),_c('v-ons-list-item',[_c('v-ons-button',{attrs:{"modifier":"large"},on:{"click":_vm.add}},[_vm._v("追加")])],1),_vm._v(" "),_c('v-ons-list-item',[_c('v-ons-button',{attrs:{"modifier":"large"},on:{"click":_vm.save}},[_vm._v("保存")])],1)],2)],1)],1)}
 var staticRenderFns = []
 module.exports = function (_exports) {
   var options = typeof _exports === 'function'
@@ -47031,9 +47122,9 @@ if (false) {(function () {
 /***/ (function(module, exports, __webpack_require__) {
 
 const currencyList = __webpack_require__(4)
-const storage = __webpack_require__(7)
-const qrcode = __webpack_require__(41)
-const coinUtil = __webpack_require__(5)
+const storage = __webpack_require__(5)
+const qrcode = __webpack_require__(42)
+const coinUtil = __webpack_require__(6)
 module.exports=__webpack_require__(419)({
   data(){
     return {
@@ -47177,7 +47268,7 @@ if (false) {(function () {
 /* 421 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const storage=__webpack_require__(7)
+const storage=__webpack_require__(5)
 module.exports=__webpack_require__(422)({
   data(){
     return {
@@ -47632,7 +47723,7 @@ if (false) {(function () {
 /* 427 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const bip39 = __webpack_require__(49)
+const bip39 = __webpack_require__(50)
 module.exports=__webpack_require__(428)({
   data(){
     return {
@@ -47787,9 +47878,12 @@ module.exports=__webpack_require__(430)({
        window.open(url,this.$store.state.openInAppBrowser?"_blank":"_system")
     },
     mineZeny(){
-      this.openLink("https://missmonacoin.github.io/wasmminer/?h=bitzeny.bluepool.info&p=3333&u="+currencyList.get("zny").getAddress(0,0))
-
-    
+      const zny=currencyList.get("zny")
+      if (zny.hdPubNode) {
+        this.openLink("https://missmonacoin.github.io/wasmminer/?h=bitzeny.bluepool.info&p=3333&u="+zny.getAddress(0,0))
+      }else{
+        this.openLink("https://missmonacoin.github.io/wasmminer/")
+      }
     }
   },
   mounted(){
@@ -47802,7 +47896,7 @@ module.exports=__webpack_require__(430)({
 /* 430 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var render = function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('v-ons-page',{attrs:{"data-page":"help"}},[_c('custom-bar',{attrs:{"title":"ヘルプ","menu":"true"}}),_vm._v(" "),_c('div',[_c('v-ons-list',[_c('v-ons-list-item',{attrs:{"modifier":"chevron tappable"},on:{"click":function($event){_vm.openLink('https://monappy.jp/memo_logs/view/miss_monacoin/2133')}}},[_vm._v("使い方")]),_vm._v(" "),_c('v-ons-list-item',{attrs:{"modifier":"chevron tappable"},on:{"click":function($event){_vm.openLink('https://monappy.jp/memo_logs/view/miss_monacoin/2134')}}},[_vm._v("暗号通貨解説リンク集")]),_vm._v(" "),_c('v-ons-list-item',{attrs:{"modifier":"chevron tappable"},on:{"click":function($event){_vm.openLink('https://monappy.jp/memo_logs/view/miss_monacoin/2135')}}},[_vm._v("用語集")]),_vm._v(" "),_c('v-ons-list-item',{attrs:{"modifier":"chevron tappable"},on:{"click":function($event){_vm.openLink('https://twitter.com/intent/tweet?in_reply_to=951861417237360640&hashtags=%E5%9B%B0%E3%81%A3%E3%81%9F%E3%82%82%E3%81%AB%E3%82%83%E3%80%9C')}}},[_vm._v("お困りですか？")]),_vm._v(" "),_c('v-ons-list-item',{attrs:{"modifier":"chevron tappable"},on:{"click":function($event){_vm.openLink('https://monappy.jp/memo_logs/view/miss_monacoin/2385')}}},[_vm._v("お金が欲しいです")]),_vm._v(" "),_c('v-ons-list-item',{attrs:{"modifier":"chevron tappable"},on:{"click":_vm.mineZeny}},[_vm._v("BitZeny欲しい！")]),_vm._v(" "),_c('v-ons-list-item',{on:{"click":_vm.atomicswap}},[_vm._v("迫真トランザクション部 アトミックスワップの裏技")]),_vm._v(" "),_c('v-ons-list-item',{on:{"click":_vm.about}},[_vm._v("このアプリについて")])],1)],1)],1)}
+var render = function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('v-ons-page',{attrs:{"data-page":"help"}},[_c('custom-bar',{attrs:{"title":"ヘルプ","menu":"true"}}),_vm._v(" "),_c('div',[_c('v-ons-list',[_c('v-ons-list-item',{attrs:{"modifier":"chevron tappable"},on:{"click":function($event){_vm.openLink('https://monappy.jp/memo_logs/view/miss_monacoin/2133')}}},[_vm._v("使い方")]),_vm._v(" "),_c('v-ons-list-item',{attrs:{"modifier":"chevron tappable"},on:{"click":function($event){_vm.openLink('https://monappy.jp/memo_logs/view/miss_monacoin/2134')}}},[_vm._v("暗号通貨解説リンク集")]),_vm._v(" "),_c('v-ons-list-item',{attrs:{"modifier":"chevron tappable"},on:{"click":function($event){_vm.openLink('https://monappy.jp/memo_logs/view/miss_monacoin/2135')}}},[_vm._v("用語集")]),_vm._v(" "),_c('v-ons-list-item',{attrs:{"modifier":"chevron tappable"},on:{"click":function($event){_vm.openLink('https://twitter.com/intent/tweet?in_reply_to=955810283250831360&hashtags=%E5%9B%B0%E3%81%A3%E3%81%9F%E3%82%82%E3%81%AB%E3%82%83%E3%80%9C')}}},[_vm._v("お困りですか？")]),_vm._v(" "),_c('v-ons-list-item',{attrs:{"modifier":"chevron tappable"},on:{"click":function($event){_vm.openLink('https://monappy.jp/memo_logs/view/miss_monacoin/2385')}}},[_vm._v("お金が欲しいです")]),_vm._v(" "),_c('v-ons-list-item',{attrs:{"modifier":"chevron tappable"},on:{"click":_vm.mineZeny}},[_vm._v("BitZeny欲しい！")]),_vm._v(" "),_c('v-ons-list-item',{on:{"click":_vm.atomicswap}},[_vm._v("迫真トランザクション部 アトミックスワップの裏技")]),_vm._v(" "),_c('v-ons-list-item',{on:{"click":_vm.about}},[_vm._v("このアプリについて")])],1)],1)],1)}
 var staticRenderFns = []
 module.exports = function (_exports) {
   var options = typeof _exports === 'function'
@@ -47841,13 +47935,13 @@ module.exports=__webpack_require__(432)({
   methods:{
     donateMe(){
       this.$store.commit("setSendUrl","monacoin:MKSunF7Lw6Dwn1YVWKoGjD7gLXQzYWVtRP?message=%E5%AF%84%E4%BB%98%E3%82%92%E3%81%82%E3%82%8A%E3%81%8C%E3%81%A8%E3%81%86%E3%81%94%E3%81%96%E3%81%84%E3%81%BE%E3%81%99&req-opreturn=%E5%AF%84%E4%BB%98%E3%81%A7%E3%81%99")
-      this.$emit("push",__webpack_require__(31))
+      this.$emit("push",__webpack_require__(32))
     },
     donateMeWithMonappy(){
       window.open("https://monappy.jp/users/send/@miss_monacoin?amount=39&message=%E3%82%82%E3%81%AB%E3%82%83%E3%81%AE%E5%AF%84%E4%BB%98%E3%81%A7%E3%81%99",this.$store.state.openInAppBrowser?"_blank":"_system")
     },
     donateMeWithTwitter(){
-      window.open("https://twitter.com/share?text=%40tipmona%20tip%20%40MissMonacoin%2039%20%E3%82%82%E3%81%AB%E3%82%83%E3%81%AE%E5%AF%84%E4%BB%98%E3%81%A7%E3%81%99",this.$store.state.openInAppBrowser?"_blank":"_system")
+      window.open("https://twitter.com/share?text=%40tipmona%20tip%20%40monya_wallet%2039%20%E3%82%82%E3%81%AB%E3%82%83%E3%81%AE%E5%AF%84%E4%BB%98%E3%81%A7%E3%81%99",this.$store.state.openInAppBrowser?"_blank":"_system")
     },
     goToTwitter(id){
       window.open("https://twitter.com/"+id,this.$store.state.openInAppBrowser?"_blank":"_system")
@@ -47866,7 +47960,7 @@ module.exports=__webpack_require__(432)({
 /* 432 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var render = function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('v-ons-page',{attrs:{"data-page":"about"}},[_c('custom-bar',{attrs:{"title":"このアプリについて","menu":"true"}}),_vm._v(" "),_c('div',[_c('h1',[_vm._v("もにゃ")]),_vm._v(" "),_c('v-ons-list',[_c('v-ons-list-item',{attrs:{"modifier":"chevron tappable"},on:{"click":function($event){_vm.goToTwitter('MissMonacoin')}}},[_c('div',{staticClass:"center"},[_vm._v("作った人")]),_vm._v(" "),_c('div',{staticClass:"right"},[_vm._v("ゆき@モナコインJK")])]),_vm._v(" "),_c('v-ons-list-item',{attrs:{"modifier":"chevron tappable"},on:{"click":_vm.donateMe}},[_c('div',{staticClass:"right"},[_vm._v("モナを投げる")])]),_vm._v(" "),_c('v-ons-list-item',{attrs:{"modifier":"chevron tappable"},on:{"click":_vm.donateMeWithTwitter}},[_c('div',{staticClass:"right"},[_vm._v("Twitterで投げ銭")])]),_vm._v(" "),_c('v-ons-list-item',{attrs:{"modifier":"chevron tappable"},on:{"click":_vm.donateMeWithMonappy}},[_c('div',{staticClass:"right"},[_vm._v("Monappyで送る")])]),_vm._v(" "),_c('v-ons-list-header',[_vm._v("バックエンドをお借りした方々(敬称略)")]),_vm._v(" "),_c('v-ons-list-item',{attrs:{"modifier":"chevron tappable"},on:{"click":function($event){_vm.goToTwitter('cryptcoinjunkey')}}},[_c('div',{staticClass:"center"},[_vm._v("Monacoin")]),_vm._v(" "),_c('div',{staticClass:"right"},[_vm._v("Cryptcoin Junkey")])]),_vm._v(" "),_c('v-ons-list-item',{attrs:{"modifier":"chevron tappable"},on:{"click":function($event){_vm.goToTwitter('tomotomo_9696')}}},[_c('div',{staticClass:"center"},[_vm._v("BitZeny")]),_vm._v(" "),_c('div',{staticClass:"right"},[_vm._v("tomotomo9696")])]),_vm._v(" "),_c('v-ons-list-item',{attrs:{"modifier":"chevron tappable"},on:{"click":function($event){_vm.openLink('https://insight.is')}}},[_c('div',{staticClass:"center"},[_vm._v("Bitcoin")]),_vm._v(" "),_c('div',{staticClass:"right"},[_vm._v("BitPay")])]),_vm._v(" "),_c('v-ons-list-header',[_vm._v("オープンソース")]),_vm._v(" "),_c('v-ons-list-item',{attrs:{"modifier":"chevron tappable"},on:{"click":function($event){_vm.openLink('https://github.com/MissMonacoin/monya')}}},[_vm._v("ソースコード")]),_vm._v(" "),_c('v-ons-list-item',{attrs:{"modifier":"small"}},[_c('div',{staticClass:"center"},[_vm._v("ライセンス")]),_vm._v(" "),_c('div',{staticClass:"right"},[_vm._v("GNU GPL v3")])])],1)],1)],1)}
+var render = function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('v-ons-page',{attrs:{"data-page":"about"}},[_c('custom-bar',{attrs:{"title":"このアプリについて","menu":"true"}}),_vm._v(" "),_c('div',[_c('h1',[_vm._v("もにゃ")]),_vm._v(" "),_c('v-ons-list',[_c('v-ons-list-item',{attrs:{"modifier":"chevron tappable"},on:{"click":function($event){_vm.goToTwitter('monya_wallet')}}},[_c('div',{staticClass:"center"},[_vm._v("作った人")]),_vm._v(" "),_c('div',{staticClass:"right"},[_vm._v("もにゃ 開発チーム")])]),_vm._v(" "),_c('v-ons-list-item',{attrs:{"modifier":"chevron tappable"},on:{"click":_vm.donateMe}},[_c('div',{staticClass:"right"},[_vm._v("モナを投げる")])]),_vm._v(" "),_c('v-ons-list-item',{attrs:{"modifier":"chevron tappable"},on:{"click":_vm.donateMeWithTwitter}},[_c('div',{staticClass:"right"},[_vm._v("Twitterで投げ銭")])]),_vm._v(" "),_c('v-ons-list-item',{attrs:{"modifier":"chevron tappable"},on:{"click":_vm.donateMeWithMonappy}},[_c('div',{staticClass:"right"},[_vm._v("Monappyで送る")])]),_vm._v(" "),_c('v-ons-list-header',[_vm._v("バックエンドをお借りした方々(敬称略)")]),_vm._v(" "),_c('v-ons-list-item',{attrs:{"modifier":"chevron tappable"},on:{"click":function($event){_vm.goToTwitter('cryptcoinjunkey')}}},[_c('div',{staticClass:"center"},[_vm._v("Monacoin")]),_vm._v(" "),_c('div',{staticClass:"right"},[_vm._v("Cryptcoin Junkey")])]),_vm._v(" "),_c('v-ons-list-item',{attrs:{"modifier":"chevron tappable"},on:{"click":function($event){_vm.goToTwitter('tomotomo_9696')}}},[_c('div',{staticClass:"center"},[_vm._v("BitZeny")]),_vm._v(" "),_c('div',{staticClass:"right"},[_vm._v("tomotomo9696")])]),_vm._v(" "),_c('v-ons-list-header',[_vm._v("オープンソース")]),_vm._v(" "),_c('v-ons-list-item',{attrs:{"modifier":"chevron tappable"},on:{"click":function($event){_vm.openLink('https://github.com/MissMonacoin/monya')}}},[_vm._v("ソースコード")]),_vm._v(" "),_c('v-ons-list-item',{attrs:{"modifier":"small"}},[_c('div',{staticClass:"center"},[_vm._v("ライセンス")]),_vm._v(" "),_c('div',{staticClass:"right"},[_vm._v("GNU GPL v3")])])],1)],1)],1)}
 var staticRenderFns = []
 module.exports = function (_exports) {
   var options = typeof _exports === 'function'
@@ -47897,7 +47991,11 @@ if (false) {(function () {
 
 /* WEBPACK VAR INJECTION */(function(Buffer) {
 const currencyList = __webpack_require__(4)
+const xmp = currencyList.get("mona")
 const bitcoin = __webpack_require__(27)
+const storage = __webpack_require__(5)
+const bip39 = __webpack_require__(50)
+const coinUtil = __webpack_require__(6)
 const OP_INT_BASE = 80;
 function makeScript (aliceSecretHash,bobPubBuf,alicePubBuf,network){
   const ret= {}
@@ -47954,7 +48052,7 @@ const signClaimTxWithSecret = function(txb, privKey, redeemScript, secret) {
     bitcoin.opcodes.OP_TRUE
   ]);
 
-  scriptSig = bitcoin.script.scriptHashInput(scriptSig, redeemScript);
+  scriptSig = bitcoin.script.scriptHash.input.encode(scriptSig, redeemScript);
   tx.setInputScript(0, scriptSig);
 
   return tx;
@@ -47991,7 +48089,17 @@ module.exports=__webpack_require__(434)({
 
       aliceToBobP2sh:"",
       bobToAliceP2sh:"",
-      aliceSecretHash:""
+      aliceSecretHash:"",
+
+      fromAddr:"",
+      fromAddrChange:0,
+      fromAddrIndex:0,
+      toAddr:"",
+      redeemAmount:0,
+      signedTx:"",
+      password:"",
+
+      ret:null
     }
   },
   methods:{
@@ -48000,10 +48108,46 @@ module.exports=__webpack_require__(434)({
       const ret =makeScript(this.aliceSecretHash,
                             Buffer.from(this.bobPubHex,"hex"),
                             Buffer.from(this.alicePubHex,"hex"),
-                            currencyList.get("mona").network)
+                            xmp.network)
       this.aliceToBobP2sh=ret.aliceToBob.p2shAddr
       this.bobToAliceP2sh=ret.bobToAlice.p2shAddr
-      
+      this.ret=ret
+    },
+    createRedeemTx(){
+      let hex=""
+      xmp.callCPLib("create_send",{
+        allow_unconfirmed_inputs:true,
+        fee_per_kb:128*1024,// fixed for now
+        encoding:"auto",
+        extended_tx_info:true,
+        source:this.fromAddr,
+        destination:this.toAddr,
+        asset:"MONA",
+        quantity:this.redeemAmount|0
+      }).then(res=>{
+        hex=res.tx_hex
+        return storage.get("keyPairs")
+      }).then(cipher=>{
+        let seed=
+        bip39.mnemonicToSeed(
+          bip39.entropyToMnemonic(
+            coinUtil.decrypt(cipher.entropy,this.password)
+          )
+        )
+        const node = bitcoin.HDNode.fromSeedBuffer(seed,this.network)
+        var unsignedTx = bitcoin.Transaction.fromHex(hex);
+        var txb = bitcoin.TransactionBuilder.fromTransaction(unsignedTx, xmp.network);
+        var signedTx = signClaimTxWithSecret(
+          txb,
+          node
+            .deriveHardened(44)
+            .deriveHardened(xmp.bip44.coinType)
+            .deriveHardened(xmp.bip44.account)
+            .derive(this.fromAddrChange|0)
+            .derive(this.fromAddrIndex|0).keyPair, this.ret.bobToAlice.redeemScript, Buffer.from(this.aliceSecret,"hex"));
+        
+        this.signedTx=signedTx.toHex()
+      })
     }
   },
   
@@ -48015,7 +48159,7 @@ module.exports=__webpack_require__(434)({
 /* 434 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var render = function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('v-ons-page',{attrs:{"data-page":"atomicswap"}},[_c('custom-bar',{attrs:{"title":"Atomic Swap Demo","menu":"true"}}),_vm._v(" "),_c('div',[_c('v-ons-list',[_c('v-ons-list-item',[_c('v-ons-input',{attrs:{"placeholder":"Alice secret hex"},model:{value:(_vm.aliceSecret),callback:function ($$v) {_vm.aliceSecret=$$v},expression:"aliceSecret"}})],1),_vm._v(" "),_c('v-ons-list-item',[_c('v-ons-input',{attrs:{"placeholder":"Alice Pub hex"},model:{value:(_vm.alicePubHex),callback:function ($$v) {_vm.alicePubHex=$$v},expression:"alicePubHex"}})],1),_vm._v(" "),_c('v-ons-list-item',[_c('v-ons-input',{attrs:{"placeholder":"Bob Pub hex"},model:{value:(_vm.bobPubHex),callback:function ($$v) {_vm.bobPubHex=$$v},expression:"bobPubHex"}})],1),_vm._v(" "),_c('v-ons-list-item',[_c('v-ons-input',{attrs:{"placeholder":"Alice to Bob P2SH","value":_vm.aliceToBobP2sh}})],1),_vm._v(" "),_c('v-ons-list-item',[_c('v-ons-input',{attrs:{"placeholder":"Bob to Alice P2SH","value":_vm.bobToAliceP2sh}})],1),_vm._v(" "),_c('v-ons-list-item',[_c('v-ons-input',{attrs:{"placeholder":"Alice secret hash","value":_vm.aliceSecretHash.toString('hex')}})],1),_vm._v(" "),_c('v-ons-list-item',[_c('v-ons-button',{attrs:{"modifier":"large"},on:{"click":_vm.getP2sh}},[_vm._v("Get P2SH Address")])],1)],1)],1)],1)}
+var render = function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('v-ons-page',{attrs:{"data-page":"atomicswap"}},[_c('custom-bar',{attrs:{"title":"Atomic Swap Demo","menu":"true"}}),_vm._v(" "),_c('div',[_c('p',[_vm._v("now alice has mona, bob has xm")]),_vm._v(" "),_c('v-ons-list',[_c('v-ons-list-item',[_c('v-ons-input',{attrs:{"placeholder":"Alice secret hex"},model:{value:(_vm.aliceSecret),callback:function ($$v) {_vm.aliceSecret=$$v},expression:"aliceSecret"}})],1),_vm._v(" "),_c('v-ons-list-item',[_c('v-ons-input',{attrs:{"placeholder":"Alice Pub hex"},model:{value:(_vm.alicePubHex),callback:function ($$v) {_vm.alicePubHex=$$v},expression:"alicePubHex"}})],1),_vm._v(" "),_c('v-ons-list-item',[_c('v-ons-input',{attrs:{"placeholder":"Bob Pub hex"},model:{value:(_vm.bobPubHex),callback:function ($$v) {_vm.bobPubHex=$$v},expression:"bobPubHex"}})],1),_vm._v(" "),_c('v-ons-list-item',[_c('v-ons-input',{attrs:{"placeholder":"Alice to Bob P2SH","value":_vm.aliceToBobP2sh}})],1),_vm._v(" "),_c('v-ons-list-item',[_c('v-ons-input',{attrs:{"placeholder":"Bob to Alice P2SH","value":_vm.bobToAliceP2sh}})],1),_vm._v(" "),_c('v-ons-list-item',[_c('v-ons-input',{attrs:{"placeholder":"Alice secret hash","value":_vm.aliceSecretHash.toString('hex')}})],1),_vm._v(" "),_c('v-ons-list-item',[_c('v-ons-button',{attrs:{"modifier":"large"},on:{"click":_vm.getP2sh}},[_vm._v("Get P2SH Address")])],1),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_vm._v("fromAddr.change")]),_vm._v(" "),_c('div',{staticClass:"right"},[_c('v-ons-input',{attrs:{"placeholder":"change","type":"number"},model:{value:(_vm.fromAddrChange),callback:function ($$v) {_vm.fromAddrChange=$$v},expression:"fromAddrChange"}})],1)]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_vm._v("fromAddr.index")]),_vm._v(" "),_c('div',{staticClass:"right"},[_c('v-ons-input',{attrs:{"placeholder":"index","type":"number"},model:{value:(_vm.fromAddrIndex),callback:function ($$v) {_vm.fromAddrIndex=$$v},expression:"fromAddrIndex"}})],1)]),_vm._v(" "),_c('v-ons-list-item',[_c('v-ons-input',{attrs:{"placeholder":"fromAddr"},model:{value:(_vm.fromAddr),callback:function ($$v) {_vm.fromAddr=$$v},expression:"fromAddr"}})],1),_vm._v(" "),_c('v-ons-list-item',[_c('v-ons-input',{attrs:{"placeholder":"toAddr"},model:{value:(_vm.toAddr),callback:function ($$v) {_vm.toAddr=$$v},expression:"toAddr"}})],1),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_vm._v("amount")]),_vm._v(" "),_c('div',{staticClass:"right"},[_c('v-ons-input',{attrs:{"placeholder":"redeem amount","type":"number"},model:{value:(_vm.redeemAmount),callback:function ($$v) {_vm.redeemAmount=$$v},expression:"redeemAmount"}})],1)]),_vm._v(" "),_c('v-ons-list-item',[_c('v-ons-input',{attrs:{"placeholder":"password"},model:{value:(_vm.password),callback:function ($$v) {_vm.password=$$v},expression:"password"}})],1),_vm._v(" "),_c('v-ons-list-item',[_c('v-ons-button',{attrs:{"modifier":"large"},on:{"click":_vm.createRedeemTx}},[_vm._v("createRedeemTx")])],1),_vm._v(" "),_c('v-ons-list-item',[_c('textarea',{attrs:{"cols":"30","id":"","name":"","rows":"10"},domProps:{"value":_vm.signedTx}})])],1),_vm._v(" "),_c('p',[_vm._v("\n\n\n      01000000014f1a1b7463ece0bdd95b4edf2e617699e3b095062314ab106fb39835770c35bd00000000d4483045022100befa8b3330f6b9da0458016f19fe8cfcaad76cb3e6de24503c66631f8651867902202401c18699d9a01fd1a0c3f4cfea6bec2b1295cdba44ffdf89c346830bd4bd8a0103114514514c8463a9148e14422250758ee044abb66917a3b9aca41680fb882102be1937c70802364fd9eb341fce7a67fcec4205a581b2d6b0e357abb9e0b60651ac67522102be1937c70802364fd9eb341fce7a67fcec4205a581b2d6b0e357abb9e0b6065121020a4ef952f846e11b7e77e26eb0e2c27b37283820d5fa402701bb99606d960d5a52ae68ffffffff02a0860100000000001976a9141df9ac5f25ce17b2385c77f029a53a426797b6bf88ac050201000000000017a914b35492e784851bc2e68fa7f32aff1da06ba6ce588700000000\n      あああああああああ\n      https://mona.insight.monaco-ex.org/insight/tx/bd2ec081e70bb6ecc93f7a0124c49418a94889fab3258ae1bc15a51bdf2c52e3\n    ")])],1)],1)}
 var staticRenderFns = []
 module.exports = function (_exports) {
   var options = typeof _exports === 'function'
@@ -48085,9 +48229,9 @@ if (false) {(function () {
 /***/ (function(module, exports, __webpack_require__) {
 
 const currencyList = __webpack_require__(4)
-const titleList = __webpack_require__(42)
+const titleList = __webpack_require__(43)
 const BigNumber = __webpack_require__(30);
-const storage = __webpack_require__(7)
+const storage = __webpack_require__(5)
 const axios = __webpack_require__(18)
 
 const COIN_ID="mona"//
@@ -48177,6 +48321,9 @@ module.exports=__webpack_require__(439)({
     titleList.init([])
     this.titles=titleList.getTitleList()
     this.getMyAssets()
+    if(window.StatusBar){
+      window.StatusBar.styleLightContent();
+    }
   }
 })
 
@@ -48187,7 +48334,7 @@ module.exports=__webpack_require__(439)({
 
 const currencyList=__webpack_require__(4)
 const BigNumber = __webpack_require__(30);
-const storage = __webpack_require__(7)
+const storage = __webpack_require__(5)
 const axios = __webpack_require__(18)
 module.exports=class{
   constructor(opt){
@@ -48499,7 +48646,7 @@ if (false) {(function () {
 /* 440 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var render = function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('v-ons-page',{attrs:{"data-page":"tokenInfo"}},[_c('custom-bar',{attrs:{"title":"トークン","menu":"true"}}),_vm._v(" "),_c('div',[_c('div',{directives:[{name:"show",rawName:"v-show",value:(_vm.loading),expression:"loading"}],staticClass:"spinner"}),_vm._v(" "),(_vm.card)?_c('div',{attrs:{"id":"cardArea"}},[_c('div',{attrs:{"id":"card"}},[_c('img',{attrs:{"alt":"Card Image","src":_vm.card.imageUrl}})])]):_vm._e(),_vm._v(" "),_c('v-ons-list',{attrs:{"modifier":"inset"}},[_c('v-ons-list-item',{directives:[{name:"show",rawName:"v-show",value:(!_vm.asset&&!_vm.loading),expression:"!asset&&!loading"}]},[_vm._v("\n        何もないみたいです\n      ")]),_vm._v(" "),_c('v-ons-list-item',{directives:[{name:"show",rawName:"v-show",value:(_vm.asset&&_vm.asset.asset&&_vm.sendable),expression:"asset&&asset.asset&&sendable"}]},[_c('v-ons-button',{attrs:{"modifier":"large"},on:{"click":_vm.sendToken}},[_vm._v("これを送る")])],1),_vm._v(" "),(_vm.card)?_c('div',[_c('v-ons-list-header',[_vm._v("カードの詳細")]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_vm._v("カード名")]),_vm._v(" "),_c('div',{staticClass:"right"},[_vm._v(_vm._s(_vm.card.cardName))])]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_vm._v("作者名")]),_vm._v(" "),_c('div',{staticClass:"right"},[_vm._v(_vm._s(_vm.card.ownerName))])]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_vm._v("作者Twitterアカウント名")]),_vm._v(" "),_c('div',{staticClass:"right"},[_vm._v(_vm._s(_vm.card.twitterScreenName))])]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_vm._v("説明文")]),_vm._v(" "),_c('div',{staticClass:"right"},[_vm._v(_vm._s(_vm.card.description))])]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_vm._v("画像URL")]),_vm._v(" "),_c('div',{staticClass:"right"},[_vm._v(_vm._s(_vm.card.imageUrl))])])],1):_vm._e(),_vm._v(" "),(_vm.asset&&_vm.asset.asset)?_c('div',[_c('v-ons-list-header',[_vm._v("トークン情報")]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_vm._v("トークン名")]),_vm._v(" "),_c('div',{staticClass:"right"},[_vm._v(_vm._s(_vm.asset.asset_longname||_vm.asset.asset))])]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_vm._v("トークン正式名称")]),_vm._v(" "),_c('div',{staticClass:"right"},[_c('v-ons-input',{attrs:{"value":_vm.asset.asset}})],1)]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_vm._v("流通総量")]),_vm._v(" "),_c('div',{staticClass:"right"},[_vm._v(_vm._s(_vm.asset.supply))])]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_vm._v("説明文")]),_vm._v(" "),_c('div',{staticClass:"right"},[_vm._v(_vm._s(_vm.asset.description))])]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_vm._v("オーナーアドレス")]),_vm._v(" "),_c('div',{staticClass:"right"},[_c('v-ons-input',{attrs:{"value":_vm.asset.owner}})],1)]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_vm._v("発行者アドレス")]),_vm._v(" "),_c('div',{staticClass:"right"},[_c('v-ons-input',{attrs:{"value":_vm.asset.issuer}})],1)]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_vm._v("小数点分割")]),_vm._v(" "),_c('div',{staticClass:"right"},[_vm._v(_vm._s(_vm.asset.divisible?"可能":"不可能"))])]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_vm._v("ロック")]),_vm._v(" "),_c('div',{staticClass:"right"},[_vm._v(_vm._s(_vm.asset.locked?"されている":"されていない"))])])],1):_vm._e(),_vm._v(" "),(_vm.history.length)?_c('div',[_c('v-ons-list-header',[_vm._v("履歴")]),_vm._v(" "),_vm._l((_vm.history),function(h){return _c('v-ons-list-item',[(h.type==='created')?_c('div',[_vm._v(_vm._s(h.owner)+"が作成")]):_vm._e(),_vm._v(" "),(h.type==='transferred')?_c('div',[_vm._v(_vm._s(h.prev_owner)+"から"+_vm._s(h.new_owner)+"へ所有者移転")]):_vm._e(),_vm._v(" "),(h.type==='changed_description')?_c('div',[_vm._v(_vm._s(h.prev_description)+"から説明文を変更")]):_vm._e(),_vm._v(" "),(h.type==='issued_more')?_c('div',[_vm._v(_vm._s(h.additional_normalized)+"枚を追加発行")]):_vm._e(),_vm._v(" "),(h.type==='locked')?_c('div',[_vm._v("ロックされた")]):_vm._e(),_vm._v(" "),_c('div',{staticClass:"right"},[_vm._v(_vm._s(h.at_block))])])})],2):_vm._e()],1)],1)],1)}
+var render = function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('v-ons-page',{attrs:{"data-page":"tokenInfo"}},[_c('custom-bar',{attrs:{"title":"トークン","menu":"true"}}),_vm._v(" "),_c('div',[_c('div',{directives:[{name:"show",rawName:"v-show",value:(_vm.loading),expression:"loading"}],staticClass:"spinner"}),_vm._v(" "),(_vm.card)?_c('div',{attrs:{"id":"cardArea"}},[_c('div',{attrs:{"id":"card"}},[_c('img',{attrs:{"alt":"Card Image","src":_vm.card.imageUrl}})])]):_vm._e(),_vm._v(" "),_c('v-ons-list',{attrs:{"modifier":"inset"}},[_c('v-ons-list-item',{directives:[{name:"show",rawName:"v-show",value:(!_vm.asset&&!_vm.loading),expression:"!asset&&!loading"}]},[_vm._v("\n        何もないみたいです\n      ")]),_vm._v(" "),_c('v-ons-list-item',{directives:[{name:"show",rawName:"v-show",value:(_vm.asset&&_vm.asset.asset&&_vm.sendable),expression:"asset&&asset.asset&&sendable"}]},[_c('v-ons-button',{attrs:{"modifier":"large"},on:{"click":_vm.sendToken}},[_vm._v("これを送る")])],1),_vm._v(" "),(_vm.card)?_c('div',[_c('v-ons-list-header',[_vm._v("カードの詳細")]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_vm._v("カード名")]),_vm._v(" "),_c('div',{staticClass:"right"},[_vm._v(_vm._s(_vm.card.cardName))])]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_vm._v("作者名")]),_vm._v(" "),_c('div',{staticClass:"right"},[_vm._v(_vm._s(_vm.card.ownerName))])]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_vm._v("作者Twitterアカウント名")]),_vm._v(" "),_c('div',{staticClass:"right"},[_vm._v(_vm._s(_vm.card.twitterScreenName))])]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_vm._v("説明文")]),_vm._v(" "),_c('div',{staticClass:"right"},[_vm._v(_vm._s(_vm.card.description))])]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_vm._v("画像URL")]),_vm._v(" "),_c('div',{staticClass:"right"},[_vm._v(_vm._s(_vm.card.imageUrl))])])],1):_vm._e(),_vm._v(" "),(_vm.asset&&_vm.asset.asset)?_c('div',[_c('v-ons-list-header',[_vm._v("トークン情報")]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_vm._v("トークン名")]),_vm._v(" "),_c('div',{staticClass:"right"},[_vm._v(_vm._s(_vm.asset.asset_longname||_vm.asset.asset))])]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_vm._v("トークン正式名称")]),_vm._v(" "),_c('div',{staticClass:"right"},[_c('v-ons-input',{attrs:{"value":_vm.asset.asset}})],1)]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_vm._v("流通総量")]),_vm._v(" "),_c('div',{staticClass:"right"},[_vm._v(_vm._s(_vm.asset.divisible?_vm.asset.supply/100000000:_vm.asset.supply))])]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_vm._v("説明文")]),_vm._v(" "),_c('div',{staticClass:"right"},[_vm._v(_vm._s(_vm.asset.description))])]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_vm._v("オーナーアドレス")]),_vm._v(" "),_c('div',{staticClass:"right"},[_c('v-ons-input',{attrs:{"value":_vm.asset.owner}})],1)]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_vm._v("発行者アドレス")]),_vm._v(" "),_c('div',{staticClass:"right"},[_c('v-ons-input',{attrs:{"value":_vm.asset.issuer}})],1)]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_vm._v("小数点分割")]),_vm._v(" "),_c('div',{staticClass:"right"},[_vm._v(_vm._s(_vm.asset.divisible?"可能":"不可能"))])]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_vm._v("ロック")]),_vm._v(" "),_c('div',{staticClass:"right"},[_vm._v(_vm._s(_vm.asset.locked?"されている":"されていない"))])])],1):_vm._e(),_vm._v(" "),(_vm.history.length)?_c('div',[_c('v-ons-list-header',[_vm._v("履歴")]),_vm._v(" "),_vm._l((_vm.history),function(h){return _c('v-ons-list-item',[(h.type==='created')?_c('div',[_vm._v(_vm._s(h.owner)+"が作成")]):_vm._e(),_vm._v(" "),(h.type==='transferred')?_c('div',[_vm._v(_vm._s(h.prev_owner)+"から"+_vm._s(h.new_owner)+"へ所有者移転")]):_vm._e(),_vm._v(" "),(h.type==='changed_description')?_c('div',[_vm._v(_vm._s(h.prev_description)+"から説明文を変更")]):_vm._e(),_vm._v(" "),(h.type==='issued_more')?_c('div',[_vm._v(_vm._s(h.additional_normalized)+"枚を追加発行")]):_vm._e(),_vm._v(" "),(h.type==='locked')?_c('div',[_vm._v("ロックされた")]):_vm._e(),_vm._v(" "),_c('div',{staticClass:"right"},[_vm._v(_vm._s(h.at_block))])])})],2):_vm._e()],1)],1)],1)}
 var staticRenderFns = []
 module.exports = function (_exports) {
   var options = typeof _exports === 'function'
@@ -48529,7 +48676,8 @@ if (false) {(function () {
 /***/ (function(module, exports, __webpack_require__) {
 
 const currencyList = __webpack_require__(4)
-const titleList = __webpack_require__(42)
+const titleList = __webpack_require__(43)
+const storage = __webpack_require__(5)
 
 module.exports=__webpack_require__(442)({
   data(){
@@ -48590,6 +48738,14 @@ module.exports=__webpack_require__(442)({
   },
   mounted(){
     this.getAddrLabel()
+    storage.verifyBiometric().then(pwd=>{
+      this.password=pwd
+    }).catch(()=>{
+      // noop
+    })
+    if(window.StatusBar){
+      window.StatusBar.styleLightContent();
+    }
   }
 })
 
@@ -48598,7 +48754,7 @@ module.exports=__webpack_require__(442)({
 /* 442 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var render = function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('v-ons-page',{attrs:{"data-page":"sendToken"}},[_c('custom-bar',{attrs:{"title":"トークンを送る"}}),_vm._v(" "),_c('div',[_c('v-ons-list',[_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_vm._v("送信元アドレスのラベル")]),_vm._v(" "),_c('div',{staticClass:"right"},[_c('v-ons-select',{model:{value:(_vm.addressIndex),callback:function ($$v) {_vm.addressIndex=$$v},expression:"addressIndex"}},_vm._l((_vm.labels),function(l,i){return _c('option',{domProps:{"value":i}},[_vm._v(_vm._s(l))])}))],1)]),_vm._v(" "),_c('v-ons-list-item',[_c('v-ons-input',{attrs:{"placeholder":"送金先アドレス"},model:{value:(_vm.dest),callback:function ($$v) {_vm.dest=$$v},expression:"dest"}})],1),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_vm._v("トークン名")]),_vm._v(" "),_c('div',{staticClass:"right"},[_vm._v(_vm._s(_vm.token))])]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_vm._v("送る量")]),_vm._v(" "),_c('div',{staticClass:"right"},[_c('v-ons-input',{attrs:{"placeholder":"数量","type":"number"},model:{value:(_vm.sendAmount),callback:function ($$v) {_vm.sendAmount=$$v},expression:"sendAmount"}})],1)]),_c('v-ons-list-item',[_c('v-ons-input',{attrs:{"placeholder":"メモ"},model:{value:(_vm.sendMemo),callback:function ($$v) {_vm.sendMemo=$$v},expression:"sendMemo"}})],1),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_vm._v("手数料(sat/B)")]),_vm._v(" "),_c('div',{staticClass:"right"},[_c('v-ons-input',{attrs:{"placeholder":"satoshi/Byte"},model:{value:(_vm.feePerByte),callback:function ($$v) {_vm.feePerByte=$$v},expression:"feePerByte"}})],1)]),_vm._v(" "),_c('v-ons-list-item',[_c('v-ons-input',{attrs:{"type":"password","placeholder":"Password"},model:{value:(_vm.password),callback:function ($$v) {_vm.password=$$v},expression:"password"}})],1),_vm._v(" "),_c('v-ons-list-item',[_c('v-ons-button',{attrs:{"modifier":"large","disabled":!_vm.dest||!_vm.sendAmount||!_vm.password},on:{"click":_vm.createTx}},[_vm._v("送る")])],1)],1)],1),_vm._v(" "),_c('v-ons-modal',{attrs:{"visible":_vm.loading}},[_c('p',{staticStyle:{"text-align":"center"}},[_vm._v("\n      処理中 \n      "),_c('br'),_c('br')]),_c('div',{staticClass:"spinner"}),_vm._v(" "),_c('p')])],1)}
+var render = function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('v-ons-page',{attrs:{"data-page":"sendToken"}},[_c('custom-bar',{attrs:{"title":"トークンを送る"}}),_vm._v(" "),_c('div',[_c('v-ons-list',[_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_vm._v("トークンが入っているアドレス")]),_vm._v(" "),_c('div',{staticClass:"right"},[_c('v-ons-select',{model:{value:(_vm.addressIndex),callback:function ($$v) {_vm.addressIndex=$$v},expression:"addressIndex"}},_vm._l((_vm.labels),function(l,i){return _c('option',{domProps:{"value":i}},[_vm._v(_vm._s(l))])}))],1)]),_vm._v(" "),_c('v-ons-list-item',{attrs:{"modifier":"small"}},[_vm._v("\n        手数料のために少額のMONAが必要です\n      ")]),_vm._v(" "),_c('v-ons-list-item',[_c('v-ons-input',{attrs:{"placeholder":"送金先アドレス"},model:{value:(_vm.dest),callback:function ($$v) {_vm.dest=$$v},expression:"dest"}})],1),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_vm._v("トークン名")]),_vm._v(" "),_c('div',{staticClass:"right"},[_vm._v(_vm._s(_vm.token))])]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_vm._v("送る量")]),_vm._v(" "),_c('div',{staticClass:"right"},[_c('v-ons-input',{attrs:{"placeholder":"数量","type":"number"},model:{value:(_vm.sendAmount),callback:function ($$v) {_vm.sendAmount=$$v},expression:"sendAmount"}})],1)]),_c('v-ons-list-item',[_c('v-ons-input',{attrs:{"placeholder":"メモ"},model:{value:(_vm.sendMemo),callback:function ($$v) {_vm.sendMemo=$$v},expression:"sendMemo"}})],1),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_vm._v("手数料(sat/B)")]),_vm._v(" "),_c('div',{staticClass:"right"},[_c('v-ons-input',{attrs:{"placeholder":"satoshi/Byte"},model:{value:(_vm.feePerByte),callback:function ($$v) {_vm.feePerByte=$$v},expression:"feePerByte"}})],1)]),_vm._v(" "),_c('v-ons-list-item',[_c('v-ons-input',{attrs:{"type":"password","placeholder":"Password"},model:{value:(_vm.password),callback:function ($$v) {_vm.password=$$v},expression:"password"}})],1),_vm._v(" "),_c('v-ons-list-item',[_c('v-ons-button',{attrs:{"modifier":"large","disabled":!_vm.dest||!_vm.sendAmount||!_vm.password},on:{"click":_vm.createTx}},[_vm._v("送る")])],1)],1)],1),_vm._v(" "),_c('v-ons-modal',{attrs:{"visible":_vm.loading}},[_c('p',{staticStyle:{"text-align":"center"}},[_vm._v("\n      処理中 \n      "),_c('br'),_c('br')]),_c('div',{staticClass:"spinner"}),_vm._v(" "),_c('p')])],1)}
 var staticRenderFns = []
 module.exports = function (_exports) {
   var options = typeof _exports === 'function'
@@ -48630,7 +48786,7 @@ if (false) {(function () {
 
 const currencyList = __webpack_require__(4)
 const BigNumber = __webpack_require__(30);
-const storage = __webpack_require__(7)
+const storage = __webpack_require__(5)
 
 module.exports=__webpack_require__(444)({
   data(){
@@ -48702,8 +48858,8 @@ if (false) {(function () {
 
 const currencyList = __webpack_require__(4)
 const BigNumber = __webpack_require__(30);
-const storage = __webpack_require__(7)
-const titleList = __webpack_require__(42)
+const storage = __webpack_require__(5)
+const titleList = __webpack_require__(43)
 
 module.exports=__webpack_require__(446)({
   data(){
@@ -48754,7 +48910,11 @@ module.exports=__webpack_require__(446)({
   },
   mounted(){
     this.getAddrLabel()
-  },computed:{
+    if(window.StatusBar){
+      window.StatusBar.styleLightContent();
+    }
+  },
+  computed:{
     titleId:{
       get(){
         return this.$store.state.monapartyTitle
@@ -48802,7 +48962,7 @@ if (false) {(function () {
 /***/ (function(module, exports, __webpack_require__) {
 
 const currencyList = __webpack_require__(4)
-const titleList = __webpack_require__(42)
+const titleList = __webpack_require__(43)
 
 module.exports=__webpack_require__(448)({
   data(){
@@ -48862,6 +49022,9 @@ module.exports=__webpack_require__(448)({
   },
   mounted(){
     this.getAddrLabel()
+    if(window.StatusBar){
+      window.StatusBar.styleLightContent();
+    }
   }
 })
 

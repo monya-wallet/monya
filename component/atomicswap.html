@@ -1,11 +1,13 @@
 <v-ons-page data-page="atomicswap">
   <custom-bar title="Atomic Swap Demo" menu="true"></custom-bar>
   <div>
+    <p>now alice has mona, bob has xm</p>
     <v-ons-list>
+      
       <v-ons-list-item>
         <v-ons-input placeholder="Alice secret hex" v-model="aliceSecret"></v-ons-input>
       </v-ons-list-item>
-     
+      
       <v-ons-list-item>
         <v-ons-input placeholder="Alice Pub hex" v-model="alicePubHex"></v-ons-input>
       </v-ons-list-item>
@@ -18,11 +20,51 @@
       <v-ons-list-item>
         <v-ons-input placeholder="Bob to Alice P2SH" :value="bobToAliceP2sh"></v-ons-input>
       </v-ons-list-item>
-       <v-ons-list-item>
+      <v-ons-list-item>
         <v-ons-input placeholder="Alice secret hash" :value="aliceSecretHash.toString('hex')"></v-ons-input>
       </v-ons-list-item>
       <v-ons-list-item><v-ons-button modifier="large" @click="getP2sh">Get P2SH Address</v-ons-button></v-ons-list-item>
+
+      <v-ons-list-item>
+        <div class="center">fromAddr.change</div>
+        <div class="right">
+          <v-ons-input placeholder="change" type=number v-model="fromAddrChange"></v-ons-input>
+        </div>
+      </v-ons-list-item>
+      <v-ons-list-item>
+        <div class="center">fromAddr.index</div>
+        <div class="right">
+          <v-ons-input placeholder="index" type=number v-model="fromAddrIndex"></v-ons-input>
+        </div>
+      </v-ons-list-item>
+      <v-ons-list-item>
+        <v-ons-input placeholder="fromAddr" v-model="fromAddr"></v-ons-input>
+        
+      </v-ons-list-item>
+      <v-ons-list-item>
+        <v-ons-input placeholder="toAddr" v-model="toAddr"></v-ons-input>
+        
+      </v-ons-list-item>
+      <v-ons-list-item>
+        <div class="center">amount</div>
+        <div class="right">
+          <v-ons-input placeholder="redeem amount" type=number v-model="redeemAmount"></v-ons-input>
+        </div>
+      </v-ons-list-item>
+      <v-ons-list-item>
+        <v-ons-input placeholder="password" v-model="password"></v-ons-input>
+      </v-ons-list-item>
+      <v-ons-list-item><v-ons-button modifier="large" @click="createRedeemTx">createRedeemTx</v-ons-button></v-ons-list-item>
+      <v-ons-list-item>
+        <textarea cols="30" id="" name="" rows="10" :value="signedTx"></textarea>
+      </v-ons-list-item>
     </v-ons-list>
-    
+    <p>
+
+
+      01000000014f1a1b7463ece0bdd95b4edf2e617699e3b095062314ab106fb39835770c35bd00000000d4483045022100befa8b3330f6b9da0458016f19fe8cfcaad76cb3e6de24503c66631f8651867902202401c18699d9a01fd1a0c3f4cfea6bec2b1295cdba44ffdf89c346830bd4bd8a0103114514514c8463a9148e14422250758ee044abb66917a3b9aca41680fb882102be1937c70802364fd9eb341fce7a67fcec4205a581b2d6b0e357abb9e0b60651ac67522102be1937c70802364fd9eb341fce7a67fcec4205a581b2d6b0e357abb9e0b6065121020a4ef952f846e11b7e77e26eb0e2c27b37283820d5fa402701bb99606d960d5a52ae68ffffffff02a0860100000000001976a9141df9ac5f25ce17b2385c77f029a53a426797b6bf88ac050201000000000017a914b35492e784851bc2e68fa7f32aff1da06ba6ce588700000000
+      あああああああああ
+      https://mona.insight.monaco-ex.org/insight/tx/bd2ec081e70bb6ecc93f7a0124c49418a94889fab3258ae1bc15a51bdf2c52e3
+    </p>
   </div>
 </v-ons-page>
