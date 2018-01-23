@@ -102,6 +102,9 @@ module.exports=require("./navigator.html")({
   },
   watch:{
     pageStack(){
+      if(this.$ons.platform.isIOS()&&window.StatusBar&&this.pageStack.length===1){
+        window.StatusBar.styleDefault();
+      }
       this.$store.commit("setTransparency",false)
     }
   },

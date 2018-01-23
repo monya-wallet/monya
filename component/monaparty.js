@@ -91,5 +91,8 @@ module.exports=require("./monaparty.html")({
     titleList.init([])
     this.titles=titleList.getTitleList()
     this.getMyAssets()
+    if(window.StatusBar){
+      window.StatusBar.styleLightContent();
+    }
   }
 })

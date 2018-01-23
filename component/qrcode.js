@@ -87,10 +87,14 @@ module.exports=require("./qrcode.html")({
             this.$store.commit("setError","error code:"+err2.code)
             return
           }
-          QRScanner.destroy()
-          this.parse(t)
+          QRScanner.destroy(()=>{
+            this.parse(t)
+          })
         })
-        QRScanner.show()
+        if(window.cordova){ // ios Quirks
+          QRScanner.show()
+        }
+        
       } else if (status.denied) {
         this.$ons.notification.alert("Please allow Camera")
       } else {

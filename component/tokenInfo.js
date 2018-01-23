@@ -43,8 +43,11 @@ module.exports=require("./tokenInfo.html")({
     }).then(r=>{
       this.history=r
     }).catch(e=>{
-          this.loading=false
-          this.$store.commit("setError",e.message)
-        })
+      this.loading=false
+      this.$store.commit("setError",e.message)
+    })
+    if(window.StatusBar){
+      window.StatusBar.styleLightContent();
+    }
   }      
 })

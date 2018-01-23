@@ -21,11 +21,13 @@
     <preference name="AllowInlineMediaPlayback" value="true" />
     <preference name="StatusBarStyle" value="default" />
     <preference name="StatusBarOverlaysWebView" value="true" />
+    <preference name="DisallowOverscroll" value="true" />
     <platform name="android">
         <preference name="android-minSdkVersion" value="21" />
         <allow-intent href="market:*" />
-        <preference name="StatusBarBackgroundColor" value="#ffffeb47" />
         <preference name="SplashShowOnlyFirstTime" value="false" />
+        <preference name="SplashMaintainAspectRatio" value="true" />
+        <preference name="SplashScreenSpinnerColor" value="#3c7bc8" />
         <icon density="ldpi" src="res/icons/android/ldpi.png" />
         <icon density="mdpi" src="res/icons/android/mdpi.png" />
         <icon density="hdpi" src="res/icons/android/hdpi.png" />
@@ -48,7 +50,6 @@
     <platform name="ios">
         <allow-intent href="itms:*" />
         <allow-intent href="itms-apps:*" />
-        <preference name="DisallowOverscroll" value="true" />
         <preference name="BackupWebStorage" value="local" />
         <icon height="1024" src="res/icons/ios/icon-1024.png" width="1024" />
         <icon height="29" src="res/icons/ios/icon-small.png" width="29" />
@@ -107,5 +108,7 @@
     </plugin>
     <plugin name="cordova-plugin-inappbrowser" spec="^2.0.1" />
     <plugin name="cordova-plugin-statusbar" spec="^2.4.1" />
-    <plugin name="cordova-plugin-qrscanner" spec="^2.5.0" />
+    <plugin name="cordova-plugin-keychain-touch-id" spec="~3.2.1" />
+    <plugin name="cordova-plugin-qrscanner-monya" spec="^2.5.3" />
+    <plugin name="com.danielsogl.cordova.clipboard" spec="~1.0.2" />
 </widget>

@@ -1,5 +1,6 @@
 const currencyList = require("../js/currencyList")
 const titleList = require("../js/titleList")
+const storage = require("../js/storage.js")
 
 module.exports=require("./sendToken.html")({
   data(){
@@ -60,5 +61,13 @@ module.exports=require("./sendToken.html")({
   },
   mounted(){
     this.getAddrLabel()
+    storage.verifyBiometric().then(pwd=>{
+      this.password=pwd
+    }).catch(()=>{
+      // noop
+    })
+    if(window.StatusBar){
+      window.StatusBar.styleLightContent();
+    }
   }
 })

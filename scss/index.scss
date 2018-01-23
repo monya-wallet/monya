@@ -443,7 +443,11 @@ $iconSize:100px;
     text-align:center;
   }
 }
-
+[data-page="setPassword"]{
+  ons-input{
+    width:100%
+  }
+}
 $passwordHeight:35px;
 [data-page="login"]{
   .wrap{
@@ -598,6 +602,9 @@ $zaifPayLogoSize:200px;
   }
 }
 [data-page="monaparty"]{
+  .toolbar__right {
+    width: 50%;
+  }
   #wrap{
     margin:10px;
     background-color: white;

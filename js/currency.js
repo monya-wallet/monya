@@ -16,7 +16,8 @@ module.exports=class{
     this.unit = opt.unit;
     this.unitEasy = opt.unitEasy;
     this.bip44 = opt.bip44;
-    this.apiEndpoint = opt.defaultAPIEndpoint;
+    this.apiEndpoints=opt.apiEndpoints||[opt.defaultAPIEndpoint]
+    this.apiEndpoint = opt.defaultAPIEndpoint||this.apiEndpoints[0];
     this.network = opt.network;
     this.price = opt.price;
     this.dummy=!!opt.dummy
@@ -26,6 +27,7 @@ module.exports=class{
     this.confirmations=opt.confirmations||6
     this.sound=opt.sound||""
     this.counterpartyEndpoint=opt.counterpartyEndpoint
+    this.enableSegwit=opt.enableSegwit
     
     this.hdPubNode=null;
     this.lastPriceTime=0;
@@ -168,6 +170,9 @@ module.exports=class{
     if(this.addresses[addrKey]){
       return this.addresses[addrKey]
     }else{
+      if(this.enableSegwit){
+        return (this.addresses[addrKey]=this.getSegwitAddress(change,index))
+      }
       return (this.addresses[addrKey]=this.hdPubNode.derive(change).derive(index).getAddress())
     }
   }
@@ -191,6 +196,7 @@ module.exports=class{
     const witnessPubKey = bcLib.script.witnessPubKeyHash.output.encode(bcLib.crypto.hash160(keyPair.getPublicKeyBuffer()))
     
     const address = bcLib.address.fromOutputScript(witnessPubKey,this.network)
+    return address
   }
   seedToPubB58(privSeed){
     if(this.dummy){return}
@@ -502,5 +508,11 @@ module.exports=class{
         url:this.apiEndpoint+"/blocks?limit=3",
         json:true,
       method:"GET"}).then(r=>r.data.blocks)
+  }
+  changeApiEndpoint(index){
+    if (typeof(index)!=="number"){
+      index=(this.apiEndpoints.indexOf(this.apiEndpoint)+1)%this.apiEndpoints.length
+    }
+    this.apiEndpoint = this.apiEndpoints[index]
   }
 }

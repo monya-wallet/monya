@@ -2,6 +2,7 @@ const coinUtil = require("../js/coinUtil.js")
 const currencyList = require("../js/currencyList.js")
 const crypto = require('crypto');
 const storage = require("../js/storage.js")
+const errors=require("../js/errors")
 const blacklist=["123456","114514","password","password2"]
 module.exports=require("./setPassword.html")({
   data(){
@@ -12,7 +13,9 @@ module.exports=require("./setPassword.html")({
       password2:"",
       change:false,
       error:false,
-      loading:false
+      loading:false,
+      biometric:true,
+      biometricAvailable:false
     }
   },
   store:require("../js/store.js"),
@@ -51,10 +54,15 @@ module.exports=require("./setPassword.html")({
           this.$store.commit("deleteEntropy")
           this.$store.commit("setFinishNextPage",{page:require("./login.js"),infoId:"createdWallet"})
           this.$emit("replace",require("./finished.js"))
-          
-        }).catch(e=>{
-          this.error=e.message||true
-          this.loading=false
+          if(this.biometric){
+            return storage.setBiometricPassword(this.password)
+          }
+        })
+        .catch(e=>{
+          if(!(e instanceof errors.BiometricError)){
+            this.error=e.message||true
+            this.loading=false
+          }
         })
     }
     
@@ -65,8 +73,9 @@ module.exports=require("./setPassword.html")({
     }else{
       this.change=true
     }
-  },
-  components:{
-    
+    storage.isBiometricAvailable().then(flag=>{
+      this.biometricAvailable=flag
+      this.biometric=flag
+    })
   }
 })

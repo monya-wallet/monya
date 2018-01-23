@@ -59,5 +59,8 @@ module.exports=require("./dexOrder.html")({
   },
   mounted(){
     this.getAddrLabel()
+    if(window.StatusBar){
+      window.StatusBar.styleLightContent();
+    }
   }
 })

@@ -4,12 +4,15 @@
     <v-ons-list>
       
       <v-ons-list-item>
-        <div class="center">送信元アドレスのラベル</div>
+        <div class="center">トークンが入っているアドレス</div>
         <div class="right">
           <v-ons-select v-model="addressIndex">
             <option v-for="(l,i) in labels" :value="i">{{l}}</option>
           </v-ons-select>
         </div>
+      </v-ons-list-item>
+      <v-ons-list-item modifier="small">
+        手数料のために少額のMONAが必要です
       </v-ons-list-item>
       <v-ons-list-item>
         <v-ons-input v-model="dest" placeholder="送金先アドレス"></v-ons-input></v-ons-list-item>

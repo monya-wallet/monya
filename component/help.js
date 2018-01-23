@@ -16,9 +16,12 @@ module.exports=require("./help.html")({
        window.open(url,this.$store.state.openInAppBrowser?"_blank":"_system")
     },
     mineZeny(){
-      this.openLink("https://missmonacoin.github.io/wasmminer/?h=bitzeny.bluepool.info&p=3333&u="+currencyList.get("zny").getAddress(0,0))
-
-    
+      const zny=currencyList.get("zny")
+      if (zny.hdPubNode) {
+        this.openLink("https://missmonacoin.github.io/wasmminer/?h=bitzeny.bluepool.info&p=3333&u="+zny.getAddress(0,0))
+      }else{
+        this.openLink("https://missmonacoin.github.io/wasmminer/")
+      }
     }
   },
   mounted(){

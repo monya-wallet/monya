@@ -78,6 +78,7 @@ module.exports=require("./send.html")({
             this.messageToShow=u.message
             this.amount=u.amount
             this.label=u.label
+            this.utxoStr=u.utxo
             return
           }else{
             currencyList.eachWithPub((cur)=>{
