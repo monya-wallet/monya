@@ -21,10 +21,10 @@
     <preference name="AllowInlineMediaPlayback" value="true" />
     <preference name="StatusBarStyle" value="default" />
     <preference name="StatusBarOverlaysWebView" value="true" />
+    <preference name="DisallowOverscroll" value="true" />
     <platform name="android">
         <preference name="android-minSdkVersion" value="21" />
         <allow-intent href="market:*" />
-        <preference name="StatusBarBackgroundColor" value="transparent" />
         <preference name="SplashShowOnlyFirstTime" value="false" />
         <icon density="ldpi" src="res/icons/android/ldpi.png" />
         <icon density="mdpi" src="res/icons/android/mdpi.png" />
@@ -48,7 +48,6 @@
     <platform name="ios">
         <allow-intent href="itms:*" />
         <allow-intent href="itms-apps:*" />
-        <preference name="DisallowOverscroll" value="true" />
         <preference name="BackupWebStorage" value="local" />
         <icon height="1024" src="res/icons/ios/icon-1024.png" width="1024" />
         <icon height="29" src="res/icons/ios/icon-small.png" width="29" />

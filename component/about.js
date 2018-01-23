@@ -14,7 +14,7 @@ module.exports=require("./about.html")({
       window.open("https://monappy.jp/users/send/@miss_monacoin?amount=39&message=%E3%82%82%E3%81%AB%E3%82%83%E3%81%AE%E5%AF%84%E4%BB%98%E3%81%A7%E3%81%99",this.$store.state.openInAppBrowser?"_blank":"_system")
     },
     donateMeWithTwitter(){
-      window.open("https://twitter.com/share?text=%40tipmona%20tip%20%40MissMonacoin%2039%20%E3%82%82%E3%81%AB%E3%82%83%E3%81%AE%E5%AF%84%E4%BB%98%E3%81%A7%E3%81%99",this.$store.state.openInAppBrowser?"_blank":"_system")
+      window.open("https://twitter.com/share?text=%40tipmona%20tip%20%40monya_wallet%2039%20%E3%82%82%E3%81%AB%E3%82%83%E3%81%AE%E5%AF%84%E4%BB%98%E3%81%A7%E3%81%99",this.$store.state.openInAppBrowser?"_blank":"_system")
     },
     goToTwitter(id){
       window.open("https://twitter.com/"+id,this.$store.state.openInAppBrowser?"_blank":"_system")
