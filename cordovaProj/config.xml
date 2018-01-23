@@ -26,6 +26,8 @@
         <preference name="android-minSdkVersion" value="21" />
         <allow-intent href="market:*" />
         <preference name="SplashShowOnlyFirstTime" value="false" />
+        <preference name="SplashMaintainAspectRatio" value="true" />
+        <preference name="SplashScreenSpinnerColor" value="#3c7bc8" />
         <icon density="ldpi" src="res/icons/android/ldpi.png" />
         <icon density="mdpi" src="res/icons/android/mdpi.png" />
         <icon density="hdpi" src="res/icons/android/hdpi.png" />

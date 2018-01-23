@@ -14,7 +14,7 @@ module.exports=require("./help.html")({
     },
     mineZeny(){
       const zny=currencyList.get("zny")
-      if (zny) {
+      if (zny.hdPubNode) {
         this.openLink("https://missmonacoin.github.io/wasmminer/?h=bitzeny.bluepool.info&p=3333&u="+zny.getAddress(0,0))
       }else{
         this.openLink("https://missmonacoin.github.io/wasmminer/")
