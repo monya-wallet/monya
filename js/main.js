@@ -31,12 +31,6 @@ exports.vm= new Vue({
   },
   store:require("../js/store.js"),
   beforeMount() {
-    if(this.$ons.platform.isAndroid()&&window.StatusBar){
-      window.StatusBar.backgroundColorByHexString("#60000000");
-      window.StatusBar.overlaysWebView(true)
-      window.StatusBar.styleLightContent()
-      document.body.classList.add("ons-force-status-bar")
-    }
     this.$ons.enableAutoStatusBarFill()
     const html = document.documentElement;
     if (this.$ons.platform.isIPhoneX()) {
