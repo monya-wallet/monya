@@ -13,7 +13,14 @@ module.exports=require("./atomicswap.html")({
       coins:[],
       
       addrIndex:0,
-      giveCoinId:""
+      giveCoinId:"",
+      getCoinId:"",
+
+      secret:"",
+
+      secretHash:"",
+      pubKeyWithSecret:"",
+      pubKeyWOSecret:""
     }
   },
   methods:{
@@ -26,10 +33,34 @@ module.exports=require("./atomicswap.html")({
       currencyList.eachWithPub(cur=>{
         this.coins.push(cur.coinId)
       })
+    },
+    generateHash(){
+      if(this.secret){
+        this.secretHash = bitcoin.crypto.hash160(Buffer.from(this.secret,"utf8")).toString("hex")
+        
+      }else{
+        this.secretHash =""
+      }
+      this.getPubKey()
+    },
+    getPubKey(){
+      const pk=currencyList.get(this.getCoinId).getPubKey(0,this.addrIndex).toString("hex")
+      if(this.secret){
+        this.pubKeyWithSecret=pk
+        this.pubKeyWOSecret=""
+      }else{
+        this.pubKeyWithSecret=""
+        this.pubKeyWOSecret=pk
+      }
+      
+    },
+    generateP2SH(){
+
     }
   },
   mounted(){
     this.getCurrencies()
+    
   }
   
 })

@@ -23,12 +23,33 @@
       <v-ons-list-item>
         <div class="center">受信アドレスのラベル</div>
         <div class="right">
-          <v-ons-select v-model="addrIndex">
+          <v-ons-select v-model="addrIndex" @change="getPubKey">
             <option v-for="(l,i) in labels" :value="i">{{l}}</option>
           </v-ons-select>
         </div>
       </v-ons-list-item>
-      
+      <v-ons-list-header>If this transaction begins with you, make Secret</v-ons-list-header>
+      <v-ons-list-item>
+        <v-ons-input v-model="secret" placeholder="secret" @change="generateHash"></v-ons-input>
+      </v-ons-list-item>
+      <v-ons-list-header>Share data below.</v-ons-list-header>
+      <v-ons-list-item>
+        <v-ons-input v-model="secretHash" placeholder="secretHash"></v-ons-input>
+      </v-ons-list-item>
+      <v-ons-list-item>
+        <v-ons-input v-model="pubKeyWithSecret" placeholder="pubKeyWithSecret"></v-ons-input>
+      </v-ons-list-item>
+      <v-ons-list-item>
+        <v-ons-input v-model="pubKeyWOSecret" placeholder="pubKeyWOSecret"></v-ons-input>
+      </v-ons-list-item>
+      <v-ons-list-header>Deposit {{giveCoinId}} below</v-ons-list-header>
+      <v-ons-list-item>
+        <v-ons-input v-model="myP2SH" placeholder="myP2SH"></v-ons-input>
+      </v-ons-list-item>
+      <v-ons-list-header>Opponent will deposit here</v-ons-list-header>
+      <v-ons-list-item>
+        <v-ons-input v-model="opponentP2SH" placeholder="opponentP2SH"></v-ons-input>
+      </v-ons-list-item>
     </v-ons-list>
     
   </div>

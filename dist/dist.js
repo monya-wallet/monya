@@ -47983,7 +47983,7 @@ if (false) {(function () {
 /* 433 */
 /***/ (function(module, exports, __webpack_require__) {
 
-
+/* WEBPACK VAR INJECTION */(function(Buffer) {
 const currencyList = __webpack_require__(4)
 const xmp = currencyList.get("mona")
 const bitcoin = __webpack_require__(27)
@@ -47998,7 +47998,14 @@ module.exports=__webpack_require__(434)({
       coins:[],
       
       addrIndex:0,
-      giveCoinId:""
+      giveCoinId:"",
+      getCoinId:"",
+
+      secret:"",
+
+      secretHash:"",
+      pubKeyWithSecret:"",
+      pubKeyWOSecret:""
     }
   },
   methods:{
@@ -48011,20 +48018,45 @@ module.exports=__webpack_require__(434)({
       currencyList.eachWithPub(cur=>{
         this.coins.push(cur.coinId)
       })
+    },
+    generateHash(){
+      if(this.secret){
+        this.secretHash = bitcoin.crypto.hash160(Buffer.from(this.secret,"utf8")).toString("hex")
+        
+      }else{
+        this.secretHash =""
+      }
+      this.getPubKey()
+    },
+    getPubKey(){
+      const pk=currencyList.get(this.getCoinId).getPubKey(0,this.addrIndex).toString("hex")
+      if(this.secret){
+        this.pubKeyWithSecret=pk
+        this.pubKeyWOSecret=""
+      }else{
+        this.pubKeyWithSecret=""
+        this.pubKeyWOSecret=pk
+      }
+      
+    },
+    generateP2SH(){
+
     }
   },
   mounted(){
     this.getCurrencies()
+    
   }
   
 })
 
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0).Buffer))
 
 /***/ }),
 /* 434 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var render = function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('v-ons-page',{attrs:{"data-page":"atomicswap"}},[_c('custom-bar',{attrs:{"title":"Atomic Swap Demo","menu":"true"}}),_vm._v(" "),_c('div',[_c('v-ons-list',[_c('v-ons-list-header',[_vm._v("which currency you wanna give?")]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_vm._v("Currency you give")]),_vm._v(" "),_c('div',{staticClass:"right"},[_c('v-ons-select',{model:{value:(_vm.giveCoinId),callback:function ($$v) {_vm.giveCoinId=$$v},expression:"giveCoinId"}},_vm._l((_vm.coins),function(l){return _c('option',{domProps:{"value":l}},[_vm._v(_vm._s(l))])}))],1)]),_vm._v(" "),_c('v-ons-list-header',[_vm._v("which currency, address to get?")]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_vm._v("Currency you get")]),_vm._v(" "),_c('div',{staticClass:"right"},[_c('v-ons-select',{on:{"change":_vm.getLabels},model:{value:(_vm.getCoinId),callback:function ($$v) {_vm.getCoinId=$$v},expression:"getCoinId"}},_vm._l((_vm.coins),function(l){return _c('option',{domProps:{"value":l}},[_vm._v(_vm._s(l))])}))],1)]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_vm._v("受信アドレスのラベル")]),_vm._v(" "),_c('div',{staticClass:"right"},[_c('v-ons-select',{model:{value:(_vm.addrIndex),callback:function ($$v) {_vm.addrIndex=$$v},expression:"addrIndex"}},_vm._l((_vm.labels),function(l,i){return _c('option',{domProps:{"value":i}},[_vm._v(_vm._s(l))])}))],1)])],1)],1)],1)}
+var render = function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('v-ons-page',{attrs:{"data-page":"atomicswap"}},[_c('custom-bar',{attrs:{"title":"Atomic Swap Demo","menu":"true"}}),_vm._v(" "),_c('div',[_c('v-ons-list',[_c('v-ons-list-header',[_vm._v("which currency you wanna give?")]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_vm._v("Currency you give")]),_vm._v(" "),_c('div',{staticClass:"right"},[_c('v-ons-select',{model:{value:(_vm.giveCoinId),callback:function ($$v) {_vm.giveCoinId=$$v},expression:"giveCoinId"}},_vm._l((_vm.coins),function(l){return _c('option',{domProps:{"value":l}},[_vm._v(_vm._s(l))])}))],1)]),_vm._v(" "),_c('v-ons-list-header',[_vm._v("which currency, address to get?")]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_vm._v("Currency you get")]),_vm._v(" "),_c('div',{staticClass:"right"},[_c('v-ons-select',{on:{"change":_vm.getLabels},model:{value:(_vm.getCoinId),callback:function ($$v) {_vm.getCoinId=$$v},expression:"getCoinId"}},_vm._l((_vm.coins),function(l){return _c('option',{domProps:{"value":l}},[_vm._v(_vm._s(l))])}))],1)]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_vm._v("受信アドレスのラベル")]),_vm._v(" "),_c('div',{staticClass:"right"},[_c('v-ons-select',{on:{"change":_vm.getPubKey},model:{value:(_vm.addrIndex),callback:function ($$v) {_vm.addrIndex=$$v},expression:"addrIndex"}},_vm._l((_vm.labels),function(l,i){return _c('option',{domProps:{"value":i}},[_vm._v(_vm._s(l))])}))],1)]),_vm._v(" "),_c('v-ons-list-header',[_vm._v("If this transaction begins with you, make Secret")]),_vm._v(" "),_c('v-ons-list-item',[_c('v-ons-input',{attrs:{"placeholder":"secret"},on:{"change":_vm.generateHash},model:{value:(_vm.secret),callback:function ($$v) {_vm.secret=$$v},expression:"secret"}})],1),_vm._v(" "),_c('v-ons-list-header',[_vm._v("Share data below.")]),_vm._v(" "),_c('v-ons-list-item',[_c('v-ons-input',{attrs:{"placeholder":"secretHash"},model:{value:(_vm.secretHash),callback:function ($$v) {_vm.secretHash=$$v},expression:"secretHash"}})],1),_vm._v(" "),_c('v-ons-list-item',[_c('v-ons-input',{attrs:{"placeholder":"pubKeyWithSecret"},model:{value:(_vm.pubKeyWithSecret),callback:function ($$v) {_vm.pubKeyWithSecret=$$v},expression:"pubKeyWithSecret"}})],1),_vm._v(" "),_c('v-ons-list-item',[_c('v-ons-input',{attrs:{"placeholder":"pubKeyWOSecret"},model:{value:(_vm.pubKeyWOSecret),callback:function ($$v) {_vm.pubKeyWOSecret=$$v},expression:"pubKeyWOSecret"}})],1),_vm._v(" "),_c('v-ons-list-header',[_vm._v("Deposit "+_vm._s(_vm.giveCoinId)+" below")]),_vm._v(" "),_c('v-ons-list-item',[_c('v-ons-input',{attrs:{"placeholder":"myP2SH"},model:{value:(_vm.myP2SH),callback:function ($$v) {_vm.myP2SH=$$v},expression:"myP2SH"}})],1),_vm._v(" "),_c('v-ons-list-header',[_vm._v("Opponent will deposit here")]),_vm._v(" "),_c('v-ons-list-item',[_c('v-ons-input',{attrs:{"placeholder":"opponentP2SH"},model:{value:(_vm.opponentP2SH),callback:function ($$v) {_vm.opponentP2SH=$$v},expression:"opponentP2SH"}})],1)],1)],1)],1)}
 var staticRenderFns = []
 module.exports = function (_exports) {
   var options = typeof _exports === 'function'
