@@ -108,7 +108,7 @@
     </plugin>
     <plugin name="cordova-plugin-inappbrowser" spec="^2.0.1" />
     <plugin name="cordova-plugin-statusbar" spec="^2.4.1" />
-    <plugin name="cordova-plugin-keychain-touch-id" spec="~3.2.1" />
-    <plugin name="cordova-plugin-qrscanner-monya" spec="^2.5.3" />
-    <plugin name="com.danielsogl.cordova.clipboard" spec="~1.0.2" />
+    <plugin name="cordova-plugin-keychain-touch-id" spec="^3.2.1" />
+    <plugin name="cordova-plugin-qrscanner-monya" spec="^2.5.4" />
+    <plugin name="cordova-clipboard" spec="^1.1.1" />
 </widget>
