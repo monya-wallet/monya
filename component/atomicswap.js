@@ -55,7 +55,7 @@ module.exports=require("./atomicswap.html")({
       
     },
     generateP2SH(){
-
+      
     }
   },
   mounted(){

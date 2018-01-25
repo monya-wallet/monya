@@ -42,6 +42,9 @@
       <v-ons-list-item>
         <v-ons-input v-model="pubKeyWOSecret" placeholder="pubKeyWOSecret"></v-ons-input>
       </v-ons-list-item>
+      <v-ons-list-item>
+        <v-ons-button modifier="large" @click="generateP2SH">Get Address</v-ons-button>
+      </v-ons-list-item>
       <v-ons-list-header>Deposit {{giveCoinId}} below</v-ons-list-header>
       <v-ons-list-item>
         <v-ons-input v-model="myP2SH" placeholder="myP2SH"></v-ons-input>
