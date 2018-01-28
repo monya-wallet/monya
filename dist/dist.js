@@ -2360,7 +2360,7 @@ exports.addCurrency=customCoin=>{
 /***/ (function(module, exports, __webpack_require__) {
 
 const currencyList = __webpack_require__(4)
-const bcLib = __webpack_require__(27)
+const bcLib = __webpack_require__(28)
 const bip39 = __webpack_require__(37)
 const crypto = __webpack_require__(38);
 const storage = __webpack_require__(6)
@@ -7812,462 +7812,6 @@ module.exports = BigInteger
 
 /***/ }),
 /* 24 */
-/***/ (function(module, exports) {
-
-var toSJISFunction
-var CODEWORDS_COUNT = [
-  0, // Not used
-  26, 44, 70, 100, 134, 172, 196, 242, 292, 346,
-  404, 466, 532, 581, 655, 733, 815, 901, 991, 1085,
-  1156, 1258, 1364, 1474, 1588, 1706, 1828, 1921, 2051, 2185,
-  2323, 2465, 2611, 2761, 2876, 3034, 3196, 3362, 3532, 3706
-]
-
-/**
- * Returns the QR Code size for the specified version
- *
- * @param  {Number} version QR Code version
- * @return {Number}         size of QR code
- */
-exports.getSymbolSize = function getSymbolSize (version) {
-  if (!version) throw new Error('"version" cannot be null or undefined')
-  if (version < 1 || version > 40) throw new Error('"version" should be in range from 1 to 40')
-  return version * 4 + 17
-}
-
-/**
- * Returns the total number of codewords used to store data and EC information.
- *
- * @param  {Number} version QR Code version
- * @return {Number}         Data length in bits
- */
-exports.getSymbolTotalCodewords = function getSymbolTotalCodewords (version) {
-  return CODEWORDS_COUNT[version]
-}
-
-/**
- * Encode data with Bose-Chaudhuri-Hocquenghem
- *
- * @param  {Number} data Value to encode
- * @return {Number}      Encoded value
- */
-exports.getBCHDigit = function (data) {
-  var digit = 0
-
-  while (data !== 0) {
-    digit++
-    data >>>= 1
-  }
-
-  return digit
-}
-
-exports.setToSJISFunction = function setToSJISFunction (f) {
-  if (typeof f !== 'function') {
-    throw new Error('"toSJISFunc" is not a valid function.')
-  }
-
-  toSJISFunction = f
-}
-
-exports.isKanjiModeEnabled = function () {
-  return typeof toSJISFunction !== 'undefined'
-}
-
-exports.toSJIS = function toSJIS (kanji) {
-  return toSJISFunction(kanji)
-}
-
-
-/***/ }),
-/* 25 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var Version = __webpack_require__(139)
-var Regex = __webpack_require__(140)
-
-/**
- * Numeric mode encodes data from the decimal digit set (0 - 9)
- * (byte values 30HEX to 39HEX).
- * Normally, 3 data characters are represented by 10 bits.
- *
- * @type {Object}
- */
-exports.NUMERIC = {
-  id: 'Numeric',
-  bit: 1 << 0,
-  ccBits: [10, 12, 14]
-}
-
-/**
- * Alphanumeric mode encodes data from a set of 45 characters,
- * i.e. 10 numeric digits (0 - 9),
- *      26 alphabetic characters (A - Z),
- *   and 9 symbols (SP, $, %, *, +, -, ., /, :).
- * Normally, two input characters are represented by 11 bits.
- *
- * @type {Object}
- */
-exports.ALPHANUMERIC = {
-  id: 'Alphanumeric',
-  bit: 1 << 1,
-  ccBits: [9, 11, 13]
-}
-
-/**
- * In byte mode, data is encoded at 8 bits per character.
- *
- * @type {Object}
- */
-exports.BYTE = {
-  id: 'Byte',
-  bit: 1 << 2,
-  ccBits: [8, 16, 16]
-}
-
-/**
- * The Kanji mode efficiently encodes Kanji characters in accordance with
- * the Shift JIS system based on JIS X 0208.
- * The Shift JIS values are shifted from the JIS X 0208 values.
- * JIS X 0208 gives details of the shift coded representation.
- * Each two-byte character value is compacted to a 13-bit binary codeword.
- *
- * @type {Object}
- */
-exports.KANJI = {
-  id: 'Kanji',
-  bit: 1 << 3,
-  ccBits: [8, 10, 12]
-}
-
-/**
- * Mixed mode will contain a sequences of data in a combination of any of
- * the modes described above
- *
- * @type {Object}
- */
-exports.MIXED = {
-  bit: -1
-}
-
-/**
- * Returns the number of bits needed to store the data length
- * according to QR Code specifications.
- *
- * @param  {Mode}   mode    Data mode
- * @param  {Number} version QR Code version
- * @return {Number}         Number of bits
- */
-exports.getCharCountIndicator = function getCharCountIndicator (mode, version) {
-  if (!mode.ccBits) throw new Error('Invalid mode: ' + mode)
-
-  if (!Version.isValid(version)) {
-    throw new Error('Invalid version: ' + version)
-  }
-
-  if (version >= 1 && version < 10) return mode.ccBits[0]
-  else if (version < 27) return mode.ccBits[1]
-  return mode.ccBits[2]
-}
-
-/**
- * Returns the most efficient mode to store the specified data
- *
- * @param  {String} dataStr Input data string
- * @return {Mode}           Best mode
- */
-exports.getBestModeForData = function getBestModeForData (dataStr) {
-  if (Regex.testNumeric(dataStr)) return exports.NUMERIC
-  else if (Regex.testAlphanumeric(dataStr)) return exports.ALPHANUMERIC
-  else if (Regex.testKanji(dataStr)) return exports.KANJI
-  else return exports.BYTE
-}
-
-/**
- * Return mode name as string
- *
- * @param {Mode} mode Mode object
- * @returns {String}  Mode name
- */
-exports.toString = function toString (mode) {
-  if (mode && mode.id) return mode.id
-  throw new Error('Invalid mode')
-}
-
-/**
- * Check if input param is a valid mode object
- *
- * @param   {Mode}    mode Mode object
- * @returns {Boolean} True if valid mode, false otherwise
- */
-exports.isValid = function isValid (mode) {
-  return mode && mode.bit && mode.ccBits
-}
-
-/**
- * Get mode object from its name
- *
- * @param   {String} string Mode name
- * @returns {Mode}          Mode object
- */
-function fromString (string) {
-  if (typeof string !== 'string') {
-    throw new Error('Param is not a string')
-  }
-
-  var lcStr = string.toLowerCase()
-
-  switch (lcStr) {
-    case 'numeric':
-      return exports.NUMERIC
-    case 'alphanumeric':
-      return exports.ALPHANUMERIC
-    case 'kanji':
-      return exports.KANJI
-    case 'byte':
-      return exports.BYTE
-    default:
-      throw new Error('Unknown mode: ' + string)
-  }
-}
-
-/**
- * Returns mode from a value.
- * If value is not a valid mode, returns defaultValue
- *
- * @param  {Mode|String} value        Encoding mode
- * @param  {Mode}        defaultValue Fallback value
- * @return {Mode}                     Encoding mode
- */
-exports.from = function from (value, defaultValue) {
-  if (exports.isValid(value)) {
-    return value
-  }
-
-  try {
-    return fromString(value)
-  } catch (e) {
-    return defaultValue
-  }
-}
-
-
-/***/ }),
-/* 26 */
-/***/ (function(module, exports) {
-
-/*
-	MIT License http://www.opensource.org/licenses/mit-license.php
-	Author Tobias Koppers @sokra
-*/
-// css base code, injected by the css-loader
-module.exports = function(useSourceMap) {
-	var list = [];
-
-	// return the list of modules as css string
-	list.toString = function toString() {
-		return this.map(function (item) {
-			var content = cssWithMappingToString(item, useSourceMap);
-			if(item[2]) {
-				return "@media " + item[2] + "{" + content + "}";
-			} else {
-				return content;
-			}
-		}).join("");
-	};
-
-	// import a list of modules into the list
-	list.i = function(modules, mediaQuery) {
-		if(typeof modules === "string")
-			modules = [[null, modules, ""]];
-		var alreadyImportedModules = {};
-		for(var i = 0; i < this.length; i++) {
-			var id = this[i][0];
-			if(typeof id === "number")
-				alreadyImportedModules[id] = true;
-		}
-		for(i = 0; i < modules.length; i++) {
-			var item = modules[i];
-			// skip already imported module
-			// this implementation is not 100% perfect for weird media query combinations
-			//  when a module is imported multiple times with different media queries.
-			//  I hope this will never occur (Hey this way we have smaller bundles)
-			if(typeof item[0] !== "number" || !alreadyImportedModules[item[0]]) {
-				if(mediaQuery && !item[2]) {
-					item[2] = mediaQuery;
-				} else if(mediaQuery) {
-					item[2] = "(" + item[2] + ") and (" + mediaQuery + ")";
-				}
-				list.push(item);
-			}
-		}
-	};
-	return list;
-};
-
-function cssWithMappingToString(item, useSourceMap) {
-	var content = item[1] || '';
-	var cssMapping = item[3];
-	if (!cssMapping) {
-		return content;
-	}
-
-	if (useSourceMap && typeof btoa === 'function') {
-		var sourceMapping = toComment(cssMapping);
-		var sourceURLs = cssMapping.sources.map(function (source) {
-			return '/*# sourceURL=' + cssMapping.sourceRoot + source + ' */'
-		});
-
-		return [content].concat(sourceURLs).concat([sourceMapping]).join('\n');
-	}
-
-	return [content].join('\n');
-}
-
-// Adapted from convert-source-map (MIT)
-function toComment(sourceMap) {
-	// eslint-disable-next-line no-undef
-	var base64 = btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap))));
-	var data = 'sourceMappingURL=data:application/json;charset=utf-8;base64,' + base64;
-
-	return '/*# ' + data + ' */';
-}
-
-
-/***/ }),
-/* 27 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = {
-  Block: __webpack_require__(191),
-  ECPair: __webpack_require__(66),
-  ECSignature: __webpack_require__(69),
-  HDNode: __webpack_require__(245),
-  Transaction: __webpack_require__(64),
-  TransactionBuilder: __webpack_require__(246),
-
-  address: __webpack_require__(67),
-  bufferutils: __webpack_require__(99), // TODO: remove in 4.0.0
-  crypto: __webpack_require__(28),
-  networks: __webpack_require__(35),
-  opcodes: __webpack_require__(11),
-  script: __webpack_require__(9)
-}
-
-
-/***/ }),
-/* 28 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var createHash = __webpack_require__(17)
-
-function ripemd160 (buffer) {
-  return createHash('rmd160').update(buffer).digest()
-}
-
-function sha1 (buffer) {
-  return createHash('sha1').update(buffer).digest()
-}
-
-function sha256 (buffer) {
-  return createHash('sha256').update(buffer).digest()
-}
-
-function hash160 (buffer) {
-  return ripemd160(sha256(buffer))
-}
-
-function hash256 (buffer) {
-  return sha256(sha256(buffer))
-}
-
-module.exports = {
-  hash160: hash160,
-  hash256: hash256,
-  ripemd160: ripemd160,
-  sha1: sha1,
-  sha256: sha256
-}
-
-
-/***/ }),
-/* 29 */
-/***/ (function(module, exports, __webpack_require__) {
-
-/* WEBPACK VAR INJECTION */(function(Buffer) {// prototype class for hash functions
-function Hash (blockSize, finalSize) {
-  this._block = new Buffer(blockSize)
-  this._finalSize = finalSize
-  this._blockSize = blockSize
-  this._len = 0
-  this._s = 0
-}
-
-Hash.prototype.update = function (data, enc) {
-  if (typeof data === 'string') {
-    enc = enc || 'utf8'
-    data = new Buffer(data, enc)
-  }
-
-  var l = this._len += data.length
-  var s = this._s || 0
-  var f = 0
-  var buffer = this._block
-
-  while (s < l) {
-    var t = Math.min(data.length, f + this._blockSize - (s % this._blockSize))
-    var ch = (t - f)
-
-    for (var i = 0; i < ch; i++) {
-      buffer[(s % this._blockSize) + i] = data[i + f]
-    }
-
-    s += ch
-    f += ch
-
-    if ((s % this._blockSize) === 0) {
-      this._update(buffer)
-    }
-  }
-  this._s = s
-
-  return this
-}
-
-Hash.prototype.digest = function (enc) {
-  // Suppose the length of the message M, in bits, is l
-  var l = this._len * 8
-
-  // Append the bit 1 to the end of the message
-  this._block[this._len % this._blockSize] = 0x80
-
-  // and then k zero bits, where k is the smallest non-negative solution to the equation (l + 1 + k) === finalSize mod blockSize
-  this._block.fill(0, this._len % this._blockSize + 1)
-
-  if (l % (this._blockSize * 8) >= this._finalSize * 8) {
-    this._update(this._block)
-    this._block.fill(0)
-  }
-
-  // to this append the block which is equal to the number l written in binary
-  // TODO: handle case where l is > Math.pow(2, 29)
-  this._block.writeInt32BE(l, this._blockSize - 4)
-
-  var hash = this._update(this._block) || this._hash()
-
-  return enc ? hash.toString(enc) : hash
-}
-
-Hash.prototype._update = function () {
-  throw new Error('_update must be implemented by subclass')
-}
-
-module.exports = Hash
-
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0).Buffer))
-
-/***/ }),
-/* 30 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_RESULT__;/*! bignumber.js v5.0.0 https://github.com/MikeMcl/bignumber.js/LICENCE */
@@ -11007,6 +10551,462 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/*! bignumber.js v5.0.0 https://github.com/Mik
     }
 })(this);
 
+
+/***/ }),
+/* 25 */
+/***/ (function(module, exports) {
+
+var toSJISFunction
+var CODEWORDS_COUNT = [
+  0, // Not used
+  26, 44, 70, 100, 134, 172, 196, 242, 292, 346,
+  404, 466, 532, 581, 655, 733, 815, 901, 991, 1085,
+  1156, 1258, 1364, 1474, 1588, 1706, 1828, 1921, 2051, 2185,
+  2323, 2465, 2611, 2761, 2876, 3034, 3196, 3362, 3532, 3706
+]
+
+/**
+ * Returns the QR Code size for the specified version
+ *
+ * @param  {Number} version QR Code version
+ * @return {Number}         size of QR code
+ */
+exports.getSymbolSize = function getSymbolSize (version) {
+  if (!version) throw new Error('"version" cannot be null or undefined')
+  if (version < 1 || version > 40) throw new Error('"version" should be in range from 1 to 40')
+  return version * 4 + 17
+}
+
+/**
+ * Returns the total number of codewords used to store data and EC information.
+ *
+ * @param  {Number} version QR Code version
+ * @return {Number}         Data length in bits
+ */
+exports.getSymbolTotalCodewords = function getSymbolTotalCodewords (version) {
+  return CODEWORDS_COUNT[version]
+}
+
+/**
+ * Encode data with Bose-Chaudhuri-Hocquenghem
+ *
+ * @param  {Number} data Value to encode
+ * @return {Number}      Encoded value
+ */
+exports.getBCHDigit = function (data) {
+  var digit = 0
+
+  while (data !== 0) {
+    digit++
+    data >>>= 1
+  }
+
+  return digit
+}
+
+exports.setToSJISFunction = function setToSJISFunction (f) {
+  if (typeof f !== 'function') {
+    throw new Error('"toSJISFunc" is not a valid function.')
+  }
+
+  toSJISFunction = f
+}
+
+exports.isKanjiModeEnabled = function () {
+  return typeof toSJISFunction !== 'undefined'
+}
+
+exports.toSJIS = function toSJIS (kanji) {
+  return toSJISFunction(kanji)
+}
+
+
+/***/ }),
+/* 26 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var Version = __webpack_require__(139)
+var Regex = __webpack_require__(140)
+
+/**
+ * Numeric mode encodes data from the decimal digit set (0 - 9)
+ * (byte values 30HEX to 39HEX).
+ * Normally, 3 data characters are represented by 10 bits.
+ *
+ * @type {Object}
+ */
+exports.NUMERIC = {
+  id: 'Numeric',
+  bit: 1 << 0,
+  ccBits: [10, 12, 14]
+}
+
+/**
+ * Alphanumeric mode encodes data from a set of 45 characters,
+ * i.e. 10 numeric digits (0 - 9),
+ *      26 alphabetic characters (A - Z),
+ *   and 9 symbols (SP, $, %, *, +, -, ., /, :).
+ * Normally, two input characters are represented by 11 bits.
+ *
+ * @type {Object}
+ */
+exports.ALPHANUMERIC = {
+  id: 'Alphanumeric',
+  bit: 1 << 1,
+  ccBits: [9, 11, 13]
+}
+
+/**
+ * In byte mode, data is encoded at 8 bits per character.
+ *
+ * @type {Object}
+ */
+exports.BYTE = {
+  id: 'Byte',
+  bit: 1 << 2,
+  ccBits: [8, 16, 16]
+}
+
+/**
+ * The Kanji mode efficiently encodes Kanji characters in accordance with
+ * the Shift JIS system based on JIS X 0208.
+ * The Shift JIS values are shifted from the JIS X 0208 values.
+ * JIS X 0208 gives details of the shift coded representation.
+ * Each two-byte character value is compacted to a 13-bit binary codeword.
+ *
+ * @type {Object}
+ */
+exports.KANJI = {
+  id: 'Kanji',
+  bit: 1 << 3,
+  ccBits: [8, 10, 12]
+}
+
+/**
+ * Mixed mode will contain a sequences of data in a combination of any of
+ * the modes described above
+ *
+ * @type {Object}
+ */
+exports.MIXED = {
+  bit: -1
+}
+
+/**
+ * Returns the number of bits needed to store the data length
+ * according to QR Code specifications.
+ *
+ * @param  {Mode}   mode    Data mode
+ * @param  {Number} version QR Code version
+ * @return {Number}         Number of bits
+ */
+exports.getCharCountIndicator = function getCharCountIndicator (mode, version) {
+  if (!mode.ccBits) throw new Error('Invalid mode: ' + mode)
+
+  if (!Version.isValid(version)) {
+    throw new Error('Invalid version: ' + version)
+  }
+
+  if (version >= 1 && version < 10) return mode.ccBits[0]
+  else if (version < 27) return mode.ccBits[1]
+  return mode.ccBits[2]
+}
+
+/**
+ * Returns the most efficient mode to store the specified data
+ *
+ * @param  {String} dataStr Input data string
+ * @return {Mode}           Best mode
+ */
+exports.getBestModeForData = function getBestModeForData (dataStr) {
+  if (Regex.testNumeric(dataStr)) return exports.NUMERIC
+  else if (Regex.testAlphanumeric(dataStr)) return exports.ALPHANUMERIC
+  else if (Regex.testKanji(dataStr)) return exports.KANJI
+  else return exports.BYTE
+}
+
+/**
+ * Return mode name as string
+ *
+ * @param {Mode} mode Mode object
+ * @returns {String}  Mode name
+ */
+exports.toString = function toString (mode) {
+  if (mode && mode.id) return mode.id
+  throw new Error('Invalid mode')
+}
+
+/**
+ * Check if input param is a valid mode object
+ *
+ * @param   {Mode}    mode Mode object
+ * @returns {Boolean} True if valid mode, false otherwise
+ */
+exports.isValid = function isValid (mode) {
+  return mode && mode.bit && mode.ccBits
+}
+
+/**
+ * Get mode object from its name
+ *
+ * @param   {String} string Mode name
+ * @returns {Mode}          Mode object
+ */
+function fromString (string) {
+  if (typeof string !== 'string') {
+    throw new Error('Param is not a string')
+  }
+
+  var lcStr = string.toLowerCase()
+
+  switch (lcStr) {
+    case 'numeric':
+      return exports.NUMERIC
+    case 'alphanumeric':
+      return exports.ALPHANUMERIC
+    case 'kanji':
+      return exports.KANJI
+    case 'byte':
+      return exports.BYTE
+    default:
+      throw new Error('Unknown mode: ' + string)
+  }
+}
+
+/**
+ * Returns mode from a value.
+ * If value is not a valid mode, returns defaultValue
+ *
+ * @param  {Mode|String} value        Encoding mode
+ * @param  {Mode}        defaultValue Fallback value
+ * @return {Mode}                     Encoding mode
+ */
+exports.from = function from (value, defaultValue) {
+  if (exports.isValid(value)) {
+    return value
+  }
+
+  try {
+    return fromString(value)
+  } catch (e) {
+    return defaultValue
+  }
+}
+
+
+/***/ }),
+/* 27 */
+/***/ (function(module, exports) {
+
+/*
+	MIT License http://www.opensource.org/licenses/mit-license.php
+	Author Tobias Koppers @sokra
+*/
+// css base code, injected by the css-loader
+module.exports = function(useSourceMap) {
+	var list = [];
+
+	// return the list of modules as css string
+	list.toString = function toString() {
+		return this.map(function (item) {
+			var content = cssWithMappingToString(item, useSourceMap);
+			if(item[2]) {
+				return "@media " + item[2] + "{" + content + "}";
+			} else {
+				return content;
+			}
+		}).join("");
+	};
+
+	// import a list of modules into the list
+	list.i = function(modules, mediaQuery) {
+		if(typeof modules === "string")
+			modules = [[null, modules, ""]];
+		var alreadyImportedModules = {};
+		for(var i = 0; i < this.length; i++) {
+			var id = this[i][0];
+			if(typeof id === "number")
+				alreadyImportedModules[id] = true;
+		}
+		for(i = 0; i < modules.length; i++) {
+			var item = modules[i];
+			// skip already imported module
+			// this implementation is not 100% perfect for weird media query combinations
+			//  when a module is imported multiple times with different media queries.
+			//  I hope this will never occur (Hey this way we have smaller bundles)
+			if(typeof item[0] !== "number" || !alreadyImportedModules[item[0]]) {
+				if(mediaQuery && !item[2]) {
+					item[2] = mediaQuery;
+				} else if(mediaQuery) {
+					item[2] = "(" + item[2] + ") and (" + mediaQuery + ")";
+				}
+				list.push(item);
+			}
+		}
+	};
+	return list;
+};
+
+function cssWithMappingToString(item, useSourceMap) {
+	var content = item[1] || '';
+	var cssMapping = item[3];
+	if (!cssMapping) {
+		return content;
+	}
+
+	if (useSourceMap && typeof btoa === 'function') {
+		var sourceMapping = toComment(cssMapping);
+		var sourceURLs = cssMapping.sources.map(function (source) {
+			return '/*# sourceURL=' + cssMapping.sourceRoot + source + ' */'
+		});
+
+		return [content].concat(sourceURLs).concat([sourceMapping]).join('\n');
+	}
+
+	return [content].join('\n');
+}
+
+// Adapted from convert-source-map (MIT)
+function toComment(sourceMap) {
+	// eslint-disable-next-line no-undef
+	var base64 = btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap))));
+	var data = 'sourceMappingURL=data:application/json;charset=utf-8;base64,' + base64;
+
+	return '/*# ' + data + ' */';
+}
+
+
+/***/ }),
+/* 28 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = {
+  Block: __webpack_require__(191),
+  ECPair: __webpack_require__(66),
+  ECSignature: __webpack_require__(69),
+  HDNode: __webpack_require__(245),
+  Transaction: __webpack_require__(64),
+  TransactionBuilder: __webpack_require__(246),
+
+  address: __webpack_require__(67),
+  bufferutils: __webpack_require__(99), // TODO: remove in 4.0.0
+  crypto: __webpack_require__(29),
+  networks: __webpack_require__(35),
+  opcodes: __webpack_require__(11),
+  script: __webpack_require__(9)
+}
+
+
+/***/ }),
+/* 29 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var createHash = __webpack_require__(17)
+
+function ripemd160 (buffer) {
+  return createHash('rmd160').update(buffer).digest()
+}
+
+function sha1 (buffer) {
+  return createHash('sha1').update(buffer).digest()
+}
+
+function sha256 (buffer) {
+  return createHash('sha256').update(buffer).digest()
+}
+
+function hash160 (buffer) {
+  return ripemd160(sha256(buffer))
+}
+
+function hash256 (buffer) {
+  return sha256(sha256(buffer))
+}
+
+module.exports = {
+  hash160: hash160,
+  hash256: hash256,
+  ripemd160: ripemd160,
+  sha1: sha1,
+  sha256: sha256
+}
+
+
+/***/ }),
+/* 30 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/* WEBPACK VAR INJECTION */(function(Buffer) {// prototype class for hash functions
+function Hash (blockSize, finalSize) {
+  this._block = new Buffer(blockSize)
+  this._finalSize = finalSize
+  this._blockSize = blockSize
+  this._len = 0
+  this._s = 0
+}
+
+Hash.prototype.update = function (data, enc) {
+  if (typeof data === 'string') {
+    enc = enc || 'utf8'
+    data = new Buffer(data, enc)
+  }
+
+  var l = this._len += data.length
+  var s = this._s || 0
+  var f = 0
+  var buffer = this._block
+
+  while (s < l) {
+    var t = Math.min(data.length, f + this._blockSize - (s % this._blockSize))
+    var ch = (t - f)
+
+    for (var i = 0; i < ch; i++) {
+      buffer[(s % this._blockSize) + i] = data[i + f]
+    }
+
+    s += ch
+    f += ch
+
+    if ((s % this._blockSize) === 0) {
+      this._update(buffer)
+    }
+  }
+  this._s = s
+
+  return this
+}
+
+Hash.prototype.digest = function (enc) {
+  // Suppose the length of the message M, in bits, is l
+  var l = this._len * 8
+
+  // Append the bit 1 to the end of the message
+  this._block[this._len % this._blockSize] = 0x80
+
+  // and then k zero bits, where k is the smallest non-negative solution to the equation (l + 1 + k) === finalSize mod blockSize
+  this._block.fill(0, this._len % this._blockSize + 1)
+
+  if (l % (this._blockSize * 8) >= this._finalSize * 8) {
+    this._update(this._block)
+    this._block.fill(0)
+  }
+
+  // to this append the block which is equal to the number l written in binary
+  // TODO: handle case where l is > Math.pow(2, 29)
+  this._block.writeInt32BE(l, this._blockSize - 4)
+
+  var hash = this._update(this._block) || this._hash()
+
+  return enc ? hash.toString(enc) : hash
+}
+
+Hash.prototype._update = function () {
+  throw new Error('_update must be implemented by subclass')
+}
+
+module.exports = Hash
+
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0).Buffer))
 
 /***/ }),
 /* 31 */
@@ -15452,7 +15452,7 @@ module.exports = types
 /***/ (function(module, exports, __webpack_require__) {
 
 var Buffer = __webpack_require__(2).Buffer
-var bcrypto = __webpack_require__(28)
+var bcrypto = __webpack_require__(29)
 var bscript = __webpack_require__(9)
 var bufferutils = __webpack_require__(99)
 var opcodes = __webpack_require__(11)
@@ -16069,7 +16069,7 @@ module.exports = {
 /***/ (function(module, exports, __webpack_require__) {
 
 var baddress = __webpack_require__(67)
-var bcrypto = __webpack_require__(28)
+var bcrypto = __webpack_require__(29)
 var ecdsa = __webpack_require__(235)
 var randomBytes = __webpack_require__(21)
 var typeforce = __webpack_require__(7)
@@ -18585,9 +18585,9 @@ var index_esm = {
 /* 87 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const bcLib = __webpack_require__(27)
+const bcLib = __webpack_require__(28)
 const axios = __webpack_require__(18);
-const BigNumber = __webpack_require__(30);
+const BigNumber = __webpack_require__(24);
 const coinSelect = __webpack_require__(265)
 const bcMsg = __webpack_require__(268)
 const bip39 = __webpack_require__(37)
@@ -20448,7 +20448,7 @@ function done(stream, er, data) {
  */
 
 var inherits = __webpack_require__(1)
-var Hash = __webpack_require__(29)
+var Hash = __webpack_require__(30)
 
 var K = [
   0x428A2F98, 0x71374491, 0xB5C0FBCF, 0xE9B5DBA5,
@@ -20581,7 +20581,7 @@ module.exports = Sha256
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(Buffer) {var inherits = __webpack_require__(1)
-var Hash = __webpack_require__(29)
+var Hash = __webpack_require__(30)
 
 var K = [
   0x428a2f98, 0xd728ae22, 0x71374491, 0x23ef65cd,
@@ -26028,10 +26028,10 @@ exports.getTotalCodewordsCount = function getTotalCodewordsCount (version, error
 /* 139 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var Utils = __webpack_require__(24)
+var Utils = __webpack_require__(25)
 var ECCode = __webpack_require__(138)
 var ECLevel = __webpack_require__(82)
-var Mode = __webpack_require__(25)
+var Mode = __webpack_require__(26)
 var isArray = __webpack_require__(81)
 
 // Generator polynomial used to encode version information
@@ -26549,7 +26549,7 @@ module.exports=__webpack_require__(402)({
 
 /* WEBPACK VAR INJECTION */(function(Buffer) {const currencyList = __webpack_require__(4)
 const coinUtil = __webpack_require__(5)
-const bcLib = __webpack_require__(27)
+const bcLib = __webpack_require__(28)
 module.exports=__webpack_require__(408)({
   data(){
     return {
@@ -27025,7 +27025,7 @@ if(false) {
 /* 152 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(26)(undefined);
+exports = module.exports = __webpack_require__(27)(undefined);
 // imports
 
 
@@ -27243,7 +27243,7 @@ if(false) {
 /* 168 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(26)(undefined);
+exports = module.exports = __webpack_require__(27)(undefined);
 // imports
 exports.i(__webpack_require__(169), "");
 exports.i(__webpack_require__(173), "");
@@ -27259,7 +27259,7 @@ exports.push([module.i, "/*! onsenui - v2.8.2 - 2017-11-22 */ons-gesture-detecto
 /* 169 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(26)(undefined);
+exports = module.exports = __webpack_require__(27)(undefined);
 // imports
 
 
@@ -27291,7 +27291,7 @@ module.exports = __webpack_require__.p + "dist/assets/aff28a207631f39ee0272d5cdd
 /* 173 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(26)(undefined);
+exports = module.exports = __webpack_require__(27)(undefined);
 // imports
 
 
@@ -27323,7 +27323,7 @@ module.exports = __webpack_require__.p + "dist/assets/b351bd62abcd96e924d9f44a3d
 /* 177 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(26)(undefined);
+exports = module.exports = __webpack_require__(27)(undefined);
 // imports
 
 
@@ -27404,7 +27404,7 @@ if(false) {
 /* 185 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(26)(undefined);
+exports = module.exports = __webpack_require__(27)(undefined);
 // imports
 
 
@@ -27719,7 +27719,7 @@ module.exports=__webpack_require__(363)({
 /***/ (function(module, exports, __webpack_require__) {
 
 var Buffer = __webpack_require__(2).Buffer
-var bcrypto = __webpack_require__(28)
+var bcrypto = __webpack_require__(29)
 var fastMerkleRoot = __webpack_require__(208)
 var typeforce = __webpack_require__(7)
 var types = __webpack_require__(10)
@@ -28491,7 +28491,7 @@ module.exports = __webpack_require__(59).PassThrough
  */
 
 var inherits = __webpack_require__(1)
-var Hash = __webpack_require__(29)
+var Hash = __webpack_require__(30)
 
 var K = [
   0x5a827999, 0x6ed9eba1, 0x8f1bbcdc | 0, 0xca62c1d6 | 0
@@ -28592,7 +28592,7 @@ module.exports = Sha
  */
 
 var inherits = __webpack_require__(1)
-var Hash = __webpack_require__(29)
+var Hash = __webpack_require__(30)
 
 var K = [
   0x5a827999, 0x6ed9eba1, 0x8f1bbcdc | 0, 0xca62c1d6 | 0
@@ -28697,7 +28697,7 @@ module.exports = Sha1
 
 var inherits = __webpack_require__(1)
 var Sha256 = __webpack_require__(93)
-var Hash = __webpack_require__(29)
+var Hash = __webpack_require__(30)
 
 var W = new Array(64)
 
@@ -28748,7 +28748,7 @@ module.exports = Sha224
 
 /* WEBPACK VAR INJECTION */(function(Buffer) {var inherits = __webpack_require__(1)
 var SHA512 = __webpack_require__(94)
-var Hash = __webpack_require__(29)
+var Hash = __webpack_require__(30)
 
 var W = new Array(160)
 
@@ -31002,7 +31002,7 @@ module.exports = {
 
 var Buffer = __webpack_require__(2).Buffer
 var base58check = __webpack_require__(48)
-var bcrypto = __webpack_require__(28)
+var bcrypto = __webpack_require__(29)
 var createHmac = __webpack_require__(49)
 var typeforce = __webpack_require__(7)
 var types = __webpack_require__(10)
@@ -31324,7 +31324,7 @@ module.exports = HDNode
 
 var Buffer = __webpack_require__(2).Buffer
 var baddress = __webpack_require__(67)
-var bcrypto = __webpack_require__(28)
+var bcrypto = __webpack_require__(29)
 var bscript = __webpack_require__(9)
 var networks = __webpack_require__(35)
 var ops = __webpack_require__(11)
@@ -43891,9 +43891,9 @@ if (false) {(function () {
 /* WEBPACK VAR INJECTION */(function(Buffer) {const storage = __webpack_require__(6)
 const coinUtil=__webpack_require__(5)
 const currencyList = __webpack_require__(4)
-const bcLib = __webpack_require__(27)
+const bcLib = __webpack_require__(28)
 const errors = __webpack_require__(31)
-const BigNumber = __webpack_require__(30);
+const BigNumber = __webpack_require__(24);
 module.exports=__webpack_require__(372)({
   data(){
     return {
@@ -44222,7 +44222,7 @@ if (false) {(function () {
 /***/ (function(module, exports, __webpack_require__) {
 
 var Buffer = __webpack_require__(33)
-var Utils = __webpack_require__(24)
+var Utils = __webpack_require__(25)
 var ECLevel = __webpack_require__(82)
 var BitBuffer = __webpack_require__(379)
 var BitMatrix = __webpack_require__(380)
@@ -44233,7 +44233,7 @@ var ECCode = __webpack_require__(138)
 var ReedSolomonEncoder = __webpack_require__(384)
 var Version = __webpack_require__(139)
 var FormatInfo = __webpack_require__(387)
-var Mode = __webpack_require__(25)
+var Mode = __webpack_require__(26)
 var Segments = __webpack_require__(388)
 var isArray = __webpack_require__(81)
 
@@ -44854,7 +44854,7 @@ module.exports = BitMatrix
  * and their number depends on the symbol version.
  */
 
-var getSymbolSize = __webpack_require__(24).getSymbolSize
+var getSymbolSize = __webpack_require__(25).getSymbolSize
 
 /**
  * Calculate the row/column coordinates of the center module of each alignment pattern
@@ -44933,7 +44933,7 @@ exports.getPositions = function getPositions (version) {
 /* 382 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var getSymbolSize = __webpack_require__(24).getSymbolSize
+var getSymbolSize = __webpack_require__(25).getSymbolSize
 var FINDER_PATTERN_SIZE = 7
 
 /**
@@ -45414,7 +45414,7 @@ exports.mul = function mul (x, y) {
 /* 387 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var Utils = __webpack_require__(24)
+var Utils = __webpack_require__(25)
 
 var G15 = (1 << 10) | (1 << 8) | (1 << 5) | (1 << 4) | (1 << 2) | (1 << 1) | (1 << 0)
 var G15_MASK = (1 << 14) | (1 << 12) | (1 << 10) | (1 << 4) | (1 << 1)
@@ -45449,13 +45449,13 @@ exports.getEncodedBits = function getEncodedBits (errorCorrectionLevel, mask) {
 /* 388 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var Mode = __webpack_require__(25)
+var Mode = __webpack_require__(26)
 var NumericData = __webpack_require__(389)
 var AlphanumericData = __webpack_require__(390)
 var ByteData = __webpack_require__(391)
 var KanjiData = __webpack_require__(392)
 var Regex = __webpack_require__(140)
-var Utils = __webpack_require__(24)
+var Utils = __webpack_require__(25)
 var dijkstra = __webpack_require__(393)
 
 /**
@@ -45785,7 +45785,7 @@ exports.rawSplit = function rawSplit (data) {
 /* 389 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var Mode = __webpack_require__(25)
+var Mode = __webpack_require__(26)
 
 function NumericData (data) {
   this.mode = Mode.NUMERIC
@@ -45834,7 +45834,7 @@ module.exports = NumericData
 /* 390 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var Mode = __webpack_require__(25)
+var Mode = __webpack_require__(26)
 
 /**
  * Array of characters available in alphanumeric mode
@@ -45900,7 +45900,7 @@ module.exports = AlphanumericData
 /***/ (function(module, exports, __webpack_require__) {
 
 var Buffer = __webpack_require__(33)
-var Mode = __webpack_require__(25)
+var Mode = __webpack_require__(26)
 
 function ByteData (data) {
   this.mode = Mode.BYTE
@@ -45932,8 +45932,8 @@ module.exports = ByteData
 /* 392 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var Mode = __webpack_require__(25)
-var Utils = __webpack_require__(24)
+var Mode = __webpack_require__(26)
+var Utils = __webpack_require__(25)
 
 function KanjiData (data) {
   this.mode = Mode.KANJI
@@ -46769,7 +46769,7 @@ if (false) {(function () {
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(Buffer) {const currencyList = __webpack_require__(4)
-const bcLib = __webpack_require__(27)
+const bcLib = __webpack_require__(28)
 module.exports=__webpack_require__(410)({
   data(){
     return {
@@ -47985,12 +47985,68 @@ if (false) {(function () {
 
 /* WEBPACK VAR INJECTION */(function(Buffer) {
 const currencyList = __webpack_require__(4)
-const xmp = currencyList.get("mona")
-const bitcoin = __webpack_require__(27)
+const bitcoin = __webpack_require__(28)
 const storage = __webpack_require__(6)
 const bip39 = __webpack_require__(37)
+const BigNumber = __webpack_require__(24);
 const coinUtil = __webpack_require__(5)
 
+const getPriv = (coinId,change,index,password)=>storage.get("keyPairs").then((cipher)=>{
+  const cur = currencyList.get(coinId)
+  let seed=
+        bip39.mnemonicToSeed(
+          bip39.entropyToMnemonic(
+            coinUtil.decrypt(cipher.entropy,password)
+          )
+        )
+  const node = bitcoin.HDNode.fromSeedBuffer(seed,cur.network)
+  return node
+    .deriveHardened(44)
+    .deriveHardened(cur.bip44.coinType)
+    .deriveHardened(cur.bip44.account)
+    .derive(change|0)
+    .derive(index|0).keyPair
+})
+const createScript = (pubKeyRedeem,pubKeyRefund,secretHash,expire,coinId)=>{
+  const redeemScript=bitcoin.script.compile([
+    bitcoin.opcodes.OP_IF,
+    bitcoin.opcodes.OP_HASH160,
+    secretHash,
+    bitcoin.opcodes.OP_EQUALVERIFY,
+    pubKeyRedeem,
+    bitcoin.opcodes.OP_ELSE,
+    bitcoin.script.number.encode(expire),
+    bitcoin.opcodes.OP_NOP3,
+    bitcoin.opcodes.OP_DROP, 
+    pubKeyRefund,
+    bitcoin.opcodes.OP_ENDIF,
+    bitcoin.opcodes.OP_CHECKSIG
+  ]);
+  const scriptPubKey = bitcoin.script.scriptHash.output.encode(bitcoin.crypto.hash160(redeemScript))
+  const address = bitcoin.address.fromOutputScript(scriptPubKey,currencyList.get(coinId).network)
+  return { redeemScript,scriptPubKey,address }
+}
+const signClaimTxWithSecret = (txb, coinId, addressIndex, redeemScript, secret, password)=>{
+  const cur = currencyList.get(coinId)
+
+  var signatureScript = redeemScript;
+  var signatureHash = txb.tx.hashForSignature(0, signatureScript, bitcoin.Transaction.SIGHASH_ALL);
+  return getPriv(coinId,0,addressIndex,password).then(pk=>{
+    const signature= pk.sign(signatureHash);
+    var tx = txb.buildIncomplete();
+
+    var scriptSig = bitcoin.script.compile([
+      signature.toScriptSignature(bitcoin.Transaction.SIGHASH_ALL),
+      Buffer.from(secret,"utf8"),
+      bitcoin.opcodes.OP_TRUE
+    ]);
+
+    scriptSig = bitcoin.script.scriptHash.input.encode(scriptSig, redeemScript);
+    tx.setInputScript(0, scriptSig);
+    return tx;
+  })
+
+};
 module.exports=__webpack_require__(434)({
   data(){
     return {
@@ -47998,14 +48054,23 @@ module.exports=__webpack_require__(434)({
       coins:[],
       
       addrIndex:0,
-      giveCoinId:"",
-      getCoinId:"",
+      giveCoinId:"mona",
+      getCoinId:"mona",
 
       secret:"",
 
       secretHash:"",
       pubKeyWithSecret:"",
-      pubKeyWOSecret:""
+      pubKeyWOSecret:"",
+
+      myP2SH:null,
+      scriptWithSecret:"",
+      opponentP2SH:null,
+      scriptWithoutSecret:"",
+
+      utxo:"",
+      password:"",
+      signedTx:""
     }
   },
   methods:{
@@ -48022,14 +48087,13 @@ module.exports=__webpack_require__(434)({
     generateHash(){
       if(this.secret){
         this.secretHash = bitcoin.crypto.hash160(Buffer.from(this.secret,"utf8")).toString("hex")
-        
       }else{
         this.secretHash =""
       }
       this.getPubKey()
     },
     getPubKey(){
-      const pk=currencyList.get(this.getCoinId).getPubKey(0,this.addrIndex).toString("hex")
+      const pk=currencyList.get(this.getCoinId).getPubKey(0,this.addrIndex|0).toString("hex")
       if(this.secret){
         this.pubKeyWithSecret=pk
         this.pubKeyWOSecret=""
@@ -48040,12 +48104,60 @@ module.exports=__webpack_require__(434)({
       
     },
     generateP2SH(){
-      
+      if (this.secret) {
+        this.myP2SH=createScript(
+          Buffer.from(this.pubKeyWithSecret,"hex"),
+          Buffer.from(this.pubKeyWOSecret,"hex"),
+          Buffer.from(this.secretHash,"hex"),
+          10,
+          this.giveCoinId
+        );
+        this.opponentP2SH = createScript(
+          Buffer.from(this.pubKeyWOSecret,"hex"),
+          Buffer.from(this.pubKeyWithSecret,"hex"),
+          Buffer.from(this.secretHash,"hex"),
+          10,
+          this.getCoinId
+        );
+      }else{
+        this.myP2SH = createScript(
+          Buffer.from(this.pubKeyWOSecret,"hex"),
+          Buffer.from(this.pubKeyWithSecret,"hex"),
+          Buffer.from(this.secretHash,"hex"),
+          10,
+          this.giveCoinId
+        );
+        this.opponentP2SH=createScript(
+          Buffer.from(this.pubKeyWithSecret,"hex"),
+          Buffer.from(this.pubKeyWOSecret,"hex"),
+          Buffer.from(this.secretHash,"hex"),
+          10,
+          this.getCoinId
+        );
+        
+      }
+    },
+    getUtxo(){
+      currencyList.get(this.getCoinId).getUtxos([this.opponentP2SH.address],true).then(res=>{
+        this.$set(this,"utxo",res)
+      })
+    },
+    signTx(){
+      const cur =currencyList.get(this.getCoinId)
+      const txb = new bitcoin.TransactionBuilder(cur.network)
+      txb.addInput(this.utxo.utxos[0].txId,this.utxo.utxos[0].vout)
+      txb.addOutput(cur.getAddress(0,this.addrIndex|0),(new BigNumber(this.utxo.utxos[0].value)).minus(35000).round().toNumber())
+      signClaimTxWithSecret(txb,this.getCoinId,this.addrIndex|0,this.opponentP2SH.redeemScript,this.secret,this.password).then(tx=>{
+        this.signedTx = tx.toHex()
+      })
     }
   },
   mounted(){
     this.getCurrencies()
     
+  },
+  filters:{
+    stringify:(j)=>JSON.stringify(j)
   }
   
 })
@@ -48056,7 +48168,7 @@ module.exports=__webpack_require__(434)({
 /* 434 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var render = function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('v-ons-page',{attrs:{"data-page":"atomicswap"}},[_c('custom-bar',{attrs:{"title":"Atomic Swap Demo","menu":"true"}}),_vm._v(" "),_c('div',[_c('v-ons-list',[_c('v-ons-list-header',[_vm._v("which currency you wanna give?")]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_vm._v("Currency you give")]),_vm._v(" "),_c('div',{staticClass:"right"},[_c('v-ons-select',{model:{value:(_vm.giveCoinId),callback:function ($$v) {_vm.giveCoinId=$$v},expression:"giveCoinId"}},_vm._l((_vm.coins),function(l){return _c('option',{domProps:{"value":l}},[_vm._v(_vm._s(l))])}))],1)]),_vm._v(" "),_c('v-ons-list-header',[_vm._v("which currency, address to get?")]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_vm._v("Currency you get")]),_vm._v(" "),_c('div',{staticClass:"right"},[_c('v-ons-select',{on:{"change":_vm.getLabels},model:{value:(_vm.getCoinId),callback:function ($$v) {_vm.getCoinId=$$v},expression:"getCoinId"}},_vm._l((_vm.coins),function(l){return _c('option',{domProps:{"value":l}},[_vm._v(_vm._s(l))])}))],1)]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_vm._v("受信アドレスのラベル")]),_vm._v(" "),_c('div',{staticClass:"right"},[_c('v-ons-select',{on:{"change":_vm.getPubKey},model:{value:(_vm.addrIndex),callback:function ($$v) {_vm.addrIndex=$$v},expression:"addrIndex"}},_vm._l((_vm.labels),function(l,i){return _c('option',{domProps:{"value":i}},[_vm._v(_vm._s(l))])}))],1)]),_vm._v(" "),_c('v-ons-list-header',[_vm._v("If this transaction begins with you, make Secret")]),_vm._v(" "),_c('v-ons-list-item',[_c('v-ons-input',{attrs:{"placeholder":"secret"},on:{"change":_vm.generateHash},model:{value:(_vm.secret),callback:function ($$v) {_vm.secret=$$v},expression:"secret"}})],1),_vm._v(" "),_c('v-ons-list-header',[_vm._v("Share data below.")]),_vm._v(" "),_c('v-ons-list-item',[_c('v-ons-input',{attrs:{"placeholder":"secretHash"},model:{value:(_vm.secretHash),callback:function ($$v) {_vm.secretHash=$$v},expression:"secretHash"}})],1),_vm._v(" "),_c('v-ons-list-item',[_c('v-ons-input',{attrs:{"placeholder":"pubKeyWithSecret"},model:{value:(_vm.pubKeyWithSecret),callback:function ($$v) {_vm.pubKeyWithSecret=$$v},expression:"pubKeyWithSecret"}})],1),_vm._v(" "),_c('v-ons-list-item',[_c('v-ons-input',{attrs:{"placeholder":"pubKeyWOSecret"},model:{value:(_vm.pubKeyWOSecret),callback:function ($$v) {_vm.pubKeyWOSecret=$$v},expression:"pubKeyWOSecret"}})],1),_vm._v(" "),_c('v-ons-list-item',[_c('v-ons-button',{attrs:{"modifier":"large"},on:{"click":_vm.generateP2SH}},[_vm._v("Get Address")])],1),_vm._v(" "),_c('v-ons-list-header',[_vm._v("Deposit "+_vm._s(_vm.giveCoinId)+" below")]),_vm._v(" "),_c('v-ons-list-item',[_c('v-ons-input',{attrs:{"placeholder":"myP2SH"},model:{value:(_vm.myP2SH),callback:function ($$v) {_vm.myP2SH=$$v},expression:"myP2SH"}})],1),_vm._v(" "),_c('v-ons-list-header',[_vm._v("Opponent will deposit here")]),_vm._v(" "),_c('v-ons-list-item',[_c('v-ons-input',{attrs:{"placeholder":"opponentP2SH"},model:{value:(_vm.opponentP2SH),callback:function ($$v) {_vm.opponentP2SH=$$v},expression:"opponentP2SH"}})],1)],1)],1)],1)}
+var render = function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('v-ons-page',{attrs:{"data-page":"atomicswap"}},[_c('custom-bar',{attrs:{"title":"Atomic Swap Demo","menu":"true"}}),_vm._v(" "),_c('div',[_c('v-ons-list',[_c('v-ons-list-header',[_vm._v("which currency you wanna give?")]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_vm._v("Currency you give")]),_vm._v(" "),_c('div',{staticClass:"right"},[_c('v-ons-select',{model:{value:(_vm.giveCoinId),callback:function ($$v) {_vm.giveCoinId=$$v},expression:"giveCoinId"}},_vm._l((_vm.coins),function(l){return _c('option',{domProps:{"value":l}},[_vm._v(_vm._s(l))])}))],1)]),_vm._v(" "),_c('v-ons-list-header',[_vm._v("which currency, address to get?")]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_vm._v("Currency you get")]),_vm._v(" "),_c('div',{staticClass:"right"},[_c('v-ons-select',{on:{"change":_vm.getLabels},model:{value:(_vm.getCoinId),callback:function ($$v) {_vm.getCoinId=$$v},expression:"getCoinId"}},_vm._l((_vm.coins),function(l){return _c('option',{domProps:{"value":l}},[_vm._v(_vm._s(l))])}))],1)]),_vm._v(" "),_c('v-ons-list-item',[_c('div',{staticClass:"center"},[_vm._v("受信アドレスのラベル")]),_vm._v(" "),_c('div',{staticClass:"right"},[_c('v-ons-select',{on:{"change":_vm.getPubKey},model:{value:(_vm.addrIndex),callback:function ($$v) {_vm.addrIndex=$$v},expression:"addrIndex"}},_vm._l((_vm.labels),function(l,i){return _c('option',{domProps:{"value":i}},[_vm._v(_vm._s(l))])}))],1)]),_vm._v(" "),_c('v-ons-list-item',[_c('v-ons-button',{attrs:{"modifier":"large"},on:{"click":_vm.getPubKey}},[_vm._v("Get Public key")])],1),_vm._v(" "),_c('v-ons-list-header',[_vm._v("If this transaction begins with you, make Secret")]),_vm._v(" "),_c('v-ons-list-item',[_c('v-ons-input',{attrs:{"placeholder":"secret"},on:{"change":_vm.generateHash},model:{value:(_vm.secret),callback:function ($$v) {_vm.secret=$$v},expression:"secret"}})],1),_vm._v(" "),_c('v-ons-list-header',[_vm._v("Share data below.")]),_vm._v(" "),_c('v-ons-list-item',[_c('v-ons-input',{attrs:{"placeholder":"secretHash"},model:{value:(_vm.secretHash),callback:function ($$v) {_vm.secretHash=$$v},expression:"secretHash"}})],1),_vm._v(" "),_c('v-ons-list-item',[_c('v-ons-input',{attrs:{"placeholder":"pubKeyWithSecret"},model:{value:(_vm.pubKeyWithSecret),callback:function ($$v) {_vm.pubKeyWithSecret=$$v},expression:"pubKeyWithSecret"}})],1),_vm._v(" "),_c('v-ons-list-item',[_c('v-ons-input',{attrs:{"placeholder":"pubKeyWOSecret"},model:{value:(_vm.pubKeyWOSecret),callback:function ($$v) {_vm.pubKeyWOSecret=$$v},expression:"pubKeyWOSecret"}})],1),_vm._v(" "),_c('v-ons-list-item',[_c('v-ons-button',{attrs:{"modifier":"large"},on:{"click":_vm.generateP2SH}},[_vm._v("Get Address")])],1),_vm._v(" "),_c('v-ons-list-header',[_vm._v("Deposit "+_vm._s(_vm.giveCoinId)+" below")]),_vm._v(" "),_c('v-ons-list-item',[_c('v-ons-input',{attrs:{"value":_vm.myP2SH&&_vm.myP2SH.address,"placeholder":"myP2SH"}})],1),_vm._v(" "),_c('v-ons-list-header',[_vm._v("Opponent will deposit here")]),_vm._v(" "),_c('v-ons-list-item',[_c('v-ons-input',{attrs:{"value":_vm.opponentP2SH&&_vm.opponentP2SH.address,"placeholder":"opponentP2SH"}})],1),_vm._v(" "),_c('v-ons-list-item',[_c('v-ons-button',{attrs:{"modifier":"large"},on:{"click":_vm.getUtxo}},[_vm._v("Get if opponent deposited")])],1),_vm._v(" "),_c('v-ons-list-item',[_c('textarea',{domProps:{"value":_vm._f("stringify")(_vm.utxo)}})]),_vm._v(" "),_c('v-ons-list-header',[_vm._v("Redeem funds")]),_vm._v(" "),_c('v-ons-list-item',[_c('v-ons-input',{attrs:{"placeholder":"Secret"},model:{value:(_vm.secret),callback:function ($$v) {_vm.secret=$$v},expression:"secret"}})],1),_vm._v(" "),_c('v-ons-list-item',[_c('v-ons-input',{attrs:{"placeholder":"Password","type":"password"},model:{value:(_vm.password),callback:function ($$v) {_vm.password=$$v},expression:"password"}})],1),_vm._v(" "),_c('v-ons-list-item',[_c('v-ons-button',{attrs:{"modifier":"large"},on:{"click":_vm.signTx}},[_vm._v("Let's go.")])],1),_vm._v(" "),_c('v-ons-list-item',[_c('textarea',{domProps:{"value":_vm.signedTx}})])],1)],1)],1)}
 var staticRenderFns = []
 module.exports = function (_exports) {
   var options = typeof _exports === 'function'
@@ -48127,7 +48239,7 @@ if (false) {(function () {
 
 const currencyList = __webpack_require__(4)
 const titleList = __webpack_require__(44)
-const BigNumber = __webpack_require__(30);
+const BigNumber = __webpack_require__(24);
 const storage = __webpack_require__(6)
 const axios = __webpack_require__(18)
 
@@ -48230,7 +48342,7 @@ module.exports=__webpack_require__(439)({
 /***/ (function(module, exports, __webpack_require__) {
 
 const currencyList=__webpack_require__(4)
-const BigNumber = __webpack_require__(30);
+const BigNumber = __webpack_require__(24);
 const storage = __webpack_require__(6)
 const axios = __webpack_require__(18)
 module.exports=class{
@@ -48682,7 +48794,7 @@ if (false) {(function () {
 
 
 const currencyList = __webpack_require__(4)
-const BigNumber = __webpack_require__(30);
+const BigNumber = __webpack_require__(24);
 const storage = __webpack_require__(6)
 
 module.exports=__webpack_require__(444)({
@@ -48754,7 +48866,7 @@ if (false) {(function () {
 /***/ (function(module, exports, __webpack_require__) {
 
 const currencyList = __webpack_require__(4)
-const BigNumber = __webpack_require__(30);
+const BigNumber = __webpack_require__(24);
 const storage = __webpack_require__(6)
 const titleList = __webpack_require__(44)
 
