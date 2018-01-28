@@ -31,7 +31,7 @@
       <v-ons-list-item>
         <v-ons-button modifier="large" @click="getPubKey">Get Public key</v-ons-button>
       </v-ons-list-item>
-      <v-ons-list-header>If this transaction begins with you, make Secret</v-ons-list-header>
+      <v-ons-list-header>If you start swap, make Secret</v-ons-list-header>
       <v-ons-list-item>
         <v-ons-input v-model="secret" placeholder="secret" @change="generateHash"></v-ons-input>
       </v-ons-list-item>
@@ -40,10 +40,10 @@
         <v-ons-input v-model="secretHash" placeholder="secretHash"></v-ons-input>
       </v-ons-list-item>
       <v-ons-list-item>
-        <v-ons-input v-model="addressWithSecret" placeholder="pubKeyWithSecret"></v-ons-input>
+        <v-ons-input v-model="addressWithSecret" placeholder="addressWithSecret"></v-ons-input>
       </v-ons-list-item>
       <v-ons-list-item>
-        <v-ons-input v-model="addressWOSecret" placeholder="pubKeyWOSecret"></v-ons-input>
+        <v-ons-input v-model="addressWOSecret" placeholder="addressWOSecret"></v-ons-input>
       </v-ons-list-item>
       <v-ons-list-item>
         <v-ons-button modifier="large" @click="generateP2SH">Get Address</v-ons-button>
