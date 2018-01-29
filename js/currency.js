@@ -8,6 +8,7 @@ const qs= require("qs")
 const errors = require("./errors")
 const coinUtil = require("./coinUtil")
 const storage = require("./storage")
+const zecLib = require("bitcoinjs-lib-zec")
 module.exports=class{
   
   constructor(opt){
@@ -28,6 +29,17 @@ module.exports=class{
     this.sound=opt.sound||""
     this.counterpartyEndpoint=opt.counterpartyEndpoint
     this.enableSegwit=opt.enableSegwit
+
+    switch(opt.lib){
+      case "zec":
+        this.lib=zecLib
+        break
+      case "pos":
+        this.lib=null
+        break
+      default:
+        this.lib=bcLib
+    }
     
     this.hdPubNode=null;
     this.lastPriceTime=0;
@@ -38,7 +50,7 @@ module.exports=class{
   }
   setPubSeedB58(seed){
     if(this.dummy){return}
-    this.hdPubNode = bcLib.HDNode.fromBase58(seed,this.network)
+    this.hdPubNode = this.lib.HDNode.fromBase58(seed,this.network)
   }
   pregenerateAddress(){
     this.getReceiveAddr()
@@ -186,18 +198,18 @@ module.exports=class{
       index=this.receiveIndex
     }
     const keyPair=this.hdPubNode.derive(change).derive(index).keyPair
-    const witnessPubKey = bcLib.script.witnessPubKeyHash.output.encode(bcLib.crypto.hash160(keyPair.getPublicKeyBuffer()))
+    const witnessPubKey = this.lib.script.witnessPubKeyHash.output.encode(this.lib.crypto.hash160(keyPair.getPublicKeyBuffer()))
     
-    const address = bcLib.address.fromOutputScript(witnessPubKey,this.network)
+    const address = this.lib.address.fromOutputScript(witnessPubKey,this.network)
     return address
   }
   seedToPubB58(privSeed){
     if(this.dummy){return}
     let node;
     if(typeof privSeed ==="string"){
-      node = bcLib.HDNode.fromBase58(privSeed,this.network)
+      node = this.lib.HDNode.fromBase58(privSeed,this.network)
     }else{
-      node = bcLib.HDNode.fromSeedBuffer(privSeed,this.network)
+      node = this.lib.HDNode.fromSeedBuffer(privSeed,this.network)
     }
     return node
       .deriveHardened(44)
@@ -209,9 +221,9 @@ module.exports=class{
     if(this.dummy){return}
     let node;
     if(typeof privSeed ==="string"){
-      node = bcLib.HDNode.fromBase58(privSeed,this.network)
+      node = this.lib.HDNode.fromBase58(privSeed,this.network)
     }else{
-      node = bcLib.HDNode.fromSeedBuffer(privSeed,this.network)
+      node = this.lib.HDNode.fromSeedBuffer(privSeed,this.network)
     }
     return node.toBase58()
   }
@@ -253,7 +265,7 @@ module.exports=class{
       const targets = option.targets
       const feeRate = option.feeRate
 
-      const txb = new bcLib.TransactionBuilder(this.network)
+      const txb = new this.lib.TransactionBuilder(this.network)
 
       let param
       if(option.utxoStr){
@@ -296,10 +308,10 @@ module.exports=class{
             coinUtil.decrypt(entropyCipher,password)
           )
         )
-    const node = bcLib.HDNode.fromSeedBuffer(seed,this.network)
+    const node = this.lib.HDNode.fromSeedBuffer(seed,this.network)
 
     if(!txb){
-      txb=coinUtil.buildBuilderfromPubKeyTx(bcLib.Transaction.fromHex(option.hash),this.network)
+      txb=coinUtil.buildBuilderfromPubKeyTx(this.lib.Transaction.fromHex(option.hash),this.network)
 
       for(let i=0;i<txb.inputs.length;i++){
         txb.sign(i,node
@@ -326,7 +338,7 @@ module.exports=class{
     
   }
   signMessage(m,entropyCipher,password,path){
-    const kp=bcLib.HDNode.fromSeedBuffer(bip39.mnemonicToSeed(
+    const kp=this.lib.HDNode.fromSeedBuffer(bip39.mnemonicToSeed(
       bip39.entropyToMnemonic(
         coinUtil.decrypt(entropyCipher,password)
       )
@@ -482,9 +494,9 @@ module.exports=class{
     })
   }
   sweep(priv,addr,fee){
-    const keyPair=bcLib.ECPair.fromWIF(priv,this.network)
+    const keyPair=this.lib.ECPair.fromWIF(priv,this.network)
     return this.getUtxos([keyPair.getAddress()]).then(r=>{
-      const txb = new bcLib.TransactionBuilder(this.network)
+      const txb = new this.lib.TransactionBuilder(this.network)
       r.utxos.forEach((v,i)=>{
         txb.addInput(v.txId,v.vout)
       })
