@@ -129,7 +129,25 @@ exports.copy=data=>{
     return result;
   }
 }
-
+exports.openUrl=(url)=>{
+  if(!window.cordova){
+    window.open(url,"_blank")
+  }
+  window.cordova.plugins.browsertab.isAvailable(
+    result=> {
+      if (result)  {
+        window.cordova.plugins.browsertab.openUrl(
+          url,
+          success=>{},
+          fail=>{
+            window.open(url,"_blank")
+          });
+      }
+    },
+    na=> {
+      window.open(url,"_blank")
+    });
+};
 exports.getBip21=(bip21Urn,address,query)=>{
   let queryStr="?"
   for(let v in query){

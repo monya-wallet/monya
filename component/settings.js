@@ -23,7 +23,6 @@ module.exports=require("./settings.html")({
           enabled:false,
           myUserId:""
         },
-        openInAppBrowser:false,
         monaparty:{
           enabled:true,
           bgClass:"sand"

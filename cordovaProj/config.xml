@@ -101,6 +101,7 @@
         <splash src="res/screens/windows/splashscreenphone.png" target="SplashScreenPhone" />
     </platform>
     <platform name="browser">
+      <icon height="512" src="res/icons/browser/512.png" width="512" />
         <preference name="ShowSplashScreen" value="hide" />
     </platform>
     <engine name="ios" spec="^4.5.4" />
@@ -109,9 +110,11 @@
     <plugin name="cordova-plugin-customurlscheme" spec="^4.3.0">
         <variable name="URL_SCHEME" value="monacoin" />
     </plugin>
-    <plugin name="cordova-plugin-inappbrowser" spec="^2.0.1" />
     <plugin name="cordova-plugin-statusbar" spec="^2.4.1" />
     <plugin name="cordova-plugin-keychain-touch-id" spec="^3.2.1" />
     <plugin name="cordova-plugin-qrscanner-monya" spec="^2.5.4" />
-    <plugin name="cordova-clipboard" spec="^1.1.1" />
+    <plugin name="cordova-clipboard-monya" spec="^1.1.6" />
+    <plugin name="cordova-plugin-browsertab" spec="^0.2.0">
+        <variable name="CUSTOM_TAB_COLOR_RGB" value="#ffffff" />
+    </plugin>
 </widget>

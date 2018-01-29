@@ -1,4 +1,5 @@
 const currencyList = require("../js/currencyList")
+const coinUtil = require("../js/coinUtil")
 module.exports=require("./help.html")({
   data(){
     return {
@@ -10,7 +11,7 @@ module.exports=require("./help.html")({
       this.$emit("push",require("./about.js"))
     },
     openLink(url){
-       window.open(url,this.$store.state.openInAppBrowser?"_blank":"_system")
+       coinUtil.openUrl(url)
     },
     mineZeny(){
       const zny=currencyList.get("zny")

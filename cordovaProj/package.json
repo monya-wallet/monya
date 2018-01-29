@@ -10,14 +10,13 @@
   "author": "Apache Cordova Team",
   "license": "Apache-2.0",
   "dependencies": {
-    "com.danielsogl.cordova.clipboard": "~1.0.2",
     "cordova-android": "^6.4.0",
     "cordova-browser": "^5.0.3",
-    "cordova-clipboard": "^1.1.1",
+    "cordova-clipboard-monya": "^1.1.6",
     "cordova-ios": "^4.5.4",
+    "cordova-plugin-browsertab": "^0.2.0",
     "cordova-plugin-compat": "^1.2.0",
     "cordova-plugin-customurlscheme": "^4.3.0",
-    "cordova-plugin-inappbrowser": "^2.0.1",
     "cordova-plugin-keychain-touch-id": "^3.2.1",
     "cordova-plugin-qrscanner-monya": "^2.5.4",
     "cordova-plugin-splashscreen": "^4.1.0",
@@ -32,11 +31,13 @@
       "cordova-plugin-customurlscheme": {
         "URL_SCHEME": "monacoin"
       },
-      "cordova-plugin-inappbrowser": {},
       "cordova-plugin-statusbar": {},
       "cordova-plugin-keychain-touch-id": {},
       "cordova-plugin-qrscanner-monya": {},
-      "cordova-clipboard": {}
+      "cordova-clipboard-monya": {},
+      "cordova-plugin-browsertab": {
+        "CUSTOM_TAB_COLOR_RGB": "#ffffff"
+      }
     },
     "platforms": [
       "ios"
