@@ -101,7 +101,7 @@
         <splash src="res/screens/windows/splashscreenphone.png" target="SplashScreenPhone" />
     </platform>
     <platform name="browser">
-      <icon height="512" src="res/icons/browser/512.png" width="512" />
+        <icon height="512" src="res/icons/browser/512.png" width="512" />
         <preference name="ShowSplashScreen" value="hide" />
     </platform>
     <engine name="ios" spec="^4.5.4" />

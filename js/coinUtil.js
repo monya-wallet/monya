@@ -207,7 +207,7 @@ exports.parseUrl=url=>new Promise((resolve,reject)=>{
 })
 
 exports.proxyUrl=url=>{
-  if(window.cordova){
+  if(window.cordova&&window.cordova.platformId!=="browser"){
     return url
   }else{
     return 'https://zaif-status.herokuapp.com/proxy/?u='+encodeURIComponent(url)

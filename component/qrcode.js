@@ -91,7 +91,7 @@ module.exports=require("./qrcode.html")({
             this.parse(t)
           })
         })
-        if(this.$ons.platform.isWebView()){ // ios Quirks
+        if(window.cordova&&window.cordova.platformId!=="browser"){ // ios Quirks
           QRScanner.show()
         }
         
