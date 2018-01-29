@@ -13,8 +13,9 @@ module.exports=require("./dexOrder.html")({
       getAmount:0,
       giveAmount:0,
       giveToken:"",
-      getToken:""
-
+      getToken:"",
+      expiration:50,
+      advanced:false
     }
   },
   store:require("../js/store.js"),
@@ -30,7 +31,8 @@ module.exports=require("./dexOrder.html")({
         giveAmt:this.giveAmount,
         giveToken:this.giveToken,
         getAmt:this.getAmount,
-        getToken:this.getToken
+        getToken:this.getToken,
+        expiration:this.expiration
       }).then(r=>{
         this.loading=false
         this.$ons.notification.alert("Successfully sent transaction.Transaction ID is: "+r)
