@@ -88,26 +88,19 @@ module.exports=class{
     return this.getUtxos(this.getChangeAddr(),includeUnconfirmedFunds).then(d=>{
       let newestCnf=Infinity
       let newestAddr=""
-      let bal=new BigNumber(0)
-      let unconfirmed=new BigNumber(0)
       const res=d.utxos
       for(let i=0;i<res.length;i++){
         if(res[i].confirmations<newestCnf){
           newestCnf=res[i].confirmations
           newestAddr=res[i].address
         }
-        if(res[i].confirmations===0){
-          unconfirmed=unconfirmed.plus(res[i].value)
-        }else{
-          bal=bal.plus(res[i].value)
-        }
       }
       this.changeIndex=newestAddr?
         this.getIndexFromAddress(newestAddr)[1]%coinUtil.GAP_LIMIT_FOR_CHANGE
       :-1
       return {
-        balance:bal,
-        unconfirmed 
+        balance:d.balance,
+        unconfirmed:d.unconfirmed
       }
     })
   }
@@ -115,8 +108,8 @@ module.exports=class{
   getWholeBalanceOfThisAccount(){
     if(this.dummy){return Promise.resolve()}
     return Promise.all([this.getReceiveBalance(false),this.getChangeBalance(false)]).then(vals=>({
-      balance:vals[0].balance+vals[1].balance/100000000,
-      unconfirmed:vals[0].unconfirmed+vals[1].unconfirmed/100000000
+      balance:(new BigNumber(vals[0].balance)).add(vals[1].balance).toNumber(),
+      unconfirmed:(new BigNumber(vals[0].unconfirmed)).add(vals[1].unconfirmed).toNumber()
     }))
   }
   
@@ -134,10 +127,10 @@ module.exports=class{
     return promise.then(res=>{
       const v=res.data
       const utxos=[]
-      let bal=0;
-      let unconfirmed=0;
+      let bal=new BigNumber(0);
+      let unconfirmed=new BigNumber(0);
       for(let i=0;i<v.length;i++){
-        bal+=v[i].amount
+        bal=bal.add(v[i].amount)
         const u=v[i]
         if(includeUnconfirmedFunds||u.confirmations){
           utxos.push({
@@ -148,13 +141,13 @@ module.exports=class{
             confirmations:u.confirmations
           })
         }else{
-          unconfirmed+=u.amount
+          unconfirmed=unconfirmed.add(u.amount)
         }
       }
       return {
-        balance:bal,
+        balance:bal.toNumber(),
         utxos,
-        unconfirmed
+        unconfirmed:unconfirmed.toNumber()
       }
     })
   }
@@ -309,13 +302,13 @@ module.exports=class{
       txb=coinUtil.buildBuilderfromPubKeyTx(bcLib.Transaction.fromHex(option.hash),this.network)
 
       for(let i=0;i<txb.inputs.length;i++){
-      txb.sign(i,node
-               .deriveHardened(44)
-               .deriveHardened(this.bip44.coinType)
-               .deriveHardened(this.bip44.account)
-               .derive(path[0][0]|0)
-               .derive(path[0][1]|0).keyPair
-              )
+        txb.sign(i,node
+                 .deriveHardened(44)
+                 .deriveHardened(this.bip44.coinType)
+                 .deriveHardened(this.bip44.account)
+                 .derive(path[0][0]|0)
+                 .derive(path[0][1]|0).keyPair
+                )
       }
       return txb.build()
     }
@@ -334,14 +327,14 @@ module.exports=class{
   }
   signMessage(m,entropyCipher,password,path){
     const kp=bcLib.HDNode.fromSeedBuffer(bip39.mnemonicToSeed(
-          bip39.entropyToMnemonic(
-            coinUtil.decrypt(entropyCipher,password)
-          )
-        ),this.network)
-               .deriveHardened(44)
-               .deriveHardened(this.bip44.coinType)
-               .deriveHardened(this.bip44.account)
-               .derive(path[0]|0)
+      bip39.entropyToMnemonic(
+        coinUtil.decrypt(entropyCipher,password)
+      )
+    ),this.network)
+          .deriveHardened(44)
+          .deriveHardened(this.bip44.coinType)
+          .deriveHardened(this.bip44.account)
+          .derive(path[0]|0)
           .derive(path[1]|0).keyPair
     return bcMsg.sign(m,kp.d.toBuffer(32),kp.compressed,this.network.messagePrefix).toString("base64")
   }
@@ -505,8 +498,8 @@ module.exports=class{
   }
   getBlocks(){
     return axios({
-        url:this.apiEndpoint+"/blocks?limit=3",
-        json:true,
+      url:this.apiEndpoint+"/blocks?limit=3",
+      json:true,
       method:"GET"}).then(r=>r.data.blocks)
   }
   changeApiEndpoint(index){

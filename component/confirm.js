@@ -15,10 +15,8 @@ module.exports=require("./confirm.html")({
       destHasUsed:false,
       message:"",
       myBalanceBeforeSending:0,
-      showDetail:false,
       utxosToShow:null,
       signedHex:null,
-      isEasy:false,
       coinType:"",
       utxoStr:"",
       ready:false,
@@ -45,60 +43,13 @@ module.exports=require("./confirm.html")({
         this.destHasUsed=true
       }
     })
-    storage.verifyBiometric().then(pwd=>{
-      this.password=pwd
-    }).catch(()=>{
-      // noop
-    })
   },
   computed:{
     afterSent(){
-      return (this.myBalanceBeforeSending-this.amount-this.fee)
+      return (new BigNumber(this.myBalanceBeforeSending)).minus(parseFloat(this.amount)||0).minus(this.fee).toNumber()
     },
     utxosJson(){
       return JSON.stringify(this.utxosToShow)
-    },
-    build(){
-      
-      const cur =this.cur
-      const targets = [{
-        address:this.address,
-        value:(new BigNumber(this.amount)).times(100000000).round().toNumber()
-      }];
-      if(this.message){
-        targets.push({
-          address:bcLib.script.nullData.output.encode(Buffer.from(this.message, 'utf8')),
-          value:0
-        })
-      }
-      storage.get("settings").then((data)=>{
-        this.paySound=data.paySound
-        return cur.buildTransaction({
-          targets,
-          feeRate:this.feePerByte,
-          includeUnconfirmedFunds:data.includeUnconfirmedFunds,
-          utxoStr:this.utxoStr
-        })
-      }).then(d=>{
-        this.fee=(new BigNumber(d.fee)).divToInt(100000000)
-        this.utxosToShow=d.utxos
-        this.path=d.path
-        this.myBalanceBeforeSending=d.balance
-        this.txb=d.txBuilder
-        this.ready=true
-        this.loading=false
-        return coinUtil.getPrice(cur.coinId,this.$store.state.fiat)
-      }).then(price=>{
-        this.price=price
-      }).catch(e=>{
-        this.ready=false
-        this.loading=false
-        if(e instanceof errors.NoSolutionError){
-          this.insufficientFund=true
-        }else{
-          this.$store.commit("setError",e.message)
-        }
-      })
     }
   },
   methods:{
@@ -108,7 +59,6 @@ module.exports=require("./confirm.html")({
       if (cur.sound&&this.paySound) {
         (new Audio(cur.sound)).play()
       }
-      
       this.ready=false
       storage.get("keyPairs").then((cipher)=>{
         const finalTx=cur.signTx({
@@ -138,6 +88,55 @@ module.exports=require("./confirm.html")({
           setTimeout(()=>{
             this.incorrect=false
           },3000)
+        }
+      })
+    },
+    requestBiometric(){
+      storage.verifyBiometric().then(pwd=>{
+        this.password=pwd
+      }).catch(()=>{
+        // noop
+      })
+    },
+    build(){
+      const cur =this.cur
+      const targets = [{
+        address:this.address,
+        value:(new BigNumber(this.amount)).times(100000000).round().toNumber()
+      }];
+      if(this.message){
+        targets.push({
+          address:bcLib.script.nullData.output.encode(Buffer.from(this.message, 'utf8')),
+          value:0
+        })
+      }
+      storage.get("settings").then((data)=>{
+        this.paySound=data.paySound
+        return cur.buildTransaction({
+          targets,
+          feeRate:this.feePerByte,
+          includeUnconfirmedFunds:data.includeUnconfirmedFunds,
+          utxoStr:this.utxoStr
+        })
+      }).then(d=>{
+        this.fee=(new BigNumber(d.fee)).divToInt(100000000)
+        this.utxosToShow=d.utxos
+        this.path=d.path
+        this.myBalanceBeforeSending=d.balance
+        this.txb=d.txBuilder
+        this.ready=true
+        this.loading=false
+        this.requestBiometric()
+        return coinUtil.getPrice(cur.coinId,this.$store.state.fiat)
+      }).then(price=>{
+        this.price=price
+      }).catch(e=>{
+        this.ready=false
+        this.loading=false
+        if(e instanceof errors.NoSolutionError){
+          this.insufficientFund=true
+        }else{
+          this.$store.commit("setError",e.message)
         }
       })
     }

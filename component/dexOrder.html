@@ -12,11 +12,11 @@
         </div>
       </v-ons-list-item>
       <v-ons-list-item>
-        <div class="center">相手にあげる量</div>
-        <div class="right"><v-ons-input placeholder="相手にあげる量" type="number" v-model="giveAmount"></v-ons-input></div>
+        <div class="center">預ける量</div>
+        <div class="right"><v-ons-input placeholder="預ける量" type="number" v-model="giveAmount"></v-ons-input></div>
       </v-ons-list-item>
       <v-ons-list-item>
-        <div class="center">相手にあげるトークン(正式名)</div>
+        <div class="center">預けるトークン(正式名)</div>
         <div class="right"><v-ons-input placeholder="トークン" type="" v-model="giveToken"></v-ons-input></div>
       </v-ons-list-item>
       <v-ons-list-item>
@@ -33,7 +33,7 @@
         <div class="right"><v-ons-input placeholder="satoshi/Byte" v-model="feePerByte"></v-ons-input></div>
       </v-ons-list-item>
       <v-ons-list-item><v-ons-input type="password" placeholder="Password" v-model="password"></v-ons-input></v-ons-list-item>
-      <v-ons-list-item><v-ons-button @click="createTx" modifier="large" :disabled="!giveAmount||!giveToken||!getAmount||!getToken||!password">交換</v-ons-button></v-ons-list-item>
+      <v-ons-list-item><v-ons-button @click="createTx" modifier="large" :disabled="!giveAmount||!giveToken||!getAmount||!getToken||!password">実行</v-ons-button></v-ons-list-item>
     </v-ons-list>
   </div>
   <v-ons-modal :visible="loading">

@@ -1,5 +1,5 @@
 <v-ons-page data-page="confirm">
-  <custom-bar title="送る" menu="true"></custom-bar>
+  <custom-bar title="送る"></custom-bar>
   <div>
     <v-ons-list>
       <v-ons-list-item>
@@ -18,29 +18,33 @@
         <div class="center"></div>
         <div class="right">(<currency-set :ticker="$store.state.fiat" :amount="fiat" :about="true" :easy="isEasy"></currency-set>)</div>
       </v-ons-list-item>
-      <v-ons-list-item modifier="small">
-        <div class="center">送金手数料</div>
-        <div class="right"><currency-set :ticker="coinType" :amount="fee" :easy="isEasy"></currency-set></div>
-      </v-ons-list-item>
-      <v-ons-list-item modifier="small">
-        <div class="center">取引の詳細</div>
-        <div class="right">{{txLabel}}</div>
-      </v-ons-list-item>
-      <v-ons-list-item modifier="small">
-        <div class="center">メッセージ</div>
-        <div class="right">{{message}}</div>
-      </v-ons-list-item>
-      <v-ons-list-item :class="{'insufficientFund':insufficientFund}" modifier="small">
-        <div class="center">あなたの送金後の残高</div>
-        <div class="right"><currency-set :ticker="coinType" :amount="afterSent" :easy="isEasy"></currency-set></div>
-      </v-ons-list-item>
-      <v-ons-list-header>送金したあとは元に戻すことはできません。</v-ons-list-header>
-      <v-ons-list-item>
-        <v-ons-input placeholder="パスワード" v-model="password" type="password"></v-ons-input>
-      </v-ons-list-item>
-      <v-ons-list-item>
-        <v-ons-button :class="{shake:incorrect}" modifier="large" @click="next" :disabled="!ready||!password">送金</v-ons-button>
-      </v-ons-list-item>
+
+      <div v-show="!insufficientFund">
+        <v-ons-list-item modifier="small">
+          <div class="center">送金手数料</div>
+          <div class="right"><currency-set :ticker="coinType" :amount="fee" :easy="isEasy"></currency-set></div>
+        </v-ons-list-item>
+        <v-ons-list-item modifier="small">
+          <div class="center">取引の詳細</div>
+          <div class="right">{{txLabel}}</div>
+        </v-ons-list-item>
+        <v-ons-list-item modifier="small">
+          <div class="center">メッセージ</div>
+          <div class="right">{{message}}</div>
+        </v-ons-list-item>
+        <v-ons-list-item :class="{'insufficientFund':insufficientFund}" modifier="small">
+          <div class="center">あなたの送金後の残高</div>
+          <div class="right"><currency-set :ticker="coinType" :amount="afterSent" :easy="isEasy"></currency-set></div>
+        </v-ons-list-item>
+        <v-ons-list-header>送金したあとは元に戻すことはできません。</v-ons-list-header>
+        <v-ons-list-item>
+          <v-ons-input placeholder="パスワード" v-model="password" type="password"></v-ons-input>
+        </v-ons-list-item>
+        <v-ons-list-item>
+          <v-ons-button :class="{shake:incorrect}" modifier="large" @click="next" :disabled="!ready||!password">送金</v-ons-button>
+        </v-ons-list-item>
+      </div>
+      
       <div v-show="hash">
         <v-ons-list-header>署名済みデータがあります</v-ons-list-header>
         <v-ons-list-item>
@@ -48,14 +52,32 @@
         </v-ons-list-item>
       </div>
     </v-ons-list>
+
+    <div v-show="insufficientFund">
+      <v-ons-list>
+        <v-ons-list-item>
+          トランザクションの生成に失敗しました。
+        </v-ons-list-item>
+        <v-ons-list-title>下記の作業をお試し下さい。</v-ons-list-title>
+        <v-ons-list-item>
+          送金額を減らしてみる
+        </v-ons-list-item>
+        <v-ons-list-item>
+          待機中(未承認)の残高がないかどうか確認する
+        </v-ons-list-item>
+        <v-ons-list-item>
+          設定から「待機中の残高も使用する」をONにする
+        </v-ons-list-item>
+      </v-ons-list>
+    </div>
   </div>
   <v-ons-modal :visible="loading">
-      <p style="text-align: center">
-        トランザクションデータ作成中
-        <br><br>
-        <div class="spinner"></div>
-        <br/>
-        <v-ons-button modifier="quiet" @click="$emit('pop')">キャンセル</v-ons-button>
-      </p>
-    </v-ons-modal>
+    <p style="text-align: center">
+      トランザクションデータ作成中
+      <br><br>
+      <div class="spinner"></div>
+      <br/>
+      <v-ons-button modifier="quiet" @click="$emit('pop')">キャンセル</v-ons-button>
+    </p>
+  </v-ons-modal>
 </v-ons-page>
