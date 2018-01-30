@@ -48,7 +48,7 @@ const defaultCoins=[
       account:0
     },
     bip21:"bitcoin",
-    defaultFeeSatPerByte:10000,
+    defaultFeeSatPerByte:100,
     icon:require("../res/coins/btc.png"),
     defaultAPIEndpoint:"https://insight.bitpay.com/api",
     network:{
@@ -69,7 +69,7 @@ const defaultCoins=[
       jsonPath:["data","last"],
       fiat:"jpy"
     },
-    confirmations:12
+    confirmations:6
   },
   {
     coinScreenName:"ビットゼニー",
