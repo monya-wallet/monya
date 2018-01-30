@@ -69,7 +69,7 @@
               dest=$(this.hash).offset().top;
          }
          //go to destination
-         $('html,body').animate({scrollTop:dest}, 1000,'swing');
+         $('html,body').animate({scrollTop:dest}, 450,'swing');
      });
 	    
 
@@ -167,8 +167,3 @@
 	
 	
 })( jQuery );
-
-
-
-  
-	

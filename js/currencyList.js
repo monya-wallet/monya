@@ -69,7 +69,8 @@ const defaultCoins=[
       jsonPath:["data","last"],
       fiat:"jpy"
     },
-    confirmations:6
+    confirmations:6,
+    counterpartyEndpoint:"https://wallet.counterwallet.io/_api"
   },
   {
     coinScreenName:"ビットゼニー",

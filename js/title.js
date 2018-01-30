@@ -89,6 +89,8 @@ module.exports=class{
   }
   getCardDetail(token){
     switch(this.apiVer){
+      case false:
+        return Promise.resolve({})
       case 1:
         return this.getCardDetailV1(token)
       case 2:
