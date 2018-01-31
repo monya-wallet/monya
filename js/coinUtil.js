@@ -1,5 +1,6 @@
 const currencyList = require("./currencyList.js")
 const bcLib = require('bitcoinjs-lib')
+const zecLib = require("bitcoinjs-lib-zec")
 const bip39 = require("bip39")
 const crypto = require('crypto');
 const storage = require("./storage")
@@ -15,14 +16,23 @@ exports.isValidAddress=(addr)=>{
     bcLib.address.fromBase58Check(addr)
     return true
   }catch(e){
-    return false
+    try {
+      zecLib.address.fromBase58Check(addr)
+      return true
+    } catch (e2) {
+      return false
+    }
   }
 };
 exports.getAddrVersion=(addr)=>{
   try{
     return bcLib.address.fromBase58Check(addr).version
   }catch(e){
-    return null
+    try {
+      return zecLib.address.fromBase58Check(addr).version
+    } catch (e2) {
+      return null
+    }
   }
 };
 exports.getPrice=(cryptoId,fiatId)=>{
@@ -256,7 +266,5 @@ exports.buildBuilderfromPubKeyTx=(transaction,network)=>{
   transaction.ins.forEach(function (txIn) {
     txb.addInput(txIn.hash, txIn.index,txIn.sequence,txIn.script)
   })
-  
-  
   return txb
 }
