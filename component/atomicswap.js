@@ -74,15 +74,15 @@ const signClaimTxWithSecret = (txb, coinId, addressIndex, redeemScript, secret, 
   const cur = currencyList.get(coinId)
 
   return getPriv(coinId,0,addressIndex,password).then(pk=>{
-    var tx = txb.buildIncomplete();
+    let tx = txb.buildIncomplete();
     txb.inputs.forEach((v,i)=>{
-      var signatureScript = redeemScript;
-      var signatureHash = txb.tx.hashForSignature(i, signatureScript, bitcoin.Transaction.SIGHASH_ALL);
+      let signatureScript = redeemScript;
+      let signatureHash = txb.tx.hashForSignature(i, signatureScript, bitcoin.Transaction.SIGHASH_ALL);
       
       const signature= pk.sign(signatureHash);
       
 
-      var scriptSig=redeemP2SHContract(redeemScript,signature.toScriptSignature(bitcoin.Transaction.SIGHASH_ALL),Buffer.from(cur.getPubKey(0,addressIndex),"hex"),secret)
+      let scriptSig=redeemP2SHContract(redeemScript,signature.toScriptSignature(bitcoin.Transaction.SIGHASH_ALL),Buffer.from(cur.getPubKey(0,addressIndex),"hex"),secret)
       tx.setInputScript(i, scriptSig);
     })
     return tx;
@@ -95,15 +95,15 @@ const signRefund = (txb, coinId, addressIndex, redeemScript, password)=>{
   
   return getPriv(coinId,0,addressIndex,password).then(pk=>{
 
-    var tx = txb.buildIncomplete();
+    let tx = txb.buildIncomplete();
     txb.inputs.forEach((v,i)=>{
-      var signatureScript = redeemScript;
-      var signatureHash = txb.tx.hashForSignature(i, signatureScript, bitcoin.Transaction.SIGHASH_ALL);
+      let signatureScript = redeemScript;
+      let signatureHash = txb.tx.hashForSignature(i, signatureScript, bitcoin.Transaction.SIGHASH_ALL);
       
       const signature= pk.sign(signatureHash);
       
 
-      var scriptSig=refundP2SHContract(redeemScript,signature.toScriptSignature(bitcoin.Transaction.SIGHASH_ALL),Buffer.from(cur.getPubKey(0,addressIndex),"hex"))
+      let scriptSig=refundP2SHContract(redeemScript,signature.toScriptSignature(bitcoin.Transaction.SIGHASH_ALL),Buffer.from(cur.getPubKey(0,addressIndex),"hex"))
       tx.setInputScript(i, scriptSig);
     })
     return tx;
