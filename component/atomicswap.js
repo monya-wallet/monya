@@ -1,11 +1,12 @@
-
+const Title = require("../js/title.js")
 const currencyList = require("../js/currencyList")
 const bitcoin = require("bitcoinjs-lib")
 const storage = require("../js/storage")
 const bip39 = require("bip39")
 const BigNumber = require('bignumber.js');
 const coinUtil = require("../js/coinUtil")
-const LOCKTIME = 100
+const coinSelect = require('coinselect')
+const LOCKTIME = 1
 const getPriv = (coinId,change,index,password)=>storage.get("keyPairs").then((cipher)=>{
   const cur = currencyList.get(coinId)
   let seed=
@@ -25,7 +26,7 @@ const getPriv = (coinId,change,index,password)=>storage.get("keyPairs").then((ci
 const atomicSwapContract = (pkhMe,pkhThem,lockTime,secretHash)=>{
   return bitcoin.script.compile([
     bitcoin.opcodes.OP_IF,
-    bitcoin.opcodes.OP_SHA256,
+    bitcoin.opcodes.OP_HASH160,
     secretHash,
     bitcoin.opcodes.OP_EQUALVERIFY,
     bitcoin.opcodes.OP_DUP,
@@ -72,14 +73,18 @@ const refundP2SHContract = (contract,sig,pubKey)=>{
 const signClaimTxWithSecret = (txb, coinId, addressIndex, redeemScript, secret, password)=>{
   const cur = currencyList.get(coinId)
 
-  var signatureScript = redeemScript;
-  var signatureHash = txb.tx.hashForSignature(0, signatureScript, bitcoin.Transaction.SIGHASH_ALL);
   return getPriv(coinId,0,addressIndex,password).then(pk=>{
-    const signature= pk.sign(signatureHash);
     var tx = txb.buildIncomplete();
+    txb.inputs.forEach((v,i)=>{
+      var signatureScript = redeemScript;
+      var signatureHash = txb.tx.hashForSignature(i, signatureScript, bitcoin.Transaction.SIGHASH_ALL);
+      
+      const signature= pk.sign(signatureHash);
+      
 
-    var scriptSig=redeemP2SHContract(redeemScript,signature.toScriptSignature(bitcoin.Transaction.SIGHASH_ALL),Buffer.from(cur.getPubKey(0,addressIndex),"hex"),Buffer.from(secret,"utf8"))
-    tx.setInputScript(0, scriptSig);
+      var scriptSig=redeemP2SHContract(redeemScript,signature.toScriptSignature(bitcoin.Transaction.SIGHASH_ALL),Buffer.from(cur.getPubKey(0,addressIndex),"hex"),secret)
+      tx.setInputScript(i, scriptSig);
+    })
     return tx;
   })
 
@@ -87,14 +92,20 @@ const signClaimTxWithSecret = (txb, coinId, addressIndex, redeemScript, secret, 
 const signRefund = (txb, coinId, addressIndex, redeemScript, password)=>{
   const cur = currencyList.get(coinId)
 
-  var signatureScript = redeemScript;
-  var signatureHash = txb.tx.hashForSignature(0, signatureScript, bitcoin.Transaction.SIGHASH_ALL);
+  
   return getPriv(coinId,0,addressIndex,password).then(pk=>{
-    const signature= pk.sign(signatureHash);
-    var tx = txb.buildIncomplete();
 
-    var scriptSig=refundP2SHContract(redeemScript,signature.toScriptSignature(bitcoin.Transaction.SIGHASH_ALL),Buffer.from(cur.getPubKey(0,addressIndex),"hex"))
-    tx.setInputScript(0, scriptSig);
+    var tx = txb.buildIncomplete();
+    txb.inputs.forEach((v,i)=>{
+      var signatureScript = redeemScript;
+      var signatureHash = txb.tx.hashForSignature(i, signatureScript, bitcoin.Transaction.SIGHASH_ALL);
+      
+      const signature= pk.sign(signatureHash);
+      
+
+      var scriptSig=refundP2SHContract(redeemScript,signature.toScriptSignature(bitcoin.Transaction.SIGHASH_ALL),Buffer.from(cur.getPubKey(0,addressIndex),"hex"))
+      tx.setInputScript(i, scriptSig);
+    })
     return tx;
   })
 
@@ -108,8 +119,11 @@ module.exports=require("./atomicswap.html")({
       addrIndex:0,
       giveCoinId:"mona",
       getCoinId:"mona",
+      getCoinCPAvailable:false,
+      getCoinIsCP:false,
 
       secret:"",
+      lockTime:10,
 
       secretHash:"",
       addressWithSecret:"",
@@ -122,14 +136,21 @@ module.exports=require("./atomicswap.html")({
 
       utxo:"",
       password:"",
-      signedTx:""
+      fee:50000,
+      signedTx:"",
+
+      cpDivisible:false,
+      cpAmount:0,
+      cpToken:"XMP"
     }
   },
   methods:{
     getLabels(){
-      currencyList.get(this.getCoinId).getLabels().then(res=>{
+      const cur = currencyList.get(this.getCoinId)
+      cur.getLabels().then(res=>{
         this.$set(this,"labels",res)
       })
+      this.getCoinCPAvailable = !!cur.counterpartyEndpoint
     },
     getCurrencies(){
       currencyList.eachWithPub(cur=>{
@@ -138,7 +159,7 @@ module.exports=require("./atomicswap.html")({
     },
     generateHash(){
       if(this.secret){
-        this.secretHash = bitcoin.crypto.sha256(Buffer.from(this.secret,"utf8")).toString("hex")
+        this.secretHash = bitcoin.crypto.hash160(Buffer.from(this.secret,"utf8")).toString("hex")
       }else{
         this.secretHash =""
       }
@@ -161,7 +182,7 @@ module.exports=require("./atomicswap.html")({
           atomicSwapContract(
             bitcoin.address.fromBase58Check(this.addressWithSecret).hash,
             bitcoin.address.fromBase58Check(this.addressWOSecret).hash,
-            LOCKTIME,
+            this.lockTime,
             Buffer.from(this.secretHash,"hex")
           ),
           this.giveCoinId
@@ -170,7 +191,7 @@ module.exports=require("./atomicswap.html")({
           atomicSwapContract(
             bitcoin.address.fromBase58Check(this.addressWOSecret).hash,
             bitcoin.address.fromBase58Check(this.addressWithSecret).hash,
-            LOCKTIME,
+            this.lockTime,
             Buffer.from(this.secretHash,"hex")
           ),
           this.getCoinId
@@ -180,7 +201,7 @@ module.exports=require("./atomicswap.html")({
           atomicSwapContract(
             bitcoin.address.fromBase58Check(this.addressWithSecret).hash,
             bitcoin.address.fromBase58Check(this.addressWOSecret).hash,
-            LOCKTIME,
+            this.lockTime,
             Buffer.from(this.secretHash,"hex")
           ),
           this.getCoinId
@@ -189,35 +210,77 @@ module.exports=require("./atomicswap.html")({
           atomicSwapContract(
             bitcoin.address.fromBase58Check(this.addressWOSecret).hash,
             bitcoin.address.fromBase58Check(this.addressWithSecret).hash,
-            LOCKTIME,
+            this.lockTime,
             Buffer.from(this.secretHash,"hex")
           ),
           this.giveCoinId
         );
       }
     },
-    getUtxo(){
-      currencyList.get(this.getCoinId).getUtxos([this.opponentP2SH.address],true).then(res=>{
-        this.$set(this,"utxo",res)
+
+    buildNormalTransaction(inAddr,outAddr){
+      const cur =currencyList.get(this.getCoinId)
+      return cur.getUtxos([inAddr],true).then(res=>{
+        const txb = new bitcoin.TransactionBuilder(cur.network)
+        res.utxos.forEach(v=>{
+          txb.addInput(v.txId, v.vout)
+        })
+        txb.addOutput(outAddr,(new BigNumber(res.balance)).times(100000000).minus(this.fee|0).round().toNumber())
+        return txb
+      })
+    },
+    buildCounterpartyTransaction(inAddr,outAddr){
+      const title = new Title({
+        titleId:"atomicSwap",
+        cpCoinId:this.getCoinId,
+        titleName:"Atomic Swap",
+        apiVer:false
+      })
+
+      let qty=(new BigNumber(this.cpAmount))
+      if(this.cpDivisible){
+        qty=qty.times(100000000)
+      }
+      return title.createCommand("send",{
+        source:inAddr,
+        destination:outAddr,
+        asset:this.cpToken,
+        quantity:qty.toNumber()
+      },{
+        addressIndex:this.addressIndex|0,
+        includeUnconfirmedFunds:true,
+        feePerByte:this.fee,
+        disableUtxoLocks:true,
+        extendedTxInfo:true
+      }).then(res=>{
+        return coinUtil.buildBuilderfromPubKeyTx(title.cp.lib.Transaction.fromHex(res.tx_hex),title.cp.network)
       })
     },
     signTx(){
-      const cur =currencyList.get(this.getCoinId)
-      const txb = new bitcoin.TransactionBuilder(cur.network)
-      txb.addInput(this.utxo.utxos[0].txId,this.utxo.utxos[0].vout)
-      txb.addOutput(cur.getAddress(0,this.addrIndex|0),(new BigNumber(this.utxo.utxos[0].value)).minus(35000).round().toNumber())
-      signClaimTxWithSecret(txb,this.getCoinId,this.addrIndex|0,this.opponentP2SH.redeemScript,
-                            Buffer.from(this.secret,"utf8"),this.password).then(tx=>{
-        this.signedTx = tx.toHex()
+      let txbProm;
+      if (this.getCoinIsCP) {
+        txbProm= this.buildCounterpartyTransaction(this.opponentP2SH.address,currencyList.get(this.getCoinId).getAddress(0,this.addrIndex|0))
+      }else{
+        txbProm=this.buildNormalTransaction(this.opponentP2SH.address,currencyList.get(this.getCoinId).getAddress(0,this.addrIndex|0))
+      }
+      txbProm.then(txb=>{
+        signClaimTxWithSecret(txb,this.getCoinId,this.addrIndex|0,this.opponentP2SH.redeemScript,
+                              Buffer.from(this.secret,"utf8"),this.password).then(tx=>{
+                                this.signedTx = tx.toHex()
+                              })
       })
     },
     signRefundTx(){
-      const cur =currencyList.get(this.getCoinId)
-      const txb = new bitcoin.TransactionBuilder(cur.network)
-      txb.addInput(this.utxo.utxos[0].txId,this.utxo.utxos[0].vout)
-      txb.addOutput(cur.getAddress(0,this.addrIndex|0),(new BigNumber(this.utxo.utxos[0].value)).minus(35000).round().toNumber())
-      signRefund(txb,this.getCoinId,this.addrIndex|0,this.opponentP2SH.redeemScript,this.password).then(tx=>{
-        this.signedTx = tx.toHex()
+      let txbProm
+      if (this.getCoinIsCP) {
+        txbProm= this.buildCounterpartyTransaction(this.myP2SH.address,currencyList.get(this.getCoinId).getAddress(0,this.addrIndex|0))
+      }else{
+        txbProm=this.buildNormalTransaction(this.myP2SH.address,currencyList.get(this.getCoinId).getAddress(0,this.addrIndex|0))
+      }
+      txbProm.then(txb=>{
+        signRefund(txb,this.getCoinId,this.addrIndex|0,this.opponentP2SH.redeemScript,this.password).then(tx=>{
+          this.signedTx = tx.toHex()
+        })
       })
     }
   },

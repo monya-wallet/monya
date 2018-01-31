@@ -28,6 +28,12 @@
           </v-ons-select>
         </div>
       </v-ons-list-item>
+      <v-ons-list-item v-show="getCoinCPAvailable">
+        <div class="center">Counterparty Swap</div>
+        <div class="right">
+          <v-ons-switch v-model="getCoinIsCP"></v-ons-switch>
+        </div>
+      </v-ons-list-item>
       <v-ons-list-item>
         <v-ons-button modifier="large" @click="getPubKey">Get Public key</v-ons-button>
       </v-ons-list-item>
@@ -46,6 +52,9 @@
         <v-ons-input v-model="addressWOSecret" placeholder="addressWOSecret"></v-ons-input>
       </v-ons-list-item>
       <v-ons-list-item>
+        <v-ons-input v-model="lockTime" placeholder="Lock Time"></v-ons-input>
+      </v-ons-list-item>
+      <v-ons-list-item>
         <v-ons-button modifier="large" @click="generateP2SH">Get Address</v-ons-button>
       </v-ons-list-item>
       <v-ons-list-header>Deposit {{giveCoinId}} below</v-ons-list-header>
@@ -56,17 +65,30 @@
       <v-ons-list-item>
         <v-ons-input :value="opponentP2SH&&opponentP2SH.address" placeholder="opponentP2SH"></v-ons-input>
       </v-ons-list-item>
-      <v-ons-list-item>
-        <v-ons-button modifier="large" @click="getUtxo">Get if opponent deposited</v-ons-button>
-      </v-ons-list-item>
-      <v-ons-list-item>
-        <textarea :value="utxo|stringify"></textarea>
-      </v-ons-list-item>
       <v-ons-list-header>Redeem funds</v-ons-list-header>
+
+      <div v-show="getCoinIsCP">
+        <v-ons-list-item>
+          <v-ons-input v-model="cpToken" placeholder="Counterparty Token"></v-ons-input>
+        </v-ons-list-item>
+        <v-ons-list-item>
+          <div class="center">Is this token divisible token?</div>
+          <div class="right">
+            <v-ons-switch v-model="cpDivisible"></v-ons-switch>
+          </div>
+        </v-ons-list-item>
+        <v-ons-list-item>
+        <v-ons-input v-model="cpAmount" placeholder="Amount" type="number"></v-ons-input>
+      </v-ons-list-item>
+      </div>
+      
       <v-ons-list-item>
         <v-ons-input v-model="secret" placeholder="Secret"></v-ons-input>
       </v-ons-list-item>
-       <v-ons-list-item>
+      <v-ons-list-item>
+        <v-ons-input v-model="fee" placeholder="Fee(Satoshi)" type="number"></v-ons-input>
+      </v-ons-list-item>
+      <v-ons-list-item>
         <v-ons-input v-model="password" placeholder="Password" type="password"></v-ons-input>
       </v-ons-list-item>
       <v-ons-list-item>
