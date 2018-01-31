@@ -63,12 +63,12 @@
       
       <v-ons-list-item><v-ons-button modifier="large" @click="confirm" :disabled="!address||!amount||!feePerByte">確認画面へ</v-ons-button></v-ons-list-item>
       
-      <v-ons-list-item v-show="!advanced" @click="advanced=true">
+      <v-ons-list-item v-show="!(advanced||utxoStr||message||txLabel)" @click="advanced=true">
         <div class="left"><v-ons-icon icon="fa-caret-down"></v-ons-icon></div>
         <div class="center">詳細オプション</div>
       </v-ons-list-item>
       
-      <div v-show="advanced">
+      <div v-show="advanced||utxoStr||message||txLabel">
         <v-ons-list-header>取引の説明(任意)</v-ons-list-header>
         <v-ons-list-item>
           <div class="center">

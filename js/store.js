@@ -15,7 +15,6 @@ module.exports = new Vuex.Store({
     sendUrl:"",
     zaifPayInvoiceId:"",
     hasKeyPairs:false,
-    openInAppBrowser:false,
     transparency:false,
     tokenInfo:"",
     coinId:"",
@@ -47,7 +46,6 @@ module.exports = new Vuex.Store({
       state.fiat=d.fiat||"jpy"
       state.easyUnit=d.useEasyUnit
       state.tsMode=d.absoluteTime?"absolute":"relative"
-      state.openInAppBrowser=d.openInAppBrowser
       state.bgClass=d.monaparty&&d.monaparty.bgClass||"sand"
       state.monapartyTitle=d.monaparty&&d.monaparty.title||"monacard"
       state.includeUnconfirmedFunds=d.includeUnconfirmedFunds

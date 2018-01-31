@@ -48,7 +48,7 @@ const defaultCoins=[
       account:0
     },
     bip21:"bitcoin",
-    defaultFeeSatPerByte:10000,
+    defaultFeeSatPerByte:100,
     icon:require("../res/coins/btc.png"),
     defaultAPIEndpoint:"https://insight.bitpay.com/api",
     network:{
@@ -69,7 +69,8 @@ const defaultCoins=[
       jsonPath:["data","last"],
       fiat:"jpy"
     },
-    confirmations:12
+    confirmations:6,
+    counterpartyEndpoint:"https://wallet.counterwallet.io/_api"
   },
   {
     coinScreenName:"ビットゼニー",
@@ -154,7 +155,6 @@ const defaultCoins=[
       messagePrefix: '\x19Fujicoin Signed Message:\n',
       bip32: {
         public: 0x0488b21e,
-        
         private: 0x0488ade4
       },
       pubKeyHash: 36,// F

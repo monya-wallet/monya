@@ -89,6 +89,8 @@ module.exports=class{
   }
   getCardDetail(token){
     switch(this.apiVer){
+      case false:
+        return Promise.resolve({})
       case 1:
         return this.getCardDetailV1(token)
       case 2:
@@ -208,7 +210,7 @@ module.exports=class{
     const give_asset=opt.giveToken
     const get_quantity=(opt.getAmt)|0
     const get_asset=opt.getToken
-    const expiration=15000
+    const expiration=opt.expiration||5000// Blocks
     
     const cur = this.cp
     let hex=""

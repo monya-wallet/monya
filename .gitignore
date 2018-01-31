@@ -5,3 +5,6 @@ node_modules
 npm-debug.log*
 .DS_Store
 .*
+cordovaProj/node_modules
+cordovaProj/platforms
+cordovaProj/plugins

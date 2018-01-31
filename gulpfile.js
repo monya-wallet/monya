@@ -50,8 +50,6 @@ gulp.task('webpackProd', function(){
 });
 gulp.task("watch", function() {
   gulp.watch("dist/dist.js", ["reload"]);
-  gulp.watch("index.html",["reload"]);
-  gulp.watch(["component/*.js","js/*.js"],["reload"]);
 });
 gulp.task("setCordova", function() {
   return gulp.src(["dist/**"])

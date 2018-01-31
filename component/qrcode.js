@@ -35,7 +35,7 @@ module.exports=require("./qrcode.html")({
           });
           
         }else if(res.protocol==="http"||res.protocol==="https"){
-          window.open(res.url,this.$store.state.openInAppBrowser?"_blank":"_system")
+          coinUtil.openUrl(res.url)
           QRScanner.destroy((status)=>{
             this.$emit("pop")
             this.$store.commit("setTransparency",false)
@@ -91,7 +91,7 @@ module.exports=require("./qrcode.html")({
             this.parse(t)
           })
         })
-        if(window.cordova){ // ios Quirks
+        if(window.cordova&&window.cordova.platformId!=="browser"){ // ios Quirks
           QRScanner.show()
         }
         

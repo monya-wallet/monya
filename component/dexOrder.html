@@ -1,8 +1,8 @@
 <v-ons-page data-page="dexOrder">
-  <custom-bar title="トークン交換(β)"></custom-bar>
+  <custom-bar title="トークン練成(β)"></custom-bar>
   <div>
     <v-ons-list>
-      <v-ons-list-item modifier="small">いろいろなことに十分注意してトレードしましょう</v-ons-list-item>
+      <v-ons-list-item modifier="small">いろいろなことに十分注意して練成しましょう</v-ons-list-item>
       <v-ons-list-item>
         <div class="center">トークンを持っているラベル</div>
         <div class="right">
@@ -12,11 +12,11 @@
         </div>
       </v-ons-list-item>
       <v-ons-list-item>
-        <div class="center">相手にあげる量</div>
-        <div class="right"><v-ons-input placeholder="相手にあげる量" type="number" v-model="giveAmount"></v-ons-input></div>
+        <div class="center">預ける量</div>
+        <div class="right"><v-ons-input placeholder="預ける量" type="number" v-model="giveAmount"></v-ons-input></div>
       </v-ons-list-item>
       <v-ons-list-item>
-        <div class="center">相手にあげるトークン(正式名)</div>
+        <div class="center">預けるトークン(正式名)</div>
         <div class="right"><v-ons-input placeholder="トークン" type="" v-model="giveToken"></v-ons-input></div>
       </v-ons-list-item>
       <v-ons-list-item>
@@ -28,12 +28,23 @@
         <div class="right"><v-ons-input placeholder="トークン" type="" v-model="getToken"></v-ons-input></div>
       </v-ons-list-item>
       <v-ons-list-item modifier="small">小数点ありのトークンはSatoshi単位で入力してください</v-ons-list-item>
-      <v-ons-list-item>
-        <div class="center">手数料(sat/B)</div>
-        <div class="right"><v-ons-input placeholder="satoshi/Byte" v-model="feePerByte"></v-ons-input></div>
-      </v-ons-list-item>
+      
       <v-ons-list-item><v-ons-input type="password" placeholder="Password" v-model="password"></v-ons-input></v-ons-list-item>
-      <v-ons-list-item><v-ons-button @click="createTx" modifier="large" :disabled="!giveAmount||!giveToken||!getAmount||!getToken||!password">注文</v-ons-button></v-ons-list-item>
+      <v-ons-list-item><v-ons-button @click="createTx" modifier="large" :disabled="!giveAmount||!giveToken||!getAmount||!getToken||!password">実行</v-ons-button></v-ons-list-item>
+      <v-ons-list-item v-show="!advanced" @click="advanced=true">
+        <div class="left"><v-ons-icon icon="fa-caret-down"></v-ons-icon></div>
+        <div class="center">詳細オプション</div>
+      </v-ons-list-item>
+      <div v-show="advanced">
+        <v-ons-list-item>
+          <div class="center">有効期限ブロック</div>
+          <div class="right"><v-ons-input placeholder="単位はブロック" type="number" v-model="expiration"></v-ons-input></div>
+        </v-ons-list-item>
+        <v-ons-list-item>
+          <div class="center">手数料(sat/B)</div>
+          <div class="right"><v-ons-input placeholder="satoshi/Byte" v-model="feePerByte"></v-ons-input></div>
+        </v-ons-list-item>
+      </div>
     </v-ons-list>
   </div>
   <v-ons-modal :visible="loading">

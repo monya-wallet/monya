@@ -53,7 +53,7 @@ Author URI : http://www.markups.io/
 .mu-title-dot::after,
 .mu-feature-btn,
 .mu-video-overlay {
-	background-color: #FBC02D;
+	background-color: #ffeb47;
 }
 .mu-feature-content-right .media:hover {
 	border-bottom: 1px solid #FBC02D;

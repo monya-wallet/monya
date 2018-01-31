@@ -40,6 +40,10 @@ module.exports=require("./monaparty.html")({
                 }
               })
             })
+          }else{
+            this.assets.forEach(v=>{
+                this.$set(v,"image",{'background-image':'radial-gradient(ellipse at center, #ffffff 0%,#dbdbdb 100%)'})
+            })
           }
         }).catch(e=>{
           this.loading=false
