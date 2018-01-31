@@ -203,32 +203,6 @@ const defaultCoins=[
     },
     confirmations:6,
     counterpartyEndpoint:"https://wallet-testnet.monaparty.me/_api"
-  },{
-    coinScreenName:"コト",
-    coinId:"koto",
-    unit:"KOTO",
-    unitEasy:"コト",
-    bip44:{
-      coinType:2001,
-      account:0
-    },
-    bip21:"koto",
-    defaultFeeSatPerByte:200,//will implement dynamic fee
-    icon:require("../res/coins/mona.png"),
-    defaultAPIEndpoint:"https://insight.kotocoin.info/api",
-    network:{
-      messagePrefix: '\x15Koto Signed Message:\n',
-      bip32: {
-        public: 0x0488b21e,
-        private: 0x0488ade4
-      },
-      pubKeyHash: 0x1836,
-      scriptHash: 0x183B,
-      wif: 0x80
-    },
-    enableSegwit:false,
-    confirmations:6,
-    lib:"zec"
   }
 ]
 
