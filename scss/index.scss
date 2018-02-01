@@ -175,6 +175,9 @@ ons-dialog .dialog{
   }
 }
 [data-page="history"]{
+  .toolbar__right {
+    width: 40%;
+  }
   ons-list-item{
     
     .destAddress{
@@ -608,7 +611,7 @@ $zaifPayLogoSize:200px;
 }
 [data-page="monaparty"]{
   .toolbar__right {
-    width: 50%;
+    width: 40%;
   }
   #wrap{
     margin:10px;

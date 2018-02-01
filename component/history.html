@@ -6,14 +6,15 @@
     <v-ons-toolbar-button @click="filterDlg=true">
       <v-ons-icon icon="fa-filter"></v-ons-icon>
     </v-ons-toolbar-button>
-    <v-ons-toolbar-button @click="load">
+    <v-ons-toolbar-button @click="reset();load()">
       <v-ons-icon icon="fa-refresh"></v-ons-icon>
     </v-ons-toolbar-button>
   </custom-bar>
   <div>
     <v-ons-pull-hook
-      :action="load"
+      :action="pullToLoad"
       @changestate="state = $event.state"
+      :disabled="!enablePullHook"
     >
       <span v-show="state === 'initial'"> 引っ張って更新! </span>
       <span v-show="state === 'preaction'"> 今だ！離せ！ </span>

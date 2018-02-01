@@ -45,6 +45,14 @@
           <v-ons-switch @change="save" v-model="d.paySound"></v-ons-switch>
         </div>
       </v-ons-list-item>
+      <v-ons-list-item>
+        <div class="center">Language</div>
+        <div class="right">
+          <v-ons-select v-model="lang" @change="changeLang">
+            <option value="ja">Japanese</option>
+          </v-ons-select>
+        </div>
+      </v-ons-list-item>
       <v-ons-list-header>Zaif Payment</v-ons-list-header>
       <v-ons-list-item><div class="center">Zaif Paymentメニュー</div>
         <div class="right">

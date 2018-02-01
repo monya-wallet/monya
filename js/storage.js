@@ -52,3 +52,12 @@ exports.verifyBiometric= ()=> new Promise((resolve, reject) => {
     throw new errors.BiometricError("Biometrics is not supported on your device.")
   }
 });
+exports.changeLang = (lang)=>{
+  if(localStorage.getItem("lang")!==lang){
+    localStorage.setItem("lang",lang)
+    location.reload()
+  }
+}
+exports.getLang=()=>new Promise((resolve, reject) => {
+  resolve(localStorage.getItem("lang"))
+});
