@@ -1,5 +1,9 @@
 <v-ons-page data-page="txDetail">
-  <custom-bar title="取引詳細" menu="true"></custom-bar>
+  <custom-bar title="取引詳細" menu="true">
+    <v-ons-toolbar-button @click="showScript=!showScript">
+      <v-ons-icon icon="fa-share-square"></v-ons-icon>
+      </v-ons-toolbar-button>
+  </custom-bar>
   <div>
     <div v-if="res">
       <v-ons-list>
@@ -45,21 +49,23 @@
       <v-ons-list modifier="inset">
         <v-ons-list-title>入力</v-ons-list-title>
         <v-ons-list-item v-for="v in res.vin">
-          <div class="addr" :class="addressClass(v.addr)">{{v.addr}}</div>
-          <div class="w_right" @click="txDetail(v.txid)">
+          <div class="addr" :class="addressClass(v.addr)" v-show="!showScript">{{v.addr}}</div>
+          <div class="w_right" @click="txDetail(v.txid)" v-show="!showScript">
             <currency-set :amount="v.value" :ticker="coinId"></currency-set>
           </div>
+          <div v-show="showScript">{{v.scriptSig.asm}}</div>
         </v-ons-list-item>
       </v-ons-list>
       <v-ons-list modifier="inset">
         <v-ons-list-title>出力</v-ons-list-title>
         <v-ons-list-item v-for="vo in res.vout">
-          <div>
+          <div v-show="!showScript">
             <span v-for="addr in vo.scriptPubKey.addresses" class="addr" :class="addressClass(addr)">{{addr}}</span>
           </div>
-          <div class="w_right" @click="txDetail(vo.spentTxId)">
+          <div class="w_right" @click="txDetail(vo.spentTxId)" v-show="!showScript">
             <currency-set :amount="vo.value" :ticker="coinId"></currency-set>
           </div>
+          <div v-show="showScript">{{vo.scriptPubKey.asm}}</div>
         </v-ons-list-item>
       </v-ons-list>
     </div>
