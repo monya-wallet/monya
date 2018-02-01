@@ -130,6 +130,7 @@ module.exports=require("./history.html")({
       return true
     },
     txDetail(txId){
+      if(!txId){return }
       this.$store.commit("setTxDetail",{
         txId,coinId:this.coinId
       })
@@ -158,6 +159,7 @@ module.exports=require("./history.html")({
   },
   watch:{
     currencyIndex(){
+      this.reset()
       this.load()
     }
   }
