@@ -8,7 +8,15 @@ module.exports=require("./about.html")({
   store:require("../js/store.js"),
   methods:{
     donateMe(){
-      this.$store.commit("setSendUrl","monacoin:MKSunF7Lw6Dwn1YVWKoGjD7gLXQzYWVtRP?message=%E5%AF%84%E4%BB%98%E3%82%92%E3%81%82%E3%82%8A%E3%81%8C%E3%81%A8%E3%81%86%E3%81%94%E3%81%96%E3%81%84%E3%81%BE%E3%81%99&req-opreturn=%E5%AF%84%E4%BB%98%E3%81%A7%E3%81%99")
+      this.$store.commit("setSendUrl","monacoin:MStxnMRVMHH95YPzGeR9pdc3HLrvL6pjSo?message=%E5%AF%84%E4%BB%98%E3%82%92%E3%81%82%E3%82%8A%E3%81%8C%E3%81%A8%E3%81%86%E3%81%94%E3%81%96%E3%81%84%E3%81%BE%E3%81%99&req-opreturn=%E5%AF%84%E4%BB%98%E3%81%A7%E3%81%99")
+      this.$emit("push",require("./send.js"))
+    },
+    donateMeWithZNY(){
+      this.$store.commit("setSendUrl","bitzeny:ZwWbCCyfsFJbbZh3oeem4tBjvRzRdSRA3f?message=%E5%AF%84%E4%BB%98%E3%82%92%E3%81%82%E3%82%8A%E3%81%8C%E3%81%A8%E3%81%86%E3%81%94%E3%81%96%E3%81%84%E3%81%BE%E3%81%99&req-opreturn=%E5%AF%84%E4%BB%98%E3%81%A7%E3%81%99")
+      this.$emit("push",require("./send.js"))
+    },
+    donateMeWithBTC(){
+      this.$store.commit("setSendUrl","bitcoin:1HohzLWyA7L1ifx6hr2Xr5N1sGZrR1ZbMt?message=%E5%AF%84%E4%BB%98%E3%82%92%E3%81%82%E3%82%8A%E3%81%8C%E3%81%A8%E3%81%86%E3%81%94%E3%81%96%E3%81%84%E3%81%BE%E3%81%99&req-opreturn=%E5%AF%84%E4%BB%98%E3%81%A7%E3%81%99")
       this.$emit("push",require("./send.js"))
     },
     donateMeWithMonappy(){
