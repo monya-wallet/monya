@@ -4,6 +4,11 @@ $currencySelectorHeight:50px;
 $qrCurIconPercent:20%;
 $homeCurIconSize:38px;
 $spinnerSize:90px;
+
+html{
+  font-size:16px;
+}
+
 .spinner {
   width: $spinnerSize;
   height: $spinnerSize;
@@ -32,7 +37,7 @@ ons-list-item{
 }
 
 .toolbar-button .ons-icon{
-  vertical-align:top;
+  vertical-align:bottom;
 }
 
 ons-dialog .dialog{
