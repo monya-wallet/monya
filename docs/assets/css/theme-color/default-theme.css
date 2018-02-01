@@ -30,8 +30,8 @@ Author URI : http://www.markups.io/
 	color: #FBC02D;
 }
 
-.mu-social-media a:hover,
-.mu-social-media a:focus,
+#mu-social-media a:hover,
+#mu-social-media a:focus,
 .mu-contact-right-single .mu-icon {
 	border: 1px solid #FBC02D;
 	color: #FBC02D;
