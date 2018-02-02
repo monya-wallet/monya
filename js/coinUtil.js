@@ -120,11 +120,11 @@ exports.copy=data=>{
   if (window.cordova) {
     window.cordova.plugins.clipboard.copy(data)
   }else{
-    var temp = document.createElement('textarea');
+    const temp = document.createElement('textarea');
     temp.setAttribute('readonly', '')
     temp.textContent = data;
     
-    var s = temp.style;
+    const s = temp.style;
     s.position = 'absolute';
     s.border="0";
     s.padding="0";
@@ -136,7 +136,7 @@ exports.copy=data=>{
     temp.select()
     temp.setSelectionRange(0, temp.value.length);
 
-    var result = document.execCommand('copy');
+    const result = document.execCommand('copy');
 
     document.body.removeChild(temp);
   }
