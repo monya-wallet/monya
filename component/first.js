@@ -16,7 +16,7 @@ module.exports=require("./first.html")({
     }
   },
   mounted(){
-    if(!navigator.standalone&&!this.$ons.platform.isWebView()){
+    if(!navigator.standalone&&!window.cordova){
       this.popoverVisible=true
       if (this.$ons.platform.isAndroid()&&this.$ons.platform.isChrome()) {
         this.popoverTarget=document.getElementById("popoverTargetAndroid")
