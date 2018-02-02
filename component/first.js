@@ -17,16 +17,18 @@ module.exports=require("./first.html")({
   },
   mounted(){
     if(!navigator.standalone&&!window.cordova){
-      this.popoverVisible=true
       if (this.$ons.platform.isAndroid()&&this.$ons.platform.isChrome()) {
         this.popoverTarget=document.getElementById("popoverTargetAndroid")
         this.popoverDirection="down"
+        this.popoverVisible=true
       }else if(this.$ons.platform.isIOS()){
         this.popoverTarget=document.getElementById("popoverTarget")
         this.popoverDirection="up"
+        this.popoverVisible=true
       }
     }else{
       this.popoverVisible=false
+      this.popoverTarget=document.getElementById("popoverTarget")
     }
   }
 })
