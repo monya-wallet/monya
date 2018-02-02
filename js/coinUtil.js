@@ -120,23 +120,25 @@ exports.copy=data=>{
   if (window.cordova) {
     window.cordova.plugins.clipboard.copy(data)
   }else{
-    const temp = document.createElement('div');
-
+    var temp = document.createElement('textarea');
+    temp.setAttribute('readonly', '')
     temp.textContent = data;
-
-    const s = temp.style;
-    s.position = 'fixed';
-    s.left = '-100%';
-    s.userSelect="text"
+    
+    var s = temp.style;
+    s.position = 'absolute';
+    s.border="0";
+    s.padding="0";
+    s.margin="0";
+    s.left = '-999px';
+    s.top=(window.pageYOffset || document.documentElement.scrollTop)+"px"
 
     document.body.appendChild(temp);
-    document.getSelection().selectAllChildren(temp);
+    temp.select()
+    temp.setSelectionRange(0, temp.value.length);
 
-    const result = document.execCommand('copy');
+    var result = document.execCommand('copy');
 
     document.body.removeChild(temp);
-    // true なら実行できている falseなら失敗か対応していないか
-    return result;
   }
 }
 exports.openUrl=(url)=>{

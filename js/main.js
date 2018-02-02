@@ -47,3 +47,7 @@ const coinUtil=require("../js/coinUtil")
 window.handleOpenURL=function(url) {
   coinUtil.queueUrl(url)
 }
+
+if ('serviceWorker' in navigator&&!window.cordova) {
+  navigator.serviceWorker.register('./sw.js');
+}
