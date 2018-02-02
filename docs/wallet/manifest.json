@@ -15,6 +15,10 @@
       "src": "dist/icons/144.png",
       "type": "image/png",
       "sizes": "144x144"
+    },{
+      "src": "dist/icons/512.png",
+      "type": "image/png",
+      "sizes": "144x144"
     }
   ],
   "start_url": "index.html",
