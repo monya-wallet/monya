@@ -1,7 +1,7 @@
 let version = '1.0.0';
 const files=[
-  "/wallet/index.html",
-  "/wallet/dist/dist.js"
+  "./index.html",
+  "./dist/dist.js"
 ]
 
 self.addEventListener('install', e => {
