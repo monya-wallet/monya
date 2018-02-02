@@ -57,13 +57,3 @@ module.exports=require("./txDetail.html")({
     }
   }
 })
-
-
-
-
-
-
-
-
-
-

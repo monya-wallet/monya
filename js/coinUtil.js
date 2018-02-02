@@ -1,6 +1,6 @@
 const currencyList = require("./currencyList.js")
 const bcLib = require('bitcoinjs-lib')
-const zecLib = require("bitcoinjs-lib-zec")
+const zecLib = require("bitcoinjs-lib-zcash-monya")
 const bip39 = require("bip39")
 const crypto = require('crypto');
 const storage = require("./storage")

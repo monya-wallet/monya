@@ -8,7 +8,7 @@ const qs= require("qs")
 const errors = require("./errors")
 const coinUtil = require("./coinUtil")
 const storage = require("./storage")
-const zecLib = require("bitcoinjs-lib-zec")
+const zecLib = require("bitcoinjs-lib-zcash-monya")
 module.exports=class{
   
   constructor(opt){

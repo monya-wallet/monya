@@ -231,6 +231,10 @@ ons-dialog .dialog{
     }
   }
 }
+ons-popover .popover__content{
+  text-align:center;
+  min-height:20px;
+}
 [data-page="showLabel"],[data-page="invoice"],[data-page="receive"]{
   text-align:center;
   #simple{
@@ -324,6 +328,19 @@ $iconSize:100px;
       }
     }
     
+  }
+  #popoverTarget{
+    position:absolute;
+    width:100%;
+    height:0px;
+    bottom:0;
+  }
+  #popoverTargetAndroid{
+    position:absolute;
+    width:1px;
+    height:0px;
+    top:0;
+    right:0;
   }
 }
 [data-page="restorePassphrase"]{
