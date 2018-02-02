@@ -88,13 +88,13 @@
 暗号通貨(仮想通貨)の使用は日本法により規制されず、日本国内でどの通貨でも自由に利用することが出来ます。
 Monapartyトークンはモナコインブロックチェーンの上に存在するものですが、Monapartyとモナコインで交換する機能は持ちません。
 よって、Monaparty上のトークンは資金決済法第二条五項の定義する仮想通貨にあたらないものであります。
-また、現在のモナカード登録状況(https://card.mona.jp/explorer/all_cards)を見ると、娯楽用途が多いため、Monapartyは仮想通貨の規制対象にあたらないものでございます。
+また、現在のモナカード登録状況( https://card.mona.jp/explorer/all_cards )によると、娯楽用途が多いため、Monapartyは仮想通貨の規制対象にあたらないものでございます。
 
 Copyright
 All material is created by author or permitted under license such as Creative Commons.
 Cryptocurrency
 The use of Cryptocurrency(virtual currency) is not prohibited by the Japanese Law, so it is free for Japanese to use any currency in Japan.
-Monaparty token exists on the blockchain of Monacoin, but it doesn't have functions to swap Monaparty for Monacoin. Therefore, Monaparty does not correspond with virtual currency that is defined in the fifth article of Fund Settlement Law , and according to present registration state of Monacard(https://card.mona.jp/explorer/all_cards), almost all of them are created for fun.  For that reason, Monaparty is not treated as virtual currency and not prohibited.
+Monaparty token exists on the blockchain of Monacoin, but it doesn't have functions to swap Monaparty for Monacoin. Therefore, Monaparty does not correspond with virtual currency that is defined in the fifth article of Fund Settlement Law , and according to present registration state of Monacard(https://card.mona.jp/explorer/all_cards), almost all of them are created for amusement.  For that reason, Monaparty is not treated as virtual currency and not prohibited.
 
 資金決済法(資金決済に関する法律)第二条五項
 一　物品を購入し、若しくは借り受け、又は役務の提供を受ける場合に、これらの代価の弁済のために不特定の者に対して使用することができ、かつ、不特定の者を相手方として購入及び売却を行うことができる財産的価値（電子機器その他の物に電子的方法により記録されているものに限り、本邦通貨及び外国通貨並びに通貨建資産を除く。次号において同じ。）であって、電子情報処理組織を用いて移転することができるもの
