@@ -7,7 +7,7 @@ var eslint = require('gulp-eslint');
 var uglifyes = require('uglify-es');
 var composer = require('gulp-uglify/composer');
 var pump = require('pump');
-
+var translator= require("./util/translator.js")
 var minify = composer(uglifyes, console);
 
 gulp.task("browserSync", function() {
@@ -77,4 +77,14 @@ gulp.task("prod", function(cb) {
     "setCordova","setDocs","setChrome",
     cb
   );
+});
+gulp.task("addWord", function(cb) {
+  return gulp.src("component/*").pipe(translator.addWord({
+    dictFile:"../lang/dict.json"
+  }))
+});
+gulp.task("translate", function(cb) {
+  return gulp.src("component/*.html").pipe(translator.translate({
+    dictFile:"../lang/dict.json"
+  })).pipe(gulp.dest("./component_en/"))
 });
