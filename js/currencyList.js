@@ -202,40 +202,6 @@ const defaultCoins=[
     },
     confirmations:6,
     counterpartyEndpoint:"https://wallet-testnet.monaparty.me/_api"
-  },{//key = coinId that is lowercase ticker symbol
-    coinScreenName:"モナコイン(Testnet Segwit)",
-    coinId:"tmonasw",
-    unit:"MONA(TestSW)",
-    unitEasy:"モナ(TestSW)",
-    bip44:{
-      coinType:22,//from slip44
-      account:0
-    },
-    bip21:"testnetmonacoin",
-    defaultFeeSatPerByte:200,//will implement dynamic fee
-    icon:require("../res/coins/tmona.png"),
-    defaultAPIEndpoint:"https://testnet-mona.insight.monaco-ex.org/insight-api-monacoin",
-    network:{
-      messagePrefix: '\x19Monacoin Signed Message:\n',
-      bip32: {
-        public: 0x043587cf,
-        private: 0x04358394
-      },
-      pubKeyHash: 111,// M
-      scriptHash: 117,// P new scripthash
-      wif: 239,//new wif
-      bech32:"tmona"
-    },
-    sound:require("../res/coins/paySound/mona.m4a"),
-    enableSegwit:"legacy",
-    price:{
-      url:"https://public.bitbank.cc/mona_jpy/ticker",
-      json:true,
-      jsonPath:["data","last"],
-      fiat:"jpy"
-    },
-    confirmations:6,
-    counterpartyEndpoint:"https://wallet-testnet.monaparty.me/_api"
   },{
     coinScreenName:"ビットコイン(Segwit)",
     coinId:"btcsw",
@@ -269,39 +235,6 @@ const defaultCoins=[
     },
     confirmations:6,
     counterpartyEndpoint:"https://wallet.counterwallet.io/_api"
-  },{
-    coinScreenName:"ビットゼニー(テストネット)",
-    coinId:"tzny",
-    unit:"ZNY(Testnet)",
-    unitEasy:"ゼニー(テストネット)",
-    bip44:{
-      coinType:123,
-      account:0
-    },
-    bip21:"testnetbitzeny",
-    defaultFeeSatPerByte:200,
-    icon:require("../res/coins/tzny.png"),
-    defaultAPIEndpoint:"https://test-insight.bitzeny.jp/api",
-    apiEndpoints:["https://test-insight.bitzeny.jp/api"],
-    network:{
-      messagePrefix: '\x18BitZeny Signed Message:\n',
-      bip32: {
-        public: 0x043587cf,
-        private: 0x04358394
-      },
-      pubKeyHash: 111,// Z
-      scriptHash: 196,// 3
-      wif: 239
-    },
-    enableSegwit:false,
-    price:{
-      url:coinUtil.proxyUrl("https://www.coingecko.com/price_charts/bitzeny/jpy/24_hours.json"),
-      json:true,
-      jsonPath:["stats",-1,1],
-      fiat:"jpy"
-    },
-    sound:require("../res/coins/paySound/zny.m4a"),
-    counterpartyEndpoint:"https://wallet-testnet.zeny.live/_t_api"
   }
 ]
 
