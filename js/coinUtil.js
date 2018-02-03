@@ -64,8 +64,12 @@ exports.encrypt=(plain,password)=>{
   return cipher.update(plain, 'utf8', 'hex')+cipher.final('hex');
 }
 exports.decrypt=(cipher,password)=>{
+  try{
   const decipher = crypto.createDecipher('aes256', password);
-  return decipher.update(cipher, 'hex', 'utf8')+decipher.final('utf8');
+    return decipher.update(cipher, 'hex', 'utf8')+decipher.final('utf8');
+  }catch(e){
+    throw new errors.PasswordFailureError()
+  }
 }
 
 exports.makePairsAndEncrypt=(option)=>new Promise((resolve, reject) => {

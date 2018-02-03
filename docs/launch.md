@@ -7,6 +7,7 @@ Google Play: https://play.google.com/store/apps/details?id=org.missmonacoin.mony
 iOS: 数日で審査が終了する予定です。審査が完了次第投稿します
 
 主な機能
+
   * 色々な通貨に対応
   * モナコインウォレット初のiOSに対応
   * Monaparty, モナカードを使える
@@ -32,4 +33,5 @@ iOS: 数日で審査が終了する予定です。審査が完了次第投稿し
 2018年、株式会社シンデレラ・アカデミー星座百景HFアイドルグループである仮想通貨少女を結成したが、ADAなどがあり、とても怪しい。
 そこで私たちは理想のクリプトアイドルグループを創ることを計画した。
 
+https://monappy.jp/memo_logs/view/miss_monacoin/2783
 詳しくはホワイトペーパーを参照
