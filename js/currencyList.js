@@ -235,6 +235,32 @@ const defaultCoins=[
     },
     confirmations:6,
     counterpartyEndpoint:"https://wallet.counterwallet.io/_api"
+  },{
+    coinScreenName:"NEETCOIN",
+    coinId:"NEETCOIN",
+    unit:"NEET",
+    unitEasy:"ニート",
+    bip44:{
+      coinType:0,
+      account:0
+    },
+    bip21:"neetcoin",
+    defaultFeeSatPerByte:1000,
+    icon:require("../res/coins/neet.png"),
+    defaultAPIEndpoint:"https://insight.neetcoin.jp/api",
+    apiEndpoints:["https://insight.neetcoin.jp/api"],
+    network:{
+      messagePrefix: '\x19NEETCOIN Signed Message:\n',
+      bip32: {
+        public: 0x0488b21e,
+        private: 0x0488ade4
+      },
+      pubKeyHash: 53, // N
+      scriptHash: 112, // n
+      wif: 181
+    },
+    enableSegwit:false,
+    lib:"pos"
   }
 ]
 

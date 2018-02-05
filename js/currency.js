@@ -9,6 +9,7 @@ const errors = require("./errors")
 const coinUtil = require("./coinUtil")
 const storage = require("./storage")
 const zecLib = require("bitcoinjs-lib-zcash-monya")
+const posLib = require("bitcoinjs-lib-pos")
 module.exports=class{
   
   constructor(opt){
@@ -35,7 +36,7 @@ module.exports=class{
         this.lib=zecLib
         break
       case "pos":
-        this.lib=null
+        this.lib=posLib
         break
       default:
         this.lib=bcLib
