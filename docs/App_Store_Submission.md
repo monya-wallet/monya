@@ -99,3 +99,41 @@ Monaparty token exists on the blockchain of Monacoin, but it doesn't have functi
 資金決済法(資金決済に関する法律)第二条五項
 一　物品を購入し、若しくは借り受け、又は役務の提供を受ける場合に、これらの代価の弁済のために不特定の者に対して使用することができ、かつ、不特定の者を相手方として購入及び売却を行うことができる財産的価値（電子機器その他の物に電子的方法により記録されているものに限り、本邦通貨及び外国通貨並びに通貨建資産を除く。次号において同じ。）であって、電子情報処理組織を用いて移転することができるもの
 二　不特定の者を相手方として前号に掲げるものと相互に交換を行うことができる財産的価値であって、電子情報処理組織を用いて移転することができるもの
+
+## Rejectに対する回答
+
+### What is this virtual currency’s most recent market cap?
+
+ZNY:฿728.45
+FJC:฿224.56
+Monaparty token is not a virtual currency so it doesn't have value.
+
+
+### What kind of virtual currency is this?
+
+All currencies that Monya supports are bitcoin-based currency.
+They are usually used for payment. In fact, MONA and ZNY are actually used in Japanese shop.
+
+### What is this virtual currency primarily used for?
+
+payment and tip (Nagesen(投げ銭))
+
+### When was this virtual currency first introduced?
+
+ZNY & FJC : since 2014
+Monaparty : Monaparty project itself was started in 2017.
+Mainnet burn event was started on Nov 2017
+
+### What is the history of this virtual currency?
+
+BitZeny was introduced in Nov 11, 2014.
+It is loved as well as Monacoin.
+https://bitzeny.org
+
+Fujicoin was introduced in Sat, 28 Jun 2014 21:00:00 GMT
+It cost user so low transaction fee that user can use it easily.
+Unlike bitcoin, Transaction is 10 times larger than bitcoin so there is no delay.
+
+Monaparty is a product/technology to write data to Monacoin blockchain.
+It is based on Counterparty.
+In Japan, it is used in Monacard, a card upload website.
