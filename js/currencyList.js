@@ -51,6 +51,7 @@ const defaultCoins=[
     defaultFeeSatPerByte:100,
     icon:require("../res/coins/btc.png"),
     defaultAPIEndpoint:"https://insight.bitpay.com/api",
+    apiEndpoints:["https://insight.bitpay.com/api","https://btc-bitcore1.trezor.io/api"],
     network:{
       messagePrefix: '\x18Bitcoin Signed Message:\n',
       bip32: {
@@ -215,6 +216,7 @@ const defaultCoins=[
     defaultFeeSatPerByte:100,
     icon:require("../res/coins/btc.png"),
     defaultAPIEndpoint:"https://insight.bitpay.com/api",
+    apiEndpoints:["https://insight.bitpay.com/api","https://btc-bitcore1.trezor.io/api"],
     network:{
       messagePrefix: '\x18Bitcoin Signed Message:\n',
       bip32: {
