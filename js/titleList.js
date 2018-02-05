@@ -19,11 +19,6 @@ const defaultTitles=[{
   titleId:"cp",
   titleName:"Counterparty",
   apiVer:false
-},{
-  cpCoinId:"tzny",//Monaparty
-  titleId:"zp",
-  titleName:"Zenyparty",
-  apiVer:false
 }]
 
 const titles={}

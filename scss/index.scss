@@ -292,12 +292,13 @@ ons-popover .popover__content{
 $iconSize:100px;
 [data-page="first"]{
   .wrap{
+    position:relative;
     width:100%;
     height:100%;
     background-color:$baseColor;
     .logo{
       position: absolute;
-      top:20%;
+      top:15%;
       width:100%;
       text-align:center;
       .icon{
@@ -320,7 +321,7 @@ $iconSize:100px;
     }
 
     .buttons{
-      margin:50px auto;
+      margin:40px auto 0;
       width:50%;
       ons-button{
         margin:10px 0;
@@ -342,6 +343,15 @@ $iconSize:100px;
     top:0;
     right:0;
   }
+  
+}
+#howTo{ // ons-popover is held by onsen ui
+  min-width:350px;
+  min-height: 200px;
+  background-size:contain;
+  background-position:center center;
+  background-repeat:no-repeat;
+  background-image: url(../res/howToAddHome.png);
 }
 [data-page="restorePassphrase"]{
   #wordArea{

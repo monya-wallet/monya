@@ -37,7 +37,9 @@ exports.vm= new Vue({
     this.$ons.enableAutoStatusBarFill()
     const html = document.documentElement;
     if (this.$ons.platform.isIPhoneX()) {
-      html.setAttribute('onsflag-iphonex-portrait', '');
+      if(window.cordova){
+        html.setAttribute('onsflag-iphonex-portrait', '');
+      }
       html.setAttribute('onsflag-iphonex-landscape', '');
     }
     

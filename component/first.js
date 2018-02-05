@@ -4,7 +4,9 @@ module.exports=require("./first.html")({
     return {
       popoverVisible:false,
       popoverTarget:false,
-      popoverDirection:"up"
+      popoverDirection:"up",
+      howTo:false,
+      showAlert:false
     }
   },
   methods:{
@@ -17,11 +19,7 @@ module.exports=require("./first.html")({
   },
   mounted(){
     if(!navigator.standalone&&!window.cordova){
-      if (this.$ons.platform.isAndroid()&&this.$ons.platform.isChrome()) {
-        this.popoverTarget=document.getElementById("popoverTargetAndroid")
-        this.popoverDirection="down"
-        this.popoverVisible=true
-      }else if(this.$ons.platform.isIOS()){
+      if(this.$ons.platform.isIOS()){
         this.popoverTarget=document.getElementById("popoverTarget")
         this.popoverDirection="up"
         this.popoverVisible=true
@@ -30,5 +28,7 @@ module.exports=require("./first.html")({
       this.popoverVisible=false
       this.popoverTarget=document.getElementById("popoverTarget")
     }
+
+    this.showAlert=/line/i.test(navigator.userAgent)
   }
 })
