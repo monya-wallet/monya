@@ -1,15 +1,34 @@
+const storage = require("../js/storage")
 module.exports=require("./first.html")({
   data(){
     return {
-
+      popoverVisible:false,
+      popoverTarget:false,
+      popoverDirection:"up",
+      howTo:false,
+      showAlert:false
     }
   },
   methods:{
     start(){
       this.$emit("push",require("./question.js"))
+    },
+    changeLang(ln){
+      storage.changeLang(ln)
     }
   },
   mounted(){
-    
+    if(!navigator.standalone&&!window.cordova){
+      if(this.$ons.platform.isIOS()){
+        this.popoverTarget=document.getElementById("popoverTarget")
+        this.popoverDirection="up"
+        this.popoverVisible=true
+      }
+    }else{
+      this.popoverVisible=false
+      this.popoverTarget=document.getElementById("popoverTarget")
+    }
+
+    this.showAlert=/line/i.test(navigator.userAgent)
   }
 })

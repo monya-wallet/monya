@@ -51,6 +51,7 @@ const defaultCoins=[
     defaultFeeSatPerByte:100,
     icon:require("../res/coins/btc.png"),
     defaultAPIEndpoint:"https://insight.bitpay.com/api",
+    apiEndpoints:["https://insight.bitpay.com/api","https://btc-bitcore1.trezor.io/api"],
     network:{
       messagePrefix: '\x18Bitcoin Signed Message:\n',
       bip32: {
@@ -71,8 +72,7 @@ const defaultCoins=[
     },
     confirmations:6,
     counterpartyEndpoint:"https://wallet.counterwallet.io/_api"
-  },
-  {
+  },{
     coinScreenName:"ビットゼニー",
     coinId:"zny",
     unit:"ZNY",
@@ -203,6 +203,40 @@ const defaultCoins=[
     },
     confirmations:6,
     counterpartyEndpoint:"https://wallet-testnet.monaparty.me/_api"
+  },{
+    coinScreenName:"ビットコイン(Segwit)",
+    coinId:"btcsw",
+    unit:"BTC(SW)",
+    unitEasy:"ビットコイン(SW)",
+    bip44:{
+      coinType:0,
+      account:0
+    },
+    bip21:"bitcoin",
+    defaultFeeSatPerByte:100,
+    icon:require("../res/coins/btc.png"),
+    defaultAPIEndpoint:"https://insight.bitpay.com/api",
+    apiEndpoints:["https://insight.bitpay.com/api","https://btc-bitcore1.trezor.io/api"],
+    network:{
+      messagePrefix: '\x18Bitcoin Signed Message:\n',
+      bip32: {
+        public: 0x0488b21e,
+        
+        private: 0x0488ade4
+      },
+      pubKeyHash: 0,// 1
+      scriptHash: 5,// 3
+      wif: 128
+    },
+    enableSegwit:"legacy",
+    price:{
+      url:"https://public.bitbank.cc/btc_jpy/ticker",
+      json:true,
+      jsonPath:["data","last"],
+      fiat:"jpy"
+    },
+    confirmations:6,
+    counterpartyEndpoint:"https://wallet.counterwallet.io/_api"
   }
 ]
 

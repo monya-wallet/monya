@@ -5,7 +5,6 @@ module.exports=require("./home.html")({
     return {
       curs:[],
       fiatConv:0,
-      fiat:this.$store.state.fiat,
       loading:false,
       state:"initial",
       error:false
@@ -77,5 +76,10 @@ module.exports=require("./home.html")({
   store:require("../js/store.js"),
   mounted(){
     this.load()
+  },
+  computed:{
+    fiat(){
+      return this.$store.state.fiat
+    }
   }
 })

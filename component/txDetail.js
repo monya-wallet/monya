@@ -9,8 +9,8 @@ module.exports=require("./txDetail.html")({
       coinId:this.$store.state.detail.coinId,
       price:0,
       txId:this.$store.state.detail.txId,
-      txLabel:""
-      
+      txLabel:"",
+      showScript:false
     }
   },
   mounted(){
@@ -57,13 +57,3 @@ module.exports=require("./txDetail.html")({
     }
   }
 })
-
-
-
-
-
-
-
-
-
-

@@ -1,6 +1,6 @@
 function createError(errorName){
   const e=function(message) {
-    this.message = message||(errorName+" has occured.");
+    this.message = message||(errorName);
     const last_part = new Error().stack.match(/[^\s]+$/);
     this.stack = `${this.name} at ${last_part}`;
   }
@@ -18,3 +18,6 @@ exports.LabelNotFoundError=createError("LabelNotFoundError")
 exports.MonappyError=createError("MonappyError")
 exports.BiometricError=createError("BiometricError")
 exports.BiometricVerificationError=createError("BiometricVerificationError")
+exports.HDNodeNotFoundError=createError("HDNodeNotFoundError")
+exports.InvalidIndexError=createError("InvalidIndexError")
+exports.PasswordFailureError=createError("PasswordFailureError")

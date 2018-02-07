@@ -6,14 +6,15 @@
     <v-ons-toolbar-button @click="filterDlg=true">
       <v-ons-icon icon="fa-filter"></v-ons-icon>
     </v-ons-toolbar-button>
-    <v-ons-toolbar-button @click="load">
+    <v-ons-toolbar-button @click="reset();load()">
       <v-ons-icon icon="fa-refresh"></v-ons-icon>
     </v-ons-toolbar-button>
   </custom-bar>
   <div>
     <v-ons-pull-hook
-      :action="load"
+      :action="pullToLoad"
       @changestate="state = $event.state"
+      :disabled="!enablePullHook"
     >
       <span v-show="state === 'initial'"> 引っ張って更新! </span>
       <span v-show="state === 'preaction'"> 今だ！離せ！ </span>
@@ -70,6 +71,7 @@
       <v-ons-input placeholder="これ以下の取引を隠す" v-model="threshold"></v-ons-input>
       <br/>
       <v-ons-checkbox v-model="hideDustSend"></v-ons-checkbox>Monapartyっぽい出金を隠す
+      <v-ons-search-input placeholder="TXIDを検索" @change="txDetail(searchTxId)" v-model="searchTxId"></v-ons-search-input>
       <template slot="footer">
         <div class="alert-dialog-button" @click="filterDlg=false">閉じる</div>
       </template>

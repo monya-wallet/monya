@@ -18,7 +18,10 @@ module.exports=require("./history.html")({
       outputDlg:false,
       json:"",
       threshold:0,
-      hideDustSend:false
+      hideDustSend:false,
+      totalItems:0,
+      from:0,
+      enablePullHook:true
     }
   },
   store:require("../js/store.js"),
@@ -26,10 +29,9 @@ module.exports=require("./history.html")({
     load(done){
       this.noData=false
       this.error=false
-      this.txs=[]
       const cur =currencyList.get(this.currency[this.currencyIndex].coinId)
-
-      Promise.all([cur.getTxs(0,this.to), cur.getTxLabel()]).then(data=>{
+      
+      Promise.all([cur.getTxs(this.from,this.to), cur.getTxLabel()]).then(data=>{
         const res=data[0]
         if(!res.totalItems){
           this.noData=true
@@ -37,7 +39,7 @@ module.exports=require("./history.html")({
         }
 
         this.hasMore=res.totalItems>res.to
-        
+        this.totalItems = res.totalItems
         for(let i=0;i<res.items.length;i++){
           const v=res.items[i]
           const txLbl=data[1][v.txid]
@@ -101,7 +103,9 @@ module.exports=require("./history.html")({
       })
     },
     loadMore(){
+      this.from+=20
       this.to+=20
+
       this.load()
     },
     outputJson(){
@@ -109,8 +113,13 @@ module.exports=require("./history.html")({
       this.json=JSON.stringify(this.txs)
     },
     pullToLoad(done){
-      this.to=20
+      this.reset()
       this.load(done)
+    },
+    reset(){
+      this.from=0
+      this.to=20
+      this.txs=[]
     },
     filter(tx){
       const s = this.sub(tx.aOut,tx.aIn)
@@ -121,6 +130,7 @@ module.exports=require("./history.html")({
       return true
     },
     txDetail(txId){
+      if(!txId){return }
       this.$store.commit("setTxDetail",{
         txId,coinId:this.coinId
       })
@@ -137,6 +147,10 @@ module.exports=require("./history.html")({
       })
     })
     this.load()
+    const that = this
+    document.querySelector("ons-splitter-content ons-page:last-child .page__content").addEventListener("scroll",function(e){
+      that.enablePullHook=this.scrollTop<50
+    })
   },
   computed:{
     coinId(){
@@ -145,6 +159,7 @@ module.exports=require("./history.html")({
   },
   watch:{
     currencyIndex(){
+      this.reset()
       this.load()
     }
   }

@@ -4,6 +4,11 @@ $currencySelectorHeight:50px;
 $qrCurIconPercent:20%;
 $homeCurIconSize:38px;
 $spinnerSize:90px;
+
+html{
+  font-size:16px;
+}
+
 .spinner {
   width: $spinnerSize;
   height: $spinnerSize;
@@ -32,7 +37,7 @@ ons-list-item{
 }
 
 .toolbar-button .ons-icon{
-  vertical-align:top;
+  vertical-align:bottom;
 }
 
 ons-dialog .dialog{
@@ -153,14 +158,17 @@ ons-dialog .dialog{
 [data-page="txDetail"]{
   .list--inset{
     margin-top:10px;
+    ons-list-item .center *{
+      word-break:break-all;
+      user-select:text;
+      -webkit-user-select: text;
+      -moz-user-select: text;
+      -ms-user-select: text;
+    }
   }
   .addr{
     font-size:0.8em;
     padding:4px;
-    user-select:text;
-    -webkit-user-select: text;
-    -moz-user-select: text;
-    -ms-user-select: text;
   }
   .addr.receive{
     color:#4a2;
@@ -170,6 +178,9 @@ ons-dialog .dialog{
   }
 }
 [data-page="history"]{
+  .toolbar__right {
+    width: 40%;
+  }
   ons-list-item{
     
     .destAddress{
@@ -219,6 +230,10 @@ ons-dialog .dialog{
       }
     }
   }
+}
+ons-popover .popover__content{
+  text-align:center;
+  min-height:20px;
 }
 [data-page="showLabel"],[data-page="invoice"],[data-page="receive"]{
   text-align:center;
@@ -277,12 +292,13 @@ ons-dialog .dialog{
 $iconSize:100px;
 [data-page="first"]{
   .wrap{
+    position:relative;
     width:100%;
     height:100%;
     background-color:$baseColor;
     .logo{
       position: absolute;
-      top:20%;
+      top:15%;
       width:100%;
       text-align:center;
       .icon{
@@ -305,7 +321,7 @@ $iconSize:100px;
     }
 
     .buttons{
-      margin:50px auto;
+      margin:40px auto 0;
       width:50%;
       ons-button{
         margin:10px 0;
@@ -314,6 +330,28 @@ $iconSize:100px;
     }
     
   }
+  #popoverTarget{
+    position:absolute;
+    width:100%;
+    height:0px;
+    bottom:0;
+  }
+  #popoverTargetAndroid{
+    position:absolute;
+    width:1px;
+    height:0px;
+    top:0;
+    right:0;
+  }
+  
+}
+#howTo{ // ons-popover is held by onsen ui
+  min-width:350px;
+  min-height: 200px;
+  background-size:contain;
+  background-position:center center;
+  background-repeat:no-repeat;
+  background-image: url(../res/howToAddHome.png);
 }
 [data-page="restorePassphrase"]{
   #wordArea{
@@ -603,7 +641,7 @@ $zaifPayLogoSize:200px;
 }
 [data-page="monaparty"]{
   .toolbar__right {
-    width: 50%;
+    width: 40%;
   }
   #wrap{
     margin:10px;

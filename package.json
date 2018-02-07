@@ -10,6 +10,7 @@
     "bignumber.js": "^5.0.0",
     "bip39": "^2.4.0",
     "bitcoinjs-lib": "^3.2.0",
+    "bitcoinjs-lib-zcash-monya": "^1.0.0",
     "bitcoinjs-message": "^2.0.0",
     "buffer": "^5.0.8",
     "coinselect": "^3.1.11",

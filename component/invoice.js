@@ -104,14 +104,12 @@ module.exports=require("./invoice.html")({
       }
       return ""
     },
-    subtotal(){
-      return this.onOrder.length?this.onOrder.reduce((a,c)=>(a|0)+(c|0)):0
-    },
-    tax(){
-      return Math.round(this.subtotal*0.08)
-    },
     total(){
-      return Math.round(this.subtotal*1.08)
+      let total=0
+      this.onOrder.forEach(i=>{
+        total+=parseFloat(this.orders[i].price)
+      })
+      return total
     }
   },
   watch:{

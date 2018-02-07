@@ -1,0 +1,31 @@
+{
+  "background_color": "#FFF",
+  "display": "standalone",
+  "name": "もにゃ",
+  "short_name": "もにゃ",
+  "version": "org.missmonacoin.monya",
+  "description": "The easiest cryptocurrency wallet",
+  "author": "MissMonacoin",
+  "icons": [
+    {
+      "src": "dist/icons/192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },{
+      "src": "dist/icons/144.png",
+      "type": "image/png",
+      "sizes": "144x144"
+    },{
+      "src": "dist/icons/512.png",
+      "type": "image/png",
+      "sizes": "144x144"
+    }
+  ],
+  "start_url": "index.html",
+  "chrome_related_applications": [{
+    "platform": "web"
+  }, {
+    "platform": "android",
+    "location": "https://play.google.com/store/apps/details?id=org.missmonacoin.monya"
+  }]
+}

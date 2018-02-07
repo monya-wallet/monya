@@ -119,7 +119,7 @@ module.exports=require("./confirm.html")({
           utxoStr:this.utxoStr
         })
       }).then(d=>{
-        this.fee=(new BigNumber(d.fee)).divToInt(100000000)
+        this.fee=(new BigNumber(d.fee)).div(100000000)
         this.utxosToShow=d.utxos
         this.path=d.path
         this.myBalanceBeforeSending=d.balance

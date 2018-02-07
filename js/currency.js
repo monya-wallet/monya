@@ -8,7 +8,7 @@ const qs= require("qs")
 const errors = require("./errors")
 const coinUtil = require("./coinUtil")
 const storage = require("./storage")
-const zecLib = require("bitcoinjs-lib-zec")
+const zecLib = require("bitcoinjs-lib-zcash-monya")
 module.exports=class{
   
   constructor(opt){
@@ -166,34 +166,33 @@ module.exports=class{
   
   getAddress(change,index){
     if(this.dummy){return}
-    if(!this.hdPubNode){throw new Error("HDNode isn't specified.")}
+    if(!this.hdPubNode){throw new errors.HDNodeNotFoundError()}
     
     if(typeof index !=="number"){
-      throw new Error("Please specify index")
+      throw new errors.InvalidIndexError()
     }
     const addrKey = (change|0).toString()+","+(index|0).toString()
     if(this.addresses[addrKey]){
       return this.addresses[addrKey]
     }else{
-      if(this.enableSegwit){
-        return (this.addresses[addrKey]=this.getSegwitAddress(change,index))
+      if(this.enableSegwit==="legacy"){
+        return (this.addresses[addrKey]=this.getSegwitLegacyAddress(change,index))
       }
       return (this.addresses[addrKey]=this.hdPubNode.derive(change).derive(index).getAddress())
     }
   }
   getPubKey(change,index){
     if(this.dummy){return}
-    if(!this.hdPubNode){throw new Error("HDNode isn't specified.")}
+    if(!this.hdPubNode){throw new errors.HDNodeNotFoundError()}
     
     if(typeof index !=="number"){
-      throw new Error("Please specify index")
+      throw new errors.InvalidIndexError()
     }
     return this.hdPubNode.derive(change).derive(index).keyPair.getPublicKeyBuffer().toString("hex")
   }
-  getSegwitAddress(change,index){
+  getSegwitNativeAddress(change,index){
     if(this.dummy){return}
-    if(!this.hdPubNode){throw new Error("HDNode isn't specified.")}
-
+    if(!this.hdPubNode){throw new errors.HDNodeNotFoundError()}
     if(typeof index !=="number"){
       index=this.receiveIndex
     }
@@ -201,6 +200,19 @@ module.exports=class{
     const witnessPubKey = this.lib.script.witnessPubKeyHash.output.encode(this.lib.crypto.hash160(keyPair.getPublicKeyBuffer()))
     
     const address = this.lib.address.fromOutputScript(witnessPubKey,this.network)
+    return address
+  }
+  getSegwitLegacyAddress(change,index){
+    if(this.dummy){return}
+    if(!this.hdPubNode){throw new errors.HDNodeNotFoundError()}
+    if(typeof index !=="number"){
+      index=this.receiveIndex
+    }
+    const keyPair=this.hdPubNode.derive(change).derive(index).keyPair
+    const redeemScript = this.lib.script.witnessPubKeyHash.output.encode(this.lib.crypto.hash160(keyPair.getPublicKeyBuffer()))
+    const scriptPubKey = bcLib.script.scriptHash.output.encode(bcLib.crypto.hash160(redeemScript))
+    
+    const address = this.lib.address.fromOutputScript(scriptPubKey,this.network)
     return address
   }
   seedToPubB58(privSeed){
@@ -260,7 +272,7 @@ module.exports=class{
   }
   buildTransaction(option){
     if(this.dummy){return null;}
-    if(!this.hdPubNode){throw new Error("HDNode isn't specified.");}
+    if(!this.hdPubNode){throw new errors.HDNodeNotFoundError()}
     return new Promise((resolve, reject) => {
       const targets = option.targets
       const feeRate = option.feeRate
@@ -279,8 +291,8 @@ module.exports=class{
         const { inputs, outputs, fee } = coinSelect(res.utxos, targets, feeRate)
         if (!inputs || !outputs) throw new errors.NoSolutionError()
         inputs.forEach(input => {
-          txb.addInput(input.txId, input.vout)
-          
+          const vin = txb.addInput(input.txId, input.vout)
+          txb.inputs[vin].value=input.value
           path.push(this.getIndexFromAddress(input.address))
           
         })
@@ -297,6 +309,7 @@ module.exports=class{
     })
   }
   signTx(option){
+    if(!this.hdPubNode){throw new errors.HDNodeNotFoundError()}
     const entropyCipher = option.entropyCipher
     const password= option.password
     let txb=option.txBuilder
@@ -326,18 +339,23 @@ module.exports=class{
     }
     
     for(let i=0;i<path.length;i++){
-      txb.sign(i,node
-               .deriveHardened(44)
-               .deriveHardened(this.bip44.coinType)
-               .deriveHardened(this.bip44.account)
-               .derive(path[i][0]|0)
-               .derive(path[i][1]|0).keyPair
-              )
+      const keyPair=node.deriveHardened(44)
+            .deriveHardened(this.bip44.coinType)
+            .deriveHardened(this.bip44.account)
+            .derive(path[i][0]|0)
+            .derive(path[i][1]|0).keyPair
+      if(this.enableSegwit==="legacy"){
+        const redeemScript = this.lib.script.witnessPubKeyHash.output.encode(this.lib.crypto.hash160(keyPair.getPublicKeyBuffer()))
+        txb.sign(i,keyPair,redeemScript,null,txb.inputs[i].value)
+      }else{
+        txb.sign(i,keyPair)
+      }
     }
     return txb.build()
     
   }
   signMessage(m,entropyCipher,password,path){
+    if(!this.hdPubNode){throw new errors.HDNodeNotFoundError()}
     const kp=this.lib.HDNode.fromSeedBuffer(bip39.mnemonicToSeed(
       bip39.entropyToMnemonic(
         coinUtil.decrypt(entropyCipher,password)
