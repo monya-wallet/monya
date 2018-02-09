@@ -10,9 +10,6 @@ module.exports=require("./help.html")({
     about(){
       this.$emit("push",require("./about.js"))
     },
-    atomicswap(){
-      this.$emit("push",require("./atomicswap.js"))
-    },
     openLink(url){
        coinUtil.openUrl(url)
     },

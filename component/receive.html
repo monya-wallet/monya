@@ -1,8 +1,10 @@
 <v-ons-page data-page="receive" v-show="!$store.state.transparency">
   <custom-bar title="受け取り" menu="true">
+    <v-ons-toolbar-button @click="atomicswap"><v-ons-icon icon="fa-exchange"></v-ons-icon></v-ons-toolbar-button>
     <v-ons-toolbar-button @click="qr">
       <v-ons-icon icon="ion-qr-scanner"></v-ons-icon>
     </v-ons-toolbar-button>
+    
   </custom-bar>
   <div>
     <div id="currencySelector">

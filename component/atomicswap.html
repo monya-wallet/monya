@@ -1,19 +1,39 @@
 <v-ons-page data-page="atomicswap">
-  <custom-bar title="Atomic Swap Demo" menu="true"></custom-bar>
+  <custom-bar title="チェーン切り替え" menu="true"></custom-bar>
   <div>
     <v-ons-list>
-      <v-ons-list-header>which currency you wanna give?</v-ons-list-header>
+      <v-ons-list-header>相手にあげる通貨を選んでください</v-ons-list-header>
       <v-ons-list-item>
-        <div class="center">Currency you give</div>
+        <div class="center">あげる通貨</div>
         <div class="right">
-          <v-ons-select v-model="giveCoinId">
+          <v-ons-select v-model="giveCoinId"  @change="getRefundLabels">
             <option v-for="l in coins" :value="l">{{l}}</option>
           </v-ons-select>
         </div>
       </v-ons-list-item>
-      <v-ons-list-header>which currency, address to get?</v-ons-list-header>
       <v-ons-list-item>
-        <div class="center">Currency you get</div>
+        <div class="center">失敗時の返金アドレス</div>
+        <div class="right">
+          <v-ons-select v-model="refundAddrIndex" @change="getPubKey">
+            <option v-for="(l,i) in refundLabels" :value="i">{{l}}</option>
+          </v-ons-select>
+        </div>
+      </v-ons-list-item>
+      <v-ons-list-item v-show="giveCoinCPAvailable">
+        <div class="center">Counterpartyトークンを送ります</div>
+        <div class="right">
+          <v-ons-switch v-model="giveCoinIsCP"></v-ons-switch>
+        </div>
+      </v-ons-list-item>
+      <!--<v-ons-list-item>
+        <div class="center">CLTVを使用しません</div>
+        <div class="right">
+          <v-ons-switch v-model="giveCoinDisableCLTV"></v-ons-switch>
+        </div>
+      </v-ons-list-item>-->
+      <v-ons-list-header>受け取る通貨とそのアドレスを選んでください</v-ons-list-header>
+      <v-ons-list-item>
+        <div class="center">受け取る通貨</div>
         <div class="right">
           <v-ons-select v-model="getCoinId" @change="getLabels">
             <option v-for="l in coins" :value="l">{{l}}</option>
@@ -29,15 +49,21 @@
         </div>
       </v-ons-list-item>
       <v-ons-list-item v-show="getCoinCPAvailable">
-        <div class="center">Counterparty Swap</div>
+        <div class="center">Counterpartyトークンを受け取ります</div>
         <div class="right">
           <v-ons-switch v-model="getCoinIsCP"></v-ons-switch>
         </div>
       </v-ons-list-item>
+      <!--<v-ons-list-item>
+        <div class="center">CLTVを使用しません</div>
+        <div class="right">
+          <v-ons-switch v-model="getCoinDisableCLTV"></v-ons-switch>
+        </div>
+      </v-ons-list-item>-->
       <v-ons-list-item>
-        <v-ons-button modifier="large" @click="getPubKey">Get Public key</v-ons-button>
+        <v-ons-button modifier="large" @click="getPubKey" :disabled="!labels.length||!giveCoinId||!getCoinId">アドレス取得</v-ons-button>
       </v-ons-list-item>
-      <v-ons-list-header>If you start swap, make Secret</v-ons-list-header>
+      <v-ons-list-header>切り替えを開始したばあい、シークレットを決めて下さい</v-ons-list-header>
       <v-ons-list-item>
         <v-ons-input v-model="secret" placeholder="secret" @change="generateHash"></v-ons-input>
       </v-ons-list-item>
@@ -46,47 +72,62 @@
         <v-ons-input v-model="secretHash" placeholder="secretHash"></v-ons-input>
       </v-ons-list-item>
       <v-ons-list-item>
-        <v-ons-input v-model="addressWithSecret" placeholder="addressWithSecret"></v-ons-input>
+        <v-ons-input v-model="redeemAddressWithSecret" placeholder="シークレットを持っている方の引き出しアドレス"></v-ons-input>
       </v-ons-list-item>
       <v-ons-list-item>
-        <v-ons-input v-model="addressWOSecret" placeholder="addressWOSecret"></v-ons-input>
+        <v-ons-input v-model="refundAddressWithSecret" placeholder="シークレットを持っている方の返金アドレス"></v-ons-input>
+      </v-ons-list-item>
+      <v-ons-list-item>
+        <v-ons-input v-model="redeemAddressWOSecret" placeholder="シークレットを持ってない方の引き出しアドレス"></v-ons-input>
+      </v-ons-list-item>
+      <v-ons-list-item>
+        <v-ons-input v-model="refundAddressWOSecret" placeholder="シークレットを持ってない方の返金アドレス"></v-ons-input>
       </v-ons-list-item>
       <v-ons-list-item>
         <v-ons-input v-model="lockTime" placeholder="Lock Time"></v-ons-input>
       </v-ons-list-item>
       <v-ons-list-item>
-        <v-ons-button modifier="large" @click="generateP2SH">Get Address</v-ons-button>
+        <v-ons-button modifier="large" @click="generateP2SH" :disabled="!(secretHash&&refundAddressWithSecret&&redeemAddressWOSecret&&lockTime)">Get Address</v-ons-button>
       </v-ons-list-item>
-      <v-ons-list-header>Deposit {{giveCoinId}} below</v-ons-list-header>
+      <v-ons-list-header> {{giveCoinId}} を預ける</v-ons-list-header>
       <v-ons-list-item>
         <v-ons-input :value="myP2SH&&myP2SH.address" placeholder="myP2SH"></v-ons-input>
       </v-ons-list-item>
-      <v-ons-list-header>Opponent will deposit here</v-ons-list-header>
+      <v-ons-list-header>相手は以下のアドレスに預けます</v-ons-list-header>
       <v-ons-list-item>
         <v-ons-input :value="opponentP2SH&&opponentP2SH.address" placeholder="opponentP2SH"></v-ons-input>
       </v-ons-list-item>
-      <v-ons-list-header>Redeem funds</v-ons-list-header>
+      <v-ons-list-header>資金の引き出し</v-ons-list-header>
 
       <div v-show="getCoinIsCP">
         <v-ons-list-item>
-          <v-ons-input v-model="cpToken" placeholder="Counterparty Token"></v-ons-input>
+          <div class="center">トークン名（正式名称）</div>
+          <div class="right">
+            <v-ons-input v-model="cpToken" placeholder="Counterparty Token"></v-ons-input>
+          </div>
         </v-ons-list-item>
         <v-ons-list-item>
-          <div class="center">Is this token divisible token?</div>
+          <div class="center">小数点で分割できるトークンですか？</div>
           <div class="right">
             <v-ons-switch v-model="cpDivisible"></v-ons-switch>
           </div>
         </v-ons-list-item>
         <v-ons-list-item>
-        <v-ons-input v-model="cpAmount" placeholder="Amount" type="number"></v-ons-input>
+          <div class="center">数量</div>
+          <div class="right">
+            <v-ons-input v-model="cpAmount" placeholder="数量" type="number"></v-ons-input>
+          </div>
       </v-ons-list-item>
       </div>
       
       <v-ons-list-item>
         <v-ons-input v-model="secret" placeholder="Secret"></v-ons-input>
       </v-ons-list-item>
-      <v-ons-list-item>
-        <v-ons-input v-model="fee" placeholder="Fee(Satoshi)" type="number"></v-ons-input>
+      <v-ons-list-item v-show="!getCoinIsCP">
+        <v-ons-input v-model="fee" placeholder="手数料(satoshi)" type="number"></v-ons-input>
+      </v-ons-list-item>
+      <v-ons-list-item v-show="getCoinIsCP">
+        <v-ons-input v-model="fee" placeholder="手数料(Satoshi/Byte)" type="number"></v-ons-input>
       </v-ons-list-item>
       <v-ons-list-item>
         <v-ons-input v-model="password" placeholder="Password" type="password"></v-ons-input>
@@ -95,7 +136,7 @@
         <v-ons-button modifier="large" @click="signTx">Let's go.</v-ons-button>
       </v-ons-list-item>
       <v-ons-list-item>
-        <v-ons-button modifier="large" @click="signRefundTx">Refund</v-ons-button>
+        <v-ons-button modifier="large" @click="signRefundTx">返金</v-ons-button>
       </v-ons-list-item>
       <v-ons-list-item>
         <textarea :value="signedTx"></textarea>

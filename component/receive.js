@@ -34,6 +34,9 @@ module.exports=require("./receive.html")({
 
       this.currentCurIcon=cur.icon
     },
+    atomicswap(){
+      this.$emit("push",require("./atomicswap.js"))
+    },
     copyAddress(){
       coinUtil.copy(currencyList.get(this.currency[this.currencyIndex].coinId).bip21+":"+this.mainAddress)
     },
