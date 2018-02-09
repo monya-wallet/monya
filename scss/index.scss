@@ -778,7 +778,11 @@ $zaifPayLogoSize:200px;
     background:linear-gradient(to bottom, #9e3429 0%,#6b2f27 100%);
   }
 }
-
+[data-page="atomicswap"]{
+  ons-input{
+    width: 100%;
+  }
+}
 
 @keyframes shake {
   10%, 90% {

@@ -125,6 +125,7 @@ module.exports=class{
     const password=opt.password
     const memo=opt.memo
     const feePerByte = opt.feePerByte || this.defaultFeeSatPerByte
+    const doNotSendTx = !!opt.doNotSendTx
     
     const cur = this.cp
     let hex=""
@@ -155,7 +156,11 @@ module.exports=class{
         path:[[0,addressIndex]],
         entropyCipher:cipher.entropy
       })
-      return cur.callCP("broadcast_tx",{signed_tx_hex:signedTx.toHex()})
+      if(!doNotSendTx){
+        return cur.callCP("broadcast_tx",{signed_tx_hex:signedTx.toHex()})
+      }else{
+        return signedTx.toHex()
+      }
     })
   }
   createIssuance(opt){
