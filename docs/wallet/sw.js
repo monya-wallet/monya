@@ -1,7 +1,6 @@
-let version = '1.0.0';
+let version = '1.0.1';
 const files=[
-  "./index.html",
-  "./dist/dist.js"
+  "./index.html"
 ]
 
 self.addEventListener('install', e => {
