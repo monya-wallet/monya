@@ -65,9 +65,6 @@ module.exports=require("./manageCoin.html")({
           },3000)
         })
     },
-    customCoin(){
-      this.$emit("push",require("./customCoin.js"))
-    },
     showInfo(coinId){
       this.infoDlg=true
       const cur=currencyList.get(coinId)
