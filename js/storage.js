@@ -19,6 +19,25 @@ exports.set = (key,value) => new Promise((resolve, reject) => {
   resolve()
 });
 
+exports.getAll = () => new Promise((resolve, reject) => {
+  const data=JSON.parse(localStorage.getItem(KEY_NAME))
+  if(data){
+    resolve(data)
+  }else{
+    resolve(null)
+  }
+});
+
+exports.setAll = (obj) => new Promise((resolve, reject) => {
+  let data=JSON.parse(localStorage.getItem(KEY_NAME))
+  if(!obj){
+    throw new Error("settings is not an object")
+  }
+  data=obj
+  localStorage.setItem(KEY_NAME,JSON.stringify(data))
+  resolve()
+});
+
 exports.setBiometricPassword= (credential)=> new Promise((resolve, reject) => {
   if (window.plugins) {
     window.plugins.touchid.save("password", credential, (password)=> {

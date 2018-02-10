@@ -4,8 +4,6 @@ const currencyList = require("../js/currencyList")
 module.exports=require("./settings.html")({
   data(){
     return {
-      resetDialog:false,
-      resetDialogConfirm:false,
       isWebView:false,
       monappyNotExist:false,
       d:{
@@ -51,6 +49,9 @@ module.exports=require("./settings.html")({
     goToManageCoin(){
       this.$emit("push",require("./manageCoin.js"))
     },
+    goToImportExport(){
+      this.$emit("push",require("./importExport.js"))
+    },
     save(){
       this.$nextTick(()=>{
         storage.set("settings",this.d)
@@ -71,13 +72,6 @@ module.exports=require("./settings.html")({
     },
     changeLang(){
       storage.changeLang(this.lang)
-    },
-    reset(){
-      Promise.all(["keyPairs","labels","txLabels","settings","customCoins","addresses","zaifPayInvoice"].map(v=>storage.set(v,null))).then(()=>{
-        this.$store.commit("deleteEntropy")
-        this.$store.commit("setFinishNextPage",{page:require("./first.js"),infoId:"reset"})
-        this.$emit("replace",require("./finished.js"))
-      })
     }
   },
   mounted(){

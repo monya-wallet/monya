@@ -21,10 +21,6 @@
         <v-ons-button @click="next" modifier="large" :disable="!words.length">次へ</v-ons-button>
       </v-ons-list-item>
     </v-ons-list>
-    <div v-show="data">
-    暗号化された秘密鍵と公開鍵をエクスポートするには下のテキストエリアをコピーして下さい。秘密鍵の復帰にはパスワードが必要です。<br/>
-    <textarea :value="serializedData" cols="40" rows="15"></textarea>
-    </div>
     <v-ons-alert-dialog
       modifier="rowfooter"
       :visible.sync="requirePassword"

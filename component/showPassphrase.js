@@ -47,9 +47,7 @@ module.exports=require("./showPassphrase.html")({
     }else{
       this.requirePassword=true
       this.showNext=false
-      Promise.all(["keyPairs","labels","txLabels","settings","customCoins","addresses","zaifPayInvoice"].map(v=>storage.get(v))).then(d=>{
-        this.data=d
-      })
+      
     }
     
   }

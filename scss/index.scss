@@ -731,7 +731,12 @@ $zaifPayLogoSize:200px;
   .monappyNotExist{
     background-color:#fdc;
   }
-  
+}
+
+[data-page="customCoin"],[data-page="importExport"]{
+  textarea{
+    width: 100%;
+  }
 }
 [data-page="tokenInfo"],[data-page="monaparty"],[data-page="sendToken"],[data-page="makeToken"],[data-page="dexOrder"]{
   ons-toolbar{

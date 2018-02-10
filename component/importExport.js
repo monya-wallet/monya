@@ -1,0 +1,31 @@
+const storage =require("../js/storage")
+module.exports=require("./importExport.html")({
+  data:()=>({
+    expJson:"",
+    impJson:"",
+    confirm:false,
+    resetDialog:false,
+    resetDialogConfirm:false
+  }),
+  mounted(){
+    storage.getAll().then(r=>{
+      this.expJson = JSON.stringify(r)
+    })
+  },
+  methods:{
+    save(){
+      this.confirm=false
+      if(!this.impJson){
+        return
+      }
+      storage.setAll(JSON.parse(this.impJson))
+    },
+    reset(){
+      storage.setAll({}).then(()=>{
+        this.$store.commit("deleteEntropy")
+        this.$store.commit("setFinishNextPage",{page:require("./first.js"),infoId:"reset"})
+        this.$emit("replace",require("./finished.js"))
+      })
+    }
+  }
+})
