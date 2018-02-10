@@ -291,11 +291,14 @@ ons-popover .popover__content{
 }
 $iconSize:100px;
 [data-page="first"]{
+  .page__background{
+    background-color:$baseColor;
+  }
   .wrap{
     position:relative;
     width:100%;
     height:100%;
-    background-color:$baseColor;
+    
     .logo{
       position: absolute;
       top:15%;
@@ -640,9 +643,6 @@ $zaifPayLogoSize:200px;
   }
 }
 [data-page="monaparty"]{
-  .toolbar__right {
-    width: 40%;
-  }
   #wrap{
     margin:10px;
     background-color: white;

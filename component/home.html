@@ -7,7 +7,7 @@
       <v-ons-icon icon="ion-qr-scanner"></v-ons-icon>
     </v-ons-toolbar-button>
   </custom-bar>
-  <div><v-ons-pull-hook
+  <v-ons-pull-hook
       :action="load"
       @changestate="state = $event.state"
     >
@@ -15,6 +15,7 @@
       <span v-show="state === 'preaction'">今だ！離せ！</span>
       <span v-show="state === 'action'">Loading...</span>
     </v-ons-pull-hook>
+  <div>
     <div id="youHave">
       <div v-show="!loading">
         <div class="label">あなたが今持っているのは</div>
@@ -29,7 +30,7 @@
       <div id="actions">
         <div class="btns" style="color:#d0021c " @click="receive">
           <v-ons-icon icon="fa-qrcode"></v-ons-icon>
-          <div class="btnLabel">受け取り</div>
+          <div class="btnLabel">受取</div>
         </div>
         <div class="btns" style="color:#7dd321 " @click="send">
           <v-ons-icon icon="fa-paper-plane"></v-ons-icon>

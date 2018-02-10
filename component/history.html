@@ -10,8 +10,7 @@
       <v-ons-icon icon="fa-refresh"></v-ons-icon>
     </v-ons-toolbar-button>
   </custom-bar>
-  <div>
-    <v-ons-pull-hook
+  <v-ons-pull-hook
       :action="pullToLoad"
       @changestate="state = $event.state"
       :disabled="!enablePullHook"
@@ -20,6 +19,8 @@
       <span v-show="state === 'preaction'"> 今だ！離せ！ </span>
       <span v-show="state === 'action'"> <div class="spinner"></div> </span>
     </v-ons-pull-hook>
+  <div>
+    
     <div id="currencySelector">
       <v-ons-carousel swipeable overscrollable direction="horizontal" item-height="50px" item-width="50px" :index="currencyIndex">
         <v-ons-carousel-item v-for="(crc,i) in currency" class="currencyIcon" :style="{'background-image':'url('+crc.icon+')'}" @click="currencyIndex=i">

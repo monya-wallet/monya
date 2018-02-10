@@ -1,6 +1,5 @@
 <v-ons-page data-page="monaparty">
   <custom-bar title="Monaparty" menu="true">
-    <v-ons-toolbar-button @click="goToMakeToken"><v-ons-icon icon="fa-plus"></v-ons-icon></v-ons-toolbar-button>
     <v-ons-toolbar-button @click="getMyAssets">
       <v-ons-icon icon="fa-refresh"></v-ons-icon>
     </v-ons-toolbar-button>
@@ -24,6 +23,9 @@
       </div>
     </div>
   </div>
+  <v-ons-fab position="bottom right" @click="goToMakeToken">
+      <v-ons-icon icon="fa-plus"></v-ons-icon>
+    </v-ons-fab>
   <v-ons-modal :visible="loading">
     <p style="text-align: center">
       処理中 

@@ -148,9 +148,7 @@ module.exports=require("./history.html")({
     })
     this.load()
     const that = this
-    document.querySelector("ons-splitter-content ons-page:last-child .page__content").addEventListener("scroll",function(e){
-      that.enablePullHook=this.scrollTop<50
-    })
+    
   },
   computed:{
     coinId(){
