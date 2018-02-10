@@ -25,12 +25,6 @@
           <v-ons-switch v-model="giveCoinIsCP"></v-ons-switch>
         </div>
       </v-ons-list-item>
-      <!--<v-ons-list-item>
-        <div class="center">CLTVを使用しません</div>
-        <div class="right">
-          <v-ons-switch v-model="giveCoinDisableCLTV"></v-ons-switch>
-        </div>
-      </v-ons-list-item>-->
       <v-ons-list-header>受け取る通貨とそのアドレスを選んでください</v-ons-list-header>
       <v-ons-list-item>
         <div class="center">受け取る通貨</div>
@@ -54,12 +48,6 @@
           <v-ons-switch v-model="getCoinIsCP"></v-ons-switch>
         </div>
       </v-ons-list-item>
-      <!--<v-ons-list-item>
-        <div class="center">CLTVを使用しません</div>
-        <div class="right">
-          <v-ons-switch v-model="getCoinDisableCLTV"></v-ons-switch>
-        </div>
-      </v-ons-list-item>-->
       <v-ons-list-item>
         <v-ons-button modifier="large" @click="getPubKey" :disabled="!labels.length||!giveCoinId||!getCoinId">アドレス取得</v-ons-button>
       </v-ons-list-item>
