@@ -1,4 +1,4 @@
-let version = '1.0.1';
+let version = '1.0.2';
 const files=[
   "./index.html"
 ]
