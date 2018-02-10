@@ -5,7 +5,7 @@ const bip39 = require("bip39")
 const crypto = require('crypto');
 const storage = require("./storage")
 const errors=require("./errors")
-
+const axios=require("axios")
 
 exports.DEFAULT_LABEL_NAME = "Default"
 exports.GAP_LIMIT=20
@@ -35,13 +35,26 @@ exports.getAddrVersion=(addr)=>{
     }
   }
 };
+exports.usdPrice = 0;
 exports.getPrice=(cryptoId,fiatId)=>{
   let currencyPath = []
   let prevId =cryptoId;//reverse seek is not implemented
   while(prevId!==fiatId){
-    if(prevId==="jpy"){
+    if(prevId==="jpy"&&fiatId==="mona"){
       currencyPath.push(currencyList.get("mona").getPrice().then(r=>r?1/r:1))
       prevId="mona"
+      continue
+    }
+    if(prevId==="jpy"&&fiatId==="usd"){
+      currencyPath.push(
+        exports.usdPrice
+          ?Promise.resolve(exports.usdPrice)
+          :axios.get(
+            exports.proxyUrl("https://www.gaitameonline.com/rateaj/getrate"))
+          .then(r=>{
+            return (exports.usdPrice=1/parseFloat(r.data.quotes[20].ask))
+          }))
+      prevId="usd"
       continue
     }
     const cur = currencyList.get(prevId)

@@ -11,6 +11,9 @@ module.exports=require("./currencySet.html")({
       if(t==="jpy"){
         return this.easy?"円":"JPY"
       }
+      if(t==="usd"){
+        return this.easy?"ドル":"USD"
+      }
       if(t==="satByte"){
         return "sat/B"
       }

@@ -970,6 +970,8 @@ button:focus {
   transition: all 0.5s;
 }
 
+
+
 /*--------------------*/
 /* RESPONSIVE STYLE */
 /*--------------------*/
@@ -1116,4 +1118,9 @@ button:focus {
   .mu-video-iframe-area {
     padding: 30% 5%;
   }
+}
+
+
+a[href="#appleUrl"]{
+    opacity:0.1;
 }
