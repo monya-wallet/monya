@@ -277,19 +277,19 @@ module.exports=require("./atomicswap.html")({
       }
     },
 
-    buildNormalTransaction(inAddr,outAddr,coinId){
+    buildNormalTransaction(inAddr,outAddr,coinId,isRefund){
       const cur =currencyList.get(coinId||this.getCoinId)
       return cur.getUtxos([inAddr],true).then(res=>{
         const txb = new bitcoin.TransactionBuilder(cur.network)
         txb.setVersion(2)
         res.utxos.forEach(v=>{
-          const vin =txb.addInput(v.txId, v.vout,this.lockTime|0)
+          const vin =txb.addInput(v.txId, v.vout,isRefund?(this.lockTime|0):0)
         })
         txb.addOutput(outAddr,(new BigNumber(res.balance)).times(100000000).minus(this.fee|0).round().toNumber())
         return txb
       })
     },
-    buildCounterpartyTransaction(inAddr,outAddr,coinId){
+    buildCounterpartyTransaction(inAddr,outAddr,coinId,isRefund){
       const title = new Title({
         titleId:"atomicSwap",
         cpCoinId:coinId||this.getCoinId,
@@ -313,15 +313,20 @@ module.exports=require("./atomicswap.html")({
         disableUtxoLocks:true,
         extendedTxInfo:true
       }).then(res=>{
-        return coinUtil.buildBuilderfromPubKeyTx(title.cp.lib.Transaction.fromHex(res.tx_hex),title.cp.network)
+        const txb = coinUtil.buildBuilderfromPubKeyTx(title.cp.lib.Transaction.fromHex(res.tx_hex),title.cp.network)
+        txb.setVersion(2)
+        isRefund&&txb.tx.ins.forEach(r=>{
+          r.sequence = this.lockTime
+        })
+        return txb
       })
     },
     signTx(){
       let txbProm;
       if (this.getCoinIsCP) {
-        txbProm= this.buildCounterpartyTransaction(this.opponentP2SH.address,currencyList.get(this.getCoinId).getAddress(0,this.addrIndex|0))
+        txbProm= this.buildCounterpartyTransaction(this.opponentP2SH.address,currencyList.get(this.getCoinId).getAddress(0,this.addrIndex|0),false)
       }else{
-        txbProm=this.buildNormalTransaction(this.opponentP2SH.address,currencyList.get(this.getCoinId).getAddress(0,this.addrIndex|0))
+        txbProm=this.buildNormalTransaction(this.opponentP2SH.address,currencyList.get(this.getCoinId).getAddress(0,this.addrIndex|0),false)
       }
       txbProm.then(txb=>{
         signClaimTxWithSecret(
@@ -339,9 +344,9 @@ module.exports=require("./atomicswap.html")({
     signRefundTx(){
       let txbProm
       if (this.giveCoinIsCP) {
-        txbProm= this.buildCounterpartyTransaction(this.myP2SH.address,currencyList.get(this.giveCoinId).getAddress(0,this.refundAddrIndex|0),this.giveCoinId)
+        txbProm= this.buildCounterpartyTransaction(this.myP2SH.address,currencyList.get(this.giveCoinId).getAddress(0,this.refundAddrIndex|0),this.giveCoinId,true)
       }else{
-        txbProm=this.buildNormalTransaction(this.myP2SH.address,currencyList.get(this.giveCoinId).getAddress(0,this.refundAddrIndex|0),this.giveCoinId)
+        txbProm=this.buildNormalTransaction(this.myP2SH.address,currencyList.get(this.giveCoinId).getAddress(0,this.refundAddrIndex|0),this.giveCoinId,true)
       }
       txbProm.then(txb=>{
         signRefund(txb,this.giveCoinId,this.refundAddrIndex|0,this.myP2SH.redeemScript,this.password).then(tx=>{
