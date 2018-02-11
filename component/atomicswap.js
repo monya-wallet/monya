@@ -21,14 +21,12 @@ const getPriv = (coinId,change,index,password)=>storage.get("keyPairs").then((ci
         .deriveHardened(44)
         .deriveHardened(cur.bip44.coinType)
         .deriveHardened(cur.bip44.account)
-        .neutered().toBase58()
     }
     if(cur.bip49){
       return node
         .deriveHardened(49)
         .deriveHardened(cur.bip49.coinType)
         .deriveHardened(cur.bip49.account)
-        .neutered().toBase58()
     }
 })
 const atomicSwapContract = (pkhMe/*refund*/,pkhThem/*redeem*/,lockTime,secretHash,disableCLTV=false)=>{
