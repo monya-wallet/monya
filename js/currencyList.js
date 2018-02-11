@@ -298,7 +298,12 @@ const defaultCoins=[
     },
     enableSegwit:false,
     lib:"btg",
-    price:null,
+    price:{
+      url:coinUtil.proxyUrl("https://www.coingecko.com/price_charts/bitcoin-gold/jpy/24_hours.json"),
+      json:true,
+      jsonPath:["stats",-1,1],
+      fiat:"jpy"
+    },
     confirmations:6
   }
 ]
