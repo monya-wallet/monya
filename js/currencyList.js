@@ -214,7 +214,7 @@ const defaultCoins=[
     },
     bip21:"bitcoin",
     defaultFeeSatPerByte:100,
-    icon:require("../res/coins/btc.png"),
+    icon:require("../res/coins/btcsw.png"),
     defaultAPIEndpoint:"https://btc-bitcore1.trezor.io/api",
     apiEndpoints:["https://btc-bitcore1.trezor.io/api"],
     network:{
