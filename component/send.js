@@ -83,8 +83,7 @@ module.exports=require("./send.html")({
           }else{
             currencyList.eachWithPub((cur)=>{
               const ver = coinUtil.getAddrVersion(this.address)
-              if(ver===cur.network.pubKeyHash||
-                ver===cur.network.scriptHash){
+              if(cur.isValidAddress(this.address)){
                 this.possibility.push({
                   name:cur.coinScreenName,
                   coinId:cur.coinId

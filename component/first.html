@@ -9,7 +9,6 @@
       </div>
     </div>
     <div id="popoverTarget"></div>
-    <div id="popoverTargetAndroid"></div>
   </div>
   
   <v-ons-popover
@@ -17,6 +16,7 @@
     :visible.sync="popoverVisible"
     :target="popoverTarget"
     :direction="popoverDirection"
+    :cover-target= "false"
     mask-color="rgba(0, 0, 0, 0)"
     >
     <v-ons-button modifier="large quiet" @click="howTo=true;popoverVisible=false">ホーム画面に追加する</v-ons-button>

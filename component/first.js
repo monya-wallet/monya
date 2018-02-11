@@ -25,8 +25,8 @@ module.exports=require("./first.html")({
         this.popoverVisible=true
       }
     }else{
+      this.popoverTarget=false
       this.popoverVisible=false
-      this.popoverTarget=document.getElementById("popoverTarget")
     }
 
     this.showAlert=/line/i.test(navigator.userAgent)

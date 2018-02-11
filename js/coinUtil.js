@@ -1,6 +1,6 @@
 const currencyList = require("./currencyList.js")
 const bcLib = require('bitcoinjs-lib')
-const zecLib = require("bitcoinjs-lib-zcash-monya")
+const zecLib = require("@missmonacoin/bitcoinjs-lib-zcash")
 const bip39 = require("bip39")
 const crypto = require('crypto');
 const storage = require("./storage")
@@ -131,6 +131,7 @@ exports.decryptKeys=(option)=>new Promise((resolve, reject) => {
     const pub=currencyList.get(coinId).seedToPubB58(seed)
     ret[coinId]=pub
   }
+  resolve(ret)
 });
   
 exports.copy=data=>{
@@ -213,13 +214,13 @@ exports.parseUrl=url=>new Promise((resolve,reject)=>{
   ret.raw=raw
   ret.protocol=raw.protocol.slice(0,-1),
   ret.isValidUrl=true
+  
   currencyList.each(v=>{
     if(v.bip21===ret.protocol){
       ret.isCoinAddress=true
       ret.coinId=v.coinId
       ret.address=raw.pathname
-      const ver = exports.getAddrVersion(ret.address)
-      if (v.network.pubKeyHash===ver||v.network.scriptHash===ver) {
+      if (v.isValidAddress(ret.address)) {
         ret.isPrefixOk=true
       }
       ret.isValidAddress=exports.isValidAddress(ret.address)

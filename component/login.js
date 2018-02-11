@@ -17,16 +17,15 @@ module.exports=require("./login.html")({
         return coinUtil.decryptKeys({
           entropyCipher:cipher.entropy,
           password:this.password,
-          makeCur:["mona","btc"]
+          makeCur:["mona","zny"]
         })
       }).then((pubs)=>{
         currencyList.each(cur=>{
           cur.hdPubNode=null
           if(pubs[cur.coinId]){
-            cur.setPubSeedB58(pubs[cur.coinId].public)
+            cur.setPubSeedB58(pubs[cur.coinId])
           }
         })
-
         this.$emit("replace",require("./home.js"))
       }).catch(()=>{
         this.loading=false
@@ -47,7 +46,7 @@ module.exports=require("./login.html")({
       currencyList.init(customCoins)
       if(!data||!data.pubs){
         this.loading=false
-        return
+        return true
       }
       currencyList.each(cur=>{
         cur.hdPubNode=null
@@ -60,10 +59,9 @@ module.exports=require("./login.html")({
           cur.pregenerateAddress()
         }
       })
-      return storage.set("addresses",addrs)
-    }).then(()=>{
       this.$emit("replace",require("./home.js"))
       coinUtil.setInitialized(true)
+      return storage.set("addresses",addrs)
     }).catch(e=>{
       this.$store.commit("setError",e.message)
     })

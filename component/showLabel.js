@@ -21,6 +21,9 @@ module.exports=require("./showLabel.html")({
       coinUtil.copy(currencyList.get(this.$store.state.showLabelPayload.coinId).bip21+":"+this.address)
     },
     update(){
+      if(!this.labelInput){
+        return
+      }
       const p=this.$store.state.showLabelPayload
       currencyList.get(p.coinId).updateLabel(this.label,this.labelInput).then(()=>{
         this.edit=false;
@@ -35,7 +38,11 @@ module.exports=require("./showLabel.html")({
   mounted(){
     const p=this.$store.state.showLabelPayload
     const cur =currencyList.get(p.coinId)
-    this.hdPath="m/44'/"+cur.bip44.coinType+"'/"+cur.bip44.account+"'/"+p.change+"/"+p.index
+    if(cur.bip44){
+      this.hdPath="m/44'/"+cur.bip44.coinType+"'/"+cur.bip44.account+"'/"+p.change+"/"+p.index
+    }else if(cur.bip49){
+      this.hdPath="m/49'/"+cur.bip49.coinType+"'/"+cur.bip49.account+"'/"+p.change+"/"+p.index
+    }
     this.label = p.name
     this.labelInput=p.name
     this.address=cur.getAddress(p.change,p.index)

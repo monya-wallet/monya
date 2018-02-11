@@ -208,15 +208,15 @@ const defaultCoins=[
     coinId:"btcsw",
     unit:"BTC(SW)",
     unitEasy:"ビットコイン(SW)",
-    bip44:{
+    bip49:{
       coinType:0,
       account:0
     },
     bip21:"bitcoin",
     defaultFeeSatPerByte:100,
     icon:require("../res/coins/btc.png"),
-    defaultAPIEndpoint:"https://insight.bitpay.com/api",
-    apiEndpoints:["https://insight.bitpay.com/api","https://btc-bitcore1.trezor.io/api"],
+    defaultAPIEndpoint:"https://btc-bitcore1.trezor.io/api",
+    apiEndpoints:["https://btc-bitcore1.trezor.io/api"],
     network:{
       messagePrefix: '\x18Bitcoin Signed Message:\n',
       bip32: {
@@ -237,6 +237,69 @@ const defaultCoins=[
     },
     confirmations:6,
     counterpartyEndpoint:"https://wallet.counterwallet.io/_api"
+  },{
+    coinScreenName:"ビットコインキャッシュ",
+    coinId:"bch",
+    unit:"BCH",
+    unitEasy:"ビッチ",
+    bip44:{
+      coinType:145,
+      account:0
+    },
+    bip21:"bitcoincash",
+    defaultFeeSatPerByte:100,
+    icon:require("../res/coins/bch.png"),
+    defaultAPIEndpoint:"https://bch-bitcore2.trezor.io/api/",
+    apiEndpoints:["https://bch-bitcore2.trezor.io/api/"],
+    network:{
+      messagePrefix: '\x18Bitcoin Signed Message:\n',
+      bip32: {
+        public: 0x0488b21e,
+        
+        private: 0x0488ade4
+      },
+      pubKeyHash: 0,// 1
+      scriptHash: 5,// 3
+      wif: 128
+    },
+    enableSegwit:false,
+    lib:"bch",
+    price:{
+      url:"https://public.bitbank.cc/bcc_jpy/ticker",
+      json:true,
+      jsonPath:["data","last"],
+      fiat:"jpy"
+    },
+    confirmations:6
+  },{
+    coinScreenName:"ビットコインゴールド",
+    coinId:"btg",
+    unit:"BTG",
+    unitEasy:"ゴールド",
+    bip44:{
+      coinType:156,
+      account:0
+    },
+    bip21:"bitcoingold",
+    defaultFeeSatPerByte:100,
+    icon:require("../res/coins/btg.png"),
+    defaultAPIEndpoint:"https://btg-bitcore2.trezor.io/api",
+    apiEndpoints:["https://btg-bitcore2.trezor.io/api"],
+    network:{
+      messagePrefix: '\x1cBitcoin Gold Signed Message:\n',
+      bip32: {
+        public: 0x0488b21e,
+        
+        private: 0x0488ade4
+      },
+      pubKeyHash: 38,// 1
+      scriptHash: 23,// 3
+      wif: 128
+    },
+    enableSegwit:false,
+    lib:"btg",
+    price:null,
+    confirmations:6
   }
 ]
 

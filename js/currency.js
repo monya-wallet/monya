@@ -8,7 +8,8 @@ const qs= require("qs")
 const errors = require("./errors")
 const coinUtil = require("./coinUtil")
 const storage = require("./storage")
-const zecLib = require("bitcoinjs-lib-zcash-monya")
+const zecLib = require("@missmonacoin/bitcoinjs-lib-zcash")
+const bchLib = require("@missmonacoin/bitcoincashjs-lib")
 module.exports=class{
   
   constructor(opt){
@@ -17,6 +18,7 @@ module.exports=class{
     this.unit = opt.unit;
     this.unitEasy = opt.unitEasy;
     this.bip44 = opt.bip44;
+    this.bip49 = opt.bip49;
     this.apiEndpoints=opt.apiEndpoints||[opt.defaultAPIEndpoint]
     this.apiEndpoint = opt.defaultAPIEndpoint||this.apiEndpoints[0];
     this.network = opt.network;
@@ -30,12 +32,19 @@ module.exports=class{
     this.counterpartyEndpoint=opt.counterpartyEndpoint
     this.enableSegwit=opt.enableSegwit
 
+    this.libName = opt.lib
     switch(opt.lib){
       case "zec":
         this.lib=zecLib
         break
       case "pos":
         this.lib=null
+        break
+      case "bch":
+        this.lib=bchLib
+        break
+      case "btg":
+        this.lib=bchLib
         break
       default:
         this.lib=bcLib
@@ -223,11 +232,20 @@ module.exports=class{
     }else{
       node = this.lib.HDNode.fromSeedBuffer(privSeed,this.network)
     }
-    return node
-      .deriveHardened(44)
-      .deriveHardened(this.bip44.coinType)
-      .deriveHardened(this.bip44.account)
-      .neutered().toBase58()
+    if(this.bip44){
+      return node
+        .deriveHardened(44)
+        .deriveHardened(this.bip44.coinType)
+        .deriveHardened(this.bip44.account)
+        .neutered().toBase58()
+    }
+    if(this.bip49){
+      return node
+        .deriveHardened(49)
+        .deriveHardened(this.bip49.coinType)
+        .deriveHardened(this.bip49.account)
+        .neutered().toBase58()
+    }
   }
   seedToPrivB58(privSeed){
     if(this.dummy){return}
@@ -327,26 +345,56 @@ module.exports=class{
       txb=coinUtil.buildBuilderfromPubKeyTx(this.lib.Transaction.fromHex(option.hash),this.network)
 
       for(let i=0;i<txb.inputs.length;i++){
-        txb.sign(i,node
-                 .deriveHardened(44)
-                 .deriveHardened(this.bip44.coinType)
-                 .deriveHardened(this.bip44.account)
-                 .derive(path[0][0]|0)
-                 .derive(path[0][1]|0).keyPair
-                )
+        if(this.bip44){
+          txb.sign(i,node
+                   .deriveHardened(44)
+                   .deriveHardened(this.bip44.coinType)
+                   .deriveHardened(this.bip44.account)
+                   .derive(path[0][0]|0)
+                   .derive(path[0][1]|0).keyPair
+                  )
+        }else if(this.bip49){
+          txb.sign(i,node
+                   .deriveHardened(49)
+                   .deriveHardened(this.bip49.coinType)
+                   .deriveHardened(this.bip49.account)
+                   .derive(path[0][0]|0)
+                   .derive(path[0][1]|0).keyPair
+                  )
+        }
       }
       return txb.build()
     }
     
     for(let i=0;i<path.length;i++){
-      const keyPair=node.deriveHardened(44)
+      
+      let keyPair;
+      if(this.bip44){
+        keyPair=node.deriveHardened(44)
             .deriveHardened(this.bip44.coinType)
             .deriveHardened(this.bip44.account)
             .derive(path[i][0]|0)
-            .derive(path[i][1]|0).keyPair
-      if(this.enableSegwit==="legacy"){
+          .derive(path[i][1]|0).keyPair
+      }else if(this.bip49){
+        keyPair=node.deriveHardened(49)
+            .deriveHardened(this.bip49.coinType)
+            .deriveHardened(this.bip49.account)
+            .derive(path[i][0]|0)
+          .derive(path[i][1]|0).keyPair
+      }
+        
+      
+      if(this.enableSegwit){
         const redeemScript = this.lib.script.witnessPubKeyHash.output.encode(this.lib.crypto.hash160(keyPair.getPublicKeyBuffer()))
         txb.sign(i,keyPair,redeemScript,null,txb.inputs[i].value)
+      }else if(this.libName==="bch"){
+        txb.setVersion(2)
+        txb.enableBitcoinCash(true)
+        txb.sign(i,keyPair,null,this.lib.Transaction.SIGHASH_ALL | this.lib.Transaction.SIGHASH_BITCOINCASHBIP143,txb.inputs[i].value)
+      }else if(this.libName==="btg"){
+        txb.setVersion(2)
+        txb.enableBitcoinGold(true)
+        txb.sign(i,keyPair,null,this.lib.Transaction.SIGHASH_ALL | this.lib.Transaction.SIGHASH_BITCOINCASHBIP143,txb.inputs[i].value)
       }else{
         txb.sign(i,keyPair)
       }
@@ -356,16 +404,25 @@ module.exports=class{
   }
   signMessage(m,entropyCipher,password,path){
     if(!this.hdPubNode){throw new errors.HDNodeNotFoundError()}
-    const kp=this.lib.HDNode.fromSeedBuffer(bip39.mnemonicToSeed(
+    const node = this.lib.HDNode.fromSeedBuffer(bip39.mnemonicToSeed(
       bip39.entropyToMnemonic(
         coinUtil.decrypt(entropyCipher,password)
       )
     ),this.network)
-          .deriveHardened(44)
-          .deriveHardened(this.bip44.coinType)
-          .deriveHardened(this.bip44.account)
-          .derive(path[0]|0)
-          .derive(path[1]|0).keyPair
+    let kp;
+    if(this.bip44){
+      kp=node.deriveHardened(44)
+        .deriveHardened(this.bip44.coinType)
+        .deriveHardened(this.bip44.account)
+        .derive(path[0]|0)
+        .derive(path[1]|0).keyPair
+    }else if(this.bip49){
+      kp=node.deriveHardened(49)
+        .deriveHardened(this.bip49.coinType)
+        .deriveHardened(this.bip49.account)
+        .derive(path[0]|0)
+        .derive(path[1]|0).keyPair
+    }
     return bcMsg.sign(m,kp.d.toBuffer(32),kp.compressed,this.network.messagePrefix).toString("base64")
   }
   verifyMessage(m,a,s){
@@ -537,5 +594,16 @@ module.exports=class{
       index=(this.apiEndpoints.indexOf(this.apiEndpoint)+1)%this.apiEndpoints.length
     }
     this.apiEndpoint = this.apiEndpoints[index]
+  }
+  isValidAddress(address){
+    const ver = coinUtil.getAddrVersion(address)
+    if(ver===this.network.pubKeyHash||ver===this.network.scriptHash){
+      return true
+    }
+    const b32 = this.network.bech32
+    if(b32&&address.substr(0,b32.length)===b32){
+      return true
+    }
+    return false
   }
 }

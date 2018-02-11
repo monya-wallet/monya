@@ -43,8 +43,7 @@ module.exports=require("./manageCoin.html")({
       })
       this.requirePassword=false
       
-      this.$nextTick()
-        .then(coinUtil.shortWait)
+      coinUtil.shortWait()
         .then(()=>storage.get("keyPairs"))
         .then((cipher)=>coinUtil.makePairsAndEncrypt({
           entropy:coinUtil.decrypt(cipher.entropy,this.password),

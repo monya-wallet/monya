@@ -49,6 +49,9 @@ module.exports=require("./receive.html")({
       this.$emit("push",require("./qrcode.js"))
     },
     createLabel(){
+      if(!this.labelInput){
+        return
+      }
       this.dialogVisible=false
       const cId = this.currency[this.currencyIndex].coinId
       const derivation = this.labelInput.split("/")

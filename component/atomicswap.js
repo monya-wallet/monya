@@ -16,12 +16,20 @@ const getPriv = (coinId,change,index,password)=>storage.get("keyPairs").then((ci
           )
         )
   const node = bitcoin.HDNode.fromSeedBuffer(seed,cur.network)
-  return node
-    .deriveHardened(44)
-    .deriveHardened(cur.bip44.coinType)
-    .deriveHardened(cur.bip44.account)
-    .derive(change|0)
-    .derive(index|0).keyPair
+   if(this.bip44){
+      return node
+        .deriveHardened(44)
+        .deriveHardened(this.bip44.coinType)
+        .deriveHardened(this.bip44.account)
+        .neutered().toBase58()
+    }
+    if(this.bip49){
+      return node
+        .deriveHardened(49)
+        .deriveHardened(this.bip49.coinType)
+        .deriveHardened(this.bip49.account)
+        .neutered().toBase58()
+    }
 })
 const atomicSwapContract = (pkhMe/*refund*/,pkhThem/*redeem*/,lockTime,secretHash,disableCLTV=false)=>{
   if(!disableCLTV){

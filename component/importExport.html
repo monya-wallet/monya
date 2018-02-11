@@ -3,6 +3,7 @@
   <div>
     <v-ons-list>
       <v-ons-list-item modifier="tappable chevron" @click="resetDialogConfirm=true"><div class="center">全データ消去</div></v-ons-list-item>
+      <v-ons-list-item modifier="tappable chevron" @click="regenerateAddress"><div class="center">アドレスを再生成する</div></v-ons-list-item>
       <v-ons-list-header>エクスポート</v-ons-list-header>
       <v-ons-list-item>
         <textarea cols="30" id="" name="" rows="10" :value="expJson"></textarea>
@@ -47,5 +48,12 @@
         <div class="alert-dialog-button" @click="resetDialog = false">やめる</div>
         <div class="alert-dialog-button" @click="reset">承知しました</div>
       </template>
-    </v-ons-alert-dialog>
+  </v-ons-alert-dialog>
+  <v-ons-modal :visible="loading">
+      <p style="text-align: center">
+        計算中。計算能力により時間がかかりますが終了しないでください。 
+        <br><br>
+        <div class="spinner"></div>
+      </p>
+  </v-ons-modal>
 </v-ons-page>

@@ -32,6 +32,7 @@ module.exports=require("./restorePassphrase.html")({
       this.words.push({
         word:""
       })
+      this.suggestion=[]
     },
     input(){
       const wd =this.words[this.words.length-1]

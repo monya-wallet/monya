@@ -6,6 +6,6 @@
       <v-ons-button modifier="quiet"><v-ons-icon :icon="showPassword?'eye-slash':'eye'" @click="showPassword=!showPassword" :disabled="loading"></v-ons-icon></v-ons-button>
     </div>
     <v-ons-button modifier="large" @click="start" :disabled="loading">はじめる</v-ons-button>
-    <div class="spinner"></div>
+    <div class="spinner" v-show="loading"></div>
   </div>
 </v-ons-page>
