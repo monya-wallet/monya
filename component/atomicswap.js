@@ -20,17 +20,19 @@ const getPriv = (coinId,change,index,password)=>storage.get("keyPairs").then((ci
       return node
         .deriveHardened(44)
         .deriveHardened(cur.bip44.coinType)
-        .deriveHardened(cur.bip44.account)
+       .deriveHardened(cur.bip44.account)
+       .derive(change).derive(index)
     }
     if(cur.bip49){
       return node
         .deriveHardened(49)
         .deriveHardened(cur.bip49.coinType)
         .deriveHardened(cur.bip49.account)
+      .derive(change).derive(index)
     }
 })
-const atomicSwapContract = (pkhMe/*refund*/,pkhThem/*redeem*/,lockTime,secretHash,disableCLTV=false)=>{
-  if(!disableCLTV){
+const atomicSwapContract = (pkhMe/*refund*/,pkhThem/*redeem*/,lockTime,secretHash,disableCSV=false)=>{
+  if(!disableCSV){
     return bitcoin.script.compile([
       bitcoin.opcodes.OP_IF,
       bitcoin.opcodes.OP_HASH160,
@@ -41,7 +43,7 @@ const atomicSwapContract = (pkhMe/*refund*/,pkhThem/*redeem*/,lockTime,secretHas
       pkhThem,
       bitcoin.opcodes.OP_ELSE,
       bitcoin.script.number.encode(lockTime),
-      bitcoin.opcodes.OP_CHECKLOCKTIMEVERIFY,
+      bitcoin.opcodes.OP_NOP3,
       bitcoin.opcodes.OP_DROP,
       bitcoin.opcodes.OP_DUP,
       bitcoin.opcodes.OP_HASH160,
@@ -204,7 +206,7 @@ module.exports=require("./atomicswap.html")({
         this.secretHash =""
       }
       this.getPubKey()
-      this.lockTime=((Date.now()/1000)|0)+60*60*24
+      this.lockTime=60
     },
     getPubKey(){
       const pk=currencyList.get(this.getCoinId).getAddress(0,this.addrIndex|0)
@@ -279,9 +281,9 @@ module.exports=require("./atomicswap.html")({
       const cur =currencyList.get(coinId||this.getCoinId)
       return cur.getUtxos([inAddr],true).then(res=>{
         const txb = new bitcoin.TransactionBuilder(cur.network)
-        txb.setLockTime(this.lockTime|0)
+        txb.setVersion(2)
         res.utxos.forEach(v=>{
-          const vin =txb.addInput(v.txId, v.vout,0)
+          const vin =txb.addInput(v.txId, v.vout,this.lockTime|0)
         })
         txb.addOutput(outAddr,(new BigNumber(res.balance)).times(100000000).minus(this.fee|0).round().toNumber())
         return txb
