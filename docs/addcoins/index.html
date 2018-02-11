@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8"/>
+    <title>Monya save data mod</title>
+  </head>
+  <body>
+    <h1>Monya save data modifier</h1>
+
+    <p>At first, paste exported save data here. You can export it from Settings→Import/Export</p>
+    <textarea cols="30" id="exp" name="exp" rows="10" placeholder="paste exported save data here"></textarea>
+    <p>Second, Select a coin which you want to add.</p>
+    <select id="cn" name="cn">
+      <option value="">Please Select</option>
+      <option value="zec">Zcash</option>
+      <option value="koto">Koto</option>
+    </select>
+    <p>Copy below and import it to app</p>
+    <textarea cols="30" id="imp" name="imp" rows="10"></textarea>
+    <script>
+      var coinData = {
+      koto:{"coinScreenName":"コト","coinId":"koto","unit":"KOTO","unitEasy":"コト","bip44":{"coinType":2001,"account":0},"bip21":"koto","defaultFeeSatPerByte":200,"icon":"https://missmonacoin.github.io/monya/addcoins/coins/koto.png","defaultAPIEndpoint":"https://insight.kotocoin.info/api","network":{"messagePrefix":"\u0015Koto Signed Message:\n","bip32":{"public":76067358,"private":76066276},"pubKeyHash":6198,"scriptHash":6203,"wif":128},"enableSegwit":false,"confirmations":6,"lib":"zec"},
+      zec:{"coinScreenName":"ジーキャッシュ","coinId":"zec","unit":"ZEC","unitEasy":"ZEC","bip44":{"coinType":133,"account":0},"bip21":"zcash","defaultFeeSatPerByte":200,"icon":"https://missmonacoin.github.io/monya/addcoins/coins/zec.png","defaultAPIEndpoint":"https://zec-bitcore1.trezor.io/api","network":{"messagePrefix":"\u0016Zcash Signed Message:\n","bip32":{"public":76067358,"private":76066276},"pubKeyHash":7352,"scriptHash":7357,"wif":128},"enableSegwit":false,"confirmations":6,"lib":"zec"}
+      }
+      var i = function(d){
+        return document.getElementById(d)
+      }
+      i("cn").addEventListener("change",function(e){
+      var v = i("cn").value
+      if(!v){
+      return 
+      }
+        var exp = i("exp").value
+      var expObj= JSON.parse(exp)
+      if(!expObj.customCoins){
+      expObj.customCoins=[]
+      }
+        expObj.customCoins.push( coinData[v])
+        i("imp").value = JSON.stringify(expObj)
+      })
+    </script>
+  </body>
+</html>
