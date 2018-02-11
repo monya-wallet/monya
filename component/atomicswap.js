@@ -16,18 +16,18 @@ const getPriv = (coinId,change,index,password)=>storage.get("keyPairs").then((ci
           )
         )
   const node = bitcoin.HDNode.fromSeedBuffer(seed,cur.network)
-   if(this.bip44){
+   if(cur.bip44){
       return node
         .deriveHardened(44)
-        .deriveHardened(this.bip44.coinType)
-        .deriveHardened(this.bip44.account)
+        .deriveHardened(cur.bip44.coinType)
+        .deriveHardened(cur.bip44.account)
         .neutered().toBase58()
     }
-    if(this.bip49){
+    if(cur.bip49){
       return node
         .deriveHardened(49)
-        .deriveHardened(this.bip49.coinType)
-        .deriveHardened(this.bip49.account)
+        .deriveHardened(cur.bip49.coinType)
+        .deriveHardened(cur.bip49.account)
         .neutered().toBase58()
     }
 })
