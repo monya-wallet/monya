@@ -1,4 +1,4 @@
-let version = '1.0.3';
+let version = '1.0.4';
 const files=[
   "./index.html"
 ]
@@ -14,7 +14,15 @@ self.addEventListener('install', e => {
 });
  
 self.addEventListener('activate',  event => {
-  event.waitUntil(self.clients.claim());
+  event.waitUntil(caches.keys().then(keys => {
+      return Promise.all(
+        keys.filter(key => {
+          return !CACHE_KEYS.includes(key);
+        }).map(key => {
+          return caches.delete(key);
+        })
+      );
+    }));
 });
  
 self.addEventListener('fetch', event => {
