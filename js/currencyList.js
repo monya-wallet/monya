@@ -39,6 +39,39 @@ const defaultCoins=[
     confirmations:6,
     counterpartyEndpoint:"https://wallet.monaparty.me/_api"
   },{
+    coinScreenName:"ビットゼニー",
+    coinId:"zny",
+    unit:"ZNY",
+    unitEasy:"ゼニー",
+    bip44:{
+      coinType:123,
+      account:0
+    },
+    bip21:"bitzeny",
+    defaultFeeSatPerByte:200,
+    icon:require("../res/coins/zny.png"),
+    defaultAPIEndpoint:"https://zenyinsight.tomotomo9696.xyz/api",
+    apiEndpoints:["https://zenyinsight.tomotomo9696.xyz/api","https://zeny.insight.monaco-ex.org/api"],
+    network:{
+      messagePrefix: '\x18BitZeny Signed Message:\n',
+      bip32: {
+        public: 0x0488b21e,
+        
+        private: 0x0488ade4
+      },
+      pubKeyHash: 81,// Z
+      scriptHash: 5,// 3
+      wif: 128
+    },
+    enableSegwit:false,
+    price:{
+      url:coinUtil.proxyUrl("https://www.coingecko.com/price_charts/bitzeny/jpy/24_hours.json"),
+      json:true,
+      jsonPath:["stats",-1,1],
+      fiat:"jpy"
+    },
+    sound:require("../res/coins/paySound/zny.m4a")
+  },{
     coinScreenName:"ビットコイン",
     coinId:"btc",
     unit:"BTC",
@@ -72,39 +105,6 @@ const defaultCoins=[
     },
     confirmations:6,
     counterpartyEndpoint:"https://wallet.counterwallet.io/_api"
-  },{
-    coinScreenName:"ビットゼニー",
-    coinId:"zny",
-    unit:"ZNY",
-    unitEasy:"ゼニー",
-    bip44:{
-      coinType:123,
-      account:0
-    },
-    bip21:"bitzeny",
-    defaultFeeSatPerByte:200,
-    icon:require("../res/coins/zny.png"),
-    defaultAPIEndpoint:"https://zenyinsight.tomotomo9696.xyz/api",
-    apiEndpoints:["https://zenyinsight.tomotomo9696.xyz/api","https://zeny.insight.monaco-ex.org/api"],
-    network:{
-      messagePrefix: '\x18BitZeny Signed Message:\n',
-      bip32: {
-        public: 0x0488b21e,
-        
-        private: 0x0488ade4
-      },
-      pubKeyHash: 81,// Z
-      scriptHash: 5,// 3
-      wif: 128
-    },
-    enableSegwit:false,
-    price:{
-      url:coinUtil.proxyUrl("https://www.coingecko.com/price_charts/bitzeny/jpy/24_hours.json"),
-      json:true,
-      jsonPath:["stats",-1,1],
-      fiat:"jpy"
-    },
-    sound:require("../res/coins/paySound/zny.m4a")
   },{
     coinScreenName:"ライトコイン",
     coinId:"ltc",
@@ -268,40 +268,6 @@ const defaultCoins=[
       url:"https://public.bitbank.cc/bcc_jpy/ticker",
       json:true,
       jsonPath:["data","last"],
-      fiat:"jpy"
-    },
-    confirmations:6
-  },{
-    coinScreenName:"ビットコインゴールド",
-    coinId:"btg",
-    unit:"BTG",
-    unitEasy:"ゴールド",
-    bip44:{
-      coinType:156,
-      account:0
-    },
-    bip21:"bitcoingold",
-    defaultFeeSatPerByte:100,
-    icon:require("../res/coins/btg.png"),
-    defaultAPIEndpoint:"https://btg-bitcore2.trezor.io/api",
-    apiEndpoints:["https://btg-bitcore2.trezor.io/api"],
-    network:{
-      messagePrefix: '\x1cBitcoin Gold Signed Message:\n',
-      bip32: {
-        public: 0x0488b21e,
-        
-        private: 0x0488ade4
-      },
-      pubKeyHash: 38,// 1
-      scriptHash: 23,// 3
-      wif: 128
-    },
-    enableSegwit:false,
-    lib:"btg",
-    price:{
-      url:coinUtil.proxyUrl("https://www.coingecko.com/price_charts/bitcoin-gold/jpy/24_hours.json"),
-      json:true,
-      jsonPath:["stats",-1,1],
       fiat:"jpy"
     },
     confirmations:6
