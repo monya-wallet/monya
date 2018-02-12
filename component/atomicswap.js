@@ -273,7 +273,7 @@ module.exports=require("./atomicswap.html")({
         );
       }
       if(this.getCoinIsCP){
-        this.fee=300
+        this.fee=400
       }
     },
 
@@ -329,15 +329,16 @@ module.exports=require("./atomicswap.html")({
         txbProm=this.buildNormalTransaction(this.opponentP2SH.address,currencyList.get(this.getCoinId).getAddress(0,this.addrIndex|0),false)
       }
       txbProm.then(txb=>{
-        signClaimTxWithSecret(
+        return signClaimTxWithSecret(
           txb,this.getCoinId
           ,this.addrIndex|0,this.opponentP2SH.redeemScript,
-          Buffer.from(this.secret,"utf8"),this.password).then(tx=>{
-            this.signedTx = tx.toHex()
-            return currencyList.get(this.getCoinId).pushTx(this.signedTx)
-          })
+          Buffer.from(this.secret,"utf8"),this.password)
+      }).then(tx=>{
+        this.signedTx = tx.toHex()
+        return currencyList.get(this.getCoinId).pushTx(this.signedTx)
+      }).then(t=>{
+        this.$ons.notification.alert("Successfully sent transaction.Transaction ID is: "+t.txid)
       }).catch(e=>{
-        this.loading=false
         this.$store.commit("setError",e.message)
       })
     },
@@ -349,12 +350,13 @@ module.exports=require("./atomicswap.html")({
         txbProm=this.buildNormalTransaction(this.myP2SH.address,currencyList.get(this.giveCoinId).getAddress(0,this.refundAddrIndex|0),this.giveCoinId,true)
       }
       txbProm.then(txb=>{
-        signRefund(txb,this.giveCoinId,this.refundAddrIndex|0,this.myP2SH.redeemScript,this.password).then(tx=>{
-          this.signedTx = tx.toHex()
-          return currencyList.get(this.giveCoinId).pushTx(this.signedTx)
-        })
+        return signRefund(txb,this.giveCoinId,this.refundAddrIndex|0,this.myP2SH.redeemScript,this.password)
+      }).then(tx=>{
+        this.signedTx = tx.toHex()
+        return currencyList.get(this.giveCoinId).pushTx(this.signedTx)
+      }).then(t=>{
+        this.$ons.notification.alert("Successfully sent transaction.Transaction ID is: "+t.txid)
       }).catch(e=>{
-        this.loading=false
         this.$store.commit("setError",e.message)
       })
     }
