@@ -8,6 +8,7 @@ module.exports=require("./sendToken.html")({
       token:this.$store.state.tokenInfo,
       coinId:this.$store.state.coinId,
       divisible:this.$store.state.divisible,
+      sendAddress:this.$store.state.sendable,
       labels:[],
       addressIndex:0,
       loading:false,
@@ -15,7 +16,8 @@ module.exports=require("./sendToken.html")({
       sendAmount:0,
       sendMemo:"",
       password:"",
-      feePerByte:200
+      feePerByte:200,
+      noFund:false
     }
   },
   store:require("../js/store.js"),
@@ -46,6 +48,22 @@ module.exports=require("./sendToken.html")({
       currencyList.get(this.coinId).getLabels().then(res=>{
         this.$set(this,"labels",res)
       })
+    },
+    checkFund(){
+      const cur = titleList.get(this.titleId).cp
+      const address = cur.getAddress(0,this.addressIndex|0)
+      cur.getAddressProp("balance",address).then(r=>{
+        if(r<50000){
+          this.noFund=true
+        }
+      })
+    },
+    deposit(){
+      const cur = titleList.get(this.titleId).cp
+      const address = cur.getAddress(0,this.addressIndex|0)
+      this.$store.commit("setSendUrl",`${cur.bip21}:${address}`)
+      this.$emit("push",require("./send.js"))
+      this.noFund=false
     }
   },
   computed:{
@@ -57,6 +75,9 @@ module.exports=require("./sendToken.html")({
         this.$store.commit("setTitle",v)
         return v
       }
+    },
+    labelName(){
+      return this.labels[this.addressIndex]
     }
   },
   mounted(){
@@ -68,6 +89,15 @@ module.exports=require("./sendToken.html")({
     })
     if(window.StatusBar){
       window.StatusBar.styleLightContent();
+    }
+    this.checkFund()
+    
+    const cur = titleList.get(this.titleId).cp
+    this.addressIndex = cur.getIndexFromAddress(this.sendAddress)[1]
+  },
+  watch:{
+    addressIndex(){
+      this.checkFund()
     }
   }
 })

@@ -382,7 +382,6 @@ module.exports=class{
             .derive(path[i][0]|0)
           .derive(path[i][1]|0).keyPair
       }
-        
       
       if(this.enableSegwit){
         const redeemScript = this.lib.script.witnessPubKeyHash.output.encode(this.lib.crypto.hash160(keyPair.getPublicKeyBuffer()))

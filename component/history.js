@@ -120,6 +120,7 @@ module.exports=require("./history.html")({
       this.from=0
       this.to=20
       this.txs=[]
+      this.hasMore=false
     },
     filter(tx){
       const s = this.sub(tx.aOut,tx.aIn)
