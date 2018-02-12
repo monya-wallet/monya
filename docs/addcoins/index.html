@@ -14,13 +14,17 @@
       <option value="">Please Select</option>
       <option value="zec">Zcash</option>
       <option value="koto">Koto</option>
+      <option value="dash">Dash</option>
+      <option value="mona3prefix">Monacoin(3 old prefix)</option>
     </select>
     <p>Copy below and import it to app</p>
     <textarea cols="30" id="imp" name="imp" rows="10"></textarea>
     <script>
       var coinData = {
       koto:{"coinScreenName":"コト","coinId":"koto","unit":"KOTO","unitEasy":"コト","bip44":{"coinType":2001,"account":0},"bip21":"koto","defaultFeeSatPerByte":200,"icon":"https://missmonacoin.github.io/monya/addcoins/coins/koto.png","defaultAPIEndpoint":"https://insight.kotocoin.info/api","network":{"messagePrefix":"\u0015Koto Signed Message:\n","bip32":{"public":76067358,"private":76066276},"pubKeyHash":6198,"scriptHash":6203,"wif":128},"enableSegwit":false,"confirmations":6,"lib":"zec"},
-      zec:{"coinScreenName":"ジーキャッシュ","coinId":"zec","unit":"ZEC","unitEasy":"ZEC","bip44":{"coinType":133,"account":0},"bip21":"zcash","defaultFeeSatPerByte":200,"icon":"https://missmonacoin.github.io/monya/addcoins/coins/zec.png","defaultAPIEndpoint":"https://zec-bitcore1.trezor.io/api","network":{"messagePrefix":"\u0016Zcash Signed Message:\n","bip32":{"public":76067358,"private":76066276},"pubKeyHash":7352,"scriptHash":7357,"wif":128},"enableSegwit":false,"confirmations":6,"lib":"zec"}
+      zec:{"coinScreenName":"ジーキャッシュ","coinId":"zec","unit":"ZEC","unitEasy":"ZEC","bip44":{"coinType":133,"account":0},"bip21":"zcash","defaultFeeSatPerByte":200,"icon":"https://missmonacoin.github.io/monya/addcoins/coins/zec.png","defaultAPIEndpoint":"https://zec-bitcore1.trezor.io/api","network":{"messagePrefix":"\u0016Zcash Signed Message:\n","bip32":{"public":76067358,"private":76066276},"pubKeyHash":7352,"scriptHash":7357,"wif":128},"enableSegwit":false,"confirmations":6,"lib":"zec"},
+      mona3prefix:{"coinScreenName":"モナコイン(旧スクリプトアドレス)","coinId":"mona3prefix","unit":"MONA(old)","unitEasy":"モナ(旧)","bip44":{"coinType":22,"account":0},"bip21":"monacoin","defaultFeeSatPerByte":200,"icon":"https://missmonacoin.github.io/monya/addcoins/coins/mona.png","defaultAPIEndpoint":"https://mona.insight.monaco-ex.org/insight-api-monacoin","network":{"messagePrefix":"\u0019Monacoin Signed Message:\n","bip32":{"public":76067358,"private":76066276},"pubKeyHash":50,"scriptHash":5,"wif":178,"bech32":"mona"},"enableSegwit":false,"price":{"url":"https://public.bitbank.cc/mona_jpy/ticker","json":true,"jsonPath":["data","last"],"fiat":"jpy"},"confirmations":6,"counterpartyEndpoint":"https://wallet.monaparty.me/_api"},
+      dash:{"coinScreenName":"ダッシュ","coinId":"dash","unit":"DASH","unitEasy":"ダッシュ","bip44":{"coinType":5,"account":0},"bip21":"monacoin","defaultFeeSatPerByte":200,"icon":"https://missmonacoin.github.io/monya/addcoins/coins/dash.png","defaultAPIEndpoint":"https://dash-bitcore1.trezor.io/api","network":{"messagePrefix":"\u0019DarkCoin Signed Message:\n","bip32":{"public":76067358,"private":76066276},"pubKeyHash":76,"scriptHash":16,"wif":204},"enableSegwit":false,"price":{"url":"https://api.cryptonator.com/api/ticker/btc-dash","json":true,"jsonPath":["ticker","price"],"fiat":"btc"},"confirmations":6}
       }
       var i = function(d){
         return document.getElementById(d)
