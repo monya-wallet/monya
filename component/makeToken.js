@@ -6,16 +6,17 @@ const titleList = require("../js/titleList")
 module.exports=require("./makeToken.html")({
   data(){
     return {
-    token:"",
-    coinId:this.$store.state.coinId,
-    labels:[],
-    addressIndex:0,
-    loading:false,
+      token:"",
+      coinId:this.$store.state.coinId,
+      labels:[],
+      addressIndex:0,
+      loading:false,
       divisible:false,
       password:"",
       feePerByte:"",
       description:"",
-      transferDest:""
+      transferDest:"",
+      noFund:false
     }
   },
   store:require("../js/store.js"),
@@ -43,11 +44,26 @@ module.exports=require("./makeToken.html")({
 
       })
     },
-    
+    checkFund(){
+      const cur = titleList.get(this.titleId).cp
+      const address = cur.getAddress(0,this.addressIndex|0)
+      cur.getAddressProp("balance",address).then(r=>{
+        if(r<50000){
+          this.noFund=true
+        }
+      })
+    },
     getAddrLabel(){
       currencyList.get(this.coinId).getLabels().then(res=>{
         this.$set(this,"labels",res)
       })
+    },
+    deposit(){
+      const cur = titleList.get(this.titleId).cp
+      const address = cur.getAddress(0,this.addressIndex|0)
+      this.$store.commit("setSendUrl",`${cur.bip21}:${address}`)
+      this.$emit("push",require("./send.js"))
+      this.noFund=false
     }
   },
   mounted(){
@@ -55,6 +71,7 @@ module.exports=require("./makeToken.html")({
     if(window.StatusBar){
       window.StatusBar.styleLightContent();
     }
+    this.checkFund()
   },
   computed:{
     titleId:{
@@ -65,6 +82,11 @@ module.exports=require("./makeToken.html")({
         this.$store.commit("setTitle",v)
         return v
       }
+    }
+  },
+  watch:{
+    addressIndex(){
+      this.checkFund()
     }
   }
 })

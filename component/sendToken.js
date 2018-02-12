@@ -89,15 +89,10 @@ module.exports=require("./sendToken.html")({
     })
     if(window.StatusBar){
       window.StatusBar.styleLightContent();
-    }
-    this.checkFund()
-    
+    }  
     const cur = titleList.get(this.titleId).cp
     this.addressIndex = cur.getIndexFromAddress(this.sendAddress)[1]
-  },
-  watch:{
-    addressIndex(){
-      this.checkFund()
-    }
+    
+    this.checkFund()
   }
 })

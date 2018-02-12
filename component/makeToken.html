@@ -38,4 +38,14 @@
       <div class="spinner"></div>
     </p>
   </v-ons-modal>
+   <v-ons-alert-dialog modifier="rowfooter"
+                        :visible="!!noFund"
+                        >
+      <span slot="title">手数料が不足してます</span>
+      <p>手数料を不足しています。送金に失敗する可能性があります</p>
+      <template slot="footer">
+        <div class="alert-dialog-button" @click="noFund=false">閉じる</div>
+        <div class="alert-dialog-button" @click="deposit">補給する</div>
+      </template>
+    </v-ons-alert-dialog>
 </v-ons-page>
