@@ -23,15 +23,13 @@
         </div>
         <div class="address">{{mainAddress||"読み込み中"}}</div>
       </div>
-      <v-ons-button @click="copyAddress">
+      <v-ons-button @click="copyAddress" modifier="quiet">
         <v-ons-icon icon="fa-clipboard"></v-ons-icon>
         アドレスコピー
       </v-ons-button>
-      <div v-if="isNative">
-        <v-ons-button>
-          <v-ons-icon icon="fa-share"></v-ons-icon>共有
-        </v-ons-button>
-      </div>
+      <v-ons-button @click="share" modifier="quiet" v-if="isNative">
+        <v-ons-icon icon="fa-share-square-o"></v-ons-icon>共有
+      </v-ons-button>
       
     </div>
     <div id="addresses">
@@ -60,4 +58,11 @@
       </template>
     </v-ons-alert-dialog>
   </div>
+    <v-ons-fab
+      position="bottom right"
+      @click="shareOrCopy"
+    >
+      <v-ons-icon icon="fa-clipboard" v-if="!isNative"></v-ons-icon>
+      <v-ons-icon icon="fa-share-square-o" v-if="isNative"></v-ons-icon>
+    </v-ons-fab>
 </v-ons-page>

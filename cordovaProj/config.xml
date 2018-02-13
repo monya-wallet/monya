@@ -117,4 +117,5 @@
     <plugin name="cordova-plugin-browsertab" spec="^0.2.0">
         <variable name="CUSTOM_TAB_COLOR_RGB" value="#ffffff" />
     </plugin>
+    <plugin name="cordova-plugin-x-socialsharing" spec="^5.2.1" />
 </widget>

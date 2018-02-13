@@ -71,6 +71,24 @@ module.exports=require("./receive.html")({
     },
     createInvoice(){
       this.$emit("push",require("./invoice.js"))
+    },
+    share(event){
+      const targetRect = event.target.getBoundingClientRect(),
+            targetBounds = targetRect.left + ',' + targetRect.top + ',' + targetRect.width + ',' + targetRect.height;
+      coinUtil.share({
+        url:currencyList.get(this.currency[this.currencyIndex].coinId).bip21+":"+this.mainAddress
+      },targetBounds).then(()=>{
+        this.$ons.notification.toast('Shared!', {timeout: 2000})
+      }).catch(()=>{
+        this.$ons.notification.toast('Failed...', {timeout: 2000})
+      })
+    },
+    shareOrCopy(e){
+      if (this.isNative) {
+        this.share(e)
+      }else{
+        this.copyAddress()
+      }
     }
   },
   watch:{
@@ -90,5 +108,6 @@ module.exports=require("./receive.html")({
     })
     this.getMainAddress()
     this.getLabels()
+    this.isNative = !!(window.plugins&&window.plugins.socialsharing)
   }
 })

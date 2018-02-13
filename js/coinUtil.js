@@ -237,7 +237,7 @@ exports.parseUrl=url=>new Promise((resolve,reject)=>{
 })
 
 exports.proxyUrl=url=>{
-  if(window.cordova&&window.cordova.platformId!=="browser"){
+  if(exports.isNative()){
     return url
   }else{
     return 'https://zaif-status.herokuapp.com/proxy/?u='+encodeURIComponent(url)
@@ -288,3 +288,12 @@ exports.buildBuilderfromPubKeyTx=(transaction,network)=>{
   })
   return txb
 }
+
+exports.isNative = ()=>window.cordova&&window.cordova.platformId!=="browser"
+exports.share = (option,pos)=> new Promise((resolve,reject)=>{
+  if(!window.plugins.socialsharing){
+    return
+  }
+  window.plugins.socialsharing.setIPadPopupCoordinates(pos)
+  window.plugins.socialsharing.shareWithOptions(option,resolve,reject)
+})

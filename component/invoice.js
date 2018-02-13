@@ -77,6 +77,24 @@ module.exports=require("./invoice.html")({
           this.monappyNotExist=true
         })
       }
+    },
+    share(event){
+      const targetRect = event.target.getBoundingClientRect(),
+            targetBounds = targetRect.left + ',' + targetRect.top + ',' + targetRect.width + ',' + targetRect.height;
+      coinUtil.share({
+        url:this.url
+      },targetBounds).then(()=>{
+        this.$ons.notification.toast('Shared!', {timeout: 2000})
+      }).catch(()=>{
+        this.$ons.notification.toast('Failed...', {timeout: 2000})
+      })
+    },
+    shareOrCopy(e){
+      if (this.isNative) {
+        this.share(e)
+      }else{
+        this.copyAddress()
+      }
     }
   },
   computed:{
@@ -143,5 +161,6 @@ module.exports=require("./invoice.html")({
     storage.get("orders").then(r=>{
       this.orders=r||[]
     })
+    this.isNative = !!(window.plugins&&window.plugins.socialsharing)
   }
 })
