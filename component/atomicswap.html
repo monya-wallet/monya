@@ -1,5 +1,12 @@
 <v-ons-page data-page="atomicswap">
-  <custom-bar title="チェーン切り替え" menu="true"></custom-bar>
+  <custom-bar title="チェーン切り替え" menu="true">
+    <v-ons-toolbar-button @click="save">
+      <v-ons-icon icon="fa-download"></v-ons-icon>
+    </v-ons-toolbar-button>
+    <v-ons-toolbar-button @click="reset">
+      <v-ons-icon icon="fa-eraser"></v-ons-icon>
+    </v-ons-toolbar-button>
+  </custom-bar>
   <div>
     <v-ons-list>
       <v-ons-list-header>相手にあげる通貨を選んでください</v-ons-list-header>

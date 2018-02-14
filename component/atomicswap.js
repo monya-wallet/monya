@@ -156,7 +156,7 @@ module.exports=require("./atomicswap.html")({
       giveCoinDisableCLTV:false,
 
       secret:"",
-      lockTime:0, //5min later
+      lockTime:0,
 
       secretHash:"",
       redeemAddressWithSecret:"",
@@ -180,6 +180,53 @@ module.exports=require("./atomicswap.html")({
     }
   },
   methods:{
+    save(){
+      const saveData={
+        addrIndex:this.addrIndex,refundAddrIndex:this.refundAddrIndex,giveCoinId:this.giveCoinId,getCoinId:this.getCoinId,getCoinIsCP:this.getCoinIsCP,getCoinDisableCLTV:this.getCoinDisableCLTV,giveCoinIsCP:this.giveCoinIsCP,giveCoinDisableCLTV:this.giveCoinDisableCLTV,secret:this.secret,lockTime:this.lockTime,secretHash:this.secretHash,redeemAddressWithSecret:this.redeemAddressWithSecret,refundAddressWithSecret:this.refundAddressWithSecret,redeemAddressWOSecret:this.redeemAddressWOSecret,refundAddressWOSecret:this.refundAddressWOSecret,fee:this.fee,cpDivisible:this.cpDivisible,cpAmount:this.cpAmount,cpToken:this.cpToken
+      }
+      storage.set("swapData",saveData)
+    },
+    reset(){
+      Object.assign(this,{
+        addrIndex:0,
+        refundAddrIndex:0,
+        giveCoinId:"mona",
+        getCoinId:"mona",
+        getCoinIsCP:false,
+        getCoinDisableCLTV:false,
+        giveCoinIsCP:false,
+        giveCoinDisableCLTV:false,
+
+        secret:"",
+        lockTime:0,
+        secretHash:"",
+        redeemAddressWithSecret:"",
+        refundAddressWithSecret:"",
+        redeemAddressWOSecret:"",
+        refundAddressWOSecret:"",
+
+        myP2SH:null,
+        scriptWithSecret:"",
+        opponentP2SH:null,
+        scriptWithoutSecret:"",
+
+        utxo:"",
+        password:"",
+        fee:80000,
+        signedTx:"",
+
+        cpDivisible:false,
+        cpAmount:0,
+        cpToken:"XMP"
+      })
+      this.getLabels()
+      this.getRefundLabels()
+    },
+    restore(){
+      storage.get("swapData").then(d=>{
+        Object.assign(this,d||{})        
+      })
+    },
     getLabels(){
       const cur = currencyList.get(this.getCoinId)
       cur.getLabels().then(res=>{
@@ -363,6 +410,7 @@ module.exports=require("./atomicswap.html")({
   },
   mounted(){
     this.getCurrencies()
+    this.restore()
     this.getLabels()
     this.getRefundLabels()
   },
