@@ -36,7 +36,7 @@
         </div>
       </v-ons-list-item>
       <v-ons-list-item>
-        <div class="center">必ず絶対時間で表示する</div>
+        <div class="center">絶対時間で表示(オフだと相対時間で表示)</div>
         <div class="right">
           <v-ons-switch @change="save" v-model="d.absoluteTime"></v-ons-switch>
         </div>
@@ -48,7 +48,7 @@
         </div>
       </v-ons-list-item>
       <v-ons-list-item>
-        <div class="center">Language</div>
+        <div class="center">言語</div>
         <div class="right">
           <v-ons-select v-model="lang" @change="changeLang">
             <option value="ja">Japanese</option>
