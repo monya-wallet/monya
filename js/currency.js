@@ -10,7 +10,7 @@ const coinUtil = require("./coinUtil")
 const storage = require("./storage")
 const zecLib = require("@missmonacoin/bitcoinjs-lib-zcash")
 const bchLib = require("@missmonacoin/bitcoincashjs-lib")
-const blkLib = require("blackcoinjs-lib")
+const blkLib = require("@missmonacoin/blackcoinjs-lib")
 module.exports=class{
   
   constructor(opt){
