@@ -75,7 +75,7 @@
           <v-ons-checkbox :input-id="'checkbox-' + i" :value="i" v-model="onOrder"></v-ons-checkbox>
         </label>
         <label class="center" :for="'checkbox-' + i">{{v.name}}</label>
-        <label class="right" :for="'checkbox-' + i"><currency-set :amount="v.price" :ticker="ticker">JPY</currency-set></label>
+        <label class="right" :for="'checkbox-' + i"><currency-set :amount="v.price" ticker="jpy"></currency-set></label>
       </v-ons-list-item>
       <v-ons-list-item>
         <div class="center"><v-ons-button @click="fiat=total;calcCur();orderDlg=false">確定</v-ons-button></div>
