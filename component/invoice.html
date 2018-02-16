@@ -66,9 +66,7 @@
       </v-ons-list>
     </div>
   </div>
-  <v-ons-dialog cancelable
-                :visible.sync="orderDlg"
-                >
+  <v-ons-dialog :visible.sync="orderDlg">
     <v-ons-list>
       <v-ons-list-item v-for="(v,i) in orders" tappable>
         <label class="left">
@@ -78,7 +76,8 @@
         <label class="right" :for="'checkbox-' + i"><currency-set :amount="v.price" ticker="jpy"></currency-set></label>
       </v-ons-list-item>
       <v-ons-list-item>
-        <div class="center"><v-ons-button @click="fiat=total;calcCur();orderDlg=false">確定</v-ons-button></div>
+        <div class="left"><v-ons-button @click="fiat=total;calcCur();orderDlg=false">確定</v-ons-button></div>
+        <div class="center"><v-ons-button @click="orderDlg=false">キャンセル</v-ons-button></div>
         <div class="right"><currency-set :amount="total" ticker="jpy"></currency-set></div>
       </v-ons-list-item>
     </v-ons-list>
