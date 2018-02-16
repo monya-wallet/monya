@@ -5,16 +5,17 @@
   <div>
     <div id="currencySelector">
       <v-ons-carousel swipeable overscrollable direction="horizontal" item-height="50px" item-width="50px" :index="currencyIndex">
-        <v-ons-carousel-item class="currencyIcon monappy" @click="currencyIndex=-1" v-show="monappyEnabled">
+        <v-ons-carousel-item class="currencyIcon monappy" @click="currencyIndex=-1;fiat=fiat;calcCur()" v-show="monappyEnabled">
           <div class="checked" v-show="currencyIndex===-1"></div>
         </v-ons-carousel-item>
         
-        <v-ons-carousel-item v-for="(crc,i) in currency" class="currencyIcon" :style="{'background-image':'url('+crc.icon+')'}" @click="currencyIndex=i">
+        <v-ons-carousel-item v-for="(crc,i) in currency" class="currencyIcon" :style="{'background-image':'url('+crc.icon+')'}" @click="currencyIndex=i;fiat=fiat;calcCur()">
           <div class="checked" v-show="currencyIndex===i"></div>
         </v-ons-carousel-item>
       </v-ons-carousel>
     </div>
     <div id="simple">
+      <div class="label">通貨変更時は二回タップして下さい</div>
       <div class="label" v-show="currencyIndex===-1">このQRコードを読み取ってMonappyにログインして、送金してください。指示がある場合は、「匿名で送る」チェックを外してください。</div>
       <div id="qrArea">
         <div id="qrcode">
@@ -62,28 +63,21 @@
           <div class="center">ブロックに書き込んでもらうメッセージ(対応ウォレットのみ)</div>
           <div class="right"><v-ons-input v-model="messageOpRet" placeholder="OP_RETURN" @change="generateQR"></v-ons-input></div>
         </v-ons-list-item>
-        <v-ons-list-item>
-          <v-ons-button modifier="large" @click="generateQR">QRコードを生成</v-ons-button>
-        </v-ons-list-item>
       </v-ons-list>
     </div>
   </div>
-  <v-ons-dialog cancelable
-                :visible.sync="orderDlg"
-                >
+  <v-ons-dialog :visible.sync="orderDlg">
     <v-ons-list>
-      <v-ons-list-item v-for="(v,i) in orders">
-        <div class="left"><v-ons-checkbox
-            :value="i"
-            v-model="onOrder"
-          >
-          </v-ons-checkbox></div>
-        <div class="center">{{v.name}}</div>
-        <div class="right"><currency-set :amount="v.price" :ticker="ticker"></currency-set></div>
+      <v-ons-list-item v-for="(v,i) in orders" tappable>
+        <label class="left">
+          <v-ons-checkbox :input-id="'checkbox-' + i" :value="i" v-model="onOrder"></v-ons-checkbox>
+        </label>
+        <label class="center" :for="'checkbox-' + i">{{v.name}}</label>
+        <label class="right" :for="'checkbox-' + i"><currency-set :amount="v.price" ticker="jpy"></currency-set></label>
       </v-ons-list-item>
-      <v-ons-list-header></v-ons-list-header>
       <v-ons-list-item>
-        <div class="center"><v-ons-button @click="fiat=total;calcCur();orderDlg=false">確定</v-ons-button></div>
+        <div class="left"><v-ons-button @click="fiat=total;calcCur();orderDlg=false">確定</v-ons-button></div>
+        <div class="center"><v-ons-button @click="orderDlg=false">キャンセル</v-ons-button></div>
         <div class="right"><currency-set :amount="total" ticker="jpy"></currency-set></div>
       </v-ons-list-item>
     </v-ons-list>

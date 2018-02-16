@@ -112,8 +112,8 @@
     </plugin>
     <plugin name="cordova-plugin-statusbar" spec="^2.4.1" />
     <plugin name="cordova-plugin-keychain-touch-id" spec="^3.2.1" />
-    <plugin name="cordova-plugin-qrscanner-monya" spec="^2.5.4" />
-    <plugin name="cordova-clipboard-monya" spec="^1.1.6" />
+    <plugin name="cordova-plugin-qrscanner-monya" spec="^2.5.5" />
+    <plugin name="cordova-clipboard-monya" spec="^1.1.7" />
     <plugin name="cordova-plugin-browsertab" spec="^0.2.0">
         <variable name="CUSTOM_TAB_COLOR_RGB" value="#ffffff" />
     </plugin>
