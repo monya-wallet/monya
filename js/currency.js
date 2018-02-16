@@ -10,6 +10,7 @@ const coinUtil = require("./coinUtil")
 const storage = require("./storage")
 const zecLib = require("@missmonacoin/bitcoinjs-lib-zcash")
 const bchLib = require("@missmonacoin/bitcoincashjs-lib")
+const blkLib = require("blackcoinjs-lib")
 module.exports=class{
   
   constructor(opt){
@@ -45,6 +46,9 @@ module.exports=class{
         break
       case "btg":
         this.lib=bchLib
+        break
+      case "blk":
+        this.lib=blkLib
         break
       default:
         this.lib=bcLib

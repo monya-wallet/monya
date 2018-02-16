@@ -12,6 +12,7 @@
     "bignumber.js": "^5.0.0",
     "bip39": "^2.4.0",
     "bitcoinjs-lib": "^3.2.0",
+    "blackcoinjs-lib": "https://github.com/NEETCOINTeam/blackcoinjs-lib.git#e26afb97ba0d7f446d8fc5cc8423f2c8c97f1445",
     "bitcoinjs-message": "^2.0.0",
     "buffer": "^5.0.8",
     "coinselect": "^3.1.11",
