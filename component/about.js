@@ -19,6 +19,10 @@ module.exports=require("./about.html")({
       this.$store.commit("setSendUrl","bitcoin:1HohzLWyA7L1ifx6hr2Xr5N1sGZrR1ZbMt?message=%E5%AF%84%E4%BB%98%E3%82%92%E3%81%82%E3%82%8A%E3%81%8C%E3%81%A8%E3%81%86%E3%81%94%E3%81%96%E3%81%84%E3%81%BE%E3%81%99&req-opreturn=%E5%AF%84%E4%BB%98%E3%81%A7%E3%81%99")
       this.$emit("push",require("./send.js"))
     },
+    donateMeWithNEET(){
+      this.$store.commit("setSendUrl","neetcoin:NPHmCnUj56TdeJA1H1sq5V8k4LNZrJXGnD?message=%E5%AF%84%E4%BB%98%E3%82%92%E3%81%82%E3%82%8A%E3%81%8C%E3%81%A8%E3%81%86%E3%81%94%E3%81%96%E3%81%84%E3%81%BE%E3%81%99&req-opreturn=%E5%AF%84%E4%BB%98%E3%81%A7%E3%81%99")
+      this.$emit("push",require("./send.js"))
+    },
     donateMeWithMonappy(){
       this.openLink("https://monappy.jp/users/send/@miss_monacoin?amount=39&message=%E3%82%82%E3%81%AB%E3%82%83%E3%81%AE%E5%AF%84%E4%BB%98%E3%81%A7%E3%81%99")
     },
@@ -31,8 +35,5 @@ module.exports=require("./about.html")({
     openLink(url){
       coinUtil.openUrl(url)
     }
-  },
-  mounted(){
-    
   }
 })
