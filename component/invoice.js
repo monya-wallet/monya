@@ -35,8 +35,8 @@ module.exports=require("./invoice.html")({
     copyAddress(){
       coinUtil.copy(this.url)
     },
-    generateQR(){
-      qrcode.toDataURL(this.url,{
+    generateQR(url){
+      qrcode.toDataURL(url||this.url,{
         errorCorrectionLevel: 'M',
         type: 'image/png'
       },(err,url)=>{
@@ -44,6 +44,8 @@ module.exports=require("./invoice.html")({
       })
       if(this.currencyIndex!==-1){
         this.currentCurIcon=currencyList.get(this.currency[this.currencyIndex].coinId).icon
+      }else{
+        this.currentCurIcon=currencyList.get("mona").icon
       }
     },
     calcFiat(){
@@ -103,15 +105,17 @@ module.exports=require("./invoice.html")({
         return "https://monappy.jp/users/send/@"+this.monappyDestination+"?amount="+parseFloat(this.amount)+"&message="+encodeURIComponent(this.message)
       }
       if(!this.currency[this.currencyIndex]){
-        return ""
+        return
       }
       const cur =currencyList.get(this.currency[this.currencyIndex].coinId)
-      return coinUtil.getBip21(cur.bip21,cur.getAddress(0,this.addressIndex|0),{
+      const url = coinUtil.getBip21(cur.bip21,cur.getAddress(0,this.addressIndex|0),{
         amount:this.amount,
         label:this.labels[this.addressIndex],
         message:this.message,
         "req-opreturn":this.messageOpRet
       })
+      this.generateQR(url)
+      return url
     },
     coinType(){
       if(this.currencyIndex===-1){
@@ -139,6 +143,7 @@ module.exports=require("./invoice.html")({
         })
       }
       this.getPrice()
+      this.calcFiat() // currency based
     }
   },
 

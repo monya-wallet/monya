@@ -6,8 +6,8 @@
       <v-ons-list-item modifier="tappable chevron" @click="goToManageCoin"><div class="center">コインの管理</div></v-ons-list-item>
       <v-ons-list-item modifier="tappable chevron" @click="goToShowPassphrase"><div class="center">パスフレーズの表示</div></v-ons-list-item>
       <v-ons-list-item modifier="tappable chevron" @click="goToSetPassword"><div class="center">パスワードを変更</div></v-ons-list-item>
-      <v-ons-list-item modifier="tappable chevron" @click="goToEditOrder"><div class="center">メニューの管理</div></v-ons-list-item>
-      <v-ons-list-item modifier="tappable chevron" @click="goToSweep"><div class="center">スイープ</div></v-ons-list-item>
+      <v-ons-list-item modifier="tappable chevron" @click="goToEditOrder"><div class="center">請求一覧の編集</div></v-ons-list-item>
+      <v-ons-list-item modifier="tappable chevron" @click="goToSweep"><div class="center">既存ウォレットからの吸出し</div></v-ons-list-item>
       <v-ons-list-item modifier="tappable chevron" @click="goToImportExport"><div class="center">インポート/エクスポート</div></v-ons-list-item>
       
 
@@ -36,7 +36,7 @@
         </div>
       </v-ons-list-item>
       <v-ons-list-item>
-        <div class="center">必ず絶対時間で表示する</div>
+        <div class="center">絶対時間で表示する</div>
         <div class="right">
           <v-ons-switch @change="save" v-model="d.absoluteTime"></v-ons-switch>
         </div>

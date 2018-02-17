@@ -69,8 +69,8 @@ module.exports=require("./home.html")({
     history(){
       this.$emit("push",require("./history.js"))
     },
-    settings(){
-      this.$emit("push",require("./settings.js"))
+    monaparty(){
+      this.$emit("push",require("./monaparty.js"))
     },
   },
   store:require("../js/store.js"),
