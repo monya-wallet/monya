@@ -42,9 +42,9 @@
         </v-ons-list-item>
         <v-ons-list-item modifier="small">
           <div class="center">トランザクションID</div>
-          <div class="right"><v-ons-input :value="res.txid"></v-ons-input></div>
+          <div class="right"><v-ons-input :value="res.txid" readonly></v-ons-input></div>
         </v-ons-list-item>
-        
+        <v-ons-list-item modifier="tappable chevron" @click="openTxExplorer">チェーンエクスプローラーを見る</v-ons-list-item>
       </v-ons-list>
       <v-ons-list modifier="inset">
         <v-ons-list-title>入力</v-ons-list-title>

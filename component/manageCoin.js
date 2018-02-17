@@ -81,6 +81,9 @@ module.exports=require("./manageCoin.html")({
       const cur=currencyList.get(this.info.coinId)
       cur.changeApiEndpoint()
       this.showInfo(this.info.coinId)
+    },
+    openBlock(h){
+      currencyList.get(this.info.coinId).openExplorer({blockHash:h})
     }
   },
   

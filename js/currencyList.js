@@ -16,6 +16,7 @@ const defaultCoins=[
     defaultFeeSatPerByte:200,//will implement dynamic fee
     icon:require("../res/coins/mona.png"),
     defaultAPIEndpoint:"https://mona.insight.monaco-ex.org/insight-api-monacoin",
+    explorer:"https://mona.insight.monaco-ex.org/insight",
     network:{
       messagePrefix: '\x19Monacoin Signed Message:\n',
       bip32: {
@@ -52,6 +53,7 @@ const defaultCoins=[
     icon:require("../res/coins/zny.png"),
     defaultAPIEndpoint:"https://zenyinsight.tomotomo9696.xyz/api",
     apiEndpoints:["https://zenyinsight.tomotomo9696.xyz/api","https://zeny.insight.monaco-ex.org/api"],
+    explorer:"https://zenyinsight.tomotomo9696.xyz",
     network:{
       messagePrefix: '\x18BitZeny Signed Message:\n',
       bip32: {
@@ -85,6 +87,7 @@ const defaultCoins=[
     icon:require("../res/coins/btc.png"),
     defaultAPIEndpoint:"https://insight.bitpay.com/api",
     apiEndpoints:["https://insight.bitpay.com/api","https://btc-bitcore1.trezor.io/api"],
+    explorer:"https://insight.bitpay.com",
     network:{
       messagePrefix: '\x18Bitcoin Signed Message:\n',
       bip32: {
@@ -118,6 +121,7 @@ const defaultCoins=[
     defaultFeeSatPerByte:500,//will implement dynamic fee
     icon:require("../res/coins/ltc.png"),
     defaultAPIEndpoint:"https://insight.litecore.io/api",
+    explorer:"https://insight.litecore.io",
     network:{
       messagePrefix: '\x19Litecoin Signed Message:\n',
       bip32: {
@@ -151,6 +155,7 @@ const defaultCoins=[
     defaultFeeSatPerByte:200,//will implement dynamic fee
     icon:require("../res/coins/fjc.png"),
     defaultAPIEndpoint:coinUtil.proxyUrl("http://explorer.fujicoin.org/api"),
+    explorer:"http://explorer.fujicoin.org",
     network:{
       messagePrefix: '\x19Fujicoin Signed Message:\n',
       bip32: {
@@ -182,6 +187,7 @@ const defaultCoins=[
     defaultFeeSatPerByte:200,//will implement dynamic fee
     icon:require("../res/coins/tmona.png"),
     defaultAPIEndpoint:"https://testnet-mona.insight.monaco-ex.org/insight-api-monacoin",
+    explorer:"https://testnet-mona.insight.monaco-ex.org/insight",
     network:{
       messagePrefix: '\x19Monacoin Signed Message:\n',
       bip32: {
@@ -217,6 +223,7 @@ const defaultCoins=[
     icon:require("../res/coins/btcsw.png"),
     defaultAPIEndpoint:"https://btc-bitcore1.trezor.io/api",
     apiEndpoints:["https://btc-bitcore1.trezor.io/api"],
+    explorer:"https://btc-bitcore1.trezor.io",
     network:{
       messagePrefix: '\x18Bitcoin Signed Message:\n',
       bip32: {
@@ -251,6 +258,7 @@ const defaultCoins=[
     icon:require("../res/coins/bch.png"),
     defaultAPIEndpoint:"https://bch-bitcore2.trezor.io/api/",
     apiEndpoints:["https://bch-bitcore2.trezor.io/api/"],
+    explorer:"https://bch-bitcore2.trezor.io/",
     network:{
       messagePrefix: '\x18Bitcoin Signed Message:\n',
       bip32: {
@@ -273,7 +281,7 @@ const defaultCoins=[
     confirmations:6
   },{
     coinScreenName: "NEETCOIN",
-    coinId: "NEETCOIN",
+    coinId: "neet",
     unit: "NEET",
     unitEasy: "ニート",
     bip44: {
@@ -285,6 +293,7 @@ const defaultCoins=[
     icon: require("../res/coins/neet.png"),
     defaultAPIEndpoint: "https://insight.neetcoin.jp/api",
     apiEndpoints: ["https://insight.neetcoin.jp/api"],
+    explorer: "https://insight.neetcoin.jp",
     network: {
       messagePrefix: '\x19NEETCOIN Signed Message:\n',
       bip32: {

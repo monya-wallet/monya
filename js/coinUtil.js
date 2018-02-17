@@ -162,6 +162,7 @@ exports.copy=data=>{
 exports.openUrl=(url)=>{
   if(!window.cordova){
     window.open(url,"_blank")
+    return
   }
   window.cordova.plugins.browsertab.isAvailable(
     result=> {

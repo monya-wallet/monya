@@ -87,15 +87,17 @@
             <currency-set ticker="satByte"></currency-set>
           </div>
         </v-ons-list-item>
-        <v-ons-list-header>相手に送るメッセージ(任意)</v-ons-list-header>
-        <v-ons-list-item>
-          <div class="center">
-            <v-ons-input v-model="message" placeholder="40Byteまで"></v-ons-input>
-          </div>
-          <div class="right">
-            {{remainingBytes}}
-          </div>
-        </v-ons-list-item>
+        <div v-show="!cannotSendMessage">
+          <v-ons-list-header>相手に送るメッセージ(任意)</v-ons-list-header>
+          <v-ons-list-item>
+            <div class="center">
+              <v-ons-input v-model="message" placeholder="40Byteまで"></v-ons-input>
+            </div>
+            <div class="right">
+              {{remainingBytes}}
+            </div>
+          </v-ons-list-item>
+        </div>
          <v-ons-list-header>UTXOを手動指定</v-ons-list-header>
         <v-ons-list-item>
           <div class="center">

@@ -65,7 +65,7 @@
         <div class="right">{{info.apiEndpoint}}</div>
       </v-ons-list-item>
       <v-ons-list-header>ブロック</v-ons-list-header>
-      <v-ons-list-item v-for="b in info.blocks">
+      <v-ons-list-item v-for="b in info.blocks" @click="openBlock(b.hash)">
         <div class="center">{{b.height}}</div>
         <div class="right"><timestamp :timestamp="b.time"></timestamp></div>
       </v-ons-list-item>

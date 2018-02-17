@@ -54,6 +54,9 @@ module.exports=require("./txDetail.html")({
     },
     saveTxLabel(){
       currencyList.get(this.coinId).saveTxLabel(this.txId,{read:true,label:this.txLabel,price:parseFloat(this.price)})
+    },
+    openTxExplorer(){
+      currencyList.get(this.coinId).openExplorer({txId:this.res.txid})
     }
   }
 })

@@ -111,6 +111,12 @@ module.exports=require("./send.html")({
   computed:{
     remainingBytes(){
       return 40-Buffer.from(this.message||"", 'utf8').length
+    },
+    cannotSendMessage(){
+      if(this.coinType==="neet"){
+        return true
+      }
+      return false
     }
   },
   mounted(){
