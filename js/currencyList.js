@@ -51,9 +51,9 @@ const defaultCoins=[
     bip21:"bitzeny",
     defaultFeeSatPerByte:200,
     icon:require("../res/coins/zny.png"),
-    defaultAPIEndpoint:"https://zenyinsight.tomotomo9696.xyz/api",
-    apiEndpoints:["https://zenyinsight.tomotomo9696.xyz/api","https://zeny.insight.monaco-ex.org/api"],
-    explorer:"https://zenyinsight.tomotomo9696.xyz",
+    defaultAPIEndpoint:"https://zeny.insight.monaco-ex.org/api",
+    apiEndpoints:["https://zeny.insight.monaco-ex.org/api","https://zenyinsight.tomotomo9696.xyz/api"],
+    explorer:"https://zeny.insight.monaco-ex.org/api",
     network:{
       messagePrefix: '\x18BitZeny Signed Message:\n',
       bip32: {

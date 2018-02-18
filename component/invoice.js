@@ -39,8 +39,8 @@ module.exports=require("./invoice.html")({
       qrcode.toDataURL(url||this.url,{
         errorCorrectionLevel: 'M',
         type: 'image/png'
-      },(err,url)=>{
-        this.qrDataUrl=url
+      },(err,qurl)=>{
+        this.qrDataUrl=qurl
       })
       if(this.currencyIndex!==-1){
         this.currentCurIcon=currencyList.get(this.currency[this.currencyIndex].coinId).icon
@@ -143,7 +143,8 @@ module.exports=require("./invoice.html")({
         })
       }
       this.getPrice()
-      this.calcFiat() // currency based
+      this.fiat=0
+      this.amount=0
     }
   },
 

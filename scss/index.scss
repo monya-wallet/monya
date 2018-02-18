@@ -354,7 +354,7 @@ $iconSize:100px;
   background-size:contain;
   background-position:center center;
   background-repeat:no-repeat;
-  background-image: url(../res/howToAddHome.png);
+  background-image: url(../res/howToAddHome.jpg);
 }
 [data-page="restorePassphrase"]{
   #wordArea{
@@ -471,12 +471,6 @@ $iconSize:100px;
     background-position:center center;
     &[data-img="0"]{
       background-image:url(../res/success.png);
-    }
-    &[data-img="1"]{
-      background-image:url(../res/success_wo_mona.png);
-    }
-    &[data-img="2"]{
-      background-image:url(../res/vtc.png);
     }
   }
   .wrap{
@@ -749,18 +743,8 @@ $zaifPayLogoSize:200px;
   .page__background{
     background-size:auto;
   }
-  ons-navigator.sand & .page__background{
+  ons-navigator & .page__background{
     background-image:url(../res/sand.jpg);
-    background-position:center center;
-    background-repeat:repeat;
-  }
-  ons-navigator.washi & .page__background{
-    background-image:url(../res/washi.jpg);
-    background-position:center center;
-    background-repeat:repeat;
-  }
-  ons-navigator.leather & .page__background{
-    background-image:url(../res/leather.jpg);
     background-position:center center;
     background-repeat:repeat;
   }

@@ -8,6 +8,7 @@ var uglifyes = require('uglify-es');
 var composer = require('gulp-uglify/composer');
 var pump = require('pump');
 var translator= require("./util/translator.js")
+var imagemin = require('gulp-imagemin');
 var minify = composer(uglifyes, console);
 
 gulp.task("browserSync", function() {
@@ -64,6 +65,11 @@ gulp.task("setChrome", function() {
   return gulp.src(["dist/**"])
     .pipe(gulp.dest("./chrome_extension/dist"))
 });
+gulp.task("compressImage", function() {
+  return gulp.src(["dist/assets/*.png"])
+    .pipe(imagemin())
+    .pipe(gulp.dest("./dist/assets"))
+});
 
 gulp.task("default", function(cb) {
   return runSequence(
@@ -74,7 +80,8 @@ gulp.task("default", function(cb) {
 gulp.task("prod", function(cb) {
   return runSequence(
     ["lint","webpackProd"],
-    "setCordova","setDocs","setChrome",
+    "compressImage",
+    ["setCordova","setDocs","setChrome"],
     cb
   );
 });
