@@ -8,15 +8,15 @@
   "author": "MissMonacoin",
   "icons": [
     {
-      "src": "dist/icons/192.png",
+      "src": "icons/192.png",
       "type": "image/png",
       "sizes": "192x192"
     },{
-      "src": "dist/icons/144.png",
+      "src": "icons/144.png",
       "type": "image/png",
       "sizes": "144x144"
     },{
-      "src": "dist/icons/512.png",
+      "src": "icons/512.png",
       "type": "image/png",
       "sizes": "144x144"
     }
