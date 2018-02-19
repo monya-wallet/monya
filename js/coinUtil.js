@@ -179,8 +179,19 @@ exports.openUrl=(url)=>{
       window.open(url,"_blank")
     });
 };
-exports.getBip21=(bip21Urn,address,query)=>{
+exports.getBip21=(bip21Urn,address,query,addrUrl=false)=>{
   let queryStr="?"
+  if(addrUrl){
+    query.address = address
+    query.scheme = bip21Urn
+    for(let v in query){
+      if(query[v]){
+        queryStr+=encodeURIComponent(v)+"="+encodeURIComponent(query[v])+"&"
+      }
+    }
+    return "https://missmonacoin.github.io/monya/a/"+queryStr
+  }
+  
   for(let v in query){
     if(query[v]){
       queryStr+=encodeURIComponent(v)+"="+encodeURIComponent(query[v])+"&"

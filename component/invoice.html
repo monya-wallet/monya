@@ -62,6 +62,10 @@
           <div class="center">ブロックに書き込んでもらうメッセージ(対応ウォレットのみ)</div>
           <div class="right"><v-ons-input v-model="messageOpRet" placeholder="OP_RETURN"></v-ons-input></div>
         </v-ons-list-item>
+        <v-ons-list-item v-show="currencyIndex!==-1">
+          <label class="left"><v-ons-checkbox input-id="isAddrUrl" v-model="isAddrUrl"></v-ons-checkbox></label>
+          <label class="center" for="isAddrUrl">送金URL形式</label>
+        </v-ons-list-item>
       </v-ons-list>
     </div>
   </div>
