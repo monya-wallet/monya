@@ -1,0 +1,81 @@
+<v-ons-page data-page="zaifPayInvoice">
+  <custom-bar title="Zaif " menu="true"></custom-bar>
+  <div>
+    <div id="qrArea">
+        <div id="qrcode">
+          <img :src="qrDataUrl||''" alt="QR code" id="qrcodeImage"/>
+          <div id="currentCurIcon" :style="{'background-image':'url('+currentCurIcon+')'}"></div>
+        </div>
+        <div class="address">{{res.bip21}}</div>
+      </div>
+    
+    <v-ons-list>
+      <v-ons-list-item>
+        <div class="center"></div>
+        <div class="right">
+          <div v-show="res.currency==='mona'">mona</div>
+          <div v-show="res.currency==='btc'">btc</div>
+        </div>
+      </v-ons-list-item>
+      <v-ons-list-item>
+        <div class="center"></div>
+        <div class="right">
+          <div v-show="res.speed==='low'"></div>
+          <div v-show="res.speed==='medium'"></div>
+          <div v-show="res.speed==='high'"></div>
+          
+        </div>
+      </v-ons-list-item>
+      <v-ons-list-item>
+        <div class="center"></div>
+        <div class="right">
+          <div v-show="res.status==='new'"></div>
+          <div v-show="res.status==='paid'"></div>
+          <div v-show="res.status==='confirmed'"></div>
+          <div v-show="res.status==='complete'"></div>
+          <div v-show="res.status==='expired'"></div>
+          <div v-show="res.status==='invalid'"></div>
+          <div v-show="res.status==='canceled'"></div>
+        </div>
+      </v-ons-list-item>
+      <v-ons-list-item>
+        <div class="center"></div>
+        <div class="right">
+          <currency-set :amount="curAmt" :ticker="res.currency"></currency-set>
+        </div>
+      </v-ons-list-item>
+      <v-ons-list-item>
+        <div class="center"></div>
+        <div class="right">
+          <v-ons-input v-model="res.address"></v-ons-input>
+        </div>
+      </v-ons-list-item>
+      <v-ons-list-item>
+        <div class="center"></div>
+        <div class="right">
+          <currency-set :amount="res.amount" ticker="jpy"></currency-set>
+        </div>
+      </v-ons-list-item>
+      <v-ons-list-item>
+        <div class="center"></div>
+        <div class="right">
+          <div>{{res.orderNumber}}</div>
+        </div>
+      </v-ons-list-item>
+      <!--<v-ons-list-item>
+        <div class="center"></div>
+        <div class="right">
+          <timestamp :timestamp="res.created"></timestamp>
+        </div>
+      </v-ons-list-item>
+      <v-ons-list-item>
+        <div class="center"></div>
+        <div class="right">
+          <timestamp :timestamp="res.expired"></timestamp>
+        </div>
+      </v-ons-list-item>-->
+      
+    </v-ons-list>
+    
+  </div>
+</v-ons-page>

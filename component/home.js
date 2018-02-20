@@ -1,6 +1,6 @@
 const currencyList = require("../js/currencyList")
 const coinUtil = require("../js/coinUtil")
-module.exports=require("./home.html")({
+module.exports=require("../js/lang.js")({ja:require("./ja/home.html"),en:require("./en/home.html")})({
   data(){
     return {
       curs:[],

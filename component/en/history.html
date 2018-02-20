@@ -1,0 +1,87 @@
+<v-ons-page data-page="history">
+  <custom-bar title="" menu="true">
+    <v-ons-toolbar-button @click="outputJson">
+      <v-ons-icon icon="fa-download"></v-ons-icon>
+    </v-ons-toolbar-button>
+    <v-ons-toolbar-button @click="filterDlg=true">
+      <v-ons-icon icon="fa-filter"></v-ons-icon>
+    </v-ons-toolbar-button>
+    <v-ons-toolbar-button @click="reset();load()">
+      <v-ons-icon icon="fa-refresh"></v-ons-icon>
+    </v-ons-toolbar-button>
+  </custom-bar>
+  <v-ons-pull-hook
+      :action="pullToLoad"
+      @changestate="state = $event.state"
+      :disabled="!enablePullHook"
+    >
+      <span v-show="state === 'initial'"> ! </span>
+      <span v-show="state === 'preaction'">  </span>
+      <span v-show="state === 'action'"> <div class="spinner"></div> </span>
+    </v-ons-pull-hook>
+  <div>
+    
+    <div id="currencySelector">
+      <v-ons-carousel swipeable overscrollable direction="horizontal" item-height="50px" item-width="50px" :index="currencyIndex">
+        <v-ons-carousel-item v-for="(crc,i) in currency" class="currencyIcon" :style="{'background-image':'url('+crc.icon+')'}" @click="currencyIndex=i">
+          <div class="checked" v-show="currencyIndex==i"></div>
+        </v-ons-carousel-item>
+      </v-ons-carousel>
+    </div>
+    <div class="container">
+      <div class="spinner" v-show="!txs.length&&!error&&!noData"></div>
+      <p v-show="error"></p>
+      <p v-show="noData"></p>
+    </div>
+    
+    <v-ons-list>
+      
+      <v-ons-list-item modifier="tappable" v-for="tx in txs" v-if="filter(tx)" @click="txDetail(tx.txId)">
+        <div>
+          <div class="label" v-show="!tx.txLabel"></div>
+          <div class="label" v-show="tx.txLabel">{{tx.txLabel}}</div>
+        </div>
+        <div class="w_right">
+          <span class="date"><timestamp :timestamp="tx.timestamp"></timestamp></span>
+          <span class="symbols">
+            <v-ons-icon icon="fa-comment" class="hasMsg" v-show="tx.hasMessage"></v-ons-icon>
+            <v-ons-icon icon="fa-money" class="hasPrice" v-show="tx.price"></v-ons-icon>
+            <v-ons-icon icon="fa-exclamation" class="inmatureConfirmation" v-show="tx.inmatureConfirmation"></v-ons-icon>
+            <v-ons-icon icon="fa-bell" class="unread" v-show="!tx.read&&sub(tx.aOut,tx.aIn)>0&&!tx.price&&!tx.txLabel"></v-ons-icon>
+
+          </span>
+          
+          <currency-set :amount="sub(tx.aOut,tx.aIn)" :ticker="coinId"></currency-set>
+          
+        </div>
+      </v-ons-list-item>
+      <v-ons-list-item v-show="hasMore" @click="loadMore"></v-ons-list-item>
+    </v-ons-list>
+    <v-ons-alert-dialog modifier="rowfooter"
+      :visible.sync="filterDlg"
+    >
+      <span slot="title"></span>
+      <v-ons-select v-model="currencyIndex">
+        <option v-for="(crc,i) in currency" :value="i">{{crc.name}}</option>
+      </v-ons-select>
+      <v-ons-select v-model="dirFilter">
+        <option value="all"></option>
+        <option value="send"></option>
+        <option value="receive"></option>
+      </v-ons-select>
+      <v-ons-input placeholder="" v-model="threshold"></v-ons-input>
+      <br/>
+      <v-ons-checkbox v-model="hideDustSend"></v-ons-checkbox>Monaparty
+      <v-ons-search-input placeholder="TXID" @change="txDetail(searchTxId)" v-model="searchTxId"></v-ons-search-input>
+      <template slot="footer">
+        <div class="alert-dialog-button" @click="filterDlg=false"></div>
+      </template>
+    </v-ons-alert-dialog>
+  </div>
+  <v-ons-dialog cancelable
+                :visible.sync="outputDlg"
+                >
+    <p style="text-align: center"></p>
+    <textarea cols="50" rows="20">{{json}}</textarea>
+  </v-ons-dialog>
+</v-ons-page>

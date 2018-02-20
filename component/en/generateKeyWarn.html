@@ -1,0 +1,36 @@
+<v-ons-page data-page="generateKeyWarn">
+  <custom-bar title=""></custom-bar>
+  <div class="wrap">
+    <p></p>
+    <ul>
+      <li></li>
+      <li>12</li>
+      <li></li>
+      <li></li>
+      <li></li>
+      <li></li>
+    </ul>
+  </div>
+  <v-ons-list>
+    <v-ons-list-item>
+      <label class="left">
+        <v-ons-checkbox input-id="check1" v-model="check1"></v-ons-checkbox>
+      </label>
+      <label class="center" for="check1"></label>
+    </v-ons-list-item>
+    <v-ons-list-item>
+      <label class="left">
+        <v-ons-checkbox input-id="check2" v-model="check2"></v-ons-checkbox>
+      </label>
+      <label class="center" for="check2"></label>
+    </v-ons-list-item>
+    <v-ons-list-item>
+      <label class="left">
+        <v-ons-checkbox input-id="check3" v-model="check3"></v-ons-checkbox>
+      </label>
+      <label class="center" for="check3"></label>
+    </v-ons-list-item>
+    <v-ons-list-item><v-ons-button :disabled="!check1||!check2||!check3" @click="next" modifier="large"></v-ons-button></v-ons-list-item>
+  </v-ons-list>
+  
+</v-ons-page>

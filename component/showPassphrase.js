@@ -1,7 +1,7 @@
 const bip39 = require("bip39")
 const storage = require("../js/storage.js")
 const coinUtil = require("../js/coinUtil.js")
-module.exports=require("./showPassphrase.html")({
+module.exports=require("../js/lang.js")({ja:require("./ja/showPassphrase.html"),en:require("./en/showPassphrase.html")})({
   data(){
     return {
       keyArray:null,

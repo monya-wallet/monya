@@ -1,0 +1,37 @@
+<v-ons-page data-page="showPassphrase">
+  <custom-bar title=""></custom-bar>
+  <div class="wrap">
+    <ul>
+      <li></li>
+      <li></li>
+      <li></li>
+      <li></li>
+    </ul>
+    <v-ons-list>
+      <v-ons-list-item v-for="(word,index) in words">
+        <label class="left">
+          {{index+1}}
+        </label>
+        <label class="center">{{word}}</label>
+        <label class="right">
+          <v-ons-checkbox></v-ons-checkbox>
+        </label>
+      </v-ons-list-item>
+      <v-ons-list-item v-show="showNext">
+        <v-ons-button @click="next" modifier="large" :disable="!words.length"></v-ons-button>
+      </v-ons-list-item>
+    </v-ons-list>
+    <v-ons-alert-dialog
+      modifier="rowfooter"
+      :visible.sync="requirePassword"
+                        >
+      <span slot="title"></span>
+      <p></p>
+      <v-ons-input placeholder="" v-model="password" type="password" :class="{shake:incorrect}"></v-ons-input>
+      <template slot="footer">
+        <div class="alert-dialog-button" @click="$emit('pop')"></div>
+        <div class="alert-dialog-button" @click="decrypt"></div>
+      </template>
+    </v-ons-alert-dialog>
+  </div>
+</v-ons-page>

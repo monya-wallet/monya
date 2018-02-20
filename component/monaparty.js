@@ -6,7 +6,7 @@ const axios = require("axios")
 
 const COIN_ID="mona"//
 
-module.exports=require("./monaparty.html")({
+module.exports=require("../js/lang.js")({ja:require("./ja/monaparty.html"),en:require("./en/monaparty.html")})({
   data:()=>({
     method:"",
     paramsJson:"",

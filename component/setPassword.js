@@ -4,7 +4,7 @@ const crypto = require('crypto');
 const storage = require("../js/storage.js")
 const errors=require("../js/errors")
 const blacklist=["123456","114514","password","password2"]
-module.exports=require("./setPassword.html")({
+module.exports=require("../js/lang.js")({ja:require("./ja/setPassword.html"),en:require("./en/setPassword.html")})({
   data(){
     return {
       passwordType:"password",

@@ -1,7 +1,22 @@
 const currencyList = require("../js/currencyList")
-module.exports=require("./currencySet.html")({
+const lang = require("../js/lang.js")
+
+const easyCurTable = {
+  jpy:{
+    en:"Yen",
+    ja:"円"
+  },
+  usd:{
+    en:"ドル",
+    ja:"Dollar"
+  }
+}
+
+module.exports=lang({ja:require("./ja/currencySet.html"),en:require("./en/currencySet.html")})({
   data(){
-    return {}
+    return {
+      
+    }
   },
   props:["amount","notKnown","ticker","about","fiatTicker"],
   methods:{
@@ -9,10 +24,10 @@ module.exports=require("./currencySet.html")({
       if(!t){return ""}
       if(this.notKnown){return t}
       if(t==="jpy"){
-        return this.easy?"円":"JPY"
+        return this.easy?easyCurTable.jpy[lang.getLang()]:"JPY"
       }
       if(t==="usd"){
-        return this.easy?"ドル":"USD"
+        return this.easy?easyCurTable.usd[lang.getLang()]:"USD"
       }
       if(t==="satByte"){
         return "sat/B"

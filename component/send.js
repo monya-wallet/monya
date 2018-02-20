@@ -1,6 +1,6 @@
 const coinUtil=require("../js/coinUtil")
 const currencyList=require("../js/currencyList")
-module.exports=require("./send.html")({
+module.exports=require("../js/lang.js")({ja:require("./ja/send.html"),en:require("./en/send.html")})({
   data(){
     return {
       address:"",

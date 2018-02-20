@@ -2,7 +2,7 @@ const storage = require("../js/storage")
 const axios = require("axios")
 const coinUtil = require("../js/coinUtil")
 const crypto = require("crypto")
-module.exports=require("./zaifPay.html")({
+module.exports=require("../js/lang.js")({ja:require("./ja/zaifPay.html"),en:require("./en/zaifPay.html")})({
   data:()=>({
     hasCredentials:false,
     cur:"mona",

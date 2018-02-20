@@ -1,0 +1,12 @@
+<v-ons-page data-page="generateKey">
+  <custom-bar title=""></custom-bar>
+  <div class="touchArea" ref="touchArea">
+    <p v-show="cnt<wordCount">
+      <br>
+      <small v-show="sensorAvailable"></small><br/>
+      {{cnt}}<small>/{{wordCount}}</small>
+    </p>
+    <p v-show="cnt>=wordCount"><br><small></small></p> 
+    <v-ons-progress-bar :value="cnt/wordCount*100"></v-ons-progress-bar>
+  </div>
+</v-ons-page>

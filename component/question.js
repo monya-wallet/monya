@@ -1,5 +1,5 @@
 const storage=require("../js/storage")
-module.exports=require("./question.html")({
+module.exports=require("../js/lang.js")({ja:require("./ja/question.html"),en:require("./en/question.html")})({
   data(){
     return {
       questionNumber:0,

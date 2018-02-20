@@ -1,0 +1,90 @@
+<v-ons-page data-page="tokenInfo">
+  <custom-bar title="" menu="true"></custom-bar>
+  <div>
+    <div class="spinner" v-show="loading"></div>
+    <div v-if="card" id="cardArea">
+      <div id="card">
+        <img alt="Card Image" :src="card.imageUrl"/>
+      </div>
+    </div>
+    <v-ons-list modifier="inset">
+      <v-ons-list-item v-show="!asset&&!loading">
+        
+      </v-ons-list-item>
+      <v-ons-list-item v-show="asset&&asset.asset&&sendable">
+        <v-ons-button @click="sendToken" modifier="large"></v-ons-button>
+      </v-ons-list-item>
+      <div v-if="card">
+        <v-ons-list-header></v-ons-list-header>
+        <v-ons-list-item>
+          <div class="center"></div>
+          <div class="right">{{card.cardName}}</div>
+        </v-ons-list-item>
+        <v-ons-list-item>
+          <div class="center"></div>
+          <div class="right">{{card.ownerName}}</div>
+        </v-ons-list-item>
+        <v-ons-list-item>
+          <div class="center"></div>
+          <div class="right">{{card.twitterScreenName}}</div>
+        </v-ons-list-item>
+        <v-ons-list-item>
+          <div class="center"></div>
+          <div class="right">{{card.description}}</div>
+        </v-ons-list-item>
+        <v-ons-list-item>
+          <div class="center">URL</div>
+          <div class="right">{{card.imageUrl}}</div>
+        </v-ons-list-item>
+      </div>
+      <div v-if="asset&&asset.asset">
+        <v-ons-list-header></v-ons-list-header>
+        <v-ons-list-item>
+          <div class="center"></div>
+          <div class="right">{{asset.asset_longname||asset.asset}}</div>
+        </v-ons-list-item>
+        <v-ons-list-item>
+          <div class="center"></div>
+          <div class="right"><v-ons-input :value="asset.asset"></v-ons-input></div>
+        </v-ons-list-item>
+        <v-ons-list-item>
+          <div class="center"></div>
+          <div class="right">{{asset.divisible?asset.supply/100000000:asset.supply}}</div>
+        </v-ons-list-item>
+        <v-ons-list-item>
+          <div class="center"></div>
+          <div class="right">{{asset.description}}</div>
+        </v-ons-list-item>
+        <v-ons-list-item>
+          <div class="center"></div>
+          <div class="right"><v-ons-input :value="asset.owner"></v-ons-input></div>
+        </v-ons-list-item>
+        <v-ons-list-item>
+          <div class="center"></div>
+          <div class="right"><v-ons-input :value="asset.issuer"></v-ons-input></div>
+        </v-ons-list-item>
+        <v-ons-list-item>
+          <div class="center"></div>
+          <div class="right">{{asset.divisible?"":""}}</div>
+        </v-ons-list-item>
+        <v-ons-list-item>
+          <div class="center"></div>
+          <div class="right">{{asset.locked?"":""}}</div>
+        </v-ons-list-item>
+      </div>
+      <div v-if="history.length">
+        <v-ons-list-header></v-ons-list-header>
+        <v-ons-list-item v-for="h in history">
+          <div v-if="h.type==='created'">{{h.owner}}</div>
+          <div v-if="h.type==='transferred'">{{h.prev_owner}}{{h.new_owner}}</div>
+          <div v-if="h.type==='changed_description'">{{h.prev_description}}</div>
+          <div v-if="h.type==='issued_more'">{{h.additional_normalized}}</div>
+          <div v-if="h.type==='locked'"></div>
+
+          <div class="right">{{h.at_block}}</div>
+          
+        </v-ons-list-item>
+      </div>
+    </v-ons-list>
+  </div>
+</v-ons-page>

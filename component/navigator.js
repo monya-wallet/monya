@@ -18,7 +18,7 @@ const translationTable={
 const regexp = new RegExp(Object.keys(translationTable).join("|"),"gim")
 // Error message translation End
 
-module.exports=require("./navigator.html")({
+module.exports=require("../js/lang.js")({ja:require("./ja/navigator.html"),en:require("./en/navigator.html")})({
   data(){
     return {
       pageStack:[],

@@ -1,0 +1,153 @@
+<v-ons-page data-page="atomicswap">
+  <custom-bar title="" menu="true">
+    <v-ons-toolbar-button @click="save">
+      <v-ons-icon icon="fa-download"></v-ons-icon>
+    </v-ons-toolbar-button>
+    <v-ons-toolbar-button @click="reset">
+      <v-ons-icon icon="fa-eraser"></v-ons-icon>
+    </v-ons-toolbar-button>
+  </custom-bar>
+  <div>
+    <v-ons-list>
+      <v-ons-list-header></v-ons-list-header>
+      <v-ons-list-item>
+        <div class="center"></div>
+        <div class="right">
+          <v-ons-select v-model="giveCoinId"  @change="getRefundLabels">
+            <option v-for="l in coins" :value="l.coinId">{{l.name}}</option>
+          </v-ons-select>
+        </div>
+      </v-ons-list-item>
+      <v-ons-list-item>
+        <div class="center"></div>
+        <div class="right">
+          <v-ons-select v-model="refundAddrIndex" @change="getPubKey">
+            <option v-for="(l,i) in refundLabels" :value="i">{{l}}</option>
+          </v-ons-select>
+        </div>
+      </v-ons-list-item>
+      <v-ons-list-item v-show="giveCoinCPAvailable">
+        <div class="center">Counterparty</div>
+        <div class="right">
+          <v-ons-switch v-model="giveCoinIsCP"></v-ons-switch>
+        </div>
+      </v-ons-list-item>
+      <v-ons-list-header></v-ons-list-header>
+      <v-ons-list-item>
+        <div class="center"></div>
+        <div class="right">
+          <v-ons-select v-model="getCoinId" @change="getLabels">
+            <option v-for="l in coins" :value="l.coinId">{{l.name}}</option>
+          </v-ons-select>
+        </div>
+      </v-ons-list-item>
+      <v-ons-list-item>
+        <div class="center"></div>
+        <div class="right">
+          <v-ons-select v-model="addrIndex" @change="getPubKey">
+            <option v-for="(l,i) in labels" :value="i">{{l}}</option>
+          </v-ons-select>
+        </div>
+      </v-ons-list-item>
+      <v-ons-list-item v-show="getCoinCPAvailable">
+        <div class="center">Counterparty</div>
+        <div class="right">
+          <v-ons-switch v-model="getCoinIsCP"></v-ons-switch>
+        </div>
+      </v-ons-list-item>
+      <v-ons-list-item v-show="!csvAvailable"><div class="right"></div></v-ons-list-item>
+      <v-ons-list-item>
+        <v-ons-button modifier="large" @click="getPubKey" :disabled="!labels.length||!giveCoinId||!getCoinId"></v-ons-button>
+      </v-ons-list-item>
+      <v-ons-list-header></v-ons-list-header>
+      <v-ons-list-item>
+        <div class="center"><v-ons-input v-model="secret" placeholder="secret" @change="generateHash"></v-ons-input></div>
+        <div class="right" v-show="secretSize>32"></div>
+      </v-ons-list-item>
+      <v-ons-list-header>Share data below.</v-ons-list-header>
+      <v-ons-list-item>
+        <v-ons-input v-model="secretHash" placeholder="secretHash"></v-ons-input>
+      </v-ons-list-item>
+      <v-ons-list-item>
+        <v-ons-input v-model="secretSize" placeholder="secretSize" type="number"></v-ons-input>
+      </v-ons-list-item>
+      <v-ons-list-item>
+        <v-ons-input v-model="redeemAddressWithSecret" placeholder=""></v-ons-input>
+      </v-ons-list-item>
+      <v-ons-list-item>
+        <v-ons-input v-model="refundAddressWithSecret" placeholder=""></v-ons-input>
+      </v-ons-list-item>
+      <v-ons-list-item>
+        <v-ons-input v-model="redeemAddressWOSecret" placeholder=""></v-ons-input>
+      </v-ons-list-item>
+      <v-ons-list-item>
+        <v-ons-input v-model="refundAddressWOSecret" placeholder=""></v-ons-input>
+      </v-ons-list-item>
+      <v-ons-list-item>
+        <v-ons-input v-model="lockTime" placeholder="Lock Time" type="number"></v-ons-input>
+      </v-ons-list-item>
+      <v-ons-list-item>
+        <v-ons-button modifier="large" @click="generateP2SH" :disabled="!(secretSize&&secretHash&&refundAddressWithSecret&&redeemAddressWOSecret&&lockTime)">Get Address</v-ons-button>
+      </v-ons-list-item>
+      <v-ons-list-header> {{giveCoinId}} </v-ons-list-header>
+      <v-ons-list-item>
+        <v-ons-input :value="myP2SH&&myP2SH.address" placeholder="myP2SH"></v-ons-input>
+      </v-ons-list-item>
+      <v-ons-list-header></v-ons-list-header>
+      <v-ons-list-item>
+        <v-ons-input :value="opponentP2SH&&opponentP2SH.address" placeholder="opponentP2SH"></v-ons-input>
+      </v-ons-list-item>
+      <v-ons-list-header></v-ons-list-header>
+      <v-ons-list-item>
+      <v-ons-segment :index.sync="isRefund" v-show="csvAvailable">
+          <button></button>
+          <button></button>
+      </v-ons-segment>
+      <div v-show="!csvAvailable"></div>
+      </v-ons-list-item>
+      <div v-show="(getCoinIsCP&&!isRefund)||(giveCoinIsCP&&isRefund)">
+        <v-ons-list-item>
+          <div class="center"></div>
+          <div class="right">
+            <v-ons-input v-model="cpToken" placeholder="Counterparty Token"></v-ons-input>
+          </div>
+        </v-ons-list-item>
+        <v-ons-list-item>
+          <div class="center"></div>
+          <div class="right">
+            <v-ons-switch v-model="cpDivisible"></v-ons-switch>
+          </div>
+        </v-ons-list-item>
+        <v-ons-list-item>
+          <div class="center"></div>
+          <div class="right">
+            <v-ons-input v-model="cpAmount" placeholder="" type="number"></v-ons-input>
+          </div>
+      </v-ons-list-item>
+      </div>
+      <v-ons-list-item>
+        <v-ons-input v-model="secret" placeholder="Secret"></v-ons-input>
+      </v-ons-list-item>
+      <v-ons-list-item v-show="!(getCoinIsCP&&!isRefund)||(giveCoinIsCP&&isRefund)">
+        <v-ons-input v-model="fee" placeholder="(satoshi)" type="number"></v-ons-input>
+      </v-ons-list-item>
+      <v-ons-list-item v-show="(getCoinIsCP&&!isRefund)||(giveCoinIsCP&&isRefund)">
+        <v-ons-input v-model="fee" placeholder="(Satoshi/Byte)" type="number"></v-ons-input>
+      </v-ons-list-item>
+      <v-ons-list-item>
+        <v-ons-input v-model="password" placeholder="Password" type="password"></v-ons-input>
+      </v-ons-list-item>
+      <v-ons-list-item v-show="!isRefund">
+        <v-ons-button modifier="large" @click="signTx">Let's go.</v-ons-button>
+      </v-ons-list-item>
+      <v-ons-list-item v-show="isRefund">
+        <v-ons-button modifier="large" @click="signRefundTx"></v-ons-button>
+      </v-ons-list-item>
+      <v-ons-list-item>
+        <textarea :value="signedTx"></textarea>
+      </v-ons-list-item>
+
+    </v-ons-list>
+    
+  </div>
+</v-ons-page>

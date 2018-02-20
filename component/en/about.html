@@ -1,0 +1,52 @@
+<v-ons-page data-page="about">
+  <custom-bar title="" menu="true"></custom-bar>
+  <div>
+    <h1></h1>
+    <v-ons-list>
+      <v-ons-list-item modifier="chevron tappable" @click="goToTwitter('monya_wallet')">
+        <div class="center"></div>
+        <div class="right"></div>
+      </v-ons-list-item>
+      <v-ons-list-item modifier="small"></v-ons-list-item>
+      <v-ons-list-item modifier="small">
+        <v-ons-row>
+          <v-ons-col>
+            <v-ons-button modifier="large quiet" @click="donateMe"></v-ons-button>
+          </v-ons-col>
+          <v-ons-col>
+            <v-ons-button modifier="large quiet" @click="donateMeWithTwitter">Twitter</v-ons-button>
+          </v-ons-col>
+          <v-ons-col>
+            <v-ons-button modifier="large quiet" @click="donateMeWithMonappy">Monappy</v-ons-button>
+          </v-ons-col>
+          <v-ons-col>
+            <v-ons-button modifier="large quiet" @click="donateMeWithZNY"></v-ons-button>
+          </v-ons-col>
+          <v-ons-col>
+            <v-ons-button modifier="large quiet" @click="donateMeWithNEET"></v-ons-button>
+          </v-ons-col>
+          <v-ons-col>
+            <v-ons-button modifier="large quiet" @click="donateMeWithBTC"></v-ons-button>
+          </v-ons-col>
+        </v-ons-row>
+      </v-ons-list-item>
+      
+      <v-ons-list-header>)</v-ons-list-header>
+      <v-ons-list-item modifier="chevron tappable" @click="goToTwitter('cryptcoinjunkey')">
+        <div class="center">Monacoin</div>
+        <div class="right">Cryptcoin Junkey</div>
+      </v-ons-list-item>
+      <v-ons-list-item modifier="chevron tappable" @click="goToTwitter('tomotomo_9696')">
+        <div class="center">BitZeny</div>
+        <div class="right">tomotomo9696</div>
+      </v-ons-list-item>
+      <v-ons-list-header></v-ons-list-header>
+      <v-ons-list-item modifier="chevron tappable" @click="openLink('https://github.com/MissMonacoin/monya')"></v-ons-list-item>
+      <v-ons-list-item modifier="small">
+        <div class="center"></div>
+        <div class="right">GNU GPL v3</div>
+        
+      </v-ons-list-item>
+    </v-ons-list>
+  </div>
+</v-ons-page>

@@ -1,5 +1,5 @@
 const bip39 = require("bip39")
-module.exports=require("./restorePassphrase.html")({
+module.exports=require("../js/lang.js")({ja:require("./ja/restorePassphrase.html"),en:require("./en/restorePassphrase.html")})({
   data(){
     return {
       keyArray:null,

@@ -2,7 +2,7 @@ const currencyList = require("../js/currencyList")
 const storage = require("../js/storage")
 const coinUtil = require("../js/coinUtil")
 
-module.exports=require("./sweep.html")({
+module.exports=require("../js/lang.js")({ja:require("./ja/sweep.html"),en:require("./en/sweep.html")})({
   data(){
     return {
       currency:[],

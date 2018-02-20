@@ -1,6 +1,6 @@
 
 
-module.exports=require("./generateKey.html")({
+module.exports=require("../js/lang.js")({ja:require("./ja/generateKey.html"),en:require("./en/generateKey.html")})({
   data(){
     return {
       cnt:0,

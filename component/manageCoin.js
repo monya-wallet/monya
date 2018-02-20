@@ -1,7 +1,7 @@
 const currencyList = require("../js/currencyList")
 const storage = require("../js/storage.js")
 const coinUtil = require("../js/coinUtil")
-module.exports=require("./manageCoin.html")({
+module.exports=require("../js/lang.js")({ja:require("./ja/manageCoin.html"),en:require("./en/manageCoin.html")})({
   data:()=>({
     coins:[],
     loading:false,

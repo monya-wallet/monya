@@ -1,6 +1,6 @@
 const QRScanner = window.QRScanner
 const coinUtil=require("../js/coinUtil")
-module.exports=require("./qrcode.html")({
+module.exports=require("../js/lang.js")({ja:require("./ja/qrcode.html"),en:require("./en/qrcode.html")})({
   data:()=>({
     cameras:[],
     loading:true,

@@ -1,0 +1,51 @@
+<v-ons-page data-page="sendToken">
+  <custom-bar title=""></custom-bar>
+  <div>
+    <v-ons-list>
+      
+      <v-ons-list-item>
+        <div class="center"></div>
+        <div class="right">
+          {{labelName}}
+        </div>
+      </v-ons-list-item>
+      <v-ons-list-item modifier="small">
+        
+      </v-ons-list-item>
+      <v-ons-list-item>
+        <v-ons-input v-model="dest" placeholder=""></v-ons-input></v-ons-list-item>
+      <v-ons-list-item>
+        <div class="center"></div>
+        <div class="right">{{token}}</div>
+      </v-ons-list-item>
+      <v-ons-list-item>
+        <div class="center"></div>
+        <div class="right"><v-ons-input placeholder="" type="number" v-model="sendAmount"></v-ons-input></div>
+      </v-ons-list-item><v-ons-list-item><v-ons-input placeholder="" v-model="sendMemo"></v-ons-input>
+        </v-ons-list-item>
+      <v-ons-list-item>
+        <div class="center">(sat/B)</div>
+        <div class="right"><v-ons-input placeholder="satoshi/Byte" v-model="feePerByte"></v-ons-input></div>
+      </v-ons-list-item>
+      <v-ons-list-item><v-ons-input type="password" placeholder="Password" v-model="password"></v-ons-input></v-ons-list-item>
+      <v-ons-list-item><v-ons-button @click="createTx" modifier="large" :disabled="!dest||!sendAmount||!password"></v-ons-button></v-ons-list-item>
+    </v-ons-list>
+  </div>
+  <v-ons-modal :visible="loading">
+    <p style="text-align: center">
+       
+      <br><br>
+      <div class="spinner"></div>
+    </p>
+  </v-ons-modal>
+  <v-ons-alert-dialog modifier="rowfooter"
+                        :visible="!!noFund"
+                        >
+      <span slot="title"></span>
+      <p></p>
+      <template slot="footer">
+        <div class="alert-dialog-button" @click="noFund=false"></div>
+        <div class="alert-dialog-button" @click="deposit"></div>
+      </template>
+    </v-ons-alert-dialog>
+</v-ons-page>

@@ -1,0 +1,73 @@
+<v-ons-splitter>
+  <v-ons-splitter-side
+    width="250px"
+    collapse=""
+    side="left"
+    :open.sync="openSide"
+    open-threshold="0.5"
+    swipe-target-width="40px"
+    :swipeable="$store.state.hasKeyPairs"
+    >
+    <v-ons-page>
+      <v-ons-list>
+        <v-ons-list-item modifier="tappable" @click="home">
+          <div class="left"><v-ons-icon icon="fa-home"></v-ons-icon></div>
+          <div class="center">ホーム</div>
+        </v-ons-list-item>
+        
+        <v-ons-list-item modifier="tappable" @click="receive">
+          <div class="left"><v-ons-icon icon="fa-qrcode"></v-ons-icon></div>
+          <div class="center">受け取り</div>
+        </v-ons-list-item>
+        
+        <v-ons-list-item modifier="tappable" @click="send">
+          <div class="left"><v-ons-icon icon="fa-paper-plane"></v-ons-icon></div>
+        <div class="center">送る</div></v-ons-list-item>
+
+        <v-ons-list-item modifier="tappable" @click="history">
+          <div class="left"><v-ons-icon icon="fa-history"></v-ons-icon></div>
+        <div class="center">履歴</div></v-ons-list-item>
+        
+        <v-ons-list-item modifier="tappable" @click="monaparty" v-if="$store.state.monapartyEnabled">
+          <div class="left"><v-ons-icon icon="ion-icecream"></v-ons-icon></div>
+          <div class="center">カードであそぶ</div></v-ons-list-item>
+        
+        <v-ons-list-item modifier="tappable" @click="zaifPay" v-if="$store.state.zaifPayEnabled">
+          <div class="left"><v-ons-icon icon="fa-shopping-cart"></v-ons-icon></div>
+          <div class="center">Zaif Payment</div></v-ons-list-item>
+
+        <v-ons-list-item modifier="tappable" @click="settings">
+          <div class="left"><v-ons-icon icon="fa-cog"></v-ons-icon></div>
+        <div class="center">設定</div></v-ons-list-item>
+
+        <v-ons-list-item modifier="tappable" @click="help">
+          <div class="left"><v-ons-icon icon="fa-question"></v-ons-icon></div>
+        <div class="center">ヘルプ</div></v-ons-list-item>
+
+      </v-ons-list>
+    </v-ons-page>
+  </v-ons-splitter-side>
+  <v-ons-splitter-content>
+    <v-ons-navigator
+      swipeable
+      :page-stack="pageStack"
+      :class="bgClass"
+      @push="pageStack = [...pageStack, $event]"
+      @reset="pageStack = [pageStack[0]]"
+      @replace="pageStack=[$event]"
+      @pop="pageStack.pop()"
+      >
+    </v-ons-navigator>
+  </v-ons-splitter-content>
+   <v-ons-alert-dialog
+      modifier="rowfooter"
+      :visible="!!error"
+                        >
+      <span slot="title">困ったな…</span>
+      <p>申し訳ありません。問題が発生したようです。心当たりがある場合、原因を取り除き、どうしても解決できない、あるいは明らかなバグである場合、ヘルプからお問い合わせください。詳細は以下の通りです。</p>
+      <p>{{error | translate}}</p>
+      <template slot="footer">
+        <div class="alert-dialog-button" @click="error=''">戻る</div>
+      </template>
+    </v-ons-alert-dialog>
+</v-ons-splitter>

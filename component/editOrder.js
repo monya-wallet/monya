@@ -1,5 +1,5 @@
 const storage = require("../js/storage")
-module.exports=require("./editOrder.html")({
+module.exports=require("../js/lang.js")({ja:require("./ja/editOrder.html"),en:require("./en/editOrder.html")})({
   data:()=>({
     orders:[]
   }),

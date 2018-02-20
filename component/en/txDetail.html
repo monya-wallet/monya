@@ -1,0 +1,74 @@
+<v-ons-page data-page="txDetail">
+  <custom-bar title="" menu="true">
+    <v-ons-toolbar-button @click="showScript=!showScript">
+      <v-ons-icon icon="fa-share-square"></v-ons-icon>
+      </v-ons-toolbar-button>
+  </custom-bar>
+  <div>
+    <div v-if="res">
+      <v-ons-list>
+        <v-ons-list-item>
+          <div class="center"></div>
+          <div class="right">
+            <v-ons-input v-model="txLabel" placeholder="" @change="saveTxLabel"></v-ons-input>
+          </div>
+        </v-ons-list-item>
+        <v-ons-list-item modifier="">
+          <div class="center"></div>
+          <div class="right" v-if="message">{{message}}</div>
+          <div class="right" v-if="!message">()</div>
+        </v-ons-list-item>
+        <v-ons-list-item modifier="">
+          <div class="center"></div>
+          <div class="right">
+            <v-ons-input v-model="price" placeholder="" @change="saveTxLabel"></v-ons-input>
+          </div>
+        </v-ons-list-item>
+        <v-ons-list-item modifier="small">
+          <div class="center"></div>
+          <div class="right"><timestamp :timestamp="res.blocktime"></timestamp></div>
+        </v-ons-list-item>
+        <v-ons-list-item modifier="small">
+          <div class="center"></div>
+          <div class="right">{{res.confirmations}}</div>
+        </v-ons-list-item>
+        <v-ons-list-item modifier="small">
+          <div class="center"></div>
+          <div class="right">{{res.valueIn}}</div>
+        </v-ons-list-item>
+        <v-ons-list-item modifier="small">
+          <div class="center"></div>
+          <div class="right">{{res.valueOut}}</div>
+        </v-ons-list-item>
+        <v-ons-list-item modifier="small">
+          <div class="center">ID</div>
+          <div class="right"><v-ons-input :value="res.txid" readonly></v-ons-input></div>
+        </v-ons-list-item>
+        <v-ons-list-item modifier="tappable chevron" @click="openTxExplorer"></v-ons-list-item>
+      </v-ons-list>
+      <v-ons-list modifier="inset">
+        <v-ons-list-title></v-ons-list-title>
+        <v-ons-list-item v-for="v in res.vin">
+          <div class="addr" :class="addressClass(v.addr)" v-show="!showScript">{{v.addr}}</div>
+          <div class="w_right" @click="txDetail(v.txid)" v-show="!showScript">
+            <currency-set :amount="v.value" :ticker="coinId"></currency-set>
+          </div>
+          <div v-show="showScript">{{v.scriptSig.asm}}</div>
+        </v-ons-list-item>
+      </v-ons-list>
+      <v-ons-list modifier="inset">
+        <v-ons-list-title></v-ons-list-title>
+        <v-ons-list-item v-for="vo in res.vout">
+          <div v-show="!showScript">
+            <span v-for="addr in vo.scriptPubKey.addresses" class="addr" :class="addressClass(addr)">{{addr}}</span>
+          </div>
+          <div class="w_right" @click="txDetail(vo.spentTxId)" v-show="!showScript">
+            <currency-set :amount="vo.value" :ticker="coinId"></currency-set>
+          </div>
+          <div v-show="showScript">{{vo.scriptPubKey.asm}}</div>
+        </v-ons-list-item>
+      </v-ons-list>
+    </div>
+    <div class="spinner" v-show="!res"></div>
+  </div>
+</v-ons-page>

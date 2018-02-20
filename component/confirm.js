@@ -4,7 +4,7 @@ const currencyList = require("../js/currencyList")
 const bcLib = require('bitcoinjs-lib')
 const errors = require("../js/errors")
 const BigNumber = require('bignumber.js');
-module.exports=require("./confirm.html")({
+module.exports=require("../js/lang.js")({ja:require("./ja/confirm.html"),en:require("./en/confirm.html")})({
   data(){
     return {
       address:"",

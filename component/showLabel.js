@@ -2,7 +2,7 @@ const qrcode = require("qrcode")
 const currencyList = require("../js/currencyList")
 const storage = require("../js/storage")
 const coinUtil = require("../js/coinUtil")
-module.exports=require("./showLabel.html")({
+module.exports=require("../js/lang.js")({ja:require("./ja/showLabel.html"),en:require("./en/showLabel.html")})({
   data(){
     return {
       address:"",

@@ -4,7 +4,7 @@ const storage = require("../js/storage")
 const coinUtil = require("../js/coinUtil")
 const monappyApi=require("../js/monappyApi")
 
-module.exports=require("./invoice.html")({
+module.exports=require("../js/lang.js")({ja:require("./ja/invoice.html"),en:require("./en/invoice.html")})({
   data(){
     return {
       address:"",

@@ -3,7 +3,7 @@ const BigNumber = require('bignumber.js');
 const storage = require("../js/storage")
 const titleList = require("../js/titleList")
 
-module.exports=require("./makeToken.html")({
+module.exports=require("../js/lang.js")({ja:require("./ja/makeToken.html"),en:require("./en/makeToken.html")})({
   data(){
     return {
       token:"",

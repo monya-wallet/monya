@@ -1,0 +1,49 @@
+<v-ons-page data-page="qrcode">
+  <div id="container">
+    <div id="overlay">
+      
+    </div>
+    
+  </div>
+  <v-ons-fab
+    position="top left"
+    @click="back"
+    >
+      <v-ons-icon icon="fa-arrow-left"></v-ons-icon>
+    </v-ons-fab>
+    <v-ons-fab
+      position="bottom right"
+      @click="settings"
+      :visible="!loading"
+    >
+      <v-ons-icon icon="fa-cog"></v-ons-icon>
+      
+    </v-ons-fab>
+    <v-ons-fab
+      position="bottom left"
+      @click="toggleLight"
+      :visible="canEnableLight"
+    >
+      <v-ons-icon icon="fa-bolt"></v-ons-icon>
+      
+    </v-ons-fab>
+    <v-ons-fab
+      position="top right"
+      @click="changeCam"
+      :visible="canChangeCamera"
+    >
+      <v-ons-icon icon="fa-camera"></v-ons-icon>
+      <v-ons-icon icon="fa-refresh"></v-ons-icon>
+      
+    </v-ons-fab>
+    <v-ons-alert-dialog modifier="rowfooter"
+                        :visible="!!result"
+                        >
+      <span slot="title"></span>
+      <p>{{result}}</p>
+      <template slot="footer">
+        <div class="alert-dialog-button" @click="copyResult"></div>
+        <div class="alert-dialog-button" @click="back"></div>
+      </template>
+    </v-ons-alert-dialog>
+</v-ons-page>

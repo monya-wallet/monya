@@ -1,0 +1,51 @@
+<v-ons-page data-page="makeToken">
+  <custom-bar title=""></custom-bar>
+  <div>
+    <v-ons-list>
+      <v-ons-list-item modifier="small"></v-ons-list-item>
+      <v-ons-list-item>
+        <div class="center"></div>
+        <div class="right">
+          <v-ons-select v-model="addressIndex">
+            <option v-for="(l,i) in labels" :value="i">{{l}}</option>
+          </v-ons-select>
+        </div>
+      </v-ons-list-item>
+      <v-ons-list-item>
+        <div class="center"><v-ons-input placeholder="" v-model="token"></v-ons-input>
+        </div>
+        <div class="right"></div>
+      </v-ons-list-item>
+      <v-ons-list-item><v-ons-input placeholder="" type="number" v-model="amount"></v-ons-input></v-ons-list-item>
+      <v-ons-list-item><v-ons-input placeholder="" v-model="description"></v-ons-input></v-ons-list-item>
+      <v-ons-list-item><v-ons-input placeholder="" v-model="transferDest"></v-ons-input></v-ons-list-item>
+      <v-ons-list-item>
+        <div class="center"></div>
+        <div class="right"><v-ons-switch v-model="divisible"></v-ons-switch></div>
+      </v-ons-list-item>
+      <v-ons-list-item>
+        <div class="center">(sat/B)</div>
+        <div class="right"><v-ons-input type="number" placeholder="satoshi/Byte" v-model="feePerByte"></v-ons-input></div>
+      </v-ons-list-item>
+      <v-ons-list-item><v-ons-input type="password" placeholder="Password" v-model="password"></v-ons-input></v-ons-list-item>
+      <v-ons-list-item><v-ons-button  @click="createTx" modifier="large"></v-ons-button></v-ons-list-item>
+    </v-ons-list>
+  </div>
+  <v-ons-modal :visible="loading">
+    <p style="text-align: center">
+       
+      <br><br>
+      <div class="spinner"></div>
+    </p>
+  </v-ons-modal>
+   <v-ons-alert-dialog modifier="rowfooter"
+                        :visible="!!noFund"
+                        >
+      <span slot="title"></span>
+      <p></p>
+      <template slot="footer">
+        <div class="alert-dialog-button" @click="noFund=false"></div>
+        <div class="alert-dialog-button" @click="deposit"></div>
+      </template>
+    </v-ons-alert-dialog>
+</v-ons-page>

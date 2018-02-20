@@ -1,0 +1,76 @@
+<v-ons-page data-page="zaifPay">
+  <custom-bar title="Zaif Payment" menu="true"></custom-bar>
+  <div>
+    <div v-show="!hasCredentials" class="hasNoCredentials">
+      <div class="logo"></div>
+      <p>Zaif PaymentZaif <br/>
+        
+      </p>
+    </div>
+
+    <div v-show="hasCredentials">
+      <p>
+        : Zaif <br/></p>
+      <v-ons-list>
+        <v-ons-list-item modifier="chevron tappable" @click="health">
+          
+        </v-ons-list-item>
+        <v-ons-list-header></v-ons-list-header>
+        <v-ons-list-item>
+          <div class="center"></div>
+          <div class="right">
+            <v-ons-select v-model="cur">
+              <option value="mona">mona</option>
+              <option value="btc">btc</option>
+            </v-ons-select>
+          </div>
+        </v-ons-list-item>
+        <v-ons-list-item>
+          <div class="center"></div>
+          <div class="right">
+            <v-ons-select v-model="speed">
+              <option value="low"></option>
+              <option value="medium"></option>
+              <option value="high"></option>
+            </v-ons-select>
+          </div>
+        </v-ons-list-item>
+        <v-ons-list-item>
+          <div class="center"></div>
+          <div class="right">
+            <v-ons-input v-model="amount" type="number" placeholder=""></v-ons-input>
+            <currency-set ticker="jpy"></currency-set>
+          </div>
+        </v-ons-list-item>
+        <v-ons-list-item>
+          <div class="center"></div>
+          <div class="right">
+            <v-ons-input v-model="itemName" placeholder=""></v-ons-input>
+          </div>
+        </v-ons-list-item>
+        <v-ons-list-item>
+          <div class="center"></div>
+          <div class="right">
+            <v-ons-input v-model="orderId" placeholder=""></v-ons-input>
+          </div>
+        </v-ons-list-item>
+         <v-ons-list-item>
+          <div class="center"></div>
+          <div class="right">
+            <v-ons-input v-model="ref" placeholder=""></v-ons-input>
+          </div>
+         </v-ons-list-item>
+         <v-ons-list-item>
+           <v-ons-button modifier="large" @click="createInvoice"> & </v-ons-button>
+         </v-ons-list-item>
+         <v-ons-list-header></v-ons-list-header>
+         <v-ons-list-item modifier="tappable chevron" v-for="inv in invoices" @click="showInvoice(inv.invoiceId)">
+           <div class="center">{{inv.itemName}}</div>
+           <div class="right">
+             <timestamp :timestamp="inv.created"></timestamp>
+           </div>
+         </v-ons-list-item>
+      </v-ons-list>
+    </div>
+  </div>
+</v-ons-page>

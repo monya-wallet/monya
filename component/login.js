@@ -1,7 +1,7 @@
 const storage = require("../js/storage.js")
 const currencyList = require("../js/currencyList")
 const coinUtil = require("../js/coinUtil.js")
-module.exports=require("./login.html")({
+module.exports=require("../js/lang.js")({ja:require("./ja/login.html"),en:require("./en/login.html")})({
   data(){
     return {
       showPassword:false,

@@ -1,0 +1,111 @@
+<v-ons-page data-page="send" v-show="!$store.state.transparency">
+  <custom-bar title="" menu="true">
+    <v-ons-toolbar-button @click="qr">
+      <v-ons-icon icon="ion-qr-scanner"></v-ons-icon>
+    </v-ons-toolbar-button>
+  </custom-bar>
+  <div>
+    <v-ons-list>
+      <v-ons-list-item modifier="small" v-show="signature&&!verifyResult">
+        
+      </v-ons-list-item>
+      <v-ons-list-item modifier="small" v-show="signature&&verifyResult">
+        
+      </v-ons-list-item>
+      <v-ons-list-item modifier="small" v-show="messageToShow">
+        <div class="center">{{messageToShow}}</div>
+      </v-ons-list-item>
+      <v-ons-list-header></v-ons-list-header>
+      <v-ons-list-item>
+        <div class="center">
+          <v-ons-list-item><v-ons-input v-model="address" placeholder=""></v-ons-input></v-ons-list-item>
+        </div>
+        <div class="right">
+          <span v-show="label">{{label}}</span>
+        </div>
+      </v-ons-list-item>
+      <v-ons-list-header></v-ons-list-header>
+      <v-ons-list-item v-for="co in possibility">
+        <div class="left">
+          <v-ons-radio
+            :input-id="'coinType-'+co.coinId"
+            :value="co.coinId" v-model="coinType"
+            ></v-ons-radio></div>
+        <label class="center" :for="'coinType-'+co.coinId">
+          {{co.name}}
+        </label>
+        <div class="right">
+          <currency-set :ticker="co.coinId"></currency-set>
+        </div>
+      </v-ons-list-item>
+      <v-ons-list-item v-show="possibility.length<=0">
+        <div class="left"></div>
+        <label class="center"></label>
+      </v-ons-list-item>
+      <v-ons-list-header></v-ons-list-header>
+      <v-ons-list-item>
+        <div class="center">
+          <v-ons-input v-model="amount" type="number" @input="calcFiat" placeholder="" :disabled="!address||!coinType"></v-ons-input>
+        </div>
+        <div class="right">
+          <currency-set :ticker="coinType"></currency-set>
+        </div>
+      </v-ons-list-item>
+      <v-ons-list-header></v-ons-list-header>
+      <v-ons-list-item>
+        <div class="center">
+          <v-ons-input v-model="fiat" type="number" @input="calcCur" placeholder="" :disabled="!address||!coinType"></v-ons-input>
+        </div>
+        <div class="right">
+          <currency-set :ticker="fiatTicker"></currency-set>
+        </div>
+      </v-ons-list-item>
+      
+      <v-ons-list-item><v-ons-button modifier="large" @click="confirm" :disabled="!address||!amount||!feePerByte"></v-ons-button></v-ons-list-item>
+      
+      <v-ons-list-item v-show="!(advanced||utxoStr||message||txLabel)" @click="advanced=true">
+        <div class="left"><v-ons-icon icon="fa-caret-down"></v-ons-icon></div>
+        <div class="center"></div>
+      </v-ons-list-item>
+      
+      <div v-show="advanced||utxoStr||message||txLabel">
+        <v-ons-list-header>)</v-ons-list-header>
+        <v-ons-list-item>
+          <div class="center">
+            <v-ons-input v-model="txLabel" placeholder=""></v-ons-input>
+          </div>
+          <div class="right">
+            <v-ons-icon icon="ion-ios-list-outline"></v-ons-icon>
+          </div>
+        </v-ons-list-item>
+        <v-ons-list-header>(sat/Byte) </v-ons-list-header>
+        <v-ons-list-item>
+          <div class="center">
+            <v-ons-input type="number" v-model="feePerByte" placeholder="(satoshi/Byte)" :disabled="!address||!coinType"></v-ons-input>
+          </div>
+          <div class="right">
+            <currency-set ticker="satByte"></currency-set>
+          </div>
+        </v-ons-list-item>
+        <div v-show="!cannotSendMessage">
+          <v-ons-list-header>)</v-ons-list-header>
+          <v-ons-list-item>
+            <div class="center">
+              <v-ons-input v-model="message" placeholder="40Byte"></v-ons-input>
+            </div>
+            <div class="right">
+              {{remainingBytes}}
+            </div>
+          </v-ons-list-item>
+        </div>
+         <v-ons-list-header>UTXO</v-ons-list-header>
+        <v-ons-list-item>
+          <div class="center">
+            <v-ons-input v-model="utxoStr" placeholder=""></v-ons-input>
+          </div>
+        </v-ons-list-item>
+      </div>
+    </v-ons-list>
+    
+  </div>
+</v-ons-page>

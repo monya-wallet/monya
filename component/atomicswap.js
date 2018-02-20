@@ -136,7 +136,7 @@ const signRefund = (txb, coinId, addressIndex, redeemScript, password)=>{
   })
 
 };
-module.exports=require("./atomicswap.html")({
+module.exports=require("../js/lang.js")({ja:require("./ja/atomicswap.html"),en:require("./en/atomicswap.html")})({
   data(){
     return {
       labels:[],

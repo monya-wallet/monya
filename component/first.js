@@ -1,5 +1,5 @@
 const storage = require("../js/storage")
-module.exports=require("./first.html")({
+module.exports=require("../js/lang.js")({ja:require("./ja/first.html"),en:require("./en/first.html")})({
   data(){
     return {
       popoverVisible:false,

@@ -1,7 +1,7 @@
 const currencyList = require("../js/currencyList")
 const coinUtil = require("../js/coinUtil")
 const bcLib = require('bitcoinjs-lib')
-module.exports=require("./history.html")({
+module.exports=require("../js/lang.js")({ja:require("./ja/history.html"),en:require("./en/history.html")})({
   data(){
     return {
       curFilter:"mona",

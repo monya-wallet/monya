@@ -1,5 +1,5 @@
 const coinUtil = require("../js/coinUtil")
-module.exports=require("./about.html")({
+module.exports=require("../js/lang.js")({ja:require("./ja/about.html"),en:require("./en/about.html")})({
   data(){
     return {
 

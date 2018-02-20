@@ -1,4 +1,4 @@
-module.exports=require("./customBar.html")({
+module.exports=require("../js/lang.js")({ja:require("./ja/customBar.html"),en:require("./en/customBar.html")})({
   data(){
     return {}
   },

@@ -1,7 +1,7 @@
 const currencyList = require("../js/currencyList")
 const titleList = require("../js/titleList")
 
-module.exports=require("./dexOrder.html")({
+module.exports=require("../js/lang.js")({ja:require("./ja/dexOrder.html"),en:require("./en/dexOrder.html")})({
   data(){
     return {
       coinId:this.$store.state.coinId,

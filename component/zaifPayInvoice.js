@@ -4,7 +4,7 @@ const qrcode = require("qrcode")
 const currencyList = require("../js/currencyList")
 const coinUtil = require("../js/coinUtil")
 const crypto = require("crypto")
-module.exports=require("./zaifPayInvoice.html")({
+module.exports=require("../js/lang.js")({ja:require("./ja/zaifPayInvoice.html"),en:require("./en/zaifPayInvoice.html")})({
   data:()=>({
     hasCredentials:false,
     res:{},

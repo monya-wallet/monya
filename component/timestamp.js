@@ -1,4 +1,4 @@
-module.exports=require("./timestamp.html")({
+module.exports=require("../js/lang.js")({ja:require("./ja/timestamp.html"),en:require("./en/timestamp.html")})({
   data(){
     return {
       dateObj:null,

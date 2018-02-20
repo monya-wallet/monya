@@ -1,6 +1,6 @@
 const storage =require("../js/storage")
 const coinUtil = require("../js/coinUtil")
-module.exports=require("./importExport.html")({
+module.exports=require("../js/lang.js")({ja:require("./ja/importExport.html"),en:require("./en/importExport.html")})({
   data:()=>({
     expJson:"",
     impJson:"",

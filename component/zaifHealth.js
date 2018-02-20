@@ -8,7 +8,7 @@ const icons=[
     require("../res/zaifHealth/3.png")
 ]
 
-module.exports=require("./zaifHealth.html")({
+module.exports=require("../js/lang.js")({ja:require("./ja/zaifHealth.html"),en:require("./en/zaifHealth.html")})({
   data:()=>({
     score:0,
     icon:""

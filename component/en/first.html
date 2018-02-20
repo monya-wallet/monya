@@ -1,0 +1,39 @@
+<v-ons-page data-page="first">
+  <div class="wrap">
+    <div class="logo">
+      <div class="icon"></div>
+      <div class="appName"></div>
+      <div class="label">The easiest Monacoin Wallet</div>
+      <div class="buttons">
+        <v-ons-button @click="start">Start!</v-ons-button>
+      </div>
+    </div>
+    <div id="popoverTarget"></div>
+  </div>
+  
+  <v-ons-popover
+    cancelable
+    :visible.sync="popoverVisible"
+    :target="popoverTarget"
+    :direction="popoverDirection"
+    :cover-target= "false"
+    mask-color="rgba(0, 0, 0, 0)"
+    >
+    <v-ons-button modifier="large quiet" @click="howTo=true;popoverVisible=false"></v-ons-button>
+  </v-ons-popover>
+  <v-ons-dialog :visible.sync="howTo" cancelable>
+    
+    <div id="howTo"></div>
+    
+  </v-ons-dialog>
+  <v-ons-alert-dialog
+    modifier="rowfooter"
+    :visible.sync="showAlert"
+    >
+    <span slot="title">Safari</span>
+    <p>LINE</p>
+    <template slot="footer">
+      <div class="alert-dialog-button" @click="showAlert=false"></div>
+    </template>
+  </v-ons-alert-dialog>
+</v-ons-page>

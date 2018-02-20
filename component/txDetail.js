@@ -1,6 +1,6 @@
 const currencyList = require("../js/currencyList")
 const bcLib = require('bitcoinjs-lib')
-module.exports=require("./txDetail.html")({
+module.exports=require("../js/lang.js")({ja:require("./ja/txDetail.html"),en:require("./en/txDetail.html")})({
   data(){
     return {
       res:null,

@@ -1,0 +1,34 @@
+<v-ons-page data-page="restorePassphrase">
+  <custom-bar title=""></custom-bar>
+  <div>
+    <p></p>
+      <v-ons-button modifier="quiet" @click="reset">
+        <v-ons-icon icon="fa-erase"></v-ons-icon>
+        
+      </v-ons-button>
+    <div id="wordArea">
+      <div class="word" v-for="(w,i) in words" :class="{noMatch:noMatch&&i===wdLength-1}">
+        <span class="deleteBtn" @click="remove(i)" v-show="i!==wdLength-1"><v-ons-icon icon="ion-close"></v-ons-icon></span>
+        <span class="wd" v-if="i!==wdLength-1">{{w.word}}</span>
+        <input v-if="i===wdLength-1" type="text" v-model="w.word"
+               v-focus @input="input"
+               @keydown.delete="removeEvt"
+               @keydown.enter="insert"/>
+      </div>
+      
+    </div>
+    <div id="nextWrap">
+      <v-ons-button @click="next" modifier="large" :disabled="wdLength<=12"></v-ons-button>
+    </div>
+    <div id="suggestion"><div class="sgst" v-for="s in suggestion" @click="apply(s)">{{s}}</div></div>
+    <v-ons-alert-dialog modifier="rowfooter"
+                        :visible.sync="error"
+                        >
+      <span slot="title">Error</span>
+      <p></p>
+      <template slot="footer">
+        <div class="alert-dialog-button" @click="error = false"></div>
+      </template>
+    </v-ons-alert-dialog>
+  </div>
+</v-ons-page>

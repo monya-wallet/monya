@@ -1,7 +1,7 @@
 const currencyList = require("../js/currencyList")
 const titleList = require("../js/titleList")
 const axios = require("axios")
-module.exports=require("./tokenInfo.html")({
+module.exports=require("../js/lang.js")({ja:require("./ja/tokenInfo.html"),en:require("./en/tokenInfo.html")})({
   data(){return{
     token:this.$store.state.tokenInfo,
     coinId:this.$store.state.coinId,

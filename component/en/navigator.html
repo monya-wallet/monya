@@ -12,25 +12,25 @@
       <v-ons-list>
         <v-ons-list-item modifier="tappable" @click="home">
           <div class="left"><v-ons-icon icon="fa-home"></v-ons-icon></div>
-          <div class="center">ホーム</div>
+          <div class="center"></div>
         </v-ons-list-item>
         
         <v-ons-list-item modifier="tappable" @click="receive">
           <div class="left"><v-ons-icon icon="fa-qrcode"></v-ons-icon></div>
-          <div class="center">受け取り</div>
+          <div class="center"></div>
         </v-ons-list-item>
         
         <v-ons-list-item modifier="tappable" @click="send">
           <div class="left"><v-ons-icon icon="fa-paper-plane"></v-ons-icon></div>
-        <div class="center">送る</div></v-ons-list-item>
+        <div class="center"></div></v-ons-list-item>
 
         <v-ons-list-item modifier="tappable" @click="history">
           <div class="left"><v-ons-icon icon="fa-history"></v-ons-icon></div>
-        <div class="center">履歴</div></v-ons-list-item>
+        <div class="center"></div></v-ons-list-item>
         
         <v-ons-list-item modifier="tappable" @click="monaparty" v-if="$store.state.monapartyEnabled">
           <div class="left"><v-ons-icon icon="ion-icecream"></v-ons-icon></div>
-          <div class="center">カードであそぶ</div></v-ons-list-item>
+          <div class="center"></div></v-ons-list-item>
         
         <v-ons-list-item modifier="tappable" @click="zaifPay" v-if="$store.state.zaifPayEnabled">
           <div class="left"><v-ons-icon icon="fa-shopping-cart"></v-ons-icon></div>
@@ -38,11 +38,11 @@
 
         <v-ons-list-item modifier="tappable" @click="settings">
           <div class="left"><v-ons-icon icon="fa-cog"></v-ons-icon></div>
-        <div class="center">設定</div></v-ons-list-item>
+        <div class="center"></div></v-ons-list-item>
 
         <v-ons-list-item modifier="tappable" @click="help">
           <div class="left"><v-ons-icon icon="fa-question"></v-ons-icon></div>
-        <div class="center">ヘルプ/豆知識</div></v-ons-list-item>
+        <div class="center"></div></v-ons-list-item>
 
       </v-ons-list>
     </v-ons-page>
@@ -63,11 +63,11 @@
       modifier="rowfooter"
       :visible="!!error"
                         >
-      <span slot="title">困ったな…</span>
-      <p>申し訳ありません。問題が発生したようです。心当たりがある場合、原因を取り除き、どうしても解決できない、あるいは明らかなバグである場合、ヘルプからお問い合わせください。詳細は以下の通りです。</p>
+      <span slot="title">…</span>
+      <p></p>
       <p>{{error | translate}}</p>
       <template slot="footer">
-        <div class="alert-dialog-button" @click="error=''">戻る</div>
+        <div class="alert-dialog-button" @click="error=''"></div>
       </template>
     </v-ons-alert-dialog>
 </v-ons-splitter>

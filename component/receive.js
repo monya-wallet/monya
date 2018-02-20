@@ -4,7 +4,7 @@ const storage = require("../js/storage")
 const Currency = require("../js/currency")
 const coinUtil = require("../js/coinUtil")
 
-module.exports=require("./receive.html")({
+module.exports=require("../js/lang.js")({ja:require("./ja/receive.html"),en:require("./en/receive.html")})({
   data(){
     return {
       mainAddress:"",

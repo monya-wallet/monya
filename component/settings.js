@@ -1,7 +1,7 @@
 const storage=require("../js/storage")
 const monappyApi=require("../js/monappyApi")
 const currencyList = require("../js/currencyList")
-module.exports=require("./settings.html")({
+module.exports=require("../js/lang.js")({ja:require("./ja/settings.html"),en:require("./en/settings.html")})({
   data(){
     return {
       isWebView:false,

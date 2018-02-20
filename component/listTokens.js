@@ -3,7 +3,7 @@ const currencyList = require("../js/currencyList")
 const BigNumber = require('bignumber.js');
 const storage = require("../js/storage")
 
-module.exports=require("./listTokens.html")({
+module.exports=require("../js/lang.js")({ja:require("./ja/listTokens.html"),en:require("./en/listTokens.html")})({
   data(){
     return {
       search:[],

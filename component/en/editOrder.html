@@ -1,0 +1,25 @@
+<v-ons-page data-page="editOrder">
+  <custom-bar title=""></custom-bar>
+  <div>
+    <v-ons-list>
+      <v-ons-list-item v-for="(o,i) in orders">
+        <div class="left" @click="remove(i)">
+          <v-ons-icon icon="ion-close"></v-ons-icon>
+        </div>
+        <div class="center">
+          <v-ons-input v-model="o.name" placeholder=""></v-ons-input>
+        </div>
+        <div class="right">
+          <v-ons-input v-model="o.price" type="number" placeholder=")"></v-ons-input>
+        </div>
+      </v-ons-list-item>
+      <v-ons-list-item>
+        <v-ons-button modifier="large" @click="add"></v-ons-button>
+      </v-ons-list-item>
+      <v-ons-list-item>
+        <v-ons-button modifier="large" @click="save"></v-ons-button>
+      </v-ons-list-item>
+    </v-ons-list>
+    
+  </div>
+</v-ons-page>

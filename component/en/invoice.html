@@ -1,0 +1,97 @@
+<v-ons-page data-page="invoice">
+  <custom-bar title="" menu="true">
+    <v-ons-toolbar-button @click="orderDlg=true"><v-ons-icon icon="ion-ios-cart"></v-ons-icon></v-ons-toolbar-button>
+  </custom-bar>
+  <div>
+    <div id="currencySelector">
+      <v-ons-carousel swipeable overscrollable direction="horizontal" item-height="50px" item-width="50px" :index="currencyIndex">
+        <v-ons-carousel-item class="currencyIcon monappy" @click="currencyIndex=-1" v-show="monappyEnabled">
+          <div class="checked" v-show="currencyIndex===-1"></div>
+        </v-ons-carousel-item>
+        
+        <v-ons-carousel-item v-for="(crc,i) in currency" class="currencyIcon" :style="{'background-image':'url('+crc.icon+')'}" @click="currencyIndex=i">
+          <div class="checked" v-show="currencyIndex===i"></div>
+        </v-ons-carousel-item>
+      </v-ons-carousel>
+    </div>
+    <div id="simple">
+      <div class="label" v-show="currencyIndex===-1">Monappy</div>
+      <div id="qrArea">
+        <div id="qrcode">
+          <img :src="qrDataUrl||''" alt="QR code" id="qrcodeImage"/>
+          <div id="currentCurIcon" :style="{'background-image':'url('+currentCurIcon+')'}"></div>
+        </div>
+        <div class="address">{{url}}</div>
+      </div>
+      <v-ons-button @click="copyAddress" modifier="quiet">
+        <v-ons-icon icon="fa-clipboard"></v-ons-icon>
+        
+      </v-ons-button>
+      <v-ons-button @click="share" modifier="quiet" v-if="isNative">
+        <v-ons-icon icon="fa-share-square-o"></v-ons-icon>
+      </v-ons-button>
+      <v-ons-list>
+        
+        <v-ons-list-item v-show="currencyIndex===-1">
+          <div class="center">Monappy ID</div>
+          <div class="right">
+            <span class="atmark">@</span><v-ons-input v-model="monappyDestination" placeholder="Monappy ID" @change="changeMonappy" @input="monappyNotExist=false;" :class="{monappyNotExist:monappyNotExist}"></v-ons-input>
+          </div>
+        </v-ons-list-item>
+        <v-ons-list-item v-show="currencyIndex!==-1">
+          <div class="center"></div>
+          <div class="right">
+            <v-ons-select v-model="addressIndex">
+              <option v-for="(l,i) in labels" :value="i">{{l}}</option>
+            </v-ons-select>
+          </div>
+        </v-ons-list-item>
+        <v-ons-list-item>
+          <div class="center"></div>
+          <div class="right"><v-ons-input v-model="amount" type="number" placeholder="" @input="calcFiat"></v-ons-input><currency-set :ticker="coinType"></currency-set></div>
+        </v-ons-list-item>
+        <v-ons-list-item>
+          <div class="center"></div>
+          <div class="right"><v-ons-input v-model="fiat" type="number" placeholder="" @input="calcCur"></v-ons-input><currency-set :ticker="fiatTicker"></currency-set></div>
+        </v-ons-list-item>
+        <v-ons-list-item>
+          <div class="center"></div>
+          <div class="right"><v-ons-input v-model="message" placeholder=""></v-ons-input></div>
+        </v-ons-list-item>
+        <v-ons-list-item v-show="currencyIndex!==-1">
+          <div class="center">)</div>
+          <div class="right"><v-ons-input v-model="messageOpRet" placeholder="OP_RETURN"></v-ons-input></div>
+        </v-ons-list-item>
+        <v-ons-list-item v-show="currencyIndex!==-1">
+          <label class="left"><v-ons-checkbox input-id="isAddrUrl" v-model="isAddrUrl"></v-ons-checkbox></label>
+          <label class="center" for="isAddrUrl"></label>
+        </v-ons-list-item>
+      </v-ons-list>
+    </div>
+  </div>
+  <v-ons-dialog cancelable
+                :visible.sync="orderDlg"
+                >
+    <v-ons-list>
+      <v-ons-list-item v-for="(v,i) in orders" modifier="tappable">
+        <label class="left">
+          <v-ons-checkbox :input-id="'checkbox-' + i" :value="i" v-model="onOrder"></v-ons-checkbox>
+        </label>
+        <label class="center" :for="'checkbox-' + i">{{v.name}}</label>
+        <label class="right" :for="'checkbox-' + i"><currency-set :amount="v.price" ticker="jpy"></currency-set></label>
+      </v-ons-list-item>
+      <v-ons-list-header></v-ons-list-header>
+      <v-ons-list-item>
+        <div class="center"><v-ons-button @click="fiat=total;calcCur();orderDlg=false"></v-ons-button></div>
+        <div class="right"><currency-set :amount="total" ticker="jpy"></currency-set></div>
+      </v-ons-list-item>
+    </v-ons-list>
+  </v-ons-dialog>
+  <v-ons-fab
+      position="bottom right"
+      @click="shareOrCopy"
+    >
+      <v-ons-icon icon="fa-clipboard" v-if="!isNative"></v-ons-icon>
+      <v-ons-icon icon="fa-share-square-o" v-if="isNative"></v-ons-icon>
+    </v-ons-fab>
+</v-ons-page>

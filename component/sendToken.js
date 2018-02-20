@@ -2,7 +2,7 @@ const currencyList = require("../js/currencyList")
 const titleList = require("../js/titleList")
 const storage = require("../js/storage.js")
 
-module.exports=require("./sendToken.html")({
+module.exports=require("../js/lang.js")({ja:require("./ja/sendToken.html"),en:require("./en/sendToken.html")})({
   data(){
     return {
       token:this.$store.state.tokenInfo,

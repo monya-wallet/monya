@@ -52,6 +52,9 @@ gulp.task('webpackProd', function(){
 gulp.task("watch", function() {
   gulp.watch("dist/dist.js", ["reload"]);
 });
+
+
+
 gulp.task("setCordova", function() {
   return gulp.src(["dist/**"])
     .pipe(gulp.dest("./cordovaProj/www/dist"))
@@ -86,12 +89,12 @@ gulp.task("prod", function(cb) {
   );
 });
 gulp.task("addWord", function(cb) {
-  return gulp.src("component/*").pipe(translator.addWord({
+  return gulp.src("component/ja/*").pipe(translator.addWord({
     dictFile:"../lang/dict.json"
   }))
 });
-gulp.task("translate", function(cb) {
-  return gulp.src("component/*.html").pipe(translator.translate({
+gulp.task("translateEn", function(cb) {
+  return gulp.src("component/ja/*.html").pipe(translator.translate({
     dictFile:"../lang/dict.json"
-  })).pipe(gulp.dest("./component_en/"))
+  })).pipe(gulp.dest("./component/en"))
 });
