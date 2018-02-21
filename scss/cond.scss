@@ -1,0 +1,15 @@
+@if $disableMonaparty {
+  .condMonaparty{
+    display:none !important;
+  }
+}
+@if $disableZaif {
+  .condZaif{
+    display:none !important;
+  }
+}
+@if $disableMonappy {
+  .condMonappy{
+    display:none !important;
+  }
+}

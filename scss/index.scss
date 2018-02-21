@@ -1,9 +1,5 @@
-$baseColor:#ffeb47;
-$baseTextColor:#7c5702;
-$currencySelectorHeight:50px;
-$qrCurIconPercent:20%;
-$homeCurIconSize:38px;
-$spinnerSize:90px;
+@import "./param.scss";
+@import "./cond.scss";
 
 html{
   font-size:16px;
@@ -16,7 +12,7 @@ html{
   animation-duration: 4s;
   animation-timing-function: ease;
   animation-iteration-count: infinite;
-  background-image:url(../res/spinner.png);
+  background-image:$spinnerImg;
   background-repeat:no-repeat no-repeat;
   background-position:center center;
   background-size:contain;
@@ -61,7 +57,7 @@ ons-dialog .dialog{
     background-color: $baseColor;
     padding: 2% 0%;
     color:$baseTextColor;
-    background-image:url(../res/monacoin.png);
+    background-image:$homeBgImg;
     background-repeat:no-repeat;
     background-position:bottom right;
     text-align: center;
@@ -289,7 +285,7 @@ ons-popover .popover__content{
     background-color:#fdc;
   }
 }
-$iconSize:100px;
+
 [data-page="first"]{
   .page__background{
     background-color:$baseColor;
@@ -306,12 +302,12 @@ $iconSize:100px;
       text-align:center;
       .icon{
         display: inline-block;
-        background-image:url(../res/monya_icon_round_512.png);
+        background-image:$firstIconImg;
         background-position:center center;
         background-repeat:no-repeat;
         background-size:contain;
-        width:$iconSize;
-        height:$iconSize;
+        width:$firstIconSize;
+        height:$firstIconSize;
       }
       .appName{
         font-size:2em;
@@ -636,38 +632,12 @@ $zaifPayLogoSize:200px;
     }
   }
 }
+#titleImg{
+  width:$homeCurIconSize;
+  height:$homeCurIconSize;
+}
 [data-page="monaparty"]{
-  #wrap{
-    margin:10px;
-    background-color: white;
-    border-radius:3px;
-    ons-select{
-      width:100%;
-    }
-    position:relative;
-    #searchBox{
-      border-top:1px solid #9a7571;
-      height:36px;
-      width:100%;
-      position:relative;
-      input{
-        display:block;
-        width:100%;
-        height:100%;
-        margin:0;
-        border:0;
-        border-radius:3px;
-        box-sizing:border-box;
-        font-size:18px;
-      }
-      ons-button{
-        height:100%;
-        position:absolute;
-        right:0;
-        bottom:0;
-      }
-    }
-  }
+
   #tokens{
     text-align:center;
     .token{

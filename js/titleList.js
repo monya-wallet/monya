@@ -7,18 +7,21 @@ const defaultTitles=[{
   titleId:"monacard",
   titleName:"Monacard",
   apiVer:1,
-  apiEndpoint:"https://card.mona.jp/api"
+  apiEndpoint:"https://card.mona.jp/api",
+  icon:require("../res/coins/xmp.png")
 },{
   cpCoinId:"mona",//Monaparty
   titleId:"scamgirs",
   titleName:"Scam Girls",
   apiVer:2,
-  apiEndpoint:"https://zaif-status.herokuapp.com/scamgirls/api"
+  apiEndpoint:"https://zaif-status.herokuapp.com/scamgirls/api",
+  icon:require("../res/coins/xmp.png")
 },{
   cpCoinId:"btc",//Monaparty
   titleId:"cp",
   titleName:"Counterparty",
-  apiVer:false
+  apiVer:false,
+  icon:require("../res/coins/xcp.png")
 }]
 
 const titles={}

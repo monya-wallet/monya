@@ -9,6 +9,7 @@ module.exports=class{
     this.titleName=opt.titleName
     this.apiVer=opt.apiVer
     this.apiEndpoint=opt.apiEndpoint
+this.icon=opt.icon
     
     this.cp=currencyList.get(opt.cpCoinId)
   }

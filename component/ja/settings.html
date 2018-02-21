@@ -56,13 +56,13 @@
           </v-ons-select>
         </div>
       </v-ons-list-item>
-      <v-ons-list-header>Zaif Payment</v-ons-list-header>
-      <v-ons-list-item><div class="center">Zaif Paymentメニュー</div>
+      <v-ons-list-header class="condZaif">Zaif Payment</v-ons-list-header>
+      <v-ons-list-item class="condZaif"><div class="center">Zaif Paymentメニュー</div>
         <div class="right">
           <v-ons-switch @change="save" v-model="d.zaifPay.enabled"></v-ons-switch>
         </div>
       </v-ons-list-item>
-      <div v-show="d.zaifPay.enabled">
+      <div v-show="d.zaifPay.enabled" class="condZaif">
       <v-ons-list-item><div class="center">API Key</div>
         <div class="right">
           <v-ons-input placeholder="Type here" @change="save" v-model="d.zaifPay.apiKey"></v-ons-input>
@@ -74,24 +74,24 @@
         </div>
       </v-ons-list-item>
       </div>
-      <v-ons-list-header>Monappy</v-ons-list-header>
-      <v-ons-list-item>
+      <v-ons-list-header class="condMonappy">Monappy</v-ons-list-header>
+      <v-ons-list-item class="condMonappy">
         <div class="center">Monappyメニュー</div>
         <div class="right"><v-ons-switch v-model="d.monappy.enabled" @change="save"></v-ons-switch></div>
       </v-ons-list-item>
-      <div v-show="d.monappy.enabled">
+      <div v-show="d.monappy.enabled" class="condMonappy">
         <v-ons-list-item>
           <div class="center">あなたのMonappy ID</div>
           <div class="right"><span class="atmark">@</span><v-ons-input v-model="d.monappy.myUserId" placeholder="Monappy Id" @change="changeMonappy" @input="monappyNotExist=false" :class="{monappyNotExist:monappyNotExist}"></v-ons-input></div>
         </v-ons-list-item>
         
       </div>
-      <v-ons-list-header>カードであそぶ</v-ons-list-header>
-      <v-ons-list-item>
+      <v-ons-list-header class="condMonaparty">カードであそぶ</v-ons-list-header>
+      <v-ons-list-item class="condMonaparty">
         <div class="center">カードであそぶメニュー</div>
         <div class="right"><v-ons-switch v-model="d.monaparty.enabled" @change="save"></v-ons-switch></div>
       </v-ons-list-item>
-      <div v-show="d.monaparty.enabled">
+      <div v-show="d.monaparty.enabled" class="condMonaparty">
         <v-ons-list-item>
           <div class="center">背景</div>
           <div class="right">

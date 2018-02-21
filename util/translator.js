@@ -66,7 +66,12 @@ exports.translate = function(opt) {
 
     // プラグインの処理本体
     if (file.isBuffer()) {
-      var dict=JSON.parse(fs.readFileSync(path.join(__dirname,dictFile),{encoding:"utf8"}));
+      var dict=JSON.parse(
+            fs.readFileSync(path.join(__dirname,dictFile),{encoding:"utf8"})
+      );
+      if(opt.dict){
+        Object.assign(dict,opt.dict)
+      }
       // ファイルの内容をcontentsに読み込み
       var contents = file.contents.toString("utf8");
       var ks = Object.keys(dict)

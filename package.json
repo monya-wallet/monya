@@ -51,6 +51,7 @@
     "run-sequence": "^2.1.0",
     "sass-loader": "^6.0.6",
     "style-loader": "^0.18.2",
+    "sync-request": "^5.0.0",
     "url-loader": "^0.5.9",
     "vue-template-compiler": "^2.5.13",
     "vue-template-loader": "^0.3.1",

@@ -15,7 +15,9 @@ module.exports=require("../js/lang.js")({ja:require("./ja/monaparty.html"),en:re
     searchAddr:"",
     assetName:"",
     loading:false,searchKeyword:"",
-    titles:[]
+    titles:{},
+    titleId:"monacard",
+    titDlg:false
   }),
   store:require("../js/store.js"),
   methods:{
@@ -89,6 +91,12 @@ module.exports=require("../js/lang.js")({ja:require("./ja/monaparty.html"),en:re
         this.getMyAssets()
         return v
       }
+    }
+  },
+  watch:{
+    titleId(){
+      this.titDlg=false
+      this.getMyAssets()
     }
   },
   mounted(){

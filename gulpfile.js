@@ -10,6 +10,7 @@ var pump = require('pump');
 var translator= require("./util/translator.js")
 var imagemin = require('gulp-imagemin');
 var minify = composer(uglifyes, console);
+var request = require('sync-request');
 
 gulp.task("browserSync", function() {
   browser.init({
@@ -51,6 +52,7 @@ gulp.task('webpackProd', function(){
 });
 gulp.task("watch", function() {
   gulp.watch("dist/dist.js", ["reload"]);
+  gulp.watch("component/*.html", ["copyJa"]);
 });
 
 
@@ -93,7 +95,10 @@ gulp.task("prod", function(cb) {
 });
 gulp.task("copyJa", function(cb) {
   return gulp.src("component/*.html").pipe(translator.translate({
-    dictFile:"../lang/template.json"
+    dictFile:"../lang/template.json",
+    dict:{
+      "<!--t:Timestamp-->":JSON.parse(request('GET', 'https://mona.insight.monaco-ex.org/insight-api-monacoin/sync').getBody('utf8')).height
+    }
   })).pipe(gulp.dest("./component/ja"))
 });
 gulp.task("addWord", function(cb) {
