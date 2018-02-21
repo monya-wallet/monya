@@ -1,0 +1,40 @@
+<v-ons-page data-page="monaparty">
+  <custom-bar title="カードであそぶ" menu="true">
+    <v-ons-toolbar-button @click="getMyAssets">
+      <v-ons-icon icon="fa-refresh"></v-ons-icon>
+    </v-ons-toolbar-button>
+    <v-ons-toolbar-button @click="goToDex"><v-ons-icon icon="fa-exchange"></v-ons-icon></v-ons-toolbar-button>
+  </custom-bar>
+  <div>
+    <div id="wrap">
+      <v-ons-select v-model="titleId">
+        <option value="" v-for="(v,i) in titles" :value="i">{{v.titleName}}</option>
+      </v-ons-select>
+      <div id="searchBox">
+        <input v-model="searchKeyword" placeholder="アドレス,トークン名" @change="searchByKeyword">
+        <v-ons-button @click="searchByKeyword"><v-ons-icon icon="fa-search"></v-ons-icon></v-ons-button>
+      </div>
+    </div>
+    <div id="tokens">
+      <v-ons-card v-if="!assets.length"><div class="title">
+        トークンがありません
+        </div>
+        <div class="content">メニュー→受け取り→モナコインアイコン で受け取りアドレスを取得しましょう。</div>
+      </v-ons-card>
+      <div v-for="asset in assets" @click="showTokenInfo(asset.asset_longname||asset.asset,asset.address)" class="token" :style="asset.image">
+        <div class="cur"><currency-set :amount="asset.normalized_quantity" :ticker="asset.asset_longname||asset.asset" :notKnown="true"></currency-set></div>
+        <div class="owner" v-show="asset.owner"><v-ons-icon icon="fa-bookmark"></v-ons-icon></div>
+      </div>
+    </div>
+  </div>
+  <v-ons-fab position="bottom right" @click="goToMakeToken">
+      <v-ons-icon icon="fa-plus"></v-ons-icon>
+    </v-ons-fab>
+  <v-ons-modal :visible="loading">
+    <p style="text-align: center">
+      処理中 
+      <br><br>
+      <div class="spinner"></div>
+    </p>
+  </v-ons-modal>
+</v-ons-page>

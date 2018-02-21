@@ -76,17 +76,25 @@ gulp.task("compressImage", function() {
 
 gulp.task("default", function(cb) {
   return runSequence(
+    "copyJa",
     ['browserSync',"webpack","watch"],
     cb
   );
 });
 gulp.task("prod", function(cb) {
   return runSequence(
+    "copyJa",
+    "translateEn",
     ["lint","webpackProd"],
     "compressImage",
     ["setCordova","setDocs","setChrome"],
     cb
   );
+});
+gulp.task("copyJa", function(cb) {
+  return gulp.src("component/*.html").pipe(translator.translate({
+    dictFile:"../lang/template.json"
+  })).pipe(gulp.dest("./component/ja"))
 });
 gulp.task("addWord", function(cb) {
   return gulp.src("component/ja/*").pipe(translator.addWord({

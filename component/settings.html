@@ -1,0 +1,109 @@
+<v-ons-page data-page="settings">
+  <custom-bar title="設定" menu="true"></custom-bar>
+  <div>
+    <v-ons-list>
+      <v-ons-list-item modifier="tappable chevron" @click="goToSign"><div class="center">署名と検証</div></v-ons-list-item>
+      <v-ons-list-item modifier="tappable chevron" @click="goToManageCoin"><div class="center">コインの管理</div></v-ons-list-item>
+      <v-ons-list-item modifier="tappable chevron" @click="goToShowPassphrase"><div class="center">パスフレーズの表示</div></v-ons-list-item>
+      <v-ons-list-item modifier="tappable chevron" @click="goToSetPassword"><div class="center">パスワードを変更</div></v-ons-list-item>
+      <v-ons-list-item modifier="tappable chevron" @click="goToEditOrder"><div class="center">請求一覧の編集</div></v-ons-list-item>
+      <v-ons-list-item modifier="tappable chevron" @click="goToSweep"><div class="center">既存ウォレットからの吸出し</div></v-ons-list-item>
+      <v-ons-list-item modifier="tappable chevron" @click="goToImportExport"><div class="center">インポート/エクスポート</div></v-ons-list-item>
+      
+
+      <v-ons-list-header>お金</v-ons-list-header>
+      <v-ons-list-item>
+        <div class="center">待機中の残高も使用する(遅くなります)</div>
+        <div class="right">
+          <v-ons-switch @change="save" v-model="d.includeUnconfirmedFunds"></v-ons-switch>
+        </div>
+      </v-ons-list-item>
+      <v-ons-list-item>
+        <div class="center">法定通貨</div>
+        <div class="right">
+          <v-ons-select v-model="d.fiat" @change="save">
+            <option value="jpy">日本円</option>
+            <option value="mona">モナコイン</option>
+            <option value="usd">米ドル</option>
+          </v-ons-select>
+        </div>
+      </v-ons-list-item>
+      <v-ons-list-header>表示</v-ons-list-header>
+      <v-ons-list-item>
+        <div class="center">簡単な単位の表示にする</div>
+        <div class="right">
+          <v-ons-switch @change="save" v-model="d.useEasyUnit"></v-ons-switch>
+        </div>
+      </v-ons-list-item>
+      <v-ons-list-item>
+        <div class="center">絶対時間で表示する</div>
+        <div class="right">
+          <v-ons-switch @change="save" v-model="d.absoluteTime"></v-ons-switch>
+        </div>
+      </v-ons-list-item>
+      <v-ons-list-item>
+        <div class="center">決済音を鳴らす</div>
+        <div class="right">
+          <v-ons-switch @change="save" v-model="d.paySound"></v-ons-switch>
+        </div>
+      </v-ons-list-item>
+      <v-ons-list-item>
+        <div class="center">言語</div>
+        <div class="right">
+          <v-ons-select v-model="lang" @change="changeLang">
+            <option value="ja">日本語</option>
+            <!--<option value="en">English</option>-->
+          </v-ons-select>
+        </div>
+      </v-ons-list-item>
+      <v-ons-list-header>Zaif Payment</v-ons-list-header>
+      <v-ons-list-item><div class="center">Zaif Paymentメニュー</div>
+        <div class="right">
+          <v-ons-switch @change="save" v-model="d.zaifPay.enabled"></v-ons-switch>
+        </div>
+      </v-ons-list-item>
+      <div v-show="d.zaifPay.enabled">
+      <v-ons-list-item><div class="center">API Key</div>
+        <div class="right">
+          <v-ons-input placeholder="Type here" @change="save" v-model="d.zaifPay.apiKey"></v-ons-input>
+        </div>
+      </v-ons-list-item>
+      <v-ons-list-item><div class="center">Secret Key</div>
+        <div class="right">
+          <v-ons-input placeholder="Raw Secret Key" @change="save" v-model="d.zaifPay.secret"></v-ons-input>
+        </div>
+      </v-ons-list-item>
+      </div>
+      <v-ons-list-header>Monappy</v-ons-list-header>
+      <v-ons-list-item>
+        <div class="center">Monappyメニュー</div>
+        <div class="right"><v-ons-switch v-model="d.monappy.enabled" @change="save"></v-ons-switch></div>
+      </v-ons-list-item>
+      <div v-show="d.monappy.enabled">
+        <v-ons-list-item>
+          <div class="center">あなたのMonappy ID</div>
+          <div class="right"><span class="atmark">@</span><v-ons-input v-model="d.monappy.myUserId" placeholder="Monappy Id" @change="changeMonappy" @input="monappyNotExist=false" :class="{monappyNotExist:monappyNotExist}"></v-ons-input></div>
+        </v-ons-list-item>
+        
+      </div>
+      <v-ons-list-header>カードであそぶ</v-ons-list-header>
+      <v-ons-list-item>
+        <div class="center">カードであそぶメニュー</div>
+        <div class="right"><v-ons-switch v-model="d.monaparty.enabled" @change="save"></v-ons-switch></div>
+      </v-ons-list-item>
+      <div v-show="d.monaparty.enabled">
+        <v-ons-list-item>
+          <div class="center">背景</div>
+          <div class="right">
+            <v-ons-select v-model="d.monaparty.bgClass" @change="save">
+              <option value="sand">砂</option>
+              <option value="realmona">リアルモナコインちゃん</option>
+              <option value="white">単色:白</option>
+              <option value="blue">単色:青</option>
+          </v-ons-select>
+          </div>
+        </v-ons-list-item>
+      </div>
+    </v-ons-list>
+  </div>
+</v-ons-page>

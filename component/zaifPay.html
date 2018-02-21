@@ -1,0 +1,76 @@
+<v-ons-page data-page="zaifPay">
+  <custom-bar title="Zaif Payment" menu="true"></custom-bar>
+  <div>
+    <div v-show="!hasCredentials" class="hasNoCredentials">
+      <div class="logo"></div>
+      <p>Zaif Paymentとは、Zaif取引所を通して、受け取り時に暗号通貨でなく、日本円で受け取ることができる決済サービスです。これにより、レート変動によるリスクから解放されます。始め方、操作方法は、Zaif公式ドキュメントより優しい本アプリ解説をご覧下さい。 <br/>
+        まずは、APIキー、シークレットキーを設定画面から入力しましょう。
+      </p>
+    </div>
+
+    <div v-show="hasCredentials">
+      <p>
+        注意: Zaifのサーバーは混雑時、とても不安定です。決済する前に、ヘルスメーターを確認する癖をつけてください。 <br/></p>
+      <v-ons-list>
+        <v-ons-list-item modifier="chevron tappable" @click="health">
+          ヘルスメーター
+        </v-ons-list-item>
+        <v-ons-list-header>請求を作成</v-ons-list-header>
+        <v-ons-list-item>
+          <div class="center">決済に使用する暗号通貨</div>
+          <div class="right">
+            <v-ons-select v-model="cur">
+              <option value="mona">mona</option>
+              <option value="btc">btc</option>
+            </v-ons-select>
+          </div>
+        </v-ons-list-item>
+        <v-ons-list-item>
+          <div class="center">決済完了とみなすスピード</div>
+          <div class="right">
+            <v-ons-select v-model="speed">
+              <option value="low">遅いけど確実</option>
+              <option value="medium">最低限の承認</option>
+              <option value="high">すぐに終わるけどハイリスク</option>
+            </v-ons-select>
+          </div>
+        </v-ons-list-item>
+        <v-ons-list-item>
+          <div class="center">決済金額（日本円）</div>
+          <div class="right">
+            <v-ons-input v-model="amount" type="number" placeholder="決済額"></v-ons-input>
+            <currency-set ticker="jpy"></currency-set>
+          </div>
+        </v-ons-list-item>
+        <v-ons-list-item>
+          <div class="center">商品名</div>
+          <div class="right">
+            <v-ons-input v-model="itemName" placeholder="請求リストに表示されます"></v-ons-input>
+          </div>
+        </v-ons-list-item>
+        <v-ons-list-item>
+          <div class="center">オーダーIDなど</div>
+          <div class="right">
+            <v-ons-input v-model="orderId" placeholder="任意"></v-ons-input>
+          </div>
+        </v-ons-list-item>
+         <v-ons-list-item>
+          <div class="center">参照番号など</div>
+          <div class="right">
+            <v-ons-input v-model="ref" placeholder="任意"></v-ons-input>
+          </div>
+         </v-ons-list-item>
+         <v-ons-list-item>
+           <v-ons-button modifier="large" @click="createInvoice">保存 & 請求発行</v-ons-button>
+         </v-ons-list-item>
+         <v-ons-list-header>保存された請求</v-ons-list-header>
+         <v-ons-list-item modifier="tappable chevron" v-for="inv in invoices" @click="showInvoice(inv.invoiceId)">
+           <div class="center">{{inv.itemName}}</div>
+           <div class="right">
+             <timestamp :timestamp="inv.created"></timestamp>
+           </div>
+         </v-ons-list-item>
+      </v-ons-list>
+    </div>
+  </div>
+</v-ons-page>

@@ -1,0 +1,81 @@
+<v-ons-page data-page="zaifPayInvoice">
+  <custom-bar title="Zaif 請求" menu="true"></custom-bar>
+  <div>
+    <div id="qrArea">
+        <div id="qrcode">
+          <img :src="qrDataUrl||''" alt="QR code" id="qrcodeImage"/>
+          <div id="currentCurIcon" :style="{'background-image':'url('+currentCurIcon+')'}"></div>
+        </div>
+        <div class="address">{{res.bip21}}</div>
+      </div>
+    
+    <v-ons-list>
+      <v-ons-list-item>
+        <div class="center">決済に使用する暗号通貨</div>
+        <div class="right">
+          <div v-show="res.currency==='mona'">mona</div>
+          <div v-show="res.currency==='btc'">btc</div>
+        </div>
+      </v-ons-list-item>
+      <v-ons-list-item>
+        <div class="center">決済完了とみなすスピード</div>
+        <div class="right">
+          <div v-show="res.speed==='low'">遅いけど確実</div>
+          <div v-show="res.speed==='medium'">最低限の承認</div>
+          <div v-show="res.speed==='high'">すぐに終わるけどハイリスク</div>
+          
+        </div>
+      </v-ons-list-item>
+      <v-ons-list-item>
+        <div class="center">決済の進捗</div>
+        <div class="right">
+          <div v-show="res.status==='new'">請求受付中</div>
+          <div v-show="res.status==='paid'">送金されたようです</div>
+          <div v-show="res.status==='confirmed'">確認されました。</div>
+          <div v-show="res.status==='complete'">完了</div>
+          <div v-show="res.status==='expired'">期限切れ</div>
+          <div v-show="res.status==='invalid'">失敗</div>
+          <div v-show="res.status==='canceled'">キャンセルされました</div>
+        </div>
+      </v-ons-list-item>
+      <v-ons-list-item>
+        <div class="center">決済金額（暗号通貨）</div>
+        <div class="right">
+          <currency-set :amount="curAmt" :ticker="res.currency"></currency-set>
+        </div>
+      </v-ons-list-item>
+      <v-ons-list-item>
+        <div class="center">アドレス</div>
+        <div class="right">
+          <v-ons-input v-model="res.address"></v-ons-input>
+        </div>
+      </v-ons-list-item>
+      <v-ons-list-item>
+        <div class="center">（日本円）</div>
+        <div class="right">
+          <currency-set :amount="res.amount" ticker="jpy"></currency-set>
+        </div>
+      </v-ons-list-item>
+      <v-ons-list-item>
+        <div class="center">オーダーIDなど</div>
+        <div class="right">
+          <div>{{res.orderNumber}}</div>
+        </div>
+      </v-ons-list-item>
+      <!--<v-ons-list-item>
+        <div class="center">請求作成日</div>
+        <div class="right">
+          <timestamp :timestamp="res.created"></timestamp>
+        </div>
+      </v-ons-list-item>
+      <v-ons-list-item>
+        <div class="center">請求有効期限</div>
+        <div class="right">
+          <timestamp :timestamp="res.expired"></timestamp>
+        </div>
+      </v-ons-list-item>-->
+      
+    </v-ons-list>
+    
+  </div>
+</v-ons-page>
