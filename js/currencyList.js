@@ -178,41 +178,6 @@ const defaultCoins=[
     },
     confirmations:6
   },{
-    coinScreenName:j?"モナコイン(テストネット)":"Monacoin(Testnet)",
-    coinId:"tmona",
-    unit:"MONA(Testnet)",
-    unitEasy:j?"モナ(テストネット)":"Mona(Test)",
-    bip44:{
-      coinType:22,
-      account:0
-    },
-    bip21:"testnetmonacoin",
-    defaultFeeSatPerByte:200,
-    icon:require("../res/coins/tmona.png"),
-    defaultAPIEndpoint:"https://testnet-mona.insight.monaco-ex.org/insight-api-monacoin",
-    explorer:"https://testnet-mona.insight.monaco-ex.org/insight",
-    network:{
-      messagePrefix: '\x19Monacoin Signed Message:\n',
-      bip32: {
-        public: 0x043587cf,
-        private: 0x04358394
-      },
-      pubKeyHash: 111,// M
-      scriptHash: 117,// P new scripthash
-      wif: 239,//new wif
-      bech32:"tmona"
-    },
-    sound:require("../res/coins/paySound/mona.m4a"),
-    enableSegwit:false,
-    price:{
-      url:"https://public.bitbank.cc/mona_jpy/ticker",
-      json:true,
-      jsonPath:["data","last"],
-      fiat:"jpy"
-    },
-    confirmations:6,
-    counterpartyEndpoint:"https://wallet-testnet.monaparty.me/_api"
-  },{
     coinScreenName:j?"ビットコイン(SegWit)":"Bitcoin(SegWit)",
     coinId:"btcsw",
     unit:"BTC(SW)",

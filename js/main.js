@@ -7,7 +7,7 @@ if(!window.cordova){
 const Vue = require("vue/dist/vue.runtime.min")
 const VueOnsen = require('vue-onsenui')
 const Vuex = require("vuex")
-
+const template = require("../lang/template.json")
 
 Vue.use(VueOnsen)
 Vue.use(Vuex)
@@ -34,6 +34,8 @@ exports.vm= new Vue({
   },
   store:require("../js/store.js"),
   beforeMount() {
+    document.title = template["<!--t:AppName-->"]
+    
     if(this.$ons.platform.isAndroid()&&window.StatusBar){
        window.StatusBar.styleLightContent()
      }
@@ -45,7 +47,6 @@ exports.vm= new Vue({
       }
       html.setAttribute('onsflag-iphonex-landscape', '');
     }
-    
   }
 })
 const coinUtil=require("../js/coinUtil")
