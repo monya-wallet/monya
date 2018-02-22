@@ -3,6 +3,8 @@ const currencyList = require("../js/currencyList.js")
 const crypto = require('crypto');
 const storage = require("../js/storage.js")
 const errors=require("../js/errors")
+const template = require("../lang/template.json")
+
 const blacklist=["123456","114514","password","password2"]
 module.exports=require("../js/lang.js")({ja:require("./ja/setPassword.html"),en:require("./en/setPassword.html")})({
   data(){
@@ -45,7 +47,7 @@ module.exports=require("../js/lang.js")({ja:require("./ja/setPassword.html"),en:
           return coinUtil.makePairsAndEncrypt({
             entropy:this.$store.state.entropy,
             password:this.password,
-            makeCur:["mona"]
+            makeCur:[template["<!--t:primaryCoinId-->"]||"mona"]
           })
         })
       }
