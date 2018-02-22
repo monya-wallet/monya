@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "description": "",
   "main": "dist/dist.js",
+  "repository": "https://github.com/missmonacoin/monya.git",
   "dependencies": {
     "@babel/preset-env": "^7.0.0-beta.36",
     "@missmonacoin/bitcoincashjs-lib": "^1.0.1",
