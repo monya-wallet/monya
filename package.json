@@ -1,9 +1,9 @@
 {
-  "name": "monacoin-wallet",
-  "version": "0.0.1",
+  "name": "monya",
+  "version": "1.4.0",
   "description": "",
   "main": "dist/dist.js",
-  "repository": "https://github.com/missmonacoin/monya.git",
+  "repository": "https://github.com/monya-wallet/monya.git",
   "dependencies": {
     "@babel/preset-env": "^7.0.0-beta.36",
     "@missmonacoin/bitcoincashjs-lib": "^1.0.1",
@@ -63,6 +63,6 @@
     "lint": "eslint ./js/*.js",
     "build": "gulp prod"
   },
-  "author": "",
-  "license": "ISC"
+  "author": "monya-wallet",
+  "license": "GPL-3.0-only"
 }
