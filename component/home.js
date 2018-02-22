@@ -7,7 +7,8 @@ module.exports=require("../js/lang.js")({ja:require("./ja/home.html"),en:require
       fiatConv:0,
       loading:false,
       state:"initial",
-      error:false
+      error:false,
+      isSingleWallet:currencyList.isSingleWallet
     }
   },
   methods:{

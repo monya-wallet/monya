@@ -64,7 +64,7 @@
             <div class="fiatConv"><currency-set :amount="c.balance*c.price" :ticker="fiat" :easy="isEasy"></currency-set></div>
           </div>
         </v-ons-list-item>
-        <v-ons-list-item @click="goToManageCoin" modifier="tappable chevron">
+        <v-ons-list-item @click="goToManageCoin" modifier="tappable chevron" v-if="!isSingleWallet">
           <div class="left"><v-ons-icon icon="ion-plus"></v-ons-icon></div>
           <div class="center"></div>
         </v-ons-list-item>
