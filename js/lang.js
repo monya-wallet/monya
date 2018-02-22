@@ -5,5 +5,5 @@ module.exports = function(o){
 }
 
 module.exports.getLang = function(){
-  return window.localStorage.lang||navigator.language
+  return window.localStorage.lang||navigator.language.slice(0,2)
 }

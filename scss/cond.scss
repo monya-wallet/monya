@@ -13,3 +13,8 @@
     display:none !important;
   }
 }
+@if $disableAtomicSwap{
+  .condAtomicSwap{
+    display:none !important;
+  }
+}
