@@ -1,5 +1,4 @@
 const Currency = require("./currency")
-const axios = require('axios');
 const coinUtil=require("./coinUtil")
 const j = require("./lang").getLang()==="ja"
 

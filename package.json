@@ -5,12 +5,11 @@
   "main": "dist/dist.js",
   "repository": "https://github.com/monya-wallet/monya.git",
   "dependencies": {
-    "@babel/preset-env": "^7.0.0-beta.36",
+    
     "@missmonacoin/bitcoincashjs-lib": "^1.0.1",
     "@missmonacoin/bitcoinjs-lib-zcash": "^1.0.0",
     "@missmonacoin/blackcoinjs-lib": "^1.0.0",
     "axios": "^0.17.1",
-    "babel-preset-es2015": "^6.24.1",
     "bignumber.js": "^5.0.0",
     "bip39": "^2.4.0",
     "bitcoinjs-lib": "^3.2.0",
@@ -18,21 +17,22 @@
     "buffer": "^5.0.8",
     "coinselect": "^3.1.11",
     "cordova-plugin-qrscanner": "^2.5.0",
-    "gulp-uglify": "^3.0.0",
     "instascan": "^1.0.0",
     "onsenui": "^2.9.2",
     "pump": "^2.0.0",
     "qrcode": "^1.0.0",
     "qs": "^6.5.1",
-    "uglify-es": "^3.3.3",
-    "uglifyjs-webpack-plugin": "^1.0.0-beta.1",
     "vue": "^2.5.13",
     "vue-onsenui": "^2.5.0",
-    "vuex": "^3.0.1",
-    "webpack": "^3.10.0"
+    "vuex": "^3.0.1"
   },
   "devDependencies": {
+    "gulp-uglify": "^3.0.0",
+    "babel-preset-es2015": "^6.24.1",
+    "uglify-es": "^3.3.3",
+    "uglifyjs-webpack-plugin": "^1.0.0-beta.1",
     "babel-core": "^6.26.0",
+    "@babel/preset-env": "^7.0.0-beta.36",
     "babel-loader": "^7.1.2",
     "babel-preset-env": "^1.6.1",
     "babel-preset-stage-3": "^6.24.1",
@@ -56,7 +56,8 @@
     "url-loader": "^0.5.9",
     "vue-template-compiler": "^2.5.13",
     "vue-template-loader": "^0.3.1",
-    "webpack-stream": "^4.0.0"
+    "webpack-stream": "^4.0.0",
+    "webpack": "^3.10.0"
   },
   "scripts": {
     "start": "gulp",
