@@ -1,4 +1,3 @@
-const currencyList = require("../js/currencyList")
 const titleList = require("../js/titleList")
 const BigNumber = require('bignumber.js');
 const storage = require("../js/storage")

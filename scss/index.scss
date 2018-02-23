@@ -633,7 +633,7 @@ $zaifPayLogoSize:200px;
   width:$homeCurIconSize;
   height:$homeCurIconSize;
 }
-[data-page="monaparty"]{
+[data-page="monaparty"],[data-page="listTokens"]{
 
   #tokens{
     text-align:center;
@@ -699,7 +699,7 @@ $zaifPayLogoSize:200px;
     width: 100%;
   }
 }
-[data-page="tokenInfo"],[data-page="monaparty"],[data-page="sendToken"],[data-page="makeToken"],[data-page="dexOrder"]{
+[data-page="tokenInfo"],[data-page="monaparty"],[data-page="listTokens"],[data-page="sendToken"],[data-page="makeToken"],[data-page="dexOrder"]{
   ons-toolbar{
     background:linear-gradient(to bottom, #9e3429 0%,#6b2f27 100%);
     ons-icon,.toolbar__title,.back-button__icon{
