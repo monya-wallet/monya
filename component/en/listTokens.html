@@ -42,6 +42,14 @@
         <div class="w_right">
           {{h._tx_index}}</div>
       </v-ons-list-item>
+      <v-ons-list-item>
+        <div class="center">
+          取得件数
+        </div>
+        <div class="right">
+          <v-ons-input type="number" v-model="limit" @change="getHistory"></v-ons-input>
+        </div>
+      </v-ons-list-item>
     </v-ons-list>
   </div>
   <v-ons-modal :visible="loading">

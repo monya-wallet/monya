@@ -52,10 +52,13 @@ module.exports=require("../js/lang.js")({ja:require("./ja/listTokens.html"),en:r
     getHistory(){
       titleList.get(this.titleId).callCP("get_raw_transactions",{
         address:this.searchAddr,
-        limit:this.limit
+        limit:this.limit|0
       }).then(r=>{
         this.history = r
-      })
+      }).catch(e=>{
+          this.loading=false
+          this.$store.commit("setError",e.message)
+        })
     }
   },computed:{
     titleId:{

@@ -20,10 +20,9 @@ this.icon=opt.icon
     return this.cp.callCPLib(m,p)
   }
   getToken(token){
-    let promises
     if(token==='XMP'){
-      promises=[
-        Promise.resolve([{
+      return Promise.resolve({
+        asset:[{
           asset:"XMP",
           supply:0,
           divisible:true,
@@ -31,21 +30,22 @@ this.icon=opt.icon
           owner:"MMonapartyMMMMMMMMMMMMMMMMMMMUzGgh",
           locked:true,
           description:""
-        }]),Promise.resolve([]),Promise.resolve([])
-      ]
+        }],
+        card:[]
+      })
     }else{
-      promises=[
-        this.callCP("get_assets_info",{
+      let d ={}
+      return this.callCP("get_assets_info",{
           assetsList:[token]
-        }),this.getCardDetail(token)]
+      }).then(a=>{
+        d.asset=a
+        return this.getCardDetail(a[0].asset_longname||a[0].asset)
+      }).then(b=>{
+        d.card = b
+        return d
+      })
     }
-    let ret
-    return Promise.all(promises).then(r=>{
-      return {
-        asset:r[0],
-        card:r[1]
-      }
-    })
+   
   }
   getTokenHistory(token){
     if(token==='XMP'){

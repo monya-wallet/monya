@@ -641,7 +641,7 @@ $zaifPayLogoSize:200px;
       height:200px;
       width:140px;
       display:inline-block;
-      margin:5px;
+      margin:4px;
       position:relative;
       background-repeat: no-repeat no-repeat;
       background-position:center center;
@@ -658,15 +658,22 @@ $zaifPayLogoSize:200px;
         bottom:0;
         right:0;
         padding:2px;
+        box-sizing: border-box;
         background:rgba(255,255,255,0.8);
         border-radius: 3px 0 0 0;
+        max-width:100%;
         .currencySet{
+          
           .amount{
             display: block;
+            font-size:1.1em
           }
           .ticker{
             display: block;
             font-size:0.7em;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            overflow: hidden;
           }
         }
       }
@@ -676,7 +683,7 @@ $zaifPayLogoSize:200px;
 [data-page="tokenInfo"]{
   #cardArea{
     margin:10px;
-    height:350px;
+    height:500px;
     #card{
       width:100%;
       height:100%;
