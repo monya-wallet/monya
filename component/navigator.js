@@ -47,9 +47,6 @@ module.exports=require("../js/lang.js")({ja:require("./ja/navigator.html"),en:re
     help(){
       this.openSide=false;this.$set(this,"pageStack",[require("./help.js")])
     },
-    monappy(){
-      this.openSide=false;this.$set(this,"pageStack",[require("./monappy.js")])
-    },
     monaparty(){
       this.openSide=false;this.$set(this,"pageStack",[require("./monaparty.js")])
     },

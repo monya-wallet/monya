@@ -97,7 +97,7 @@ gulp.task("copyJa", function(cb) {
   return gulp.src("component/*.html").pipe(translator.translate({
     dictFile:"../lang/template.json",
     dict:{
-      "<!--t:Timestamp-->":JSON.parse(request('GET', 'https://mona.insight.monaco-ex.org/insight-api-monacoin/sync').getBody('utf8')).height
+      "<!--t:Timestamp-->":JSON.parse(request('GET', 'https://mona.monya.ga/insight-api-monacoin/sync').getBody('utf8')).height
     }
   })).pipe(gulp.dest("./component/ja"))
 });
