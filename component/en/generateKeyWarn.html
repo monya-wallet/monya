@@ -30,6 +30,16 @@
       </label>
       <label class="center" for="check3"></label>
     </v-ons-list-item>
+    <v-ons-list-item>
+      <div class="center">単語数</div>
+      <div class="right">
+        <v-ons-select v-model="entropySize">
+          <option value="16">12単語</option>
+          <option value="24">18単語</option>
+          <option value="32">24単語</option>
+        </v-ons-select>
+      </div>
+    </v-ons-list-item>
     <v-ons-list-item><v-ons-button :disabled="!check1||!check2||!check3" @click="next" modifier="large"></v-ons-button></v-ons-list-item>
   </v-ons-list>
   

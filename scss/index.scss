@@ -356,14 +356,17 @@ ons-popover .popover__content{
     .word{
       display:inline-block;
       margin:5px;
-      padding:4px;
+      padding:5px;
       border:#ddd 1px solid;
-      
-      border-radius:3.5px;
+      border-radius:4px;
       .wd{
         color:black;
       }
       .deleteBtn{
+        color:#aaa;
+        vertical-align: middle;
+      }
+      .wordNo{
         color:#aaa;
       }
       input{
@@ -398,6 +401,12 @@ ons-popover .popover__content{
   }
 }
 [data-page="question"]{
+  #ansBack{
+    position:fixed;
+    bottom:0;
+    left:0;
+    margin:10px;
+  }
   .questionItem{
     text-align:center;
     padding:3%;

@@ -1,5 +1,7 @@
 <v-ons-page data-page="generateKey">
-  <custom-bar title=""></custom-bar>
+  <custom-bar title="">
+    <v-ons-toolbar-button @click="skip">スキップ</v-ons-toolbar-button>
+  </custom-bar>
   <div class="touchArea" ref="touchArea">
     <p v-show="cnt<wordCount">
       <br>

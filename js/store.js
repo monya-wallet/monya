@@ -3,6 +3,7 @@ module.exports = new Vuex.Store({
   state: {
     entropy:null,
     confPayload:null,
+    entropySize:0,
     finishNextPage:null,
     easyUnit:false,
     fiat:"jpy",
@@ -31,6 +32,9 @@ module.exports = new Vuex.Store({
   mutations: {
     setEntropy(state,ent) {
       state.entropy=ent;
+    },
+    setEntropySize(state,ent) {
+      state.entropySize=ent|0;
     },
     openSide(state,v) {
       state.openSide=v;

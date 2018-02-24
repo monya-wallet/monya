@@ -3,37 +3,15 @@
   <div>
     <h1>もにゃ</h1>
     <v-ons-list>
-      <v-ons-list-item modifier="chevron tappable" @click="goToTwitter('monya_wallet')">
+      <v-ons-list-item>
         <div class="center">バージョン</div>
-        <div class="right">1.4.0,1254282,original</div>
+        <div class="right">1.4.0,1254735,original</div>
       </v-ons-list-item>
       <v-ons-list-item modifier="chevron tappable" @click="goToTwitter('monya_wallet')">
         <div class="center">作った人</div>
         <div class="right">もにゃ 開発チーム</div>
       </v-ons-list-item>
-      <v-ons-list-item modifier="small">寄付をいただければ泣いて喜びます</v-ons-list-item>
-      <v-ons-list-item modifier="small">
-        <v-ons-row>
-          <v-ons-col>
-            <v-ons-button modifier="large quiet" @click="donateMe">モナで寄付</v-ons-button>
-          </v-ons-col>
-          <v-ons-col>
-            <v-ons-button modifier="large quiet" @click="donateMeWithTwitter">Twitterで寄付</v-ons-button>
-          </v-ons-col>
-          <v-ons-col>
-            <v-ons-button modifier="large quiet" @click="donateMeWithMonappy">Monappyで寄付</v-ons-button>
-          </v-ons-col>
-          <v-ons-col>
-            <v-ons-button modifier="large quiet" @click="donateMeWithZNY">ゼニで寄付</v-ons-button>
-          </v-ons-col>
-          <v-ons-col>
-            <v-ons-button modifier="large quiet" @click="donateMeWithNEET">ニートで寄付</v-ons-button>
-          </v-ons-col>
-          <v-ons-col>
-            <v-ons-button modifier="large quiet" @click="donateMeWithBTC">ビットコインで寄付</v-ons-button>
-          </v-ons-col>
-        </v-ons-row>
-      </v-ons-list-item>
+      <v-ons-list-item modifier="chevron tappable" @click="openLink('https://missmonacoin.github.io')">作者に寄付する</v-ons-list-item>
       
       <v-ons-list-header>バックエンドをお借りした方々(敬称略)</v-ons-list-header>
       <v-ons-list-item modifier="chevron tappable" @click="goToTwitter('cryptcoinjunkey')">
@@ -45,7 +23,7 @@
         <div class="right">tomotomo9696</div>
       </v-ons-list-item>
       <v-ons-list-header>オープンソース</v-ons-list-header>
-      <v-ons-list-item modifier="chevron tappable" @click="openLink('https://github.com/MissMonacoin/monya')">ソースコード</v-ons-list-item>
+      <v-ons-list-item modifier="chevron tappable" @click="openLink('https://github.com/monya-wallet/monya')">ソースコード</v-ons-list-item>
       <v-ons-list-item modifier="small">
         <div class="center">ライセンス</div>
         <div class="right">GNU GPL v3</div>

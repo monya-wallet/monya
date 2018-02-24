@@ -1,10 +1,10 @@
-
+const crypto = require("crypto")
 
 module.exports=require("../js/lang.js")({ja:require("./ja/generateKey.html"),en:require("./en/generateKey.html")})({
   data(){
     return {
       cnt:0,
-      wordCount:16,
+      wordCount:this.$store.state.entropySize,
       next:false,
       keyArray:[],
       sensorAvailable:false
@@ -18,11 +18,21 @@ module.exports=require("../js/lang.js")({ja:require("./ja/generateKey.html"),en:
         this.next=true;
         
         this.$store.commit("setEntropy",this.keyArray.map(v=>("0"+v.toString(16)).slice(-2)).join(""))
+        this.$emit("pop")
+        this.$emit("push",require("./showPassphrase"))
+      }
+    },
+    skip(){
+      if(!this.next){
+        this.next=true;
+        
+        this.$store.commit("setEntropy",crypto.randomBytes(this.wordCount).toString('hex'))
+        this.$emit("pop")
         this.$emit("push",require("./showPassphrase"))
       }
     }
-    
   },
+  
   mounted(){
     let detecting = true;
     let drag=false;

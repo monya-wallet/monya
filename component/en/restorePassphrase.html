@@ -9,6 +9,7 @@
     <div id="wordArea">
       <div class="word" v-for="(w,i) in words" :class="{noMatch:noMatch&&i===wdLength-1}">
         <span class="deleteBtn" @click="remove(i)" v-show="i!==wdLength-1"><v-ons-icon icon="ion-close"></v-ons-icon></span>
+        <span class="wordNo" v-if="i===wdLength-1">{{i+1}}</span>
         <span class="wd" v-if="i!==wdLength-1">{{w.word}}</span>
         <input v-if="i===wdLength-1" type="text" v-model="w.word"
                v-focus @input="input"

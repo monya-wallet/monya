@@ -91,7 +91,6 @@ module.exports=require("../js/lang.js")({ja:require("./ja/restorePassphrase.html
           ret.push(q[i])
         }
       }
-      console.log(ret)
       return ret
     }
   },
