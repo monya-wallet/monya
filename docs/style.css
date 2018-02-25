@@ -1,5 +1,5 @@
 /*
-Template Name: Apex App	
+Template Name: Apex App
 Author: MarkUps
 Author URI: http://www.markups.io/
 Version: 1.0
@@ -7,8 +7,8 @@ Version: 1.0
 /* Table of Content
 ==================================================
 #BASIC TYPOGRAPHY
-#HEADER	
-#MENU 
+#HEADER
+#MENU
 #FEATURE SECTION
 #VIDEO
 #APPPS SCREENSHOT
@@ -323,7 +323,8 @@ button:focus {
   transition: all 0.5s;
 }
 
-.mu-apple-btn:focus, .mu-apple-btn:hover,
+.mu-apple-btn:focus,
+.mu-apple-btn:hover,
 .mu-google-btn:focus,
 .mu-google-btn:hover,
 .mu-windows-btn:focus,
@@ -436,7 +437,7 @@ button:focus {
 }
 
 .mu-menu-full-overlay-show {
-    display: block;
+  display: block;
 }
 
 .mu-menu-full-overlay-inner {
@@ -613,8 +614,9 @@ button:focus {
 .mu-video-area h2 {
   color: #7c5702;
 }
-.cur{
-    display:inline-block;
+
+.cur {
+  display: inline-block;
 }
 
 /*--------------------*/
@@ -893,7 +895,7 @@ button:focus {
   display: inline;
   float: left;
   width: 100%;
-  text-align:center;
+  text-align: center;
 }
 
 #mu-social-media a {
@@ -1120,7 +1122,6 @@ button:focus {
   }
 }
 
-
-a[href="#appleUrl"]{
-    opacity:0.1;
+a[href="#appleUrl"] {
+  opacity: 0.1;
 }
