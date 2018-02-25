@@ -1,0 +1,800 @@
+@import "./param.scss";
+@import "./cond.scss";
+
+html{
+  font-size:16px;
+}
+
+.spinner {
+  width: $spinnerSize;
+  height: $spinnerSize;
+  animation-name: spin;
+  animation-duration: 4s;
+  animation-timing-function: ease;
+  animation-iteration-count: infinite;
+  background-image:$spinnerImg;
+  background-repeat:no-repeat no-repeat;
+  background-position:center center;
+  background-size:contain;
+  display:inline-block;
+}
+.list-item--small{
+  .list-item--small__left,.list-item--small__center,.list-item--small__right{
+    min-height:0px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+  }
+}
+ons-list-item{
+  .w_right{
+    margin-left:auto;
+    text-align:right;
+  }
+}
+
+.toolbar-button .ons-icon{
+  vertical-align:bottom;
+}
+
+ons-dialog .dialog{
+    max-height:100%;
+    max-width:100%;
+    overflow-y:scroll;
+    overflow-y:auto;
+  
+}
+.shake{
+  animation: shake 0.72s cubic-bezier(.36,.07,.19,.97) both;
+  transform: translate3d(0, 0, 0);
+}
+.transparent{
+  background:transparent;
+}
+
+[data-page="home"]{
+  #youHave{
+    width:100%;
+    background-color: $baseColor;
+    padding: 2% 0%;
+    color:$baseTextColor;
+    background-image:$homeBgImg;
+    background-repeat:no-repeat;
+    background-position:bottom right;
+    text-align: center;
+    .currencySet{
+      margin:5% 0;
+      
+      display: inline-block;
+      .amount{
+        font-size:1.6em;
+        margin:3px;
+      }
+      .ticker{
+        font-size: 0.9em;
+      }
+    }
+  }
+  #actionWrap{
+    margin:-10px 20px 20px;
+    
+    position:relative;
+    $radiusSize:5px;
+    #actions{
+      position:relative;
+      display:table;
+      width:100%;
+      border-radius:$radiusSize;
+      table-layout:fixed;
+      background:white;
+      box-shadow:0px 6px 19px -10px rgba(0,0,0,0.5);
+      .btns{
+        display:table-cell;
+        text-align:center;
+        padding:10px;
+        ons-icon{
+          font-size:1.2em;
+        }
+        .btnLabel{
+          color:#777;
+          font-size:0.7em;
+        }
+        &:active{
+          background-color:#ccc;
+        }
+        &:first-of-type{
+          border-radius:$radiusSize 0 0 $radiusSize;
+        }
+        &:last-of-type{
+          border-radius:0 $radiusSize $radiusSize 0;
+        }
+      }
+    }
+  }
+  #coins{
+    .w_right{
+      margin-left:auto;
+      .fiatConv{
+        color:#555;
+        font-size:0.76em;
+      }
+      .amount .ticker{
+        font-size:0.8em;
+      }
+      .unconfirmed{
+        color:red;
+      }
+    }
+    .price{
+      font-size:0.85em;
+      .ticker{
+        color:#555;
+        font-size:0.85em;
+      }
+    }
+    .left{
+      img{
+        width:$homeCurIconSize;
+        height:$homeCurIconSize;
+      }
+    }
+  }
+}
+[data-page="manageCoin"]{
+  .left{
+    img{
+      width:$homeCurIconSize;
+      height:$homeCurIconSize;
+    }
+  }
+  
+}
+[data-page="txDetail"]{
+  .list--inset{
+    margin-top:10px;
+    ons-list-item .center *{
+      word-break:break-all;
+      user-select:text;
+      -webkit-user-select: text;
+      -moz-user-select: text;
+      -ms-user-select: text;
+    }
+  }
+  .addr{
+    font-size:0.8em;
+    padding:4px;
+  }
+  .addr.receive{
+    color:#4a2;
+  }
+  .addr.change{
+    color:#29a;
+  }
+}
+[data-page="history"]{
+  .toolbar__right {
+    width: 40%;
+  }
+  ons-list-item{
+    
+    .destAddress{
+      font-size:0.8em;
+    }
+    .date{
+      font-size:0.85em;
+    }
+    .hasMsg{
+      color:#81d4fa;
+    }
+    .hasPrice{
+      color:#4caf50;
+    }
+    .inmatureConfirmation{
+      color:#ff0000;
+    }
+    .unread{
+      color:#ff9900;
+    }
+  }
+  .container{
+    text-align:center;
+  }
+}
+[data-page="showLabel"],[data-page="sweep"],[data-page="receive"],[data-page="history"],[data-page="invoice"]{
+  #currencySelector{
+    width:100%;
+    margin:none;
+    padding:none;
+    .currencyIcon{
+      width:$currencySelectorHeight;
+      height:$currencySelectorHeight;
+      background-position:center center;
+      background-size:contain;
+      background-repeat:no-repeat;
+      .checked{
+        position:absolute;
+        bottom:0;
+        right:0;
+        width:$currencySelectorHeight/2;
+        height:$currencySelectorHeight/2;
+        background-position:center center;
+        background-size:contain;
+        background-repeat:no-repeat;
+        background-image:url(../res/currency_checkmark.png);
+      }
+    }
+  }
+}
+ons-popover .popover__content{
+  text-align:center;
+  min-height:20px;
+}
+[data-page="showLabel"],[data-page="invoice"],[data-page="receive"]{
+  text-align:center;
+  #simple{
+    .label{
+      margin:10px;
+      color: #888;
+    }
+    #qrArea{
+      
+      #qrcode{
+        width: 250px;
+        height: 250px;
+        background-color:#aaa;
+        display:inline-block;
+        margin:10px;
+        position:relative;
+        #qrcodeImage{
+          width:100%;
+          height:100%;
+        }
+        #currentCurIcon{
+          position:absolute;
+          width:$qrCurIconPercent;
+          height:$qrCurIconPercent;
+          top:50%;
+          left:50%;
+          margin-left:-$qrCurIconPercent / 2;
+          margin-top:-$qrCurIconPercent / 2;
+          background-position:center center;
+          background-size:contain;
+          background-repeat:no-repeat;
+        }
+      }
+      .address{
+        display: block;
+        user-select:text;
+        -webkit-user-select: text;
+        -moz-user-select: text;
+        -ms-user-select: text;
+        word-wrap: break-word;
+        word-break: break-all;
+        white-space: pre-wrap;
+      }
+    }
+  }
+}
+[data-page="invoice"]{
+  .currencyIcon.monappy{
+    background-image:url(../res/monappy.png);
+  }
+  .monappyNotExist{
+    background-color:#fdc;
+  }
+}
+
+[data-page="first"]{
+  .page__background{
+    background-color:$baseColor;
+  }
+  .wrap{
+    position:relative;
+    width:100%;
+    height:100%;
+    
+    .logo{
+      position: absolute;
+      top:15%;
+      width:100%;
+      text-align:center;
+      .icon{
+        display: inline-block;
+        background-image:$firstIconImg;
+        background-position:center center;
+        background-repeat:no-repeat;
+        background-size:contain;
+        width:$firstIconSize;
+        height:$firstIconSize;
+      }
+      .appName{
+        font-size:2em;
+        color: $baseTextColor;
+      }
+      .label{
+        color:$baseTextColor;
+        opacity:0.5;
+      }
+    }
+
+    .buttons{
+      margin:40px auto 0;
+      width:50%;
+      ons-button{
+        margin:10px 0;
+        width:100%;
+      }
+    }
+    
+  }
+  #popoverTarget{
+    position:absolute;
+    width:100%;
+    height:0px;
+    bottom:0;
+  }
+  #popoverTargetAndroid{
+    position:absolute;
+    width:1px;
+    height:0px;
+    top:0;
+    right:0;
+  }
+  
+}
+#howTo{ // ons-popover is held by onsen ui
+  min-width:350px;
+  min-height: 200px;
+  background-size:contain;
+  background-position:center center;
+  background-repeat:no-repeat;
+  background-image: url(../res/howToAddHome.jpg);
+}
+[data-page="restorePassphrase"]{
+  #wordArea{
+    background-color: white;
+    width:100%;
+    .word{
+      display:inline-block;
+      margin:5px;
+      padding:5px;
+      border:#ddd 1px solid;
+      border-radius:4px;
+      .wd{
+        color:black;
+      }
+      .deleteBtn{
+        color:#aaa;
+        vertical-align: middle;
+      }
+      .wordNo{
+        color:#aaa;
+      }
+      input{
+        border:none;
+        background:transparent;
+        font-size:1em;
+        width:5em;
+        margin:0px;
+        padding:0px;
+        ime-mode:disabled;
+      }
+      &.noMatch{
+        background-color:#fdc;
+      }
+    }
+  }
+  #suggestion{
+    position:fixed;
+    bottom: 0;
+    width:100%;
+    background-color:white;
+    border-top: #c3c3c8 1px solid;
+    .sgst{
+      display:inline-block;
+      padding: 9px;
+      border-right: #c3c3c8 1px solid;
+    }
+    
+  }
+  #nextWrap{
+    padding:10px;
+  }
+}
+[data-page="question"]{
+  #ansBack{
+    position:fixed;
+    bottom:0;
+    left:0;
+    margin:10px;
+    z-index:100;
+  }
+  .questionItem{
+    text-align:center;
+    padding:3%;
+    .questionText{
+      padding:3%;
+      border-radius:8px;
+      border:1px solid $baseTextColor;
+      color:$baseTextColor;
+      background-color:white;
+    }
+    .answers{
+      .answer{
+        border-radius:6px;
+        background-color:$baseColor;
+        color:$baseTextColor;
+        margin:8px 0;
+        padding:6px;
+      }
+    }
+  }
+}
+[data-page="generateKeyWarn"]{
+  .wrap{
+    padding:10px;
+    .check{
+      padding:12px;
+      input{
+        font-size:1.5em;
+      }
+    }
+  }
+}
+[data-page="generateKey"]{
+  .touchArea{
+    height:50%;
+    background:#50aba0;
+    color:white;
+    font-size:2em;
+    text-align:center;
+    padding:30% 10%
+  }
+}
+
+[data-page="send"]{
+  ons-list-item ons-input{
+    width:100%;
+    display:block;
+  }
+}
+[data-page="confirm"]{
+  .insufficientFund{
+    color:red;
+  }
+}
+
+[data-page="finished"]{
+  .succeeded{
+    
+    height:300px;
+    margin:50px 0;
+    
+    background-repeat:no-repeat no-repeat;
+    background-size:contain;
+    background-position:center center;
+    &[data-img="0"]{
+      background-image:url(../res/success.png);
+    }
+  }
+  .wrap{
+    padding:40px;
+    text-align:center;
+  }
+}
+[data-page="setPassword"]{
+  ons-input{
+    width:100%
+  }
+}
+$passwordHeight:35px;
+[data-page="login"]{
+  .wrap{
+    padding:40px;
+    text-align:center;
+    .passwordBox{
+      line-height: $passwordHeight;
+      font-size:$passwordHeight;
+      display:grid;
+      grid-template-columns: 1fr $passwordHeight;
+      background:white;
+      border-radius:8px;
+      padding:5px;
+      margin:50px 5px;
+      input{
+        font-size:$passwordHeight;
+        background: transparent;
+        border: none;
+      }
+      ons-button{
+        line-height: $passwordHeight;
+      }
+      &.incorrect{
+        animation: shake 0.72s cubic-bezier(.36,.07,.19,.97) both;
+        transform: translate3d(0, 0, 0);
+      }
+    }
+  }
+}
+$zaifPayLogoSize:200px;
+[data-page="zaifPay"]{
+  .hasNoCredentials{
+    text-align:center;
+    .logo{
+      display: inline-block;
+      width: $zaifPayLogoSize;
+      height: $zaifPayLogoSize;
+      background-image:url(../res/zaifpay.png);
+      background-repeat:no-repeat;
+      background-size:contain;
+      background-position:center center;
+    }
+  }
+}
+[data-page="zaifHealth"]{
+  text-align:center;
+  #score{
+    font-size:xx-large;
+  }
+  #zaifIcon{
+    display: inline-block;
+    width: $zaifPayLogoSize;
+    height: $zaifPayLogoSize;
+    background-repeat:no-repeat;
+    background-size:contain;
+    background-position:center center;
+    
+  }
+}
+[data-page="zaifPayInvoice"]{
+  .label{
+    margin:10px;
+    color: #888;
+  }
+  #qrArea{
+    
+    #qrcode{
+      width: 250px;
+      height: 250px;
+      background-color:#aaa;
+      display:inline-block;
+      margin:10px;
+      position:relative;
+      #qrcodeImage{
+        width:100%;
+        height:100%;
+      }
+      #currentCurIcon{
+        position:absolute;
+        width:$qrCurIconPercent;
+        height:$qrCurIconPercent;
+        top:50%;
+        left:50%;
+        margin-left:-$qrCurIconPercent / 2;
+        margin-top:-$qrCurIconPercent / 2;
+        background-position:center center;
+        background-size:contain;
+        background-repeat:no-repeat;
+      }
+    }
+    .address{
+      display: block;
+      user-select:text;
+      -webkit-user-select: text;
+      -moz-user-select: text;
+      -ms-user-select: text;
+      word-wrap: break-word;
+      word-break: break-all;
+      white-space: pre-wrap;
+    }
+  }
+}
+
+[data-page="qrcode"]{
+  .page__background{
+    background:transparent
+  }
+  #container{
+    width:100%;
+    height:100%;
+    position:absolute;
+    top:0;
+    left:0;
+    background:transparent
+                 .overlay{
+      width:100%;
+      height:100%;
+      position:absolute;
+      top:0;
+      left:0;
+      
+    }
+  }
+}
+[data-page="sign"]{
+  textarea,ons-input{
+    width:100%;
+  }
+  #qrcode{
+    width: 250px;
+    height: 250px;
+    background-color:#aaa;
+    display:inline-block;
+    margin:10px;
+    position:relative;
+    #qrcodeImage{
+      width:100%;
+      height:100%;
+    }
+    #currentCurIcon{
+      position:absolute;
+      width:$qrCurIconPercent;
+      height:$qrCurIconPercent;
+      top:50%;
+      left:50%;
+      margin-left:-$qrCurIconPercent / 2;
+      margin-top:-$qrCurIconPercent / 2;
+      background-position:center center;
+      background-size:contain;
+      background-repeat:no-repeat;
+    }
+  }
+}
+#titleImg{
+  width:$homeCurIconSize;
+  height:$homeCurIconSize;
+}
+[data-page="monaparty"],[data-page="listTokens"]{
+
+  #tokens{
+    text-align:center;
+    .token{
+      height:200px;
+      width:140px;
+      display:inline-block;
+      margin:4px;
+      position:relative;
+      background-repeat: no-repeat no-repeat;
+      background-position:center center;
+      background-size:cover;
+      .owner{
+        position:absolute;
+        bottom:0;
+        left:0;
+        padding:3px;
+        color:#ffee58;
+      }
+      .cur{
+        position:absolute;
+        bottom:0;
+        right:0;
+        padding:2px;
+        box-sizing: border-box;
+        background:rgba(255,255,255,0.8);
+        border-radius: 3px 0 0 0;
+        max-width:100%;
+        .currencySet{
+          
+          .amount{
+            display: block;
+            font-size:1.1em
+          }
+          .ticker{
+            display: block;
+            font-size:0.7em;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            overflow: hidden;
+          }
+        }
+      }
+    }
+  }
+}
+[data-page="tokenInfo"]{
+  #cardArea{
+    margin:10px;
+    height:500px;
+    #card{
+      width:100%;
+      height:100%;
+      text-align:center;
+      img{
+        max-width: 100%;
+        max-height: 100%;
+      }
+    }
+  }
+}
+[data-page="settings"]{
+  .monappyNotExist{
+    background-color:#fdc;
+  }
+}
+
+[data-page="customCoin"],[data-page="importExport"]{
+  textarea{
+    width: 100%;
+  }
+}
+[data-page="tokenInfo"],[data-page="monaparty"],[data-page="listTokens"],[data-page="sendToken"],[data-page="makeToken"],[data-page="dexOrder"]{
+  ons-toolbar{
+    background:linear-gradient(to bottom, #9e3429 0%,#6b2f27 100%);
+    ons-icon,.toolbar__title,.back-button__icon{
+      color: white;
+      fill:white;
+    }
+  }
+  .page__background{
+    background-size:auto;
+  }
+  ons-navigator & .page__background{
+    background-image:url(../res/sand.jpg);
+    background-position:center center;
+    background-repeat:repeat;
+  }
+  ons-navigator.realmona & .page__background{
+    background-color:#f40298;
+    background-image:url(../res/realmona.png);
+    background-position:right bottom;
+    background-repeat:no-repeat;
+  }
+  ons-navigator.white & .page__background{
+    background-color:#fff;
+  }
+  ons-navigator.blue & .page__background{
+    background-color:#123456;
+  }
+  ons-input{
+    width:100%;
+  }
+  ons-button{
+    background:linear-gradient(to bottom, #9e3429 0%,#6b2f27 100%);
+  }
+}
+[data-page="atomicswap"]{
+  ons-input{
+    width: 100%;
+  }
+  ons-segment{
+    width:100%;
+  }
+}
+
+@keyframes shake {
+  10%, 90% {
+    transform: translate3d(-1px, 0, 0);
+  }
+  
+  20%, 80% {
+    transform: translate3d(2px, 0, 0);
+  }
+
+  30%, 50%, 70% {
+    transform: translate3d(-4px, 0, 0);
+  }
+
+  40%, 60% {
+    transform: translate3d(4px, 0, 0);
+  }
+}
+@keyframes spin {
+  0% {
+    transform: rotatez(0deg);
+  }
+  25% {
+    transform: rotatez(90deg);
+    
+  }
+  50% {
+    transform: rotatez(180deg);
+
+  }
+  75% {
+    transform: rotatez(270deg);
+    
+  }
+  100% {
+    transform: rotatez(360deg);
+  }
+}
+
