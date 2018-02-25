@@ -1,3 +1,4 @@
+
 const Currency = require("./currency")
 const coinUtil=require("./coinUtil")
 const j = require("./lang").getLang()==="ja"
@@ -17,7 +18,7 @@ const defaultCoins=[
     bip21:"monacoin",
     defaultFeeSatPerByte:200,
     icon:require("../res/coins/mona.png"),
-    defaultAPIEndpoint:"https://mona.monya.ga/insight-api-monacoin",
+    defaultAPIEndpoint:"https://mona.insight.monaco-ex.org/insight-api-monacoin",
     apiEndpoints:["https://mona.insight.monaco-ex.org/insight-api-monacoin","https://mona.monya.ga/insight-api-monacoin"],
     explorer:"https://mona.insight.monaco-ex.org/insight",
     network:{
