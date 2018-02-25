@@ -231,7 +231,7 @@ exports.parseUrl=url=>new Promise((resolve,reject)=>{
     if(v.bip21===ret.protocol){
       ret.isCoinAddress=true
       ret.coinId=v.coinId
-      ret.address=raw.pathname
+      ret.address=raw.pathname||raw.hostname
       if (v.isValidAddress(ret.address)) {
         ret.isPrefixOk=true
       }
@@ -252,7 +252,7 @@ exports.proxyUrl=url=>{
   if(exports.isNative()){
     return url
   }else{
-    return 'https://zaif-status.herokuapp.com/proxy/?u='+encodeURIComponent(url)
+    return 'https://zaif-status.glitch.me/proxy/?u='+encodeURIComponent(url)
   }
 }
 exports.shortWait=()=>new Promise(r=>{
