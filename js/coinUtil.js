@@ -252,7 +252,7 @@ exports.proxyUrl=url=>{
   if(exports.isNative()){
     return url
   }else{
-    return 'https://zaif-status.glitch.me/proxy/?u='+encodeURIComponent(url)
+    return 'https://zaif-status.herokuapp.com/proxy/?u='+encodeURIComponent(url)
   }
 }
 exports.shortWait=()=>new Promise(r=>{
