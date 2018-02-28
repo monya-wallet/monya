@@ -69,7 +69,7 @@
       </v-ons-list-item>
       
       <div v-show="advanced||utxoStr||message||txLabel">
-        <v-ons-list-header>)</v-ons-list-header>
+        <v-ons-list-header>()</v-ons-list-header>
         <v-ons-list-item>
           <div class="center">
             <v-ons-input v-model="txLabel" placeholder=""></v-ons-input>
@@ -88,7 +88,7 @@
           </div>
         </v-ons-list-item>
         <div v-show="!cannotSendMessage">
-          <v-ons-list-header>)</v-ons-list-header>
+          <v-ons-list-header>()</v-ons-list-header>
           <v-ons-list-item>
             <div class="center">
               <v-ons-input v-model="message" placeholder="40Byte"></v-ons-input>

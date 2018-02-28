@@ -8,12 +8,12 @@
       <v-ons-list-item modifier="tappable chevron" @click="goToSetPassword"><div class="center"></div></v-ons-list-item>
       <v-ons-list-item modifier="tappable chevron" @click="goToEditOrder"><div class="center"></div></v-ons-list-item>
       <v-ons-list-item modifier="tappable chevron" @click="goToSweep"><div class="center"></div></v-ons-list-item>
-      <v-ons-list-item modifier="tappable chevron" @click="goToImportExport"><div class="center"></div></v-ons-list-item>
+      <v-ons-list-item modifier="tappable chevron" @click="goToImportExport"><div class="center">/</div></v-ons-list-item>
       
 
       <v-ons-list-header></v-ons-list-header>
       <v-ons-list-item>
-        <div class="center">)</div>
+        <div class="center">()</div>
         <div class="right">
           <v-ons-switch @change="save" v-model="d.includeUnconfirmedFunds"></v-ons-switch>
         </div>
@@ -98,8 +98,8 @@
             <v-ons-select v-model="d.monaparty.bgClass" @change="save">
               <option value="sand"></option>
               <option value="realmona"></option>
-              <option value="white"></option>
-              <option value="blue"></option>
+              <option value="white">:</option>
+              <option value="blue">:</option>
           </v-ons-select>
           </div>
         </v-ons-list-item>

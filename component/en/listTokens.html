@@ -1,5 +1,5 @@
 <v-ons-page data-page="listTokens">
-  <custom-bar title="保有/" menu="true"></custom-bar>
+  <custom-bar title="/" menu="true"></custom-bar>
   <div>
     <div class="spinner" v-show="loading"></div>
     <div id="tokens">
@@ -9,7 +9,7 @@
       </div>
     </div>
     <v-ons-list>
-      <v-ons-list-header>直近30件の取引</v-ons-list-header>
+      <v-ons-list-header>30</v-ons-list-header>
       <v-ons-list-item v-for="h in history">
         <div class="left">
           <v-ons-icon v-if="h._category==='sends'" icon="fa-share"></v-ons-icon>
@@ -19,7 +19,7 @@
         </div>
         <div>
           <div v-if="h._category==='issuances'">
-            {{h._quantity_normalized}}{{h._asset_longname||h.asset}}作成
+            {{h._quantity_normalized}}{{h._asset_longname||h.asset}}
           </div>
           <div v-if="h._category==='sends'">
             {{h.source}}
@@ -30,13 +30,13 @@
             {{h.address}} {{h._asset_divisible?h.quantity:h.quantity/1e8}}{{h._asset_longname||h.asset}}
           </div>
           <div v-if="h._category==='order_matches'">
-            定
+            
           </div>
           <div v-if="h._category==='orders'">
-            注文
+            
           </div>
           <div v-if="h._category==='cancels'">
-            注文取消し
+            
           </div>
         </div>
         <div class="w_right">
@@ -44,7 +44,7 @@
       </v-ons-list-item>
       <v-ons-list-item>
         <div class="center">
-          取得件数
+          
         </div>
         <div class="right">
           <v-ons-input type="number" v-model="limit" @change="getHistory"></v-ons-input>

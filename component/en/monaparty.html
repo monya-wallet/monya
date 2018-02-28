@@ -14,7 +14,7 @@
       </v-ons-list-item>
       <v-ons-list-item modifier="small">
         <div class="center">
-          <v-ons-input v-model="searchKeyword" placeholder="" @change="searchByKeyword"></v-ons-input>
+          <v-ons-input v-model="searchKeyword" placeholder="," @change="searchByKeyword"></v-ons-input>
         </div>
         <div class="right">
           <v-ons-button @click="searchByKeyword"><v-ons-icon icon="fa-search"></v-ons-icon></v-ons-button>
@@ -25,7 +25,7 @@
       <v-ons-card v-if="!assets.length"><div class="title">
         
         </div>
-        <div class="content">→→{{titles[titleId]&&titles[titleId].cp.coinScreenName}}アイコン </div>
+        <div class="content">{{titles[titleId]&&titles[titleId].cp.coinScreenName}}</div>
       </v-ons-card>
       <div v-for="asset in assets" @click="showTokenInfo(asset.asset_longname||asset.asset,asset.address)" class="token" :style="asset.image">
         <div class="cur"><currency-set :amount="asset.normalized_quantity" :ticker="asset.asset_longname||asset.asset" :notKnown="true"></currency-set></div>

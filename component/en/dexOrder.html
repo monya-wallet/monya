@@ -16,7 +16,7 @@
         <div class="right"><v-ons-input placeholder="" type="number" v-model="giveAmount"></v-ons-input></div>
       </v-ons-list-item>
       <v-ons-list-item>
-        <div class="center">)</div>
+        <div class="center">()</div>
         <div class="right"><v-ons-input placeholder="" type="" v-model="giveToken"></v-ons-input></div>
       </v-ons-list-item>
       <v-ons-list-item>
@@ -24,10 +24,10 @@
         <div class="right"><v-ons-input placeholder="" type="number" v-model="getAmount"></v-ons-input></div>
       </v-ons-list-item>
       <v-ons-list-item>
-        <div class="center">)</div>
+        <div class="center">()</div>
         <div class="right"><v-ons-input placeholder="" type="" v-model="getToken"></v-ons-input></div>
       </v-ons-list-item>
-      <v-ons-list-item modifier="small"></v-ons-list-item>
+      <v-ons-list-item modifier="small">Satoshi</v-ons-list-item>
       
       <v-ons-list-item><v-ons-input type="password" placeholder="Password" v-model="password"></v-ons-input></v-ons-list-item>
       <v-ons-list-item><v-ons-button @click="createTx" modifier="large" :disabled="!giveAmount||!giveToken||!getAmount||!getToken||!password"></v-ons-button></v-ons-list-item>

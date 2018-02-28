@@ -95,7 +95,7 @@ module.exports=require("../js/lang.js")({ja:require("./ja/confirm.html"),en:requ
       storage.verifyBiometric().then(pwd=>{
         this.password=pwd
       }).catch(()=>{
-        // noop
+        return true
       })
     },
     build(){

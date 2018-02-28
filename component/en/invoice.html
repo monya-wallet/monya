@@ -15,7 +15,7 @@
       </v-ons-carousel>
     </div>
     <div id="simple">
-      <div class="label" v-show="currencyIndex===-1">Monappy</div>
+      <div class="label" v-show="currencyIndex===-1">QRMonappy</div>
       <div id="qrArea">
         <div id="qrcode">
           <img :src="qrDataUrl||''" alt="QR code" id="qrcodeImage"/>
@@ -59,12 +59,12 @@
           <div class="right"><v-ons-input v-model="message" placeholder=""></v-ons-input></div>
         </v-ons-list-item>
         <v-ons-list-item v-show="currencyIndex!==-1">
-          <div class="center">)</div>
+          <div class="center">()</div>
           <div class="right"><v-ons-input v-model="messageOpRet" placeholder="OP_RETURN"></v-ons-input></div>
         </v-ons-list-item>
         <v-ons-list-item v-show="currencyIndex!==-1">
           <label class="left"><v-ons-checkbox input-id="isAddrUrl" v-model="isAddrUrl"></v-ons-checkbox></label>
-          <label class="center" for="isAddrUrl"></label>
+          <label class="center" for="isAddrUrl">URL</label>
         </v-ons-list-item>
       </v-ons-list>
     </div>
