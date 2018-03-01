@@ -345,7 +345,4 @@ exports.init =customCoins=>{
   }
   exports.isSingleWallet = (defaultCoins.length+customCoins.length)<2
 }
-exports.addCurrency=customCoin=>{
-  coins[customCoin.coinId]=customCoin
-}
 exports.isSingleWallet = false

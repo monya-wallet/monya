@@ -39,9 +39,6 @@ module.exports=class{
       case "zec":
         this.lib=zecLib
         break
-      case "pos":
-        this.lib=null
-        break
       case "bch":
         this.lib=bchLib
         break

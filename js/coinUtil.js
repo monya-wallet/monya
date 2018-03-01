@@ -7,6 +7,8 @@ const storage = require("./storage")
 const errors=require("./errors")
 const axios=require("axios")
 
+const addressRegExp = /^\w+:(?:\/\/)?(\w{32,36})\??/
+
 exports.DEFAULT_LABEL_NAME = "Default"
 exports.GAP_LIMIT=20
 exports.GAP_LIMIT_FOR_CHANGE=20
@@ -189,7 +191,7 @@ exports.getBip21=(bip21Urn,address,query,addrUrl=false)=>{
         queryStr+=encodeURIComponent(v)+"="+encodeURIComponent(query[v])+"&"
       }
     }
-    return "https://missmonacoin.github.io/monya/a/"+queryStr
+    return "https://monya-wallet.github.io/monya/a/"+queryStr
   }
   
   for(let v in query){
@@ -224,14 +226,17 @@ exports.parseUrl=url=>new Promise((resolve,reject)=>{
     return resolve(ret)
   }
   ret.raw=raw
-  ret.protocol=raw.protocol.slice(0,-1),
+  ret.protocol=raw.protocol.slice(0,-1)
   ret.isValidUrl=true
   
   currencyList.each(v=>{
     if(v.bip21===ret.protocol){
       ret.isCoinAddress=true
       ret.coinId=v.coinId
-      ret.address=raw.pathname||raw.hostname
+      const addrRes = addressRegExp.exec(url)
+      if(addrRes){
+        ret.address=addrRes[1]
+      }
       if (v.isValidAddress(ret.address)) {
         ret.isPrefixOk=true
       }

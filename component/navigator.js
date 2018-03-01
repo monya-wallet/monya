@@ -97,8 +97,6 @@ module.exports=require("../js/lang.js")({ja:require("./ja/navigator.html"),en:re
         if(res.isCoinAddress&&res.isPrefixOk&&res.isValidAddress){
           this.$store.commit("setSendUrl",res.url)
           this.pageStack.push(require("./send.js"))
-        }else if(res.url){
-          this.$ons.notification.alert(res.url)
         }
       })
     })
