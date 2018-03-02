@@ -33,34 +33,34 @@
     <script>
       function iosAlert(){
       window.alert("App Storeからダウンロードするとできること\n\
-・monacoin:リンクを押して開けること\n\
-・Touch ID/Face ID\n\n")
+      ・monacoin:リンクを押して開けること\n\
+      ・Touch ID/Face ID\n\n")
       window.alert("もにゃをSafariで使うとできること:\n\
-・BitZeny, Neetcoinなどの多様な通貨\n\
-・最新技術「Segwit」を使った送金\n\
-・カウンターパーティーでトークンエコノミーの体験\n\
-・モナカードでミスモナコインカードをはじめとしたカードの投げ合い\n\
-・Monappy受け取りQRコードの作成\n\
-・可愛い決済音\n\
-・次世代の取引「アトミックスワップ」\n\
-・ヘルプ/豆知識を無制限に読める")
-        window.alert("Android版は\n\
-・上記の機能に加えて\n\
-・高速なQRコードリーダー\n\
-・NFC対応スマホなら素早く送金\n\
-・monacoin:リンクを押して素早く送金\n\
-・指紋認証\n\
+      ・BitZeny, Neetcoinなどの多様な通貨\n\
+      ・最新技術「Segwit」を使った送金\n\
+      ・カウンターパーティーでトークンエコノミーの体験\n\
+      ・モナカードでミスモナコインカードをはじめとしたカードの投げ合い\n\
+      ・Monappy受け取りQRコードの作成\n\
+      ・可愛い決済音\n\
+      ・次世代の取引「アトミックスワップ」\n\
+      ・ヘルプ/豆知識を無制限に読める")
+      window.alert("Android版は\n\
+      ・上記の機能に加えて\n\
+      ・高速なQRコードリーダー\n\
+      ・NFC対応スマホなら素早く送金\n\
+      ・monacoin:リンクを押して素早く送金\n\
+      ・指紋認証\n\
       ・Zaif Paymentで相場変動を気にせず決済（サーバーリスクは健在）")
       
-if(window.confirm("誤解されているっぽいこと\n\
-・セキュリティレベルはWebでもアプリでも一緒\n\
-・ストアアプリ版よりWeb版の方がデータサイズが小さい\n\
-・App Storeの偽アプリに釣られる可能性がとても高いこと\n\
-アプリをホームに追加します。キャンセルでApp Storeに遷移します\n\
+      if(window.confirm("誤解されているっぽいこと\n\
+      ・セキュリティレベルはWebでもアプリでも一緒\n\
+      ・ストアアプリ版よりWeb版の方がデータサイズが小さい\n\
+      ・App Storeの偽アプリに釣られる可能性がとても高いこと\n\
+      アプリをホームに追加します。キャンセルでApp Storeに遷移します\n\
       ")){
       location.href="https://monya-wallet.github.io/もにゃ.mobileconfig"
       }else{
-      window.alert("App Storeの偽アプリにご注意ください！\n\n一旦対象の暗号通貨がストアに登場したら最後、偽アプリの脅威からは逃れられません。MyEtherWallet, KuCoinなどが偽アプリの被害を受けております。そして、もにゃも例外ではありません。もにゃを騙るアプリにご注意ください。")
+      window.alert("App Storeの偽アプリにご注意ください！\n\n一旦対象の暗号通貨がストアに登場したら最後、偽アプリの脅威からは逃れられません。MyEtherWallet, KuCoinなどが偽アプリの被害を受けております。そして、もにゃも例外ではありません。もにゃを騙るアプリにご注意ください。ちなみに、アップルは暗号通貨アプリ第一号には規定されたあらゆるルールを行使して拒否しようとしますが、そのあとはほぼノーパスです。たとえバックドア、マルウェアが含まれていたとしてもです。")
       location.href="https://itunes.apple.com/jp/app/もにゃ/id1343780009"
       
       }
@@ -101,7 +101,7 @@ if(window.confirm("誤解されているっぽいこと\n\
                   <br/>
                   <a href='https://play.google.com/store/apps/details?id=org.missmonacoin.monya'>
                     <img alt='Google Play で手に入れよう' src='https://play.google.com/intl/ja/badges/images/generic/ja_badge_web_generic.png'
-                      width="300px" />
+                         width="300px" />
                   </a>
                   <a href='#' onclick=iosAlert()>
                     <img alt='App Storeからダウンロード' src='assets/images/home.png' width="220px" />
@@ -285,6 +285,7 @@ if(window.confirm("誤解されているっぽいこと\n\
                             </p>
                           </div>
                         </div>
+                        <div>※iOS版では各種機能が制限されています</div>
                         <!-- End single feature item -->
                       </div>
                     </div>
@@ -323,7 +324,7 @@ if(window.confirm("誤解されているっぽいこと\n\
                     <div class="cur">
                       <div class="icon">
                         <img alt="" src="assets/images/coins/zny.png" />
-                        <div class="name">ビットゼニー</div>
+                        <div class="name">ビットゼニー(※1)</div>
                       </div>
                     </div>
                     <div class="cur">
@@ -341,19 +342,13 @@ if(window.confirm("誤解されているっぽいこと\n\
                     <div class="cur">
                       <div class="icon">
                         <img alt="" src="assets/images/coins/xmp.png" />
-                        <div class="name">モナパーティー(モナカード)</div>
+                        <div class="name">モナパーティー(モナカード)(※1)</div>
                       </div>
                     </div>
                     <div class="cur">
                       <div class="icon">
                         <img alt="" src="assets/images/coins/xcp.png" />
-                        <div class="name">カウンターパーティー</div>
-                      </div>
-                    </div>
-                    <div class="cur">
-                      <div class="icon">
-                        <img alt="" src="assets/images/coins/tmona.png" />
-                        <div class="name">モナコインテストネット(※1)</div>
+                        <div class="name">カウンターパーティー(※1)</div>
                       </div>
                     </div>
                     <div class="cur">
@@ -363,9 +358,9 @@ if(window.confirm("誤解されているっぽいこと\n\
                       </div>
                     </div>
                   </div>
-
+                  
                 </div>
-                ※1 iOS版では使用不可または機能制限がある可能性があります
+                ※1 iOS版では使用を禁止されております
               </div>
             </div>
           </div>
@@ -476,7 +471,7 @@ if(window.confirm("誤解されているっぽいこと\n\
                   </a>
                   <a class="mu-apple-btn"href='#' onclick=iosAlert()>
                     <i class="fa fa-apple"></i>
-                    <span>ホームに追加</span>
+                    <span>app store</span>
                   </a>
                   <a class="mu-google-btn" href="https://play.google.com/store/apps/details?id=org.missmonacoin.monya">
                     <i class="fa fa-android"></i>

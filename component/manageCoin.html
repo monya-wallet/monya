@@ -17,7 +17,7 @@
       </div>
     </v-ons-list-item>
     <v-ons-list-header>無効</v-ons-list-header>
-    <v-ons-list-item class="coin" v-for="c in coins" v-if="!c.usable">
+    <v-ons-list-item class="coin" v-for="c in coins" v-if="!c.usable" modifier="small">
       <div class="left"><img :src="c.icon"/></div>
       <div class="center">
         <div class="screenName">{{c.screenName}}</div>
