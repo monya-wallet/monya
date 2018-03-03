@@ -11,7 +11,8 @@ module.exports=require("../js/lang.js")({ja:require("./ja/qrcode.html"),en:requi
     lightEnabled:false,
     canChangeCamera:false,
     currentCamera:0,
-    result:""
+    result:"",
+    isIOSStandalone:navigator.standalone&&!window.cordova
   }),
   store:require("../js/store.js"),
   methods:{
