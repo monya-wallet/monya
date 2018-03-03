@@ -3,8 +3,8 @@
   <div>
     <v-ons-list>
       <v-ons-list-item v-for="(o,i) in orders">
-        <div class="left" @click="remove(i)">
-          <v-ons-icon icon="ion-close"></v-ons-icon>
+        <div class="left">
+          <v-ons-button modifier="quiet" @click="remove(i)"><v-ons-icon icon="ion-close"></v-ons-icon></v-ons-button>
         </div>
         <div class="center">
           <v-ons-input v-model="o.name" placeholder="品名"></v-ons-input>

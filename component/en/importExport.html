@@ -5,8 +5,9 @@
       <v-ons-list-item modifier="tappable chevron" @click="resetDialogConfirm=true"><div class="center"></div></v-ons-list-item>
       <v-ons-list-item modifier="tappable chevron" @click="regenerateAddress"><div class="center"></div></v-ons-list-item>
       <v-ons-list-header></v-ons-list-header>
+      <v-ons-list-item modifier="small">暗号化されたが入っています。十分してください。</v-ons-list-item>
       <v-ons-list-item>
-        <textarea cols="30" id="" name="" rows="10" :value="expJson"></textarea>
+        <textarea cols="30" readonly="readonly" rows="10" :value="expJson" ></textarea>
       </v-ons-list-item>
       <v-ons-list-header></v-ons-list-header>
       <v-ons-list-item>
