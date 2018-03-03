@@ -1,17 +1,17 @@
 let ver= "<!--t:Timestamp-->"
 let cacheData = "<!--t:Caches-->".split(",").map(d=>"assets/"+d)
-let cacheName = "cache-"+ver
+let cName = "cache-"+ver
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open(cacheName)
+    caches.open(cName)
       .then((cache) => {
         return cache.addAll(cacheData);
       })
   );
 });
 self.addEventListener('activate', (event) => {
-  var cacheWhitelist = [cacheName];
+  const cacheWhitelist = [cName];
 
   event.waitUntil(
     caches.keys().then((cacheNames) => {
