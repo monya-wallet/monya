@@ -11,7 +11,7 @@ var translator= require("./util/translator.js")
 var imagemin = require('gulp-imagemin');
 var minify = composer(uglifyes, console);
 var request = require('sync-request');
-
+var fs  = require("fs")
 gulp.task("browserSync", function() {
   browser.init({
     server:{
@@ -79,6 +79,7 @@ gulp.task("compressImage", function() {
 gulp.task("default", function(cb) {
   return runSequence(
     "copyJa",
+    "serviceWorker",
     ['browserSync',"webpack","watch"],
     cb
   );
@@ -86,6 +87,7 @@ gulp.task("default", function(cb) {
 gulp.task("prod", function(cb) {
   return runSequence(
     "copyJa",
+    "serviceWorker",
     "translateEn",
     ["lint","webpackProd"],
     "compressImage",
@@ -110,4 +112,14 @@ gulp.task("translateEn", function(cb) {
   return gulp.src("component/ja/*.html").pipe(translator.translate({
     dictFile:"../lang/dict.json"
   })).pipe(gulp.dest("./component/en"))
+});
+gulp.task("serviceWorker", function(cb) {
+  var files = fs.readdirSync("./dist/assets")
+  return gulp.src("js/sw.js").pipe(translator.translate({
+    dictFile:"../lang/template.json",
+    dict:{
+      "<!--t:Timestamp-->":JSON.parse(request('GET', 'https://mona.monya.ga/insight-api-monacoin/sync').getBody('utf8')).height,
+      "<!--t:Caches-->":files.join(",")
+    }
+  })).pipe(gulp.dest("./dist"))
 });

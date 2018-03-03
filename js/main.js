@@ -58,5 +58,5 @@ window.handleOpenURL=function(url) {
 }
 
 if ('serviceWorker' in navigator&&!window.cordova) {
-  navigator.serviceWorker.register('./sw.js');
+  navigator.serviceWorker.register('./dist/sw.js').then(()=>true).catch(()=>true);
 }
