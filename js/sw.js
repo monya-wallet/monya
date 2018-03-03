@@ -2,6 +2,8 @@ let ver= "<!--t:Timestamp-->"
 let cacheData = "<!--t:Caches-->".split(",").map(d=>"assets/"+d)
 let cName = "cache-"+ver
 
+cacheData.push("dist.js")
+
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(cName)
