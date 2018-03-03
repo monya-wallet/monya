@@ -94,17 +94,23 @@ module.exports=require("../js/lang.js")({ja:require("./ja/navigator.html"),en:re
   mounted(){
     coinUtil.setUrlCallback(url=>{
       coinUtil.parseUrl(url).then(res=>{
-        if(res.isCoinAddress&&res.isPrefixOk&&res.isValidAddress){
+        if(res.isCoinAddress&&res.isValidAddress){
           this.$store.commit("setSendUrl",res.url)
           this.pageStack.push(require("./send.js"))
         }
       })
     })
+    if(window.cordova&&window.cordova.platformId==="android"&&window.StatusBar){
+        window.StatusBar.backgroundColorByHexString("#222222")
+      }
   },
   watch:{
     pageStack(){
       if(this.$ons.platform.isIOS()&&window.StatusBar&&this.pageStack.length===1){
         window.StatusBar.styleDefault();
+      }
+      if(window.cordova&&window.cordova.platformId==="android"&&window.StatusBar){
+        window.StatusBar.backgroundColorByHexString("#222222")
       }
       this.$store.commit("setTransparency",false)
     }

@@ -38,7 +38,7 @@ module.exports=require("../js/lang.js")({ja:require("./ja/receive.html"),en:requ
       this.$emit("push",require("./atomicswap.js"))
     },
     copyAddress(){
-      coinUtil.copy(currencyList.get(this.currency[this.currencyIndex].coinId).bip21+":"+this.mainAddress)
+      coinUtil.copy(this.mainAddress)
     },
     getLabels(){
       currencyList.get(this.currency[this.currencyIndex].coinId).getLabels().then(res=>{
