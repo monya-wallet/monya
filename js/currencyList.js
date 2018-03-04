@@ -276,9 +276,9 @@ const defaultCoins=[
     enableSegwit: false,
     lib: "blk",
     price: {
-      url: "https://coinhouse.eu/v2/tickers/neetbtc",
+      url: "https://insight.neetcoin.jp/api/ticker",
       json: true,
-      jsonPath: '$.last',
+      jsonPath: '$[?(@.id=="NEET_BTC")].last',
       fiat: "btc"
     }
   }
