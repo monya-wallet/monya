@@ -101,7 +101,8 @@ module.exports=require("../js/lang.js")({ja:require("./ja/navigator.html"),en:re
       })
     })
     if(window.cordova&&window.cordova.platformId==="android"&&window.StatusBar){
-        window.StatusBar.backgroundColorByHexString("#222222")
+      window.StatusBar.backgroundColorByHexString("#222222")
+      window.StatusBar.styleBlackTranslucent()
       }
   },
   watch:{
@@ -111,6 +112,7 @@ module.exports=require("../js/lang.js")({ja:require("./ja/navigator.html"),en:re
       }
       if(window.cordova&&window.cordova.platformId==="android"&&window.StatusBar){
         window.StatusBar.backgroundColorByHexString("#222222")
+        window.StatusBar.styleBlackTranslucent()
       }
       this.$store.commit("setTransparency",false)
     }

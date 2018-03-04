@@ -122,5 +122,5 @@ gulp.task("serviceWorker", function(cb) {
       "<!--t:Caches-->":files.join(",")
     }
   })).pipe(minify({}))
-           .pipe(gulp.dest("./dist"))
-          });
+    .pipe(gulp.dest("./dist"))
+});

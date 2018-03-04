@@ -76,7 +76,7 @@ module.exports=require("../js/lang.js")({ja:require("./ja/receive.html"),en:requ
       const targetRect = event.target.getBoundingClientRect(),
             targetBounds = targetRect.left + ',' + targetRect.top + ',' + targetRect.width + ',' + targetRect.height;
       coinUtil.share({
-        url:currencyList.get(this.currency[this.currencyIndex].coinId).bip21+":"+this.mainAddress
+        url:this.mainAddress
       },targetBounds).then(()=>{
         this.$ons.notification.toast('Shared!', {timeout: 2000})
       }).catch(()=>{
