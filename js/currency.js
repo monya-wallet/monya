@@ -11,6 +11,7 @@ const storage = require("./storage")
 const zecLib = require("@missmonacoin/bitcoinjs-lib-zcash")
 const bchLib = require("@missmonacoin/bitcoincashjs-lib")
 const blkLib = require("@missmonacoin/blackcoinjs-lib")
+const jp = require('jsonpath')
 module.exports=class{
   
   constructor(opt){
@@ -271,15 +272,9 @@ module.exports=class{
           url:this.price.url,
           responseType:this.price.json?"json":"text"
         }).then(res=>{
-          let temp = res.data
-          if(this.price.json){
-            this.price.jsonPath.forEach(v=>{
-              if(v<0){
-                temp = temp[temp.length+v]
-              }else{
-                temp = temp[v]
-              }
-            })
+          let temp = res.data;
+          if(this.price.json) {
+            temp = jp.query(temp, this.price.jsonPath)
           }
           this.priceCache=temp
           this.lastPriceTime=Date.now()
