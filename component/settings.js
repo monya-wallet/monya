@@ -1,7 +1,8 @@
 const storage=require("../js/storage")
 const monappyApi=require("../js/monappyApi")
 const currencyList = require("../js/currencyList")
-module.exports=require("../js/lang.js")({ja:require("./ja/settings.html"),en:require("./en/settings.html")})({
+const lang = require("../js/lang.js")
+module.exports=lang({ja:require("./ja/settings.html"),en:require("./en/settings.html")})({
   data(){
     return {
       isWebView:false,
@@ -79,8 +80,8 @@ module.exports=require("../js/lang.js")({ja:require("./ja/settings.html"),en:req
     storage.get("settings").then(d=>{
       Object.assign(this.d,d)
     })
-    storage.getLang().then(r=>{
-      this.lang=r
-    })
+    
+    this.lang=lang.getLang()
+    
   }
 })
