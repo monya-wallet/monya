@@ -38,7 +38,7 @@ const defaultCoins=[
     price:{
       url:"https://public.bitbank.cc/mona_jpy/ticker",
       json:true,
-      jsonPath:["data","last"],
+      jsonPath:'$..last',
       fiat:"jpy"
     },
     confirmations:6,
@@ -56,7 +56,7 @@ const defaultCoins=[
     defaultFeeSatPerByte:200,
     icon:require("../res/coins/zny.png"),
     defaultAPIEndpoint:"https://zeny.insight.monaco-ex.org/api",
-    apiEndpoints:["https://zeny.insight.monaco-ex.org/api","https://zenyinsight.tomotomo9696.xyz/api"],
+    apiEndpoints:["https://zeny.insight.monaco-ex.org/api","https://zenyinsight.tomotomo9696.xyz/api","https://insight.bitzeny.jp/api"],
     explorer:"https://zeny.insight.monaco-ex.org",
     network:{
       messagePrefix: '\x18BitZeny Signed Message:\n',
@@ -73,7 +73,7 @@ const defaultCoins=[
     price:{
       url:coinUtil.proxyUrl("https://www.coingecko.com/price_charts/bitzeny/jpy/24_hours.json"),
       json:true,
-      jsonPath:["stats",-1,1],
+      jsonPath:'$.stats[-1:][1]',
       fiat:"jpy"
     },
     sound:require("../res/coins/paySound/zny.m4a")
@@ -107,7 +107,7 @@ const defaultCoins=[
     price:{
       url:"https://public.bitbank.cc/btc_jpy/ticker",
       json:true,
-      jsonPath:["data","last"],
+      jsonPath:'$.data.last',
       fiat:"jpy"
     },
     confirmations:6,
@@ -142,7 +142,7 @@ const defaultCoins=[
     price:{
       url:"https://public.bitbank.cc/ltc_btc/ticker",
       json:true,
-      jsonPath:["data","last"],
+      jsonPath:'$.data.last',
       fiat:"btc"
     },
     confirmations:6
@@ -174,7 +174,7 @@ const defaultCoins=[
     price:{
       url:coinUtil.proxyUrl("https://www.coingecko.com/price_charts/fujicoin/jpy/24_hours.json"),
       json:true,
-      jsonPath:["stats",-1,1],
+      jsonPath:'$.stats[-1:][1]',
       fiat:"jpy"
     },
     confirmations:6
@@ -208,7 +208,7 @@ const defaultCoins=[
     price:{
       url:"https://public.bitbank.cc/btc_jpy/ticker",
       json:true,
-      jsonPath:["data","last"],
+      jsonPath:'$.data.last',
       fiat:"jpy"
     },
     confirmations:6,
@@ -244,7 +244,7 @@ const defaultCoins=[
     price:{
       url:"https://public.bitbank.cc/bcc_jpy/ticker",
       json:true,
-      jsonPath:["data","last"],
+      jsonPath:'$.data.last',
       fiat:"jpy"
     },
     confirmations:6
@@ -276,9 +276,9 @@ const defaultCoins=[
     enableSegwit: false,
     lib: "blk",
     price: {
-      url: "https://coinhouse.eu/v2/tickers/neetbtc",
+      url: "https://insight.neetcoin.jp/api/ticker",
       json: true,
-      jsonPath: ["last"],
+      jsonPath: '$[?(@.id=="NEET_BTC")].last',
       fiat: "btc"
     }
   }

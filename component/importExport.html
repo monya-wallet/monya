@@ -7,11 +7,11 @@
       <v-ons-list-header>エクスポート</v-ons-list-header>
       <v-ons-list-item modifier="small">暗号化された秘密鍵が入っています。十分注意してください。</v-ons-list-item>
       <v-ons-list-item>
-        <textarea cols="30" readonly="readonly" rows="10" :value="expJson" ></textarea>
+        <textarea class="textarea--transparent" cols="30" readonly="readonly" rows="10" :value="expJson" ></textarea>
       </v-ons-list-item>
       <v-ons-list-header>インポート</v-ons-list-header>
       <v-ons-list-item>
-        <textarea cols="30" id="" name="" rows="10" v-model="impJson"></textarea>
+        <textarea class="textarea--transparent" cols="30" id="" name="" rows="10" v-model="impJson"></textarea>
       </v-ons-list-item>
       <v-ons-list-item>
         <v-ons-button modifier="large" @click="confirm = true">保存</v-ons-button>

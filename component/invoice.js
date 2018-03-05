@@ -87,17 +87,9 @@ module.exports=require("../js/lang.js")({ja:require("./ja/invoice.html"),en:requ
       coinUtil.share({
         url:this.url
       },targetBounds).then(()=>{
-        this.$ons.notification.toast('Shared!', {timeout: 2000})
       }).catch(()=>{
-        this.$ons.notification.toast('Failed...', {timeout: 2000})
-      })
-    },
-    shareOrCopy(e){
-      if (this.isNative) {
-        this.share(e)
-      }else{
         this.copyAddress()
-      }
+      })
     }
   },
   computed:{

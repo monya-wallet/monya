@@ -309,7 +309,15 @@ exports.buildBuilderfromPubKeyTx=(transaction,network)=>{
 exports.isNative = ()=>window.cordova&&window.cordova.platformId!=="browser"
 exports.share = (option,pos)=> new Promise((resolve,reject)=>{
   if(!window.plugins.socialsharing){
-    return
+    if(navigator.share){
+      return navigator.share({
+        title:option.subject,
+        text:option.message,
+        url:option.url
+      })
+    }else{
+      return reject()
+    }
   }
   window.plugins.socialsharing.setIPadPopupCoordinates(pos)
   window.plugins.socialsharing.shareWithOptions(option,resolve,reject)
