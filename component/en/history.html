@@ -69,7 +69,6 @@
         <option value="send"></option>
         <option value="receive"></option>
       </v-ons-select>
-      <v-ons-input placeholder="" v-model="threshold"></v-ons-input>
       <br/>
       <v-ons-checkbox v-model="hideDustSend"></v-ons-checkbox>Monaparty
       <v-ons-search-input placeholder="TXID" @change="txDetail(searchTxId)" v-model="searchTxId"></v-ons-search-input>
@@ -82,6 +81,6 @@
                 :visible.sync="outputDlg"
                 >
     <p style="text-align: center">JSON</p>
-    <textarea cols="50" rows="20">{{json}}</textarea>
+    <textarea cols="50" rows="20" class="textarea">{{json}}</textarea>
   </v-ons-dialog>
 </v-ons-page>

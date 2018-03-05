@@ -27,7 +27,7 @@
         <v-ons-icon icon="fa-clipboard"></v-ons-icon>
         
       </v-ons-button>
-      <v-ons-button @click="share" modifier="quiet" v-if="isNative">
+      <v-ons-button @click="share" modifier="quiet">
         <v-ons-icon icon="fa-share-square-o"></v-ons-icon>
       </v-ons-button>
       
@@ -60,9 +60,8 @@
   </div>
     <v-ons-fab
       position="bottom right"
-      @click="shareOrCopy"
+      @click="share"
     >
-      <v-ons-icon icon="fa-clipboard" v-if="!isNative"></v-ons-icon>
-      <v-ons-icon icon="fa-share-square-o" v-if="isNative"></v-ons-icon>
+      <v-ons-icon icon="fa-share-square-o"></v-ons-icon>
     </v-ons-fab>
 </v-ons-page>

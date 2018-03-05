@@ -27,7 +27,7 @@
         <v-ons-icon icon="fa-clipboard"></v-ons-icon>
         アドレスコピー
       </v-ons-button>
-      <v-ons-button @click="share" modifier="quiet" v-if="isNative">
+      <v-ons-button @click="share" modifier="quiet">
         <v-ons-icon icon="fa-share-square-o"></v-ons-icon>共有
       </v-ons-button>
       <v-ons-list>
@@ -35,7 +35,7 @@
         <v-ons-list-item v-show="currencyIndex===-1">
           <div class="center">送金先Monappy ID</div>
           <div class="right">
-            <span class="atmark">@</span><v-ons-input v-model="monappyDestination" placeholder="Monappy ID" @change="changeMonappy" @input="monappyNotExist=false;" :class="{monappyNotExist:monappyNotExist}"></v-ons-input>
+            <span class="atmark">@</span><v-ons-input v-model="monappyDestination" placeholder="Monappy ID" @change="changeMonappy" @input="monappyNotExist=false;" :class="{monappyNotExist:monappyNotExist}" modifier="underbar"></v-ons-input>
           </div>
         </v-ons-list-item>
         <v-ons-list-item v-show="currencyIndex!==-1">
@@ -48,11 +48,11 @@
         </v-ons-list-item>
         <v-ons-list-item>
           <div class="center">請求額</div>
-          <div class="right"><v-ons-input v-model="amount" type="number" placeholder="金額" @input="calcFiat"></v-ons-input><currency-set :ticker="coinType"></currency-set></div>
+          <div class="right"><v-ons-input v-model="amount" type="number" placeholder="金額" @input="calcFiat" modifier="underbar"></v-ons-input><currency-set :ticker="coinType"></currency-set></div>
         </v-ons-list-item>
         <v-ons-list-item>
           <div class="center">法定通貨換算</div>
-          <div class="right"><v-ons-input v-model="fiat" type="number" placeholder="換算" @input="calcCur"></v-ons-input><currency-set :ticker="fiatTicker"></currency-set></div>
+          <div class="right"><v-ons-input v-model="fiat" type="number" placeholder="換算" @input="calcCur" modifier="underbar"></v-ons-input><currency-set :ticker="fiatTicker"></currency-set></div>
         </v-ons-list-item>
         <v-ons-list-item>
           <div class="center">相手に表示する文</div>
@@ -60,7 +60,7 @@
         </v-ons-list-item>
         <v-ons-list-item v-show="currencyIndex!==-1">
           <div class="center">ブロックに書き込んでもらうメッセージ(対応ウォレットのみ)</div>
-          <div class="right"><v-ons-input v-model="messageOpRet" placeholder="OP_RETURN"></v-ons-input></div>
+          <div class="right"><v-ons-input v-model="messageOpRet" placeholder="OP_RETURN" modifier="underbar"></v-ons-input></div>
         </v-ons-list-item>
         <v-ons-list-item v-show="currencyIndex!==-1">
           <label class="left"><v-ons-checkbox input-id="isAddrUrl" v-model="isAddrUrl"></v-ons-checkbox></label>
@@ -89,9 +89,8 @@
   </v-ons-dialog>
   <v-ons-fab
       position="bottom right"
-      @click="shareOrCopy"
+      @click="share"
     >
-      <v-ons-icon icon="fa-clipboard" v-if="!isNative"></v-ons-icon>
-      <v-ons-icon icon="fa-share-square-o" v-if="isNative"></v-ons-icon>
+      <v-ons-icon icon="fa-share-square-o"></v-ons-icon>
     </v-ons-fab>
 </v-ons-page>

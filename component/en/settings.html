@@ -82,7 +82,7 @@
       <div v-show="d.monappy.enabled" class="condMonappy">
         <v-ons-list-item>
           <div class="center">Monappy ID</div>
-          <div class="right"><span class="atmark">@</span><v-ons-input v-model="d.monappy.myUserId" placeholder="Monappy Id" @change="changeMonappy" @input="monappyNotExist=false" :class="{monappyNotExist:monappyNotExist}"></v-ons-input></div>
+          <div class="right"><span class="atmark">@</span><v-ons-input v-model="d.monappy.myUserId" placeholder="Monappy Id" @change="changeMonappy" @input="monappyNotExist=false" :class="{monappyNotExist:monappyNotExist}" modifier="underbar"></v-ons-input></div>
         </v-ons-list-item>
         
       </div>

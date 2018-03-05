@@ -76,19 +76,11 @@ module.exports=require("../js/lang.js")({ja:require("./ja/receive.html"),en:requ
       const targetRect = event.target.getBoundingClientRect(),
             targetBounds = targetRect.left + ',' + targetRect.top + ',' + targetRect.width + ',' + targetRect.height;
       coinUtil.share({
-        url:this.mainAddress
+        message:this.mainAddress
       },targetBounds).then(()=>{
-        this.$ons.notification.toast('Shared!', {timeout: 2000})
       }).catch(()=>{
-        this.$ons.notification.toast('Failed...', {timeout: 2000})
-      })
-    },
-    shareOrCopy(e){
-      if (this.isNative) {
-        this.share(e)
-      }else{
         this.copyAddress()
-      }
+      })
     }
   },
   watch:{
