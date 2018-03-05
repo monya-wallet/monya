@@ -73,7 +73,7 @@ const defaultCoins=[
     price:{
       url:coinUtil.proxyUrl("https://www.coingecko.com/price_charts/bitzeny/jpy/24_hours.json"),
       json:true,
-      jsonPath:'$.stats[0][1]',
+      jsonPath:'$.stats[-1:][1]',
       fiat:"jpy"
     },
     sound:require("../res/coins/paySound/zny.m4a")
@@ -107,7 +107,7 @@ const defaultCoins=[
     price:{
       url:"https://public.bitbank.cc/btc_jpy/ticker",
       json:true,
-      jsonPath:'$..last',
+      jsonPath:'$.data.last',
       fiat:"jpy"
     },
     confirmations:6,
@@ -142,7 +142,7 @@ const defaultCoins=[
     price:{
       url:"https://public.bitbank.cc/ltc_btc/ticker",
       json:true,
-      jsonPath:'$..last',
+      jsonPath:'$.data.last',
       fiat:"btc"
     },
     confirmations:6
@@ -174,7 +174,7 @@ const defaultCoins=[
     price:{
       url:coinUtil.proxyUrl("https://www.coingecko.com/price_charts/fujicoin/jpy/24_hours.json"),
       json:true,
-      jsonPath:'$.stats[0][1]',
+      jsonPath:'$.stats[-1:][1]',
       fiat:"jpy"
     },
     confirmations:6
@@ -208,7 +208,7 @@ const defaultCoins=[
     price:{
       url:"https://public.bitbank.cc/btc_jpy/ticker",
       json:true,
-      jsonPath:'$..last',
+      jsonPath:'$.data.last',
       fiat:"jpy"
     },
     confirmations:6,
@@ -244,7 +244,7 @@ const defaultCoins=[
     price:{
       url:"https://public.bitbank.cc/bcc_jpy/ticker",
       json:true,
-      jsonPath:'$..last',
+      jsonPath:'$.data.last',
       fiat:"jpy"
     },
     confirmations:6
