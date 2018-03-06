@@ -9,7 +9,7 @@ module.exports=require("../js/lang.js")({ja:require("./ja/invoice.html"),en:requ
     return {
       address:"",
       qrDataUrl:"",
-      isNative:false,
+      shareable:coinUtil.shareable(),
       edit:false,
       amount:0,
       message:"",
@@ -160,6 +160,5 @@ module.exports=require("../js/lang.js")({ja:require("./ja/invoice.html"),en:requ
     storage.get("orders").then(r=>{
       this.orders=r||[]
     })
-    this.isNative = !!(window.plugins&&window.plugins.socialsharing)
   }
 })

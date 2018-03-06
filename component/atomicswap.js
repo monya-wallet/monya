@@ -175,7 +175,7 @@ module.exports=require("../js/lang.js")({ja:require("./ja/atomicswap.html"),en:r
       cpAmount:0,
       cpToken:"XMP",
 
-      isRefund:false
+      isRefund:0
     }
   },
   methods:{

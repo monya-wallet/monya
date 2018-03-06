@@ -10,7 +10,7 @@ module.exports=require("../js/lang.js")({ja:require("./ja/receive.html"),en:requ
       mainAddress:"",
       qrDataUrl:"",
       currentCurIcon:"",
-      isNative:false,
+      shareable:coinUtil.shareable(),
       currency:[],
       currencyIndex:0,
       labels:[coinUtil.DEFAULT_LABEL_NAME],
@@ -100,6 +100,5 @@ module.exports=require("../js/lang.js")({ja:require("./ja/receive.html"),en:requ
     })
     this.getMainAddress()
     this.getLabels()
-    this.isNative = !!(window.plugins&&window.plugins.socialsharing)
   }
 })

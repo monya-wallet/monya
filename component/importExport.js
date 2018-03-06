@@ -7,7 +7,8 @@ module.exports=require("../js/lang.js")({ja:require("./ja/importExport.html"),en
     confirm:false,
     resetDialog:false,
     resetDialogConfirm:false,
-    loading:false
+    loading:false,
+    resetCur:false
   }),
   mounted(){
     storage.getAll().then(r=>{
@@ -28,6 +29,10 @@ module.exports=require("../js/lang.js")({ja:require("./ja/importExport.html"),en
         this.$store.commit("setFinishNextPage",{page:require("./first.js"),infoId:"reset"})
         this.$emit("replace",require("./finished.js"))
       })
+    },
+    resetCoins(){
+      this.resetCur=false
+      return storage.set("customCoins",[])
     },
     regenerateAddress(){
       this.loading=true

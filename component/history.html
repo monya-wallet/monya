@@ -81,6 +81,6 @@
                 :visible.sync="outputDlg"
                 >
     <p style="text-align: center">現在表示されている履歴のJSONファイルです。</p>
-    <textarea cols="50" rows="20" class="textarea">{{json}}</textarea>
+    <textarea class="textarea" readonly="readonly" id="historyJson">{{json}}</textarea>
   </v-ons-dialog>
 </v-ons-page>

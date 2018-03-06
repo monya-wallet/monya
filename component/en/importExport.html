@@ -4,6 +4,7 @@
     <v-ons-list>
       <v-ons-list-item modifier="tappable chevron" @click="resetDialogConfirm=true"><div class="center"></div></v-ons-list-item>
       <v-ons-list-item modifier="tappable chevron" @click="regenerateAddress"><div class="center"></div></v-ons-list-item>
+      <v-ons-list-item modifier="tappable chevron" @click="resetCur=true"><div class="center">パラメータをリセット</div></v-ons-list-item>
       <v-ons-list-header></v-ons-list-header>
       <v-ons-list-item modifier="small">暗号化されたが入っています。十分してください。</v-ons-list-item>
       <v-ons-list-item>
@@ -57,4 +58,15 @@
         <div class="spinner"></div>
       </p>
   </v-ons-modal>
+  <v-ons-alert-dialog
+    modifier="rowfooter"
+    :visible.sync="resetCur"
+    >
+    <span slot="title">パラメータをリセット</span>
+    <p>パラメータをリセットしますか？編集した内容は失われます</p>
+    <template slot="footer">
+      <div class="alert-dialog-button" @click="resetCur=false"></div>
+      <div class="alert-dialog-button" @click="resetCoins"></div>
+    </template>
+  </v-ons-alert-dialog>
 </v-ons-page>

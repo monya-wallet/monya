@@ -7,7 +7,7 @@ module.exports=require("../js/lang.js")({ja:require("./ja/showLabel.html"),en:re
     return {
       address:"",
       qrDataUrl:"",
-      isNative:false,
+      shareable:coinUtil.shareable(),
       label:"",
       edit:false,
       balance:0,
@@ -18,7 +18,7 @@ module.exports=require("../js/lang.js")({ja:require("./ja/showLabel.html"),en:re
   store:require("../js/store.js"),
   methods:{
     copyAddress(){
-      coinUtil.copy(currencyList.get(this.$store.state.showLabelPayload.coinId).bip21+":"+this.address)
+      coinUtil.copy(this.address)
     },
     update(){
       if(!this.labelInput){
@@ -32,6 +32,16 @@ module.exports=require("../js/lang.js")({ja:require("./ja/showLabel.html"),en:re
         this.$emit("pop")
         this.$store.commit("setLabelToShow",p)
         this.$emit("push",module.exports)
+      })
+    },
+    share(event){
+      const targetRect = event.target.getBoundingClientRect(),
+            targetBounds = targetRect.left + ',' + targetRect.top + ',' + targetRect.width + ',' + targetRect.height;
+      coinUtil.share({
+        message:this.address
+      },targetBounds).then(()=>{
+      }).catch(()=>{
+        this.copyAddress()
       })
     }
   },
