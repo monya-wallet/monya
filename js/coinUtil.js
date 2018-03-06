@@ -307,8 +307,9 @@ exports.buildBuilderfromPubKeyTx=(transaction,network)=>{
 }
 
 exports.isNative = ()=>window.cordova&&window.cordova.platformId!=="browser"
+exports.shareable=()=>window.plugins&&window.plugins.socialsharing||navigator.share
 exports.share = (option,pos)=> new Promise((resolve,reject)=>{
-  if(!window.plugins.socialsharing){
+  if(!window.plugins||!window.plugins.socialsharing){
     if(navigator.share){
       return navigator.share({
         title:option.subject,

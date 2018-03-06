@@ -199,6 +199,11 @@ ons-dialog .dialog{
     text-align:center;
   }
 }
+#historyJson{
+  width: 100%;
+  min-height: 200px;
+  min-width: 300px;
+}
 [data-page="showLabel"],[data-page="sweep"],[data-page="receive"],[data-page="history"],[data-page="invoice"]{
   #currencySelector{
     width:100%;

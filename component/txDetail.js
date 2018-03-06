@@ -35,6 +35,8 @@ module.exports=require("../js/lang.js")({ja:require("./ja/txDetail.html"),en:req
       })
       Promise.all([txProm,labelProm]).then(()=>{
         this.saveTxLabel()
+      }).catch(e=>{
+        this.$store.commit("setError",e.message)
       })
     },
     txDetail(txId){

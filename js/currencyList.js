@@ -56,7 +56,7 @@ const defaultCoins=[
     defaultFeeSatPerByte:200,
     icon:require("../res/coins/zny.png"),
     defaultAPIEndpoint:"https://zeny.insight.monaco-ex.org/api",
-    apiEndpoints:["https://zeny.insight.monaco-ex.org/api","https://zenyinsight.tomotomo9696.xyz/api","https://insight.bitzeny.jp/api"],
+    apiEndpoints:["https://zeny.insight.monaco-ex.org/api","https://zenyinsight.tomotomo9696.xyz/api","https://insight.bitzeny.jp/api","https://insight.bitzeny.cloud/api"],
     explorer:"https://zeny.insight.monaco-ex.org",
     network:{
       messagePrefix: '\x18BitZeny Signed Message:\n',
