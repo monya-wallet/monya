@@ -21,9 +21,10 @@ module.exports=class{
     this.unitEasy = opt.unitEasy;
     this.bip44 = opt.bip44;
     this.bip49 = opt.bip49
-    this.apiEndpoints=opt.apiEndpoints||[opt.defaultAPIEndpoint]
-    this.apiEndpoint = opt.defaultAPIEndpoint||this.apiEndpoints[0];
-    this.explorer = opt.explorer
+    this.apiEndpoints=opt.apiEndpoints
+    this.apiIndex=0
+    this.apiEndpoint = this.apiEndpoints[0].url;
+    this.explorer = this.apiEndpoints[0].explorer
     this.network = opt.network;
     this.price = opt.price;
     this.dummy=!!opt.dummy
@@ -587,9 +588,16 @@ module.exports=class{
   }
   changeApiEndpoint(index){
     if (typeof(index)!=="number"){
-      index=(this.apiEndpoints.indexOf(this.apiEndpoint)+1)%this.apiEndpoints.length
+      index=(this.apiIndex+1)%this.apiEndpoints.length
     }
-    this.apiEndpoint = this.apiEndpoints[index]
+    this.apiIndex = index
+    this.apiEndpoint = this.apiEndpoints[index].url
+    if(this.apiEndpoints[index].explorer){
+      this.explorer = this.apiEndpoints[index].explorer
+    }
+    if(this.apiEndpoints[index].socket){
+      this.socketEndpoint = this.apiEndpoints[index].socket
+    }
   }
   isValidAddress(address){
     const ver = coinUtil.getAddrVersion(address)
