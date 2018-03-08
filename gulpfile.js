@@ -95,11 +95,12 @@ gulp.task("prod", function(cb) {
     cb
   );
 });
+var height = JSON.parse(request('GET', 'https://mona.insight.monaco-ex.org/insight-api-monacoin/sync').getBody('utf8')).height
 gulp.task("copyJa", function(cb) {
   return gulp.src("component/*.html").pipe(translator.translate({
     dictFile:"../lang/template.json",
     dict:{
-      "<!--t:Timestamp-->":JSON.parse(request('GET', 'https://mona.monya.ga/insight-api-monacoin/sync').getBody('utf8')).height
+      "<!--t:Timestamp-->":height
     }
   })).pipe(gulp.dest("./component/ja"))
 });
@@ -118,7 +119,7 @@ gulp.task("serviceWorker", function(cb) {
   return gulp.src("js/sw.js").pipe(translator.translate({
     dictFile:"../lang/template.json",
     dict:{
-      "<!--t:Timestamp-->":JSON.parse(request('GET', 'https://mona.monya.ga/insight-api-monacoin/sync').getBody('utf8')).height,
+      "<!--t:Timestamp-->":height,
       "<!--t:Caches-->":files.join(",")
     }
   })).pipe(minify({}))
