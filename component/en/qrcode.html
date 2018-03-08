@@ -38,20 +38,20 @@
     <v-ons-alert-dialog modifier="rowfooter"
                         :visible="!!result"
                         >
-      <span slot="title"></span>
+      <span slot="title">Read result</span>
       <p>{{result}}</p>
       <template slot="footer">
-        <div class="alert-dialog-button" @click="copyResult"></div>
-        <div class="alert-dialog-button" @click="back"></div>
+        <div class="alert-dialog-button" @click="copyResult">Copy</div>
+        <div class="alert-dialog-button" @click="back">Do not copy</div>
       </template>
     </v-ons-alert-dialog>
     <v-ons-alert-dialog modifier="rowfooter"
                         :visible="isIOSStandalone"
                         >
-      <span slot="title">iOSカメラが不調です</span>
-      <p>iOSが不調なため、QRリーダを起動できません。Androidに乗り換えると幸せになれます</p>
+      <span slot="title">iOSCamera doesn't work.</span>
+      <p>iOS is bad ,QR scanner doesn't workAndroid will help you.</p>
       <template slot="footer">
-        <div class="alert-dialog-button" @click="back"></div>
+        <div class="alert-dialog-button" @click="back">Back</div>
       </template>
     </v-ons-alert-dialog>
 </v-ons-page>

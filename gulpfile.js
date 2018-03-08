@@ -79,6 +79,7 @@ gulp.task("compressImage", function() {
 gulp.task("default", function(cb) {
   return runSequence(
     "copyJa",
+    "translateEn",
     "serviceWorker",
     ['browserSync',"webpack","watch"],
     cb

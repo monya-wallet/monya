@@ -1,5 +1,5 @@
 <v-ons-page data-page="zaifPayInvoice">
-  <custom-bar title="Zaif " menu="true"></custom-bar>
+  <custom-bar title="Zaif invoice" menu="true"></custom-bar>
   <div>
     <div id="qrArea">
         <div id="qrcode">
@@ -11,65 +11,65 @@
     
     <v-ons-list>
       <v-ons-list-item>
-        <div class="center"></div>
+        <div class="center">cryptocurrency used for settlement</div>
         <div class="right">
           <div v-show="res.currency==='mona'">mona</div>
           <div v-show="res.currency==='btc'">btc</div>
         </div>
       </v-ons-list-item>
       <v-ons-list-item>
-        <div class="center"></div>
+        <div class="center">Speed regarded as settlement completion</div>
         <div class="right">
-          <div v-show="res.speed==='low'"></div>
-          <div v-show="res.speed==='medium'"></div>
-          <div v-show="res.speed==='high'"></div>
+          <div v-show="res.speed==='low'">slow (low risk)</div>
+          <div v-show="res.speed==='medium'">Minimum confirmed number</div>
+          <div v-show="res.speed==='high'">Fast (high risk)</div>
           
         </div>
       </v-ons-list-item>
       <v-ons-list-item>
-        <div class="center"></div>
+        <div class="center">Progress of settlement</div>
         <div class="right">
-          <div v-show="res.status==='new'"></div>
-          <div v-show="res.status==='paid'"></div>
-          <div v-show="res.status==='confirmed'"></div>
-          <div v-show="res.status==='complete'"></div>
-          <div v-show="res.status==='expired'"></div>
-          <div v-show="res.status==='invalid'"></div>
-          <div v-show="res.status==='canceled'"></div>
+          <div v-show="res.status==='new'">Receiving invoice</div>
+          <div v-show="res.status==='paid'">It seems to be sent</div>
+          <div v-show="res.status==='confirmed'">It was confirmed.</div>
+          <div v-show="res.status==='complete'">Done</div>
+          <div v-show="res.status==='expired'">Expire</div>
+          <div v-show="res.status==='invalid'">Fail</div>
+          <div v-show="res.status==='canceled'">Cancel</div>
         </div>
       </v-ons-list-item>
       <v-ons-list-item>
-        <div class="center"></div>
+        <div class="center">amount to be settled (cryptocurrency)</div>
         <div class="right">
           <currency-set :amount="curAmt" :ticker="res.currency"></currency-set>
         </div>
       </v-ons-list-item>
       <v-ons-list-item>
-        <div class="center"></div>
+        <div class="center">address</div>
         <div class="right">
           <v-ons-input v-model="res.address"></v-ons-input>
         </div>
       </v-ons-list-item>
       <v-ons-list-item>
-        <div class="center"></div>
+        <div class="center">(JPY)</div>
         <div class="right">
           <currency-set :amount="res.amount" ticker="jpy"></currency-set>
         </div>
       </v-ons-list-item>
       <v-ons-list-item>
-        <div class="center">ID</div>
+        <div class="center">Order ID</div>
         <div class="right">
           <div>{{res.orderNumber}}</div>
         </div>
       </v-ons-list-item>
       <!--<v-ons-list-item>
-        <div class="center"></div>
+        <div class="center">Invoice creation date</div>
         <div class="right">
           <timestamp :timestamp="res.created"></timestamp>
         </div>
       </v-ons-list-item>
       <v-ons-list-item>
-        <div class="center"></div>
+        <div class="center">Invoice expiration date</div>
         <div class="right">
           <timestamp :timestamp="res.expired"></timestamp>
         </div>

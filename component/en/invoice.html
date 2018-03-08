@@ -1,5 +1,5 @@
 <v-ons-page data-page="invoice">
-  <custom-bar title="" menu="true">
+  <custom-bar title="Send invoice" menu="true">
     <v-ons-toolbar-button @click="orderDlg=true"><v-ons-icon icon="ion-ios-cart"></v-ons-icon></v-ons-toolbar-button>
   </custom-bar>
   <div>
@@ -15,7 +15,7 @@
       </v-ons-carousel>
     </div>
     <div id="simple">
-      <div class="label" v-show="currencyIndex===-1">QRMonappy</div>
+      <div class="label" v-show="currencyIndex===-1">Read this QR code Monappy. Please login and send coin.If there is the instruction, please uncheck the send anonymously check.</div>
       <div id="qrArea">
         <div id="qrcode">
           <img :src="qrDataUrl||''" alt="QR code" id="qrcodeImage"/>
@@ -25,21 +25,21 @@
       </div>
       <v-ons-button @click="copyAddress" modifier="quiet">
         <v-ons-icon icon="fa-clipboard"></v-ons-icon>
-        
+        Copy address
       </v-ons-button>
       <v-ons-button @click="share" modifier="quiet" v-if="shareable">
-        <v-ons-icon icon="fa-share-square-o"></v-ons-icon>
+        <v-ons-icon icon="fa-share-square-o"></v-ons-icon>Share
       </v-ons-button>
       <v-ons-list>
         
         <v-ons-list-item v-show="currencyIndex===-1">
-          <div class="center">Monappy ID</div>
+          <div class="center">send addressMonappy ID</div>
           <div class="right">
             <span class="atmark">@</span><v-ons-input v-model="monappyDestination" placeholder="Monappy ID" @change="changeMonappy" @input="monappyNotExist=false;" :class="{monappyNotExist:monappyNotExist}" modifier="underbar"></v-ons-input>
           </div>
         </v-ons-list-item>
         <v-ons-list-item v-show="currencyIndex!==-1">
-          <div class="center"></div>
+          <div class="center">Deposit address label</div>
           <div class="right">
             <v-ons-select v-model="addressIndex">
               <option v-for="(l,i) in labels" :value="i">{{l}}</option>
@@ -47,24 +47,24 @@
           </div>
         </v-ons-list-item>
         <v-ons-list-item>
-          <div class="center"></div>
-          <div class="right"><v-ons-input v-model="amount" type="number" placeholder="" @input="calcFiat" modifier="underbar"></v-ons-input><currency-set :ticker="coinType"></currency-set></div>
+          <div class="center">invoice amount</div>
+          <div class="right"><v-ons-input v-model="amount" type="number" placeholder="price" @input="calcFiat" modifier="underbar"></v-ons-input><currency-set :ticker="coinType"></currency-set></div>
         </v-ons-list-item>
         <v-ons-list-item>
-          <div class="center"></div>
-          <div class="right"><v-ons-input v-model="fiat" type="number" placeholder="" @input="calcCur" modifier="underbar"></v-ons-input><currency-set :ticker="fiatTicker"></currency-set></div>
+          <div class="center">Legal currency conversion</div>
+          <div class="right"><v-ons-input v-model="fiat" type="number" placeholder="conversion" @input="calcCur" modifier="underbar"></v-ons-input><currency-set :ticker="fiatTicker"></currency-set></div>
         </v-ons-list-item>
         <v-ons-list-item>
-          <div class="center"></div>
-          <div class="right"><v-ons-input v-model="message" placeholder=""></v-ons-input></div>
+          <div class="center">Message displayed to the recipient</div>
+          <div class="right"><v-ons-input v-model="message" placeholder="Message"></v-ons-input></div>
         </v-ons-list-item>
         <v-ons-list-item v-show="currencyIndex!==-1">
-          <div class="center">()</div>
+          <div class="center">Message to write on the block (specific wallet only)</div>
           <div class="right"><v-ons-input v-model="messageOpRet" placeholder="OP_RETURN" modifier="underbar"></v-ons-input></div>
         </v-ons-list-item>
         <v-ons-list-item v-show="currencyIndex!==-1">
           <label class="left"><v-ons-checkbox input-id="isAddrUrl" v-model="isAddrUrl"></v-ons-checkbox></label>
-          <label class="center" for="isAddrUrl">URL</label>
+          <label class="center" for="isAddrUrl">Outgoing URL format</label>
         </v-ons-list-item>
       </v-ons-list>
     </div>
@@ -82,7 +82,7 @@
       </v-ons-list-item>
       <v-ons-list-header></v-ons-list-header>
       <v-ons-list-item>
-        <div class="center"><v-ons-button @click="fiat=total;calcCur();orderDlg=false"></v-ons-button></div>
+        <div class="center"><v-ons-button @click="fiat=total;calcCur();orderDlg=false">OK</v-ons-button></div>
         <div class="right"><currency-set :amount="total" ticker="jpy"></currency-set></div>
       </v-ons-list-item>
     </v-ons-list>

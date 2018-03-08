@@ -1,14 +1,14 @@
 <v-ons-page data-page="generateKeyWarn">
-  <custom-bar title=""></custom-bar>
+  <custom-bar title="Please confirm"></custom-bar>
   <div class="wrap">
-    <p></p>
+    <p>It's creating the secret key.Please check the following important information.</p>
     <ul>
-      <li></li>
-      <li>次の画面でされる</li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
+      <li>The secret key is the license to access the coins you own.</li>
+      <li>Please write these words on the paper manually.</li>
+      <li>Please must not copy the ENGLISH WORDS to screenshots or photo or something</li>
+      <li>If you lost the ENGLISH WORDS, you will not be able to use your coins.</li>
+      <li>If your ENGLISH WORDS is found by others, your coins may be stolen.</li>
+      <li>MONYA will not be responsible for managements about secret key.</li>
     </ul>
   </div>
   <v-ons-list>
@@ -16,31 +16,31 @@
       <label class="left">
         <v-ons-checkbox input-id="check1" v-model="check1"></v-ons-checkbox>
       </label>
-      <label class="center" for="check1"></label>
+      <label class="center" for="check1">I understand the importance of secret key</label>
     </v-ons-list-item>
     <v-ons-list-item>
       <label class="left">
         <v-ons-checkbox input-id="check2" v-model="check2"></v-ons-checkbox>
       </label>
-      <label class="center" for="check2"></label>
+      <label class="center" for="check2">I understand the mobile screen is not seen by anyone,any software and others</label>
     </v-ons-list-item>
     <v-ons-list-item>
       <label class="left">
         <v-ons-checkbox input-id="check3" v-model="check3"></v-ons-checkbox>
       </label>
-      <label class="center" for="check3"></label>
+      <label class="center" for="check3">I understand the management of private key is my responsibility</label>
     </v-ons-list-item>
     <v-ons-list-item>
-      <div class="center"></div>
+      <div class="center">Word count</div>
       <div class="right">
         <v-ons-select v-model="entropySize">
-          <option value="16">12</option>
-          <option value="24">18</option>
-          <option value="32">24</option>
+          <option value="16">12 word</option>
+          <option value="24">18 word</option>
+          <option value="32">24 word</option>
         </v-ons-select>
       </div>
     </v-ons-list-item>
-    <v-ons-list-item><v-ons-button :disabled="!check1||!check2||!check3" @click="next" modifier="large"></v-ons-button></v-ons-list-item>
+    <v-ons-list-item><v-ons-button :disabled="!check1||!check2||!check3" @click="next" modifier="large">NEXT</v-ons-button></v-ons-list-item>
   </v-ons-list>
   
 </v-ons-page>

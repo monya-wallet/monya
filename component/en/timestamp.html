@@ -3,11 +3,11 @@
     {{d.year|pad}}/{{d.month|pad}}/{{d.date|pad}}&nbsp;{{d.hour|pad}}:{{d.minute|pad}}:{{d.sec|pad}}
   </span>
   <span class="relative" v-if="mode==='relative'">
-    <span v-if="d.rightnow"></span>
-    <span v-if="d.minAgo">{{d.minAgo}}</span>
-    <span v-if="d.hrAgo">{{d.hrAgo}}</span>
-    <span v-if="d.dayAgo">{{d.dayAgo}}</span>
-    <span v-if="d.monthAgo">{{d.monthAgo}}</span>
-    <span v-if="d.yearAgo">{{d.yearAgo}}</span>
+    <span v-if="d.rightnow">Now</span>
+    <span v-if="d.minAgo">{{d.minAgo}}minute ago</span>
+    <span v-if="d.hrAgo">{{d.hrAgo}} hour ago</span>
+    <span v-if="d.dayAgo">{{d.dayAgo}} days ago</span>
+    <span v-if="d.monthAgo">{{d.monthAgo}}month ago</span>
+    <span v-if="d.yearAgo">{{d.yearAgo}}years ago</span>
   </span>
 </span>

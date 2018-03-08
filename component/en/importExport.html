@@ -1,21 +1,21 @@
 <v-ons-page data-page="importExport">
-  <custom-bar title="/" menu="true"></custom-bar>
+  <custom-bar title="Import / Export" menu="true"></custom-bar>
   <div>
     <v-ons-list>
-      <v-ons-list-item modifier="tappable chevron" @click="resetDialogConfirm=true"><div class="center"></div></v-ons-list-item>
-      <v-ons-list-item modifier="tappable chevron" @click="regenerateAddress"><div class="center"></div></v-ons-list-item>
-      <v-ons-list-item modifier="tappable chevron" @click="resetCur=true"><div class="center">パラメータをリセット</div></v-ons-list-item>
-      <v-ons-list-header></v-ons-list-header>
-      <v-ons-list-item modifier="small">暗号化されたが入っています。十分してください。</v-ons-list-item>
+      <v-ons-list-item modifier="tappable chevron" @click="resetDialogConfirm=true"><div class="center">Clear all data</div></v-ons-list-item>
+      <v-ons-list-item modifier="tappable chevron" @click="regenerateAddress"><div class="center">Regenerate address</div></v-ons-list-item>
+      <v-ons-list-item modifier="tappable chevron" @click="resetCur=true"><div class="center">Reset coin parameters</div></v-ons-list-item>
+      <v-ons-list-header>Export</v-ons-list-header>
+      <v-ons-list-item modifier="small">It contains encrypted private key. Please be careful</v-ons-list-item>
       <v-ons-list-item>
         <textarea class="textarea--transparent" cols="30" readonly="readonly" rows="10" :value="expJson" ></textarea>
       </v-ons-list-item>
-      <v-ons-list-header></v-ons-list-header>
+      <v-ons-list-header>Import</v-ons-list-header>
       <v-ons-list-item>
         <textarea class="textarea--transparent" cols="30" id="" name="" rows="10" v-model="impJson"></textarea>
       </v-ons-list-item>
       <v-ons-list-item>
-        <v-ons-button modifier="large" @click="confirm = true"></v-ons-button>
+        <v-ons-button modifier="large" @click="confirm = true">SAVE</v-ons-button>
       </v-ons-list-item>
     </v-ons-list>
     
@@ -23,37 +23,37 @@
   <v-ons-alert-dialog modifier="rowfooter"
       :visible.sync="confirm"
     >
-      <span slot="title"></span>
-      <p></p>
+      <span slot="title">Import</span>
+      <p>If it fails, data will be lost. Is it OK?</p>
       <template slot="footer">
-        <div class="alert-dialog-button" @click="confirm = false"></div>
-        <div class="alert-dialog-button" @click="save"></div>
+        <div class="alert-dialog-button" @click="confirm = false">Cancel</div>
+        <div class="alert-dialog-button" @click="save">Import</div>
       </template>
   </v-ons-alert-dialog>
 
   <v-ons-alert-dialog modifier="rowfooter"
       :visible.sync="resetDialogConfirm"
     >
-      <span slot="title"></span>
-      <p></p>
+      <span slot="title">Clear all data</span>
+      <p>Clear all data.If you have a passphrase you can recover your balance.Note that information about the coin label is lost.</p>
       <template slot="footer">
-        <div class="alert-dialog-button" @click="resetDialogConfirm = false"></div>
-        <div class="alert-dialog-button" @click="resetDialogConfirm=false;resetDialog=true"></div>
+        <div class="alert-dialog-button" @click="resetDialogConfirm = false">Cancel</div>
+        <div class="alert-dialog-button" @click="resetDialogConfirm=false;resetDialog=true">OK</div>
       </template>
     </v-ons-alert-dialog>
   <v-ons-alert-dialog modifier="rowfooter"
       :visible.sync="resetDialog"
     >
-      <span slot="title"></span>
-      <p></p>
+      <span slot="title">Clear all data</span>
+      <p>Have you backed up your passphrase? If you lose your passphrase you will not be able to regain your balance.Is it OK?</p>
       <template slot="footer">
-        <div class="alert-dialog-button" @click="resetDialog = false"></div>
-        <div class="alert-dialog-button" @click="reset"></div>
+        <div class="alert-dialog-button" @click="resetDialog = false">Cancel</div>
+        <div class="alert-dialog-button" @click="reset">OK</div>
       </template>
   </v-ons-alert-dialog>
   <v-ons-modal :visible="loading">
       <p style="text-align: center">
-         
+        Calculating. It will take a few minutes, please do not cancel. 
         <br><br>
         <div class="spinner"></div>
       </p>
@@ -62,11 +62,11 @@
     modifier="rowfooter"
     :visible.sync="resetCur"
     >
-    <span slot="title">パラメータをリセット</span>
-    <p>パラメータをリセットしますか？編集した内容は失われます</p>
+    <span slot="title">Reset parameters</span>
+    <p>Do you really reset coin parameters? Changes will be lost.</p>
     <template slot="footer">
-      <div class="alert-dialog-button" @click="resetCur=false"></div>
-      <div class="alert-dialog-button" @click="resetCoins"></div>
+      <div class="alert-dialog-button" @click="resetCur=false">Cancel</div>
+      <div class="alert-dialog-button" @click="resetCoins">NEXT</div>
     </template>
   </v-ons-alert-dialog>
 </v-ons-page>

@@ -6,7 +6,7 @@
   </custom-bar>
   <div>
     <div id="simple">
-      <div class="label" v-show="!label"></div>
+      <div class="label" v-show="!label">Because it is a manual derived address, the balance may not be reflected. Please be careful when sending.</div>
       <div id="qrArea">
         <div id="qrcode">
           <img :src="qrDataUrl" alt="QR code" id="qrcodeImage"/>
@@ -16,10 +16,10 @@
       </div>
       <v-ons-button @click="copyAddress" modifier="quiet">
         <v-ons-icon icon="fa-clipboard"></v-ons-icon>
-        
+        Copy address
       </v-ons-button>
       <v-ons-button @click="share" modifier="quiet" v-if="shareable">
-        <v-ons-icon icon="fa-share-square-o"></v-ons-icon>
+        <v-ons-icon icon="fa-share-square-o"></v-ons-icon>Share
       </v-ons-button>
       <v-ons-list>
         <v-ons-list-item>
@@ -27,11 +27,11 @@
           <div class="right">{{hdPath}}</div>
         </v-ons-list-item>
         <v-ons-list-item>
-          <div class="center"></div>
+          <div class="center">balance</div>
           <div class="right">{{balance}}</div>
         </v-ons-list-item>
         <v-ons-list-item>
-          <div class="center"></div>
+          <div class="center">Public key</div>
           <div class="right"><v-ons-input :value="pubKey"></v-ons-input></div>
         </v-ons-list-item>
       </v-ons-list>
@@ -40,12 +40,12 @@
   <v-ons-alert-dialog modifier="rowfooter"
       :visible.sync="edit"
     >
-      <span slot="title"></span>
-      <p></p>
-      <v-ons-input placeholder="" v-model="labelInput"></v-ons-input>
+      <span slot="title">edit label</span>
+      <p>Please change the label</p>
+      <v-ons-input placeholder="label" v-model="labelInput"></v-ons-input>
       <template slot="footer">
-        <div class="alert-dialog-button" @click="edit = false"></div>
-        <div class="alert-dialog-button" @click="update"></div>
+        <div class="alert-dialog-button" @click="edit = false">Cancel</div>
+        <div class="alert-dialog-button" @click="update">OK</div>
       </template>
     </v-ons-alert-dialog>
 </v-ons-page>

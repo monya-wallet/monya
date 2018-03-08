@@ -1,5 +1,5 @@
 <v-ons-page data-page="sweep">
-  <custom-bar title="">
+  <custom-bar title="Import from existing wallet">
   </custom-bar>
   <div>
     <div id="currencySelector">
@@ -10,10 +10,10 @@
       </v-ons-carousel>
     </div>
     <v-ons-list>
-      <v-ons-list-item><v-ons-input placeholder="" v-model="private"></v-ons-input></v-ons-list-item>
-      <v-ons-list-item><v-ons-input placeholder="" v-model="address"></v-ons-input></v-ons-list-item>
-      <v-ons-list-item><v-ons-input placeholder="" v-model="fee"></v-ons-input></v-ons-list-item>
-      <v-ons-list-item><v-ons-button @click="send" modifier="large"></v-ons-button></v-ons-list-item>
+      <v-ons-list-item><v-ons-input placeholder="secret key" v-model="private"></v-ons-input></v-ons-list-item>
+      <v-ons-list-item><v-ons-input placeholder="send address" v-model="address"></v-ons-input></v-ons-list-item>
+      <v-ons-list-item><v-ons-input placeholder="fee" v-model="fee"></v-ons-input></v-ons-list-item>
+      <v-ons-list-item><v-ons-button @click="send" modifier="large">Send</v-ons-button></v-ons-list-item>
     </v-ons-list>
   </div>
 </v-ons-page>

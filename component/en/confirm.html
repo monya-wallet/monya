@@ -1,17 +1,17 @@
 <v-ons-page data-page="confirm">
-  <custom-bar title=""></custom-bar>
+  <custom-bar title="Send"></custom-bar>
   <div>
     <v-ons-list>
       <v-ons-list-item>
         {{address}}
       </v-ons-list-item>
       <v-ons-list-item>
-        <div class="center"></div>
-        <div class="right" v-show="destHasUsed"></div>
-        <div class="right" v-show="!destHasUsed"></div>
+        <div class="center">Destination address </div>
+        <div class="right" v-show="destHasUsed">has been used</div>
+        <div class="right" v-show="!destHasUsed">will be used for the first time</div>
       </v-ons-list-item>
       <v-ons-list-item>
-        <div class="center"></div>
+        <div class="center">Send Amount</div>
         <div class="right"><currency-set :ticker="coinType" :amount="amount" :easy="isEasy"></currency-set></div>
       </v-ons-list-item>
       <v-ons-list-item modifier="small">
@@ -21,34 +21,34 @@
 
       <div v-show="!insufficientFund">
         <v-ons-list-item modifier="small">
-          <div class="center"></div>
+          <div class="center">sending fee</div>
           <div class="right"><currency-set :ticker="coinType" :amount="fee" :easy="isEasy"></currency-set></div>
         </v-ons-list-item>
         <v-ons-list-item modifier="small">
-          <div class="center"></div>
+          <div class="center">Transaction details</div>
           <div class="right">{{txLabel}}</div>
         </v-ons-list-item>
         <v-ons-list-item modifier="small">
-          <div class="center"></div>
+          <div class="center">Message</div>
           <div class="right">{{message}}</div>
         </v-ons-list-item>
         <v-ons-list-item :class="{'insufficientFund':insufficientFund}" modifier="small">
-          <div class="center"></div>
+          <div class="center">Balance after sent</div>
           <div class="right"><currency-set :ticker="coinType" :amount="afterSent" :easy="isEasy"></currency-set></div>
         </v-ons-list-item>
-        <v-ons-list-header></v-ons-list-header>
+        <v-ons-list-header>After sent, you can not cancel.</v-ons-list-header>
         <v-ons-list-item>
-          <v-ons-input placeholder="" v-model="password" type="password"></v-ons-input>
+          <v-ons-input placeholder="Password" v-model="password" type="password"></v-ons-input>
         </v-ons-list-item>
         <v-ons-list-item>
-          <v-ons-button :class="{shake:incorrect}" modifier="large" @click="next" :disabled="!((ready||utxoStr)&&password)"></v-ons-button>
+          <v-ons-button :class="{shake:incorrect}" modifier="large" @click="next" :disabled="!((ready||utxoStr)&&password)">Send</v-ons-button>
         </v-ons-list-item>
       </div>
       
       <div v-show="hash">
-        <v-ons-list-header></v-ons-list-header>
+        <v-ons-list-header>There is signed data</v-ons-list-header>
         <v-ons-list-item>
-          <v-ons-input placeholder="" :value="hash"></v-ons-input>
+          <v-ons-input placeholder="Oops! mistake" :value="hash"></v-ons-input>
         </v-ons-list-item>
       </div>
     </v-ons-list>
@@ -56,28 +56,28 @@
     <div v-show="insufficientFund">
       <v-ons-list>
         <v-ons-list-item>
-          
+          Failed to create the transaction
         </v-ons-list-item>
-        <v-ons-list-title></v-ons-list-title>
+        <v-ons-list-title>Try the following tasks.</v-ons-list-title>
         <v-ons-list-item>
-          
-        </v-ons-list-item>
-        <v-ons-list-item>
-          ()
+          Reducing the amount of remittance
         </v-ons-list-item>
         <v-ons-list-item>
-          ON
+          Unconfirmed )transaction check(There is the balance or not)
+        </v-ons-list-item>
+        <v-ons-list-item>
+          Enable "Use waiting balance" from setting
         </v-ons-list-item>
       </v-ons-list>
     </div>
   </div>
   <v-ons-modal :visible="loading">
     <p style="text-align: center">
-      
+      Creating transaction data
       <br><br>
       <div class="spinner"></div>
       <br/>
-      <v-ons-button modifier="quiet" @click="$emit('pop')"></v-ons-button>
+      <v-ons-button modifier="quiet" @click="$emit('pop')">Cancel</v-ons-button>
     </p>
   </v-ons-modal>
 </v-ons-page>

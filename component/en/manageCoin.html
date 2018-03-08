@@ -1,11 +1,11 @@
 <v-ons-page data-page="manageCoin">
-  <custom-bar title="">
+  <custom-bar title="Coin management">
     <v-ons-toolbar-button @click="requirePassword=true">
       <v-ons-icon icon="ion-checkmark"></v-ons-icon>
     </v-ons-toolbar-button>
   </custom-bar>
   <v-ons-list>
-    <v-ons-list-header></v-ons-list-header>
+    <v-ons-list-header>Enable</v-ons-list-header>
     <v-ons-list-item class="coin" v-for="c in coins" v-if="c.usable">
       <div class="left"><img :src="c.icon"/></div>
       <div class="center">
@@ -16,7 +16,7 @@
         <v-ons-checkbox v-model="c.usable"></v-ons-checkbox>
       </div>
     </v-ons-list-item>
-    <v-ons-list-header></v-ons-list-header>
+    <v-ons-list-header>Disable</v-ons-list-header>
     <v-ons-list-item class="coin" v-for="c in coins" v-if="!c.usable" modifier="small">
       <div class="left"><img :src="c.icon"/></div>
       <div class="center">
@@ -32,18 +32,18 @@
     modifier="rowfooter"
     :visible.sync="requirePassword"
     >
-    <span slot="title"></span>
-    <p></p>
-    <v-ons-input placeholder="" v-model="password" type="password" :class="{shake:incorrect}"></v-ons-input>
+    <span slot="title">Password</span>
+    <p>Please enter your password. if you delete the coin tab,Balance is still active.Note that information about the coin label may be lost.</p>
+    <v-ons-input placeholder="Password" v-model="password" type="password" :class="{shake:incorrect}"></v-ons-input>
     <template slot="footer">
-      <div class="alert-dialog-button" @click="requirePassword=false"></div>
-      <div class="alert-dialog-button" @click="operateCoins"></div>
+      <div class="alert-dialog-button" @click="requirePassword=false">Cancel</div>
+      <div class="alert-dialog-button" @click="operateCoins">NEXT</div>
     </template>
   </v-ons-alert-dialog>
 
   <v-ons-modal :visible="loading">
     <p style="text-align: center">
-       
+      Calculating. It will take a few minutes, please do not cancel. 
       <br><br>
       <div class="spinner"></div>
     </p>
@@ -53,18 +53,18 @@
                 >
     <v-ons-list>
       <v-ons-list-item>
-        <div class="center">ID</div>
+        <div class="center">coinID</div>
         <div class="right">{{info.coinId}}</div>
       </v-ons-list-item>
       <v-ons-list-item>
-        <div class="center"></div>
+        <div class="center">unit</div>
         <div class="right">{{info.unit}}</div>
       </v-ons-list-item>
       <v-ons-list-item @click="changeServer">
-        <div class="center">API</div>
+        <div class="center">API endpoint</div>
         <div class="right">{{info.apiEndpoint}}</div>
       </v-ons-list-item>
-      <v-ons-list-header></v-ons-list-header>
+      <v-ons-list-header>block</v-ons-list-header>
       <v-ons-list-item v-for="b in info.blocks" @click="openBlock(b.hash)">
         <div class="center">{{b.height}}</div>
         <div class="right"><timestamp :timestamp="b.time"></timestamp></div>
