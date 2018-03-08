@@ -22,9 +22,7 @@ module.exports=class{
     this.bip44 = opt.bip44;
     this.bip49 = opt.bip49
     this.apiEndpoints=opt.apiEndpoints
-    this.apiIndex=0
-    this.apiEndpoint = this.apiEndpoints[0].url;
-    this.explorer = this.apiEndpoints[0].explorer
+    this.changeApiEndpoint(0)
     this.network = opt.network;
     this.price = opt.price;
     this.dummy=!!opt.dummy
@@ -591,12 +589,17 @@ module.exports=class{
       index=(this.apiIndex+1)%this.apiEndpoints.length
     }
     this.apiIndex = index
-    this.apiEndpoint = this.apiEndpoints[index].url
-    if(this.apiEndpoints[index].explorer){
-      this.explorer = this.apiEndpoints[index].explorer
+    const a = this.apiEndpoints[index]
+    if(a.proxy){
+      this.apiEndpoint = coinUtil.proxyUrl(a.url)
+    }else{
+      this.apiEndpoint = a.url
     }
-    if(this.apiEndpoints[index].socket){
-      this.socketEndpoint = this.apiEndpoints[index].socket
+    if(a.explorer){
+      this.explorer = a.explorer
+    }
+    if(a.socket){
+      this.socketEndpoint = a.socket
     }
   }
   isValidAddress(address){
