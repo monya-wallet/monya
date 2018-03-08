@@ -9,11 +9,11 @@ const translationTable={
   "unable to decrypt data":"パスワードが間違っています",
   "unconfirmed": "まだ処理されていない",
 
-  "PasswordFailureError":"パスワードが間違っています",
-  "HDNodeNotFoundError":"公開鍵が登録されていません。コインを追加してください。",
-  "InvalidIndexError":"アドレスを生成できませんでした",
-  "MonappyError":"Monappyに関するエラーが発生しました",
-  "LabelNotFoundError":"該当するラベルがありません"
+  "passwordfailureerror":"パスワードが間違っています",
+  "hdnodenotfounderror":"公開鍵が登録されていません。コインを追加してください。",
+  "invalidindexerror":"アドレスを生成できませんでした",
+  "monappyerror":"Monappyに関するエラー",
+  "labelnotfounderror":"該当するラベルがありません"
 }
 const regexp = new RegExp(Object.keys(translationTable).join("|"),"gim")
 // Error message translation End
