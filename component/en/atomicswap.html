@@ -9,9 +9,9 @@
   </custom-bar>
   <div>
     <v-ons-list>
-      <v-ons-list-header>Please choose the coin for send</v-ons-list-header>
+      <v-ons-list-header>Please choose the coin to send</v-ons-list-header>
       <v-ons-list-item>
-        <div class="center">send coin address type</div>
+        <div class="center">coin to send</div>
         <div class="right">
           <v-ons-select v-model="giveCoinId"  @change="getRefundLabels">
             <option v-for="l in coins" :value="l.coinId">{{l.name}}</option>
@@ -32,9 +32,9 @@
           <v-ons-switch v-model="giveCoinIsCP"></v-ons-switch>
         </div>
       </v-ons-list-item>
-      <v-ons-list-header>Please choose coins to receive and their address</v-ons-list-header>
+      <v-ons-list-header>Please choose coin to receive and its address</v-ons-list-header>
       <v-ons-list-item>
-        <div class="center">receive coin address type</div>
+        <div class="center">Coin to receive</div>
         <div class="right">
           <v-ons-select v-model="getCoinId" @change="getLabels">
             <option v-for="l in coins" :value="l.coinId">{{l.name}}</option>
@@ -59,7 +59,7 @@
       <v-ons-list-item>
         <v-ons-button modifier="large" @click="getPubKey" :disabled="!labels.length||!giveCoinId||!getCoinId">Get Address</v-ons-button>
       </v-ons-list-item>
-      <v-ons-list-header>If you want to switching chain,you need to set the secret</v-ons-list-header>
+      <v-ons-list-header>If you want to switch chain, you need to set the secret</v-ons-list-header>
       <v-ons-list-item>
         <div class="center"><v-ons-input v-model="secret" placeholder="secret" @change="generateHash"></v-ons-input></div>
         <div class="right" v-show="secretSize>32">Too long!</div>
@@ -72,13 +72,13 @@
         <v-ons-input v-model="secretSize" placeholder="secretSize" type="number"></v-ons-input>
       </v-ons-list-item>
       <v-ons-list-item>
-        <v-ons-input v-model="redeemAddressWithSecret" placeholder="Withdraw address with the secret"></v-ons-input>
+        <v-ons-input v-model="redeemAddressWithSecret" placeholder="Withdrawal address with the secret"></v-ons-input>
       </v-ons-list-item>
       <v-ons-list-item>
         <v-ons-input v-model="refundAddressWithSecret" placeholder="Refund address with the secret"></v-ons-input>
       </v-ons-list-item>
       <v-ons-list-item>
-        <v-ons-input v-model="redeemAddressWOSecret" placeholder="Withdraw address without the secret"></v-ons-input>
+        <v-ons-input v-model="redeemAddressWOSecret" placeholder="Withdrawal address without the secret"></v-ons-input>
       </v-ons-list-item>
       <v-ons-list-item>
         <v-ons-input v-model="refundAddressWOSecret" placeholder="Refund address without the secret"></v-ons-input>
@@ -113,7 +113,7 @@
           </div>
         </v-ons-list-item>
         <v-ons-list-item>
-          <div class="center">Is this token that can be divided by the decimal point?</div>
+          <div class="center">Can this token be divided by the decimal point?</div>
           <div class="right">
             <v-ons-switch v-model="cpDivisible"></v-ons-switch>
           </div>

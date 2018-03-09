@@ -1,8 +1,8 @@
 <v-ons-page data-page="finished">
   <div class="wrap">
     <div class="succeeded" data-img="0"></div>
-    <p v-if="infoId==='createdWallet'">Congratulations! wallet is created!</p>
-    <p v-if="infoId==='reset'">Wallet is deleted</p>
+    <p v-if="infoId==='createdWallet'">Congratulations! Wallet created!</p>
+    <p v-if="infoId==='reset'">Wallet deleted</p>
     <p v-if="infoId==='sent'">Sent! TransactionID:{{payload.txId}}</p>
     <v-ons-button modifier="large" @click="start">OK</v-ons-button>
   </div>

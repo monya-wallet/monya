@@ -78,7 +78,7 @@
             <v-ons-icon icon="ion-ios-list-outline"></v-ons-icon>
           </div>
         </v-ons-list-item>
-        <v-ons-list-header>sending fee(sat/Byte) Note that small fee will have the risk.</v-ons-list-header>
+        <v-ons-list-header>sending fee(sat/Byte) Note that small fee will be risk.</v-ons-list-header>
         <v-ons-list-item>
           <div class="center">
             <v-ons-input type="number" v-model="feePerByte" placeholder="sending fee(satoshi/Byte)" :disabled="!address||!coinType"></v-ons-input>
@@ -88,7 +88,7 @@
           </div>
         </v-ons-list-item>
         <div v-show="!cannotSendMessage">
-          <v-ons-list-header>Send the message (option)</v-ons-list-header>
+          <v-ons-list-header>Send the following message (option)</v-ons-list-header>
           <v-ons-list-item>
             <div class="center">
               <v-ons-input v-model="message" placeholder="40Byte is upper limit"></v-ons-input>
@@ -98,7 +98,7 @@
             </div>
           </v-ons-list-item>
         </div>
-         <v-ons-list-header>UTXO setting manually</v-ons-list-header>
+         <v-ons-list-header>UTXO manual setting</v-ons-list-header>
         <v-ons-list-item>
           <div class="center">
             <v-ons-input v-model="utxoStr" placeholder="Confirmed format, check source code for details"></v-ons-input>

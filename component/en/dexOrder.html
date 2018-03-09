@@ -1,10 +1,10 @@
 <v-ons-page data-page="dexOrder">
-  <custom-bar title="Create token(β)"></custom-bar>
+  <custom-bar title="Token DEX(β)"></custom-bar>
   <div>
     <v-ons-list>
-      <v-ons-list-item modifier="small">Let's create with careful attention to various things</v-ons-list-item>
+      <v-ons-list-item modifier="small">Please be careful when you do this.</v-ons-list-item>
       <v-ons-list-item>
-        <div class="center">Label that have token</div>
+        <div class="center">Label with token</div>
         <div class="right">
           <v-ons-select v-model="addressIndex">
             <option v-for="(l,i) in labels" :value="i">{{l}}</option>
@@ -12,22 +12,22 @@
         </div>
       </v-ons-list-item>
       <v-ons-list-item>
-        <div class="center">amount of deposit</div>
-        <div class="right"><v-ons-input placeholder="amount of deposit" type="number" v-model="giveAmount"></v-ons-input></div>
+        <div class="center">Amount to give</div>
+        <div class="right"><v-ons-input placeholder="Amount to give" type="number" v-model="giveAmount"></v-ons-input></div>
       </v-ons-list-item>
       <v-ons-list-item>
-        <div class="center">Deposit token (official name)</div>
+        <div class="center">Token to give (official name)</div>
         <div class="right"><v-ons-input placeholder="Token" type="" v-model="giveToken"></v-ons-input></div>
       </v-ons-list-item>
       <v-ons-list-item>
-        <div class="center">amount of receive</div>
-        <div class="right"><v-ons-input placeholder="amount of receive" type="number" v-model="getAmount"></v-ons-input></div>
+        <div class="center">Amount to get</div>
+        <div class="right"><v-ons-input placeholder="Amount to get" type="number" v-model="getAmount"></v-ons-input></div>
       </v-ons-list-item>
       <v-ons-list-item>
-        <div class="center">Receive token (official name)</div>
+        <div class="center">Token to get (official name)</div>
         <div class="right"><v-ons-input placeholder="Token" type="" v-model="getToken"></v-ons-input></div>
       </v-ons-list-item>
-      <v-ons-list-item modifier="small">Please input token with decimal point using Satoshi.</v-ons-list-item>
+      <v-ons-list-item modifier="small">Please input token with a decimal point using Satoshi unit.</v-ons-list-item>
       
       <v-ons-list-item><v-ons-input type="password" placeholder="Password" v-model="password"></v-ons-input></v-ons-list-item>
       <v-ons-list-item><v-ons-button @click="createTx" modifier="large" :disabled="!giveAmount||!giveToken||!getAmount||!getToken||!password">OK</v-ons-button></v-ons-list-item>

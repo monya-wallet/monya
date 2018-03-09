@@ -21,15 +21,15 @@
         <v-ons-list-item modifier="">
           <div class="center">The price of the relevant time</div>
           <div class="right">
-            <v-ons-input v-model="price" placeholder="Please input yourself." @change="saveTxLabel"></v-ons-input>
+            <v-ons-input v-model="price" placeholder="Please input by yourself." @change="saveTxLabel"></v-ons-input>
           </div>
         </v-ons-list-item>
         <v-ons-list-item modifier="small">
-          <div class="center">Time into the block</div>
+          <div class="center">Time included in block</div>
           <div class="right"><timestamp :timestamp="res.blocktime"></timestamp></div>
         </v-ons-list-item>
         <v-ons-list-item modifier="small">
-          <div class="center">confirmed count</div>
+          <div class="center">confirmation count</div>
           <div class="right">{{res.confirmations}}</div>
         </v-ons-list-item>
         <v-ons-list-item modifier="small">

@@ -33,7 +33,7 @@
     :visible.sync="requirePassword"
     >
     <span slot="title">Password</span>
-    <p>Please enter your password. if you delete the coin tab,Balance is still active.Note that information about the coin label may be lost.</p>
+    <p>Please enter your password. Note that when you delete the coin, information on the coin label may be lost though the balance will be still active.Note</p>
     <v-ons-input placeholder="Password" v-model="password" type="password" :class="{shake:incorrect}"></v-ons-input>
     <template slot="footer">
       <div class="alert-dialog-button" @click="requirePassword=false">Cancel</div>

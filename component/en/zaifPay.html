@@ -3,14 +3,14 @@
   <div>
     <div v-show="!hasCredentials" class="hasNoCredentials">
       <div class="logo"></div>
-      <p>Zaif PaymentisZaif the payment service that you can receive in Japanese yen, not cryptocurrency at the time of receipt, through exchanges.Using this will free you from the risk of rate fluctuations <br/>
-        First let's input the API key and secret key from the setting screen.
+      <p>Zaif PaymentisZaif the payment service by an exchange. You will receive Japanese yen, not crypto currency. This frees you from the risk by rate fluctuation. <br/>
+        First let's input the API key and secret key in the setting.
       </p>
     </div>
 
     <div v-show="hasCredentials">
       <p>
-        Attention: Zaifserver is very unstable when crowded. Please check the health meter before you settle. <br/></p>
+        Caution: Zaifserver is very unstable when crowded. Please check the health meter before you settle. <br/></p>
       <v-ons-list>
         <v-ons-list-item modifier="chevron tappable" @click="health">
           Health meter

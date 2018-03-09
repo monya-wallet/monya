@@ -1,7 +1,7 @@
 <v-ons-page data-page="restorePassphrase">
   <custom-bar title="Restore the wallet"></custom-bar>
   <div>
-    <p>Please enter the ENGLISH WORD. If you narrow down the candidates, we will confirm. If you can not narrow it down, candidates are displayed at the bottom of the screen.</p>
+    <p>Please enter the ENGLISH WORD. If you narrow down the candidates, we will confirm. If you cannot, those candidates are displayed at the bottom of the screen.</p>
       <v-ons-button modifier="quiet" @click="reset">
         <v-ons-icon icon="fa-erase"></v-ons-icon>
         Reset words
@@ -26,7 +26,7 @@
                         :visible.sync="error"
                         >
       <span slot="title">Error</span>
-      <p>An error occurred. Please check the word order, spelling is wrong and try again.</p>
+      <p>An error occurred. Please check the word order and spelling. Then try again.</p>
       <template slot="footer">
         <div class="alert-dialog-button" @click="error = false">try again</div>
       </template>
