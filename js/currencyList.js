@@ -20,12 +20,12 @@ const defaultCoins=[
     icon:require("../res/coins/mona.png"),
     apiEndpoints:[
       {
-        url:"https://mona.insight.monaco-ex.org/insight-api-monacoin",
-        explorer:"https://mona.insight.monaco-ex.org/insight"
-      },
-      {
         url:"https://mona.monya.ga/insight-api-monacoin",
         explorer:"https://mona.monya.ga/insight"
+      },
+      {
+        url:"https://mona.insight.monaco-ex.org/insight-api-monacoin",
+        explorer:"https://mona.insight.monaco-ex.org/insight"
       }
     ],
     explorer:"https://mona.insight.monaco-ex.org/insight",

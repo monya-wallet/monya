@@ -20,9 +20,9 @@
       <v-ons-list-item>
         <div class="center">Speed regarded as settlement completion</div>
         <div class="right">
-          <div v-show="res.speed==='low'">slow (low risk)</div>
-          <div v-show="res.speed==='medium'">Minimum confirmed number</div>
-          <div v-show="res.speed==='high'">Fast (high risk)</div>
+          <div v-show="res.speed==='low'">slow but firm</div>
+          <div v-show="res.speed==='medium'">Minimum confirmation</div>
+          <div v-show="res.speed==='high'">Fast but high risk</div>
           
         </div>
       </v-ons-list-item>
@@ -31,11 +31,11 @@
         <div class="right">
           <div v-show="res.status==='new'">Receiving invoice</div>
           <div v-show="res.status==='paid'">It seems to be sent</div>
-          <div v-show="res.status==='confirmed'">It was confirmed.</div>
+          <div v-show="res.status==='confirmed'">Confirmed</div>
           <div v-show="res.status==='complete'">Done</div>
-          <div v-show="res.status==='expired'">Expire</div>
-          <div v-show="res.status==='invalid'">Fail</div>
-          <div v-show="res.status==='canceled'">Cancel</div>
+          <div v-show="res.status==='expired'">Expired</div>
+          <div v-show="res.status==='invalid'">Failed</div>
+          <div v-show="res.status==='canceled'">Cancelled</div>
         </div>
       </v-ons-list-item>
       <v-ons-list-item>

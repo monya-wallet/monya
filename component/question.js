@@ -48,7 +48,7 @@ const qListEn=[
 		]
 	},
 	{
-		"text": "Talking of Monacoin",
+		"text": "About Monacoin",
 		"answers": [
 			{
 				"label": "I've never heard it.",
@@ -83,7 +83,7 @@ const qListEn=[
 		]
 	},
 	{
-		"text": "Talking of cryptocurrency",
+		"text": "About cryptocurrency",
 		"answers": [
 			{
 				"label": "I've never heard it.",
