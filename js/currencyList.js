@@ -349,7 +349,11 @@ exports.init =customCoins=>{
   }
   for(let i = 0;i<customCoins.length;i++){
     const defCoin = customCoins[i]
-    coins[defCoin.coinId]=new Currency(defCoin)
+    try{
+      coins[defCoin.coinId]=new Currency(defCoin)
+    }catch(e){
+      
+    }
   }
   exports.isSingleWallet = (defaultCoins.length+customCoins.length)<2
 }

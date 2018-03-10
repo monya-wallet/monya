@@ -51,7 +51,7 @@ exports.vm= new Vue({
 })
 const coinUtil=require("../js/coinUtil")
 window.handleOpenURL=function(url) {
-  if (!window.cordova||window.cordova&&(window.cordova.platformName=="browser")) {
+  if (!window.cordova||window.cordova&&(window.cordova.platformName==="browser")) {
     return 
   }
   coinUtil.queueUrl(url)
