@@ -58,6 +58,7 @@ module.exports=class{
     this.changeIndex=-1;
     this.changeBalance=0;
     this.addresses={}
+    this.apiIndex =0
   }
   setPubSeedB58(seed){
     if(this.dummy){return}
@@ -135,14 +136,26 @@ module.exports=class{
       unconfirmed:(new BigNumber(vals[0].unconfirmed)).add(vals[1].unconfirmed).toNumber()
     }))
   }
+
+  fbGet(url){
+    return axios({
+      url:this.apiEndpoint + url,
+      json:true,
+      method:"GET"
+    }).catch((r)=>{
+      this.changeApiEndpoint()
+      if(this.apiIndex===this.apiEndpoints.length-1){
+        
+        throw r;
+      }
+      return this.fbGet(url)
+    })
+  }
   
   getUtxos(addressList,includeUnconfirmedFunds=false){
     let promise
     if(typeof(addressList[0])==="string"){//address mode
-      promise=axios({
-        url:this.apiEndpoint+"/addrs/"+addressList.join(",")+"/utxo",
-        json:true,
-        method:"GET"})
+      promise=this.fbGet("/addrs/"+addressList.join(",")+"/utxo")
     }else{// manual utxo mode
       promise=Promise.resolve({data:addressList})
     }
