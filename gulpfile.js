@@ -96,7 +96,12 @@ gulp.task("prod", function(cb) {
     cb
   );
 });
-var height = JSON.parse(request('GET', 'https://mona.insight.monaco-ex.org/insight-api-monacoin/sync').getBody('utf8')).height
+var height
+try{
+  height = JSON.parse(request('GET', 'https://mona.insight.monaco-ex.org/insight-api-monacoin/sync').getBody('utf8')).height
+}catch(e){
+  height=-1
+}
 gulp.task("copyJa", function(cb) {
   return gulp.src("component/*.html").pipe(translator.translate({
     dictFile:"../lang/template.json",
