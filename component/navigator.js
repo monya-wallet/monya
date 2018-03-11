@@ -53,6 +53,9 @@ module.exports=require("../js/lang.js")({ja:require("./ja/navigator.html"),en:re
     zaifPay(){
       this.openSide=false;this.$set(this,"pageStack",[require("./zaifPay.js")])
     },
+    xrp(){
+      this.openSide=false;this.$set(this,"pageStack",[require("./xrp.js")])
+    },
   },
   created(){
     storage.get("keyPairs").then((data)=>{
