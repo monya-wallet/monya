@@ -1,18 +1,23 @@
 <v-ons-page data-page="xrp">
-  <custom-bar title="Ripple" menu="true"></custom-bar>
+  <custom-bar title="Ripple" menu="true">
+    <v-ons-toolbar-button @click="getBalance">
+      <v-ons-icon icon="ion-ios-loop-strong"></v-ons-icon>
+    </v-ons-toolbar-button>
+  </custom-bar>
   <div>
-    <div>
-      <v-ons-list>
-        <v-ons-list-item><v-ons-input placeholder="Password" type="password" v-model="password"></v-ons-input></v-ons-list-item>
-        <v-ons-list-item><v-ons-button @click="decrypt" modifier="large">復号</v-ons-button></v-ons-list-item>
-      </v-ons-list>
+    <div v-show="requirePassword" class="wrap">
+      <p>Please enter the password.</p>
+      <div :class="{shake:incorrect}" class="passwordBox">
+        <input :disabled="loading" type="password" v-model="password"/>
+      </div>
+      <v-ons-button modifier="large" @click="decrypt" :disabled="loading">Start</v-ons-button>
     </div>
-    <div>
-      <h1>20 XRP</h1>
+    <div v-show="address">
+      
       <div id="simple">
         <div id="qrArea">
           <div id="qrcode">
-            <img :src="qrDataUrl" alt="QR code" id="qrcodeImage"/>
+            <img :src="qrDataUrl" alt="No Address" id="qrcodeImage"/>
           </div>
           <div class="address">{{address||"Loading"}}</div>
         </div>
@@ -26,6 +31,11 @@
         
       </div>
       <v-ons-list>
+        <v-ons-list-header>balance</v-ons-list-header>
+        <v-ons-list-item v-for="b in balances">
+          <div class="center">{{b.value}}</div>
+          <div class="right">{{b.currency}}</div>
+        </v-ons-list-item>
         <v-ons-list-header>Send</v-ons-list-header>
         <v-ons-list-item>
           <v-ons-input placeholder="send address" v-model="sendAddress"></v-ons-input>
@@ -37,17 +47,60 @@
           </div>
         </v-ons-list-item>
         <v-ons-list-item>
-          <div class="center">Legal currency conversion</div>
+          <div class="center">宛先タグ</div>
           <div class="right">
-            <v-ons-input type="number" v-model="fiatConv"></v-ons-input>
+            <v-ons-input type="number" v-model="destTag"></v-ons-input>
           </div>
         </v-ons-list-item>
-        <v-ons-list-item><v-ons-input placeholder="Password" type="password"></v-ons-input></v-ons-list-item>
-        <v-ons-list-item><v-ons-button @click="send" modifier="large">Send</v-ons-button></v-ons-list-item>
-        
-        
+        <v-ons-list-item>
+          <v-ons-input placeholder="memo" v-model="memo"></v-ons-input>
+        </v-ons-list-item>
+        <v-ons-list-item><v-ons-button @click="send" modifier="large" :disabled="!sendAddress||!sendAmount">Send</v-ons-button></v-ons-list-item>
+        <v-ons-list-header>History</v-ons-list-header>
+        <v-ons-list-item v-for="h in history">
+          <div class="left" v-if="h.specification.source.address===address">Send</div>
+          <div class="left" v-if="h.specification.destination.address===address">Receive</div>
+          <div class="center" v-if="h.specification.source.address===address">{{h.specification.destination.address}}</div>
+          <div class="center" v-if="h.specification.destination.address===address">{{h.specification.source.address}}</div>
+          <div class="right">
+            
+            <currency-set v-for="ch in h.outcome.balanceChanges[address]" :amount="ch.value" :ticker="ch.currency" :notKnown="true"></currency-set></div>
+        </v-ons-list-item>
+        <v-ons-list-item v-show="histError">
+          Error occurred
+        </v-ons-list-item>
       </v-ons-list>
     </div>
   </div>
   
+  <v-ons-alert-dialog
+    modifier="rowfooter"
+    :visible.sync="plzActivate"
+    >
+    <span slot="title">アカウントがありません</span>
+    <p>20XRPを入金してアクティベートしてください。</p>
+    
+    <template slot="footer">
+      <div class="alert-dialog-button" @click="plzActivate=false">Close</div>
+    </template>
+  </v-ons-alert-dialog>
+  <v-ons-modal :visible="loading">
+    <p style="text-align: center">
+      processing
+      <br><br>
+      <div class="spinner"></div>
+      <br/>
+    </p>
+  </v-ons-modal>
+  <v-ons-alert-dialog
+    modifier="rowfooter"
+    :visible.sync="sent"
+    >
+    <span slot="title">Send成功</span>
+    <p>Sendしました</p>
+    
+    <template slot="footer">
+      <div class="alert-dialog-button" @click="sent=false">Close</div>
+    </template>
+  </v-ons-alert-dialog>
 </v-ons-page>

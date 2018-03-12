@@ -9,7 +9,7 @@ module.exports = {
     filename:"./dist/dist.js",
   },
   node: {
-    fs: 'empty',
+    fs: 'empty',net:"empty","tls":"empty"
   },
   module: {
     rules: [

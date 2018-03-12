@@ -25,6 +25,9 @@ module.exports=lang({ja:require("./ja/settings.html"),en:require("./en/settings.
         monaparty:{
           enabled:true,
           bgClass:"sand"
+        },
+        xrp:{
+          enabled:false
         }
       },
       monapartyTitleList:currencyList.monapartyTitle,

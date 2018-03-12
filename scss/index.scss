@@ -491,15 +491,14 @@ ons-popover .popover__content{
   }
 }
 $passwordHeight:35px;
-[data-page="login"]{
+[data-page="login"],[data-page="xrp"]{
   .wrap{
     padding:40px;
     text-align:center;
     .passwordBox{
       line-height: $passwordHeight;
       font-size:$passwordHeight;
-      display:grid;
-      grid-template-columns: 1fr $passwordHeight;
+      
       background:white;
       border-radius:8px;
       padding:5px;
@@ -508,9 +507,7 @@ $passwordHeight:35px;
         font-size:$passwordHeight;
         background: transparent;
         border: none;
-      }
-      ons-button{
-        line-height: $passwordHeight;
+        width:100%;
       }
       &.incorrect{
         animation: shake 0.72s cubic-bezier(.36,.07,.19,.97) both;
@@ -518,6 +515,9 @@ $passwordHeight:35px;
       }
     }
   }
+}
+[data-page="xrp"]{
+  ons-input{width:100%}
 }
 $zaifPayLogoSize:200px;
 [data-page="zaifPay"]{
