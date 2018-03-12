@@ -14,36 +14,36 @@
           <div id="qrcode">
             <img :src="qrDataUrl" alt="QR code" id="qrcodeImage"/>
           </div>
-          <div class="address">{{address||"読み込み中"}}</div>
+          <div class="address">{{address||"Loading"}}</div>
         </div>
         <v-ons-button @click="copyAddress" modifier="quiet">
           <v-ons-icon icon="fa-clipboard"></v-ons-icon>
-          アドレスコピー
+          Copy address
         </v-ons-button>
         <v-ons-button @click="share" modifier="quiet" v-if="shareable">
-          <v-ons-icon icon="fa-share-square-o"></v-ons-icon>共有
+          <v-ons-icon icon="fa-share-square-o"></v-ons-icon>Share
         </v-ons-button>
         
       </div>
       <v-ons-list>
-        <v-ons-list-header>送る</v-ons-list-header>
+        <v-ons-list-header>Send</v-ons-list-header>
         <v-ons-list-item>
-          <v-ons-input placeholder="送金先アドレス" v-model="sendAddress"></v-ons-input>
+          <v-ons-input placeholder="send address" v-model="sendAddress"></v-ons-input>
         </v-ons-list-item>
         <v-ons-list-item>
-          <div class="center">相手に送金する金額</div>
+          <div class="center">amount to send</div>
           <div class="right">
             <v-ons-input type="number" v-model="sendAmount"></v-ons-input>
           </div>
         </v-ons-list-item>
         <v-ons-list-item>
-          <div class="center">法定通貨換算</div>
+          <div class="center">Legal currency conversion</div>
           <div class="right">
             <v-ons-input type="number" v-model="fiatConv"></v-ons-input>
           </div>
         </v-ons-list-item>
         <v-ons-list-item><v-ons-input placeholder="Password" type="password"></v-ons-input></v-ons-list-item>
-        <v-ons-list-item><v-ons-button @click="send" modifier="large">送信</v-ons-button></v-ons-list-item>
+        <v-ons-list-item><v-ons-button @click="send" modifier="large">Send</v-ons-button></v-ons-list-item>
         
         
       </v-ons-list>

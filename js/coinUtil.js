@@ -3,7 +3,6 @@ const bcLib = require('bitcoinjs-lib')
 const zecLib = require("@missmonacoin/bitcoinjs-lib-zcash")
 const bip39 = require("bip39")
 const crypto = require('crypto');
-const storage = require("./storage")
 const errors=require("./errors")
 const axios=require("axios")
 
