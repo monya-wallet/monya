@@ -47,7 +47,7 @@
           </div>
         </v-ons-list-item>
         <v-ons-list-item>
-          <div class="center">宛先タグ</div>
+          <div class="center">Destination Tag</div>
           <div class="right">
             <v-ons-input type="number" v-model="destTag"></v-ons-input>
           </div>
@@ -77,8 +77,8 @@
     modifier="rowfooter"
     :visible.sync="plzActivate"
     >
-    <span slot="title">アカウントがありません</span>
-    <p>20XRPを入金してアクティベートしてください。</p>
+    <span slot="title">Account not found</span>
+    <p>20XRP is required to activate this account.</p>
     
     <template slot="footer">
       <div class="alert-dialog-button" @click="plzActivate=false">Close</div>
@@ -96,8 +96,8 @@
     modifier="rowfooter"
     :visible.sync="sent"
     >
-    <span slot="title">Send成功</span>
-    <p>Sendしました</p>
+    <span slot="title">Sent!</span>
+    <p>Successfully sent!</p>
     
     <template slot="footer">
       <div class="alert-dialog-button" @click="sent=false">Close</div>
