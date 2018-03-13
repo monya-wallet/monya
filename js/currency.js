@@ -396,11 +396,9 @@ module.exports=class{
         const redeemScript = this.lib.script.witnessPubKeyHash.output.encode(this.lib.crypto.hash160(keyPair.getPublicKeyBuffer()))
         txb.sign(i,keyPair,redeemScript,null,txb.inputs[i].value)
       }else if(this.libName==="bch"){
-        txb.setVersion(2)
         txb.enableBitcoinCash(true)
         txb.sign(i,keyPair,null,this.lib.Transaction.SIGHASH_ALL | this.lib.Transaction.SIGHASH_BITCOINCASHBIP143,txb.inputs[i].value)
       }else if(this.libName==="btg"){
-        txb.setVersion(2)
         txb.enableBitcoinGold(true)
         txb.sign(i,keyPair,null,this.lib.Transaction.SIGHASH_ALL | this.lib.Transaction.SIGHASH_BITCOINCASHBIP143,txb.inputs[i].value)
       }else{
@@ -585,7 +583,18 @@ module.exports=class{
       })
       txb.addOutput(addr,(new BigNumber(r.balance)).minus(fee).times(100000000).toNumber())
       r.utxos.forEach((v,i)=>{
-        txb.sign(i,keyPair)
+        if(this.enableSegwit){
+          const redeemScript = this.lib.script.witnessPubKeyHash.output.encode(this.lib.crypto.hash160(keyPair.getPublicKeyBuffer()))
+          txb.sign(i,keyPair,redeemScript,null,v.value)
+        }else if(this.libName==="bch"){
+          txb.enableBitcoinCash(true)
+          txb.sign(i,keyPair,null,this.lib.Transaction.SIGHASH_ALL | this.lib.Transaction.SIGHASH_BITCOINCASHBIP143,v.value)
+        }else if(this.libName==="btg"){
+          txb.enableBitcoinGold(true)
+          txb.sign(i,keyPair,null,this.lib.Transaction.SIGHASH_ALL | this.lib.Transaction.SIGHASH_BITCOINCASHBIP143,v.value)
+        }else{
+          txb.sign(i,keyPair)
+        }
       })
       
       return this.pushTx(txb.build().toHex())

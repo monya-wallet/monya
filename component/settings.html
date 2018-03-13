@@ -88,22 +88,16 @@
       </div>
       <v-ons-list-header class="condMonaparty">カードであそぶ</v-ons-list-header>
       <v-ons-list-item class="condMonaparty">
-        <div class="center">カードであそぶメニュー</div>
-        <div class="right"><v-ons-switch v-model="d.monaparty.enabled" @change="save"></v-ons-switch></div>
-      </v-ons-list-item>
-      <div v-show="d.monaparty.enabled" class="condMonaparty">
-        <v-ons-list-item>
-          <div class="center">背景</div>
-          <div class="right">
-            <v-ons-select v-model="d.monaparty.bgClass" @change="save">
-              <option value="sand">砂</option>
-              <option value="realmona">リアルモナコインちゃん</option>
-              <option value="white">単色:白</option>
-              <option value="blue">単色:青</option>
+        <div class="center">背景</div>
+        <div class="right">
+          <v-ons-select v-model="d.monaparty.bgClass" @change="save">
+            <option value="sand">砂</option>
+            <option value="realmona">リアルモナコインちゃん</option>
+            <option value="white">単色:白</option>
+            <option value="blue">単色:青</option>
           </v-ons-select>
-          </div>
-        </v-ons-list-item>
-      </div>
+        </div>
+      </v-ons-list-item>
       <v-ons-list-header>Ripple</v-ons-list-header>
       <v-ons-list-item>
         <div class="center">Rippleメニュー</div>

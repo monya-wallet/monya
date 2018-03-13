@@ -12,7 +12,7 @@ module.exports = new Vuex.Store({
     detail:{},
     zaifPayEnabled:false,
     monappyEnabled:false,
-    monapartyEnabled:false,
+    monapartyEnabled:true,
     xrpEnabled:false,
     sendUrl:"",
     zaifPayInvoiceId:"",
@@ -47,7 +47,6 @@ module.exports = new Vuex.Store({
       //d can be incomplete,please be careful
       state.zaifPayEnabled=d.zaifPay?d.zaifPay.enabled:false
       state.monappyEnabled=d.monappy?d.monappy.enabled:false
-      state.monapartyEnabled=d.monaparty?d.monaparty.enabled:true
       state.xrpEnabled=d.xrp?d.xrp.enabled:true
       state.fiat=d.fiat||"jpy"
       state.easyUnit=d.useEasyUnit

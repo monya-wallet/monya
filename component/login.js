@@ -17,7 +17,7 @@ module.exports=require("../js/lang.js")({ja:require("./ja/login.html"),en:requir
         return coinUtil.decryptKeys({
           entropyCipher:cipher.entropy,
           password:this.password,
-          makeCur:["mona","zny"]
+          makeCur:["mona"]
         })
       }).then((pubs)=>{
         currencyList.each(cur=>{

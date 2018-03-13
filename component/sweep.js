@@ -38,7 +38,7 @@ module.exports=require("../js/lang.js")({ja:require("./ja/sweep.html"),en:requir
     }
   },
   
-  mounted(){
+  created(){
     currencyList.each(cur=>{
       this.currency.push({
         coinId:cur.coinId,

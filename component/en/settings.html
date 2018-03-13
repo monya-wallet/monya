@@ -88,22 +88,16 @@
       </div>
       <v-ons-list-header class="condMonaparty">Card</v-ons-list-header>
       <v-ons-list-item class="condMonaparty">
-        <div class="center">card menu</div>
-        <div class="right"><v-ons-switch v-model="d.monaparty.enabled" @change="save"></v-ons-switch></div>
-      </v-ons-list-item>
-      <div v-show="d.monaparty.enabled" class="condMonaparty">
-        <v-ons-list-item>
-          <div class="center">wallpaper</div>
-          <div class="right">
-            <v-ons-select v-model="d.monaparty.bgClass" @change="save">
-              <option value="sand">sand</option>
-              <option value="realmona">Real Monacoin-chan</option>
-              <option value="white">White</option>
-              <option value="blue">Blue</option>
+        <div class="center">wallpaper</div>
+        <div class="right">
+          <v-ons-select v-model="d.monaparty.bgClass" @change="save">
+            <option value="sand">sand</option>
+            <option value="realmona">Real Monacoin-chan</option>
+            <option value="white">White</option>
+            <option value="blue">Blue</option>
           </v-ons-select>
-          </div>
-        </v-ons-list-item>
-      </div>
+        </div>
+      </v-ons-list-item>
       <v-ons-list-header>Ripple</v-ons-list-header>
       <v-ons-list-item>
         <div class="center">Ripple menu</div>

@@ -140,8 +140,7 @@ module.exports=require("../js/lang.js")({ja:require("./ja/invoice.html"),en:requ
       this.amount=0
     }
   },
-
-  mounted(){
+  created(){
     currencyList.eachWithPub(cur=>{
       this.currency.push({
         coinId:cur.coinId,
@@ -149,6 +148,8 @@ module.exports=require("../js/lang.js")({ja:require("./ja/invoice.html"),en:requ
         name:cur.coinScreenName
       })
     })
+  },
+  mounted(){
     storage.get("settings").then((data)=>{
       if(!data){data={}}
       this.monappyEnabled=data.monappy&&data.monappy.enabled;

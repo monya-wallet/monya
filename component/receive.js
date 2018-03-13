@@ -89,8 +89,7 @@ module.exports=require("../js/lang.js")({ja:require("./ja/receive.html"),en:requ
       this.getLabels()
     }
   },
-  
-  mounted(){
+  created(){
     currencyList.eachWithPub(cur=>{
       this.currency.push({
         coinId:cur.coinId,

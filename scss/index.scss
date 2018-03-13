@@ -414,9 +414,9 @@ ons-popover .popover__content{
   }
   .questionItem{
     text-align:center;
-    padding:3%;
+    padding:1%;
     .questionText{
-      padding:3%;
+      padding:2%;
       border-radius:8px;
       border:1px solid $baseTextColor;
       color:$baseTextColor;
@@ -427,8 +427,11 @@ ons-popover .popover__content{
         border-radius:6px;
         background-color:$baseColor;
         color:$baseTextColor;
-        margin:8px 0;
-        padding:6px;
+        margin:5px 0;
+        padding:5px;
+        &:active{
+          background-color:darken($baseColor,15%)
+        }
       }
     }
   }
