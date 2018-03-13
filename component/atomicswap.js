@@ -16,7 +16,7 @@ const getPriv = (coinId,change,index,password)=>storage.get("keyPairs").then((ci
             coinUtil.decrypt(cipher.entropy,password)
           )
         )
-  const node = bitcoin.HDNode.fromSeedBuffer(seed,cur.network)
+  const node = cur.lib.HDNode.fromSeedBuffer(seed,cur.network)
    if(cur.bip44){
       return node
         .deriveHardened(44)
@@ -103,12 +103,18 @@ const signClaimTxWithSecret = (txb, coinId, addressIndex, redeemScript, secret, 
     let tx = txb.buildIncomplete();
     txb.inputs.forEach((v,i)=>{
       let signatureScript = redeemScript;
-      let signatureHash = txb.tx.hashForSignature(i, signatureScript, bitcoin.Transaction.SIGHASH_ALL);
-      
+      let signatureHash;
+      if(cur.libName==="bch"){
+        signatureHash = txb.tx.hashForCashSignature(i, signatureScript, v.value, cur.lib.Transaction.SIGHASH_ALL | this.lib.Transaction.SIGHASH_BITCOINCASHBIP143);
+      }else if(cur.libName==="btg"){
+        signatureHash = txb.tx.hashForGoldSignature(i, signatureScript, v.value, cur.lib.Transaction.SIGHASH_ALL | this.lib.Transaction.SIGHASH_BITCOINCASHBIP143);
+      }else{
+        signatureHash = txb.tx.hashForSignature(i, signatureScript, cur.lib.Transaction.SIGHASH_ALL);
+      }
       const signature= pk.sign(signatureHash);
       
 
-      let scriptSig=redeemP2SHContract(redeemScript,signature.toScriptSignature(bitcoin.Transaction.SIGHASH_ALL),Buffer.from(cur.getPubKey(0,addressIndex),"hex"),secret)
+      let scriptSig=redeemP2SHContract(redeemScript,signature.toScriptSignature(cur.lib.Transaction.SIGHASH_ALL),Buffer.from(cur.getPubKey(0,addressIndex),"hex"),secret)
       tx.setInputScript(i, scriptSig);
     })
     return tx;
@@ -124,12 +130,19 @@ const signRefund = (txb, coinId, addressIndex, redeemScript, password)=>{
     let tx = txb.buildIncomplete();
     txb.inputs.forEach((v,i)=>{
       let signatureScript = redeemScript;
-      let signatureHash = txb.tx.hashForSignature(i, signatureScript, bitcoin.Transaction.SIGHASH_ALL);
+      let signatureHash;
+      if(cur.libName==="bch"){
+        signatureHash = txb.tx.hashForCashSignature(i, signatureScript, v.value, cur.lib.Transaction.SIGHASH_ALL | this.lib.Transaction.SIGHASH_BITCOINCASHBIP143);
+      }else if(cur.libName==="btg"){
+        signatureHash = txb.tx.hashForGoldSignature(i, signatureScript, v.value, cur.lib.Transaction.SIGHASH_ALL | this.lib.Transaction.SIGHASH_BITCOINCASHBIP143);
+      }else{
+        signatureHash = txb.tx.hashForSignature(i, signatureScript, cur.lib.Transaction.SIGHASH_ALL);
+      }
       
       const signature= pk.sign(signatureHash);
       
 
-      let scriptSig=refundP2SHContract(redeemScript,signature.toScriptSignature(bitcoin.Transaction.SIGHASH_ALL),Buffer.from(cur.getPubKey(0,addressIndex),"hex"))
+      let scriptSig=refundP2SHContract(redeemScript,signature.toScriptSignature(cur.lib.Transaction.SIGHASH_ALL),Buffer.from(cur.getPubKey(0,addressIndex),"hex"))
       tx.setInputScript(i, scriptSig);
     })
     return tx;
@@ -332,15 +345,17 @@ module.exports=require("../js/lang.js")({ja:require("./ja/atomicswap.html"),en:r
     buildNormalTransaction(inAddr,outAddr,coinId,isRefund){
       const cur =currencyList.get(coinId||this.getCoinId)
       return cur.getUtxos([inAddr],true).then(res=>{
-        const txb = new bitcoin.TransactionBuilder(cur.network)
+        const txb = new cur.lib.TransactionBuilder(cur.network)
         if(this.csvAvailable){
           txb.setVersion(2)
           res.utxos.forEach(v=>{
             const vin =txb.addInput(v.txId, v.vout,isRefund?(this.lockTime|0):0)
+            txb.inputs[vin].value=v.value
           })
         }else{
           res.utxos.forEach(v=>{
             const vin =txb.addInput(v.txId, v.vout)
+            txb.inputs[vin].value=v.value
           })
         }
         txb.addOutput(outAddr,(new BigNumber(res.balance)).times(100000000).minus(this.fee|0).round().toNumber())
