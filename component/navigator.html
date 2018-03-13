@@ -39,7 +39,7 @@
         <v-ons-list-item modifier="tappable" @click="help">
           <div class="left"><v-ons-icon icon="fa-question"></v-ons-icon></div>
           <div class="center">ヘルプ</div></v-ons-list-item>
-        <v-ons-list-title v-show="$store.state.zaifPayEnabled||$store.state.xrpEnabled"></v-ons-list-header>
+        <v-ons-list-title v-show="$store.state.zaifPayEnabled||$store.state.xrpEnabled"></v-ons-list-title>
          <v-ons-list-item modifier="tappable" @click="zaifPay" v-show="$store.state.zaifPayEnabled" class="condZaif">
           <div class="center">Zaif Payment</div></v-ons-list-item>
         <v-ons-list-item modifier="tappable" @click="xrp" v-show="$store.state.xrpEnabled">
