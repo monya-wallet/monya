@@ -46,7 +46,7 @@ const defaultCoins=[
     price:{
       url:"https://public.bitbank.cc/mona_jpy/ticker",
       json:true,
-      jsonPath:'$..last',
+      jsonPath:'$.data.last',
       fiat:"jpy"
     },
     confirmations:6,

@@ -216,6 +216,7 @@ exports.parseUrl=url=>new Promise((resolve,reject)=>{
     opReturn:"",
     signature:"",
     label:"",
+    isRipple:false,
     isValidUrl:false
   }
   let raw;
@@ -227,7 +228,16 @@ exports.parseUrl=url=>new Promise((resolve,reject)=>{
   ret.raw=raw
   ret.protocol=raw.protocol.slice(0,-1)
   ret.isValidUrl=true
-  
+  if(ret.protocol==="ripple"){
+    ret.isRipple=true
+    ret.amount=raw.searchParams.get("amount")
+    ret.message=raw.searchParams.get("message")
+    const addrRes = addressRegExp.exec(url)
+    if(addrRes){
+      ret.address=addrRes[1]
+    }
+    return resolve(ret)
+  }
   currencyList.each(v=>{
     if(v.bip21===ret.protocol){
       ret.isCoinAddress=true
@@ -260,7 +270,7 @@ exports.proxyUrl=url=>{
   }
 }
 exports.shortWait=()=>new Promise(r=>{
-  setTimeout(r,150)
+  setTimeout(r,160)
 })
 exports._url=""
 exports._urlCb=null

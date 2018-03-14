@@ -13,8 +13,26 @@
       <v-ons-button modifier="large" @click="decrypt" :disabled="loading">はじめる</v-ons-button>
     </div>
     <div v-show="address">
-      
-      <div id="simple">
+      <div v-show="plzActivate" class="description">
+        <h1>リップル</h1>
+        <p>
+          リップルとは、ビットコインにインスパイヤされた高速な国際送金を実現するために作られた分散型台帳システムです。現在では、その高速な着金のため<b>決済システム</b>としても利用されています。 <br/></p>
+        <p>
+          Q. ビットコインと何が違うの? <br/>
+          A. ビットコインは、ブロックチェーンを用いています。その書き込み権利はプルーフ・オブ・ワークによって決定されています。この欠点は、時間がかかること、大量のエネルギーを消費することです。それに対してリップルはリップルレジャーというブロックチェーンとは一味違う台帳に書き込んでいます。リップルは、書き込む権限を制限する代わりに、<b>エネルギーを無駄にせず、数秒で取引を完了</b>することができます。</p>
+        <p>
+          Q. つまり、リップルは中央集権なの？ <br/>
+          A. はい、まさにその通りです。書き込む権限を持った人たちが裏切ったらネットワークは崩壊します。
+        </p>
+        <p>
+          Q. パブリックチェーンなの？プライベートチェーンなの？ <br/>
+          A. ブロックチェーンじゃないのでどちらでもありません。大事なことなので二回言います。<b>リップルはブロックチェーンを使っていません</b>
+        </p>
+        <p>
+          リップルを始めるには、下記のリップルアドレスに 20 XRP を送金してアカウントを有効化してください。
+        </p>
+      </div>
+      <div id="simp1le">
         <div id="qrArea">
           <div id="qrcode">
             <img :src="qrDataUrl" alt="No Address" id="qrcodeImage"/>
@@ -30,7 +48,7 @@
         </v-ons-button>
         
       </div>
-      <v-ons-list>
+      <v-ons-list v-show="!plzActivate">
         <v-ons-list-header>残高</v-ons-list-header>
         <v-ons-list-item v-for="b in balances">
           <div class="center">{{b.value}}</div>
@@ -46,6 +64,12 @@
             <v-ons-input type="number" v-model="sendAmount"></v-ons-input>
           </div>
         </v-ons-list-item>
+         <v-ons-list-item>
+          <div class="center">法定通貨換算</div>
+          <div class="right">
+            <v-ons-input type="number" v-model="fiatConv"></v-ons-input>
+          </div>
+        </v-ons-list-item>
         <v-ons-list-item>
           <div class="center">宛先タグ</div>
           <div class="right">
@@ -55,7 +79,7 @@
         <v-ons-list-item>
           <v-ons-input placeholder="メモ" v-model="memo"></v-ons-input>
         </v-ons-list-item>
-        <v-ons-list-item><v-ons-button @click="send" modifier="large" :disabled="!sendAddress||!sendAmount">送信</v-ons-button></v-ons-list-item>
+        <v-ons-list-item><v-ons-button @click="confirm=true" modifier="large" :disabled="!sendAddress||!sendAmount">送信</v-ons-button></v-ons-list-item>
         <v-ons-list-header>履歴</v-ons-list-header>
         <v-ons-list-item v-for="h in history">
           <div class="left" v-if="h.specification.source.address===address">送金</div>
@@ -72,18 +96,6 @@
       </v-ons-list>
     </div>
   </div>
-  
-  <v-ons-alert-dialog
-    modifier="rowfooter"
-    :visible.sync="plzActivate"
-    >
-    <span slot="title">アカウントがありません</span>
-    <p>20XRPを入金してアクティベートしてください。</p>
-    
-    <template slot="footer">
-      <div class="alert-dialog-button" @click="plzActivate=false">閉じる</div>
-    </template>
-  </v-ons-alert-dialog>
   <v-ons-modal :visible="loading">
     <p style="text-align: center">
       処理中
@@ -92,6 +104,19 @@
       <br/>
     </p>
   </v-ons-modal>
+  <v-ons-alert-dialog
+    modifier="rowfooter"
+    :visible.sync="confirm"
+    >
+    <span slot="title">送金確認</span>
+    <p>{{sendAddress}}</p>
+    <p>{{sendAmount}}XRP</p>
+    <p>失敗しても手数料がかかるときがあるので注意</p>
+    <template slot="footer">
+      <div class="alert-dialog-button" @click="send">送金</div>
+      <div class="alert-dialog-button" @click="confirm=false">戻る</div>
+    </template>
+  </v-ons-alert-dialog>
   <v-ons-alert-dialog
     modifier="rowfooter"
     :visible.sync="sent"

@@ -521,6 +521,9 @@ $passwordHeight:35px;
 }
 [data-page="xrp"]{
   ons-input{width:100%}
+  .description{
+    text-align:left;
+  }
 }
 $zaifPayLogoSize:200px;
 [data-page="zaifPay"]{

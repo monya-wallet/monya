@@ -6,6 +6,7 @@ const qrcode = require("qrcode")
 const {RippleAPI} = require("ripple-lib")
 const keypairs=require("ripple-keypairs")
 const BigNumber = require('bignumber.js');
+const axios = require('axios');
 
 module.exports=require("../js/lang.js")({ja:require("./ja/xrp.html"),en:require("./en/xrp.html")})({
   data(){
@@ -29,9 +30,13 @@ module.exports=require("../js/lang.js")({ja:require("./ja/xrp.html"),en:require(
       histError:false,
       history:null,
       memo:"",
-      destTag:0
+      destTag:0,
+      server:'wss://s2.ripple.com:443',
+      confirm:false,
+      price:1
     }
   },
+  store:require("../js/store.js"),
   methods:{
     decrypt(){
       this.loading=true
@@ -46,7 +51,7 @@ module.exports=require("../js/lang.js")({ja:require("./ja/xrp.html"),en:require(
         this.loading=false
         this.requirePassword=false
         this.getBalance()
-        qrcode.toDataURL(this.address,{
+        qrcode.toDataURL("ripple:"+this.address,{
           errorCorrectionLevel: 'M',
           type: 'image/png'
         },(err,url)=>{
@@ -97,6 +102,7 @@ module.exports=require("../js/lang.js")({ja:require("./ja/xrp.html"),en:require(
       })
     },
     send(){
+      this.confirm=false
       this.loading=true
       const sendDrops = Math.floor(parseFloat(this.sendAmount)*1000000)
       const payment = {
@@ -137,28 +143,59 @@ module.exports=require("../js/lang.js")({ja:require("./ja/xrp.html"),en:require(
         this.loading=false
         this.$store.commit("setError",e.message)
       })
+    },
+    connect(){
+      this.api=new RippleAPI({server: this.server||'wss://s2.ripple.com:443'})
+      this.api.connect().then(()=>{
+        this.connected = true
+      }).catch(e=>{
+        this.loading=false
+        
+        this.$store.commit("setError",e.message)
+        
+      })
+      this.api.on("error",(code,msg,data)=>{
+        this.$store.commit("setError",code+":"+msg)
+      })
+    },
+    getPrice(){
+      axios({
+        url:"https://public.bitbank.cc/xrp_jpy/ticker",
+        method:"GET"
+      }).then(res=>{
+        this.price =res.data.data.last
+        return coinUtil.getPrice("jpy",this.$store.state.fiat)
+      }).then(p=>{
+        this.price*=p
+      }).catch(()=>{
+        this.price=1
+      })
     }
   },
-  
+  watch:{
+    fiatConv(v){
+      this.sendAmount=parseFloat(v)/this.price
+    },
+    sendAmount(v){
+      this.fiatConv=parseFloat(v)*this.price
+    }
+  },
   mounted(){
-    this.api=new RippleAPI({server: 'wss://s2.ripple.com:443'})
-    this.api.connect().then(()=>{
-      this.connected = true
-    }).catch(e=>{
-      this.loading=false
-      
-      this.$store.commit("setError",e.message)
-      
-    })
-    this.api.on("error",(code,msg,data)=>{
-      this.$store.commit("setError",code+":"+msg)
-    })
-
+    const rSend = this.$store.state.rippleSend
+    if(rSend.address){
+      this.sendAddress=rSend.address
+      if(rSend.amount){
+        this.sendAmount=rSend.amount
+        this.confirm=true
+      }
+    }
+    this.connect()
+    this.getPrice()
     storage.verifyBiometric().then(pwd=>{
       this.password=pwd
       this.decrypt()
     }).catch(()=>{
-      return true
+      return
     })
   }
 })
