@@ -84,10 +84,10 @@ const defaultCoins=[
     },
     enableSegwit:false,
     price:{
-      url:coinUtil.proxyUrl("https://www.coingecko.com/price_charts/bitzeny/jpy/24_hours.json"),
+      url:"https://insight.neetcoin.jp/api/ticker",
       json:true,
-      jsonPath:'$.stats[-1:][1]',
-      fiat:"jpy"
+      jsonPath:'$[?(@.id=="ZNY_BTC")].last',
+      fiat:"btc"
     },
     sound:require("../res/coins/paySound/zny.m4a")
   },{

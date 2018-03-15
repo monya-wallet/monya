@@ -1,6 +1,6 @@
 <v-ons-page data-page="xrp">
   <custom-bar title="Ripple" menu="true">
-    <v-ons-toolbar-button @click="getBalance">
+    <v-ons-toolbar-button @click="getBalance" @click.right="serverDlg=true">
       <v-ons-icon icon="ion-ios-loop-strong"></v-ons-icon>
     </v-ons-toolbar-button>
   </custom-bar>
@@ -39,6 +39,7 @@
           </div>
           <div class="address">{{address||"Loading"}}</div>
         </div>
+        <p><v-ons-input v-model="invAmt" placeholder="invoice amount" type="number"></v-ons-input></p>
         <v-ons-button @click="copyAddress" modifier="quiet">
           <v-ons-icon icon="fa-clipboard"></v-ons-icon>
           Copy address
@@ -126,6 +127,18 @@
     
     <template slot="footer">
       <div class="alert-dialog-button" @click="sent=false">Close</div>
+    </template>
+  </v-ons-alert-dialog>
+  <v-ons-alert-dialog
+    modifier="rowfooter"
+    :visible.sync="serverDlg"
+    >
+    <span slot="title">サーバー変更</span>
+    <p><v-ons-input v-model="server" placehodler="wss://s2.ripple.com:443"></v-ons-input></p>
+    
+    <template slot="footer">
+      <div class="alert-dialog-button" @click="serverDlg=false">Close</div>
+      <div class="alert-dialog-button" @click="connect">接続</div>
     </template>
   </v-ons-alert-dialog>
 </v-ons-page>

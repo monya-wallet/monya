@@ -31,9 +31,11 @@ module.exports=require("../js/lang.js")({ja:require("./ja/xrp.html"),en:require(
       history:null,
       memo:"",
       destTag:0,
-      server:'wss://s2.ripple.com:443',
+      server:'wss://s2.ripple.com:443',//wss://s.altnet.rippletest.net:51233
       confirm:false,
-      price:1
+      price:1,
+      serverDlg:false,
+      invAmt:""
     }
   },
   store:require("../js/store.js"),
@@ -51,12 +53,7 @@ module.exports=require("../js/lang.js")({ja:require("./ja/xrp.html"),en:require(
         this.loading=false
         this.requirePassword=false
         this.getBalance()
-        qrcode.toDataURL("ripple:"+this.address,{
-          errorCorrectionLevel: 'M',
-          type: 'image/png'
-        },(err,url)=>{
-          this.qrDataUrl=url
-        })
+        this.getQrCode()
       }).catch(()=>{
         this.loading=false
         this.incorrect=true
@@ -95,7 +92,7 @@ module.exports=require("../js/lang.js")({ja:require("./ja/xrp.html"),en:require(
       const targetRect = event.target.getBoundingClientRect(),
             targetBounds = targetRect.left + ',' + targetRect.top + ',' + targetRect.width + ',' + targetRect.height;
       coinUtil.share({
-        message:this.mainAddress
+        url:this.url
       },targetBounds).then(()=>{
       }).catch(()=>{
         this.copyAddress()
@@ -145,6 +142,7 @@ module.exports=require("../js/lang.js")({ja:require("./ja/xrp.html"),en:require(
       })
     },
     connect(){
+      this.serverDlg=false
       this.api=new RippleAPI({server: this.server||'wss://s2.ripple.com:443'})
       this.api.connect().then(()=>{
         this.connected = true
@@ -170,6 +168,19 @@ module.exports=require("../js/lang.js")({ja:require("./ja/xrp.html"),en:require(
       }).catch(()=>{
         this.price=1
       })
+    },
+    getQrCode(){
+      qrcode.toDataURL(this.url,{
+        errorCorrectionLevel: 'M',
+        type: 'image/png'
+      },(err,url)=>{
+        this.qrDataUrl=url
+      })
+    }
+  },
+  computed:{
+    url(){
+      return `https://monya-wallet.github.io/monya/a/?amount=${parseFloat(this.invAmt)||0}&address=${this.address}&scheme=ripple`
     }
   },
   watch:{
@@ -178,14 +189,18 @@ module.exports=require("../js/lang.js")({ja:require("./ja/xrp.html"),en:require(
     },
     sendAmount(v){
       this.fiatConv=parseFloat(v)*this.price
+    },
+    invAmt(){
+      this.getQrCode()
     }
   },
   mounted(){
     const rSend = this.$store.state.rippleSend
+    const sa = parseFloat(rSend.amount)||0
     if(rSend.address){
       this.sendAddress=rSend.address
-      if(rSend.amount){
-        this.sendAmount=rSend.amount
+      if(sa){
+        this.sendAmount=sa
         this.confirm=true
       }
     }
