@@ -81,7 +81,7 @@
           <div class="center" v-if="h.message.payload">{{h.message.payload | hex2str}}</div>
           <div class="center" v-if="!h.message.payload">Messageなし</div>
           <div class="right">
-            <currency-set :amount="h._xem.amount" ticker="nem:xem" :notKnown="true"></currency-set>
+            <currency-set v-if="!h._mosaics.length" :amount="h._xem.amount" ticker="nem:xem" :notKnown="true"></currency-set>
             <currency-set v-for="ch in h._mosaics" :amount="ch.amount" :ticker="ch.mosaicId.description()" :notKnown="true"></currency-set></div>
         </v-ons-list-item>
         <v-ons-list-header>unconfirmed</v-ons-list-header>
@@ -91,11 +91,14 @@
           <div class="center" v-if="h.message.payload">{{h.message.payload | hex2str}}</div>
           <div class="center" v-if="!h.message.payload">Messageなし</div>
           <div class="right">
-            <currency-set ticker="nem:xem" :notKnown="true"></currency-set>
             <currency-set v-for="ch in h._mosaics" :ticker="ch.mosaicId.description()" :notKnown="true"></currency-set></div>
         </v-ons-list-item>
         <v-ons-list-item v-show="histError">
           Error occurred
+        </v-ons-list-item>
+        <v-ons-list-header>Not Enough Money</v-ons-list-header>
+        <v-ons-list-item @click="donateMe">
+          Creatorに寄付
         </v-ons-list-item>
       </v-ons-list>
     </div>
