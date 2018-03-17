@@ -1,5 +1,6 @@
 const storage = require("../js/storage.js")
 const coinUtil = require("../js/coinUtil.js")
+const ext = require("../js/extension.js")
 
 // Error message translation Start 
 const translationTable={
@@ -53,9 +54,9 @@ module.exports=require("../js/lang.js")({ja:require("./ja/navigator.html"),en:re
     zaifPay(){
       this.openSide=false;this.$set(this,"pageStack",[require("./zaifPay.js")])
     },
-    xrp(){
-      this.openSide=false;this.$set(this,"pageStack",[require("./xrp.js")])
-    },
+    openExt(extId){
+      this.openSide=false;this.$set(this,"pageStack",[ext.get(extId).component])
+    }
   },
   created(){
     storage.get("keyPairs").then((data)=>{
@@ -92,6 +93,13 @@ module.exports=require("../js/lang.js")({ja:require("./ja/navigator.html"),en:re
         this.$store.commit("setError",v)
         return v
       }
+    },
+    extensions(){
+      const ret =[]
+      ext.each(x=>{
+        this.$store.state.enabledExts&&(~this.$store.state.enabledExts.indexOf(x.id))&&ret.push({id:x.id,name:x.name})
+      })
+      return ret
     }
   },
   mounted(){

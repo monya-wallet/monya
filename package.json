@@ -17,6 +17,7 @@
     "coinselect": "^3.1.11",
     "cordova-plugin-qrscanner": "^2.5.0",
     "instascan": "^1.0.0",
+    "nem-library": "^1.0.1",
     "onsenui": "^2.9.2",
     "pump": "^2.0.0",
     "qrcode": "^1.0.0",

@@ -118,17 +118,7 @@
       <div class="alert-dialog-button" @click="confirm=false">Back</div>
     </template>
   </v-ons-alert-dialog>
-  <v-ons-alert-dialog
-    modifier="rowfooter"
-    :visible.sync="sent"
-    >
-    <span slot="title">Sent!</span>
-    <p>Successfully sent!</p>
-    
-    <template slot="footer">
-      <div class="alert-dialog-button" @click="sent=false">Close</div>
-    </template>
-  </v-ons-alert-dialog>
+  
   <v-ons-alert-dialog
     modifier="rowfooter"
     :visible.sync="serverDlg"

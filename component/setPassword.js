@@ -42,7 +42,7 @@ module.exports=require("../js/lang.js")({ja:require("./ja/setPassword.html"),en:
         currencyList.init([])
         cipherPromise=storage.get("settings").then(s=>{
           if(!s){
-            s={monappy:{},zaifPay:{},monaparty:{enabled:true},xrp:{enabled:false}}
+            s={monappy:{},zaifPay:{},monaparty:{enabled:true}}
             storage.set("settings",s)
           }
           this.$store.commit("setSettings",s)

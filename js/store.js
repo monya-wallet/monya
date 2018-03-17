@@ -13,7 +13,7 @@ module.exports = new Vuex.Store({
     zaifPayEnabled:false,
     monappyEnabled:false,
     monapartyEnabled:true,
-    xrpEnabled:false,
+    enabledExts:[],
     sendUrl:"",
     zaifPayInvoiceId:"",
     hasKeyPairs:false,
@@ -48,13 +48,13 @@ module.exports = new Vuex.Store({
       //d can be incomplete,please be careful
       state.zaifPayEnabled=d.zaifPay?d.zaifPay.enabled:false
       state.monappyEnabled=d.monappy?d.monappy.enabled:false
-      state.xrpEnabled=d.xrp?d.xrp.enabled:true
       state.fiat=d.fiat||"jpy"
       state.easyUnit=d.useEasyUnit
       state.tsMode=d.absoluteTime?"absolute":"relative"
       state.bgClass=d.monaparty&&d.monaparty.bgClass||"sand"
       state.monapartyTitle=d.monaparty&&d.monaparty.title||"monacard"
       state.includeUnconfirmedFunds=d.includeUnconfirmedFunds
+      state.enabledExts=d.enabledExts
     },
     setTitle(s,title){
       s.monapartyTitle=title||"monacard"

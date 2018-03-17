@@ -1,5 +1,7 @@
 const QRScanner = window.QRScanner
 const coinUtil=require("../js/coinUtil")
+const ext = require("../js/extension.js")
+
 module.exports=require("../js/lang.js")({ja:require("./ja/qrcode.html"),en:require("./en/qrcode.html")})({
   data:()=>({
     cameras:[],
@@ -42,7 +44,7 @@ module.exports=require("../js/lang.js")({ja:require("./ja/qrcode.html"),en:requi
             amount:res.amount
           })
           this.$emit("pop")
-          this.$emit("push",require("./xrp.js"))
+          this.$emit("push",ext.get("xrp").component)
         }else if(res.protocol==="http"||res.protocol==="https"){
           coinUtil.openUrl(res.url)
           QRScanner.destroy((status)=>{

@@ -132,7 +132,10 @@ module.exports=require("../js/lang.js")({ja:require("./ja/xrp.html"),en:require(
           this.sendAmount=0
           this.memo=""
           this.destTag=0
-          this.sent=true
+          this.$store.commit("setFinishNextPage",{page:require("./home.js"),infoId:"sent",payload:{
+            txId:""
+          }})
+          this.$emit("replace",require("./finished.js"))
         }else{
           this.$store.commit("setError",m.resultCode+":"+m.resultMessage)
         }
@@ -195,7 +198,7 @@ module.exports=require("../js/lang.js")({ja:require("./ja/xrp.html"),en:require(
     }
   },
   mounted(){
-    const rSend = this.$store.state.rippleSend
+    const rSend = this.$store.state.rippleSend||{}
     const sa = parseFloat(rSend.amount)||0
     if(rSend.address){
       this.sendAddress=rSend.address

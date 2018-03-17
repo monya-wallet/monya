@@ -232,7 +232,7 @@ ons-popover .popover__content{
   text-align:center;
   min-height:20px;
 }
-[data-page="showLabel"],[data-page="invoice"],[data-page="receive"],[data-page="xrp"]{
+[data-page="showLabel"],[data-page="invoice"],[data-page="receive"],[data-page="xrp"],[data-page="nem"]{
   text-align:center;
   #simple{
     .label{
@@ -494,7 +494,7 @@ ons-popover .popover__content{
   }
 }
 $passwordHeight:35px;
-[data-page="login"],[data-page="xrp"]{
+[data-page="login"],[data-page="xrp"],[data-page="nem"]{
   .wrap{
     padding:40px;
     text-align:center;
@@ -519,7 +519,7 @@ $passwordHeight:35px;
     }
   }
 }
-[data-page="xrp"]{
+[data-page="xrp"],[data-page="xrp"]{
   v-ons-list ons-input{width:100%}
   .description{
     text-align:left;
