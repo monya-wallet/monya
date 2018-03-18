@@ -3,7 +3,7 @@
     <div class="succeeded" data-img="0"></div>
     <p v-if="infoId==='createdWallet'">Congratulations! Wallet created!</p>
     <p v-if="infoId==='reset'">Wallet deleted</p>
-    <p v-if="infoId==='sent'">Successfully sent!！{{payload.txId}}</p>
+    <p v-if="infoId==='sent'">Successfully Sent!{{payload.txId}}</p>
     <v-ons-button modifier="large" @click="start">OK</v-ons-button>
   </div>
   <v-ons-modal :visible="loading">

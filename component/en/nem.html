@@ -1,6 +1,6 @@
 <v-ons-page data-page="nem">
   <custom-bar title="NEM" menu="true">
-    <v-ons-toolbar-button @click="getBalance" @click.right="serverDlg=true">
+    <v-ons-toolbar-button @click="getBalance">
       <v-ons-icon icon="ion-ios-loop-strong"></v-ons-icon>
     </v-ons-toolbar-button>
   </custom-bar>
@@ -20,7 +20,7 @@
           </div>
           <div class="address">{{address||"Loading"}}</div>
         </div>
-        <p><v-ons-input v-model="invAmt" placeholder="invoice amount" type="number"></v-ons-input><v-ons-input v-model="invMosaic" placeholder="invoiceモザイク"></v-ons-input></p>
+        <p><v-ons-input v-model="invAmt" placeholder="invoice amount" type="number"></v-ons-input><v-ons-input v-model="invMosaic" placeholder="invoice mosaic"></v-ons-input></p>
         <v-ons-button @click="copyAddress" modifier="quiet">
           <v-ons-icon icon="fa-clipboard"></v-ons-icon>
           Copy address
@@ -47,10 +47,10 @@
           </div>
         </v-ons-list-item>
         <v-ons-list-item>
-          <div class="center">モザイク</div>
+          <div class="center">Mosaic</div>
           <div class="right">
             <span v-show="sendMosaic">{{sendMosaic}}</span>
-            <span v-show="!sendMosaic">上to選んでください。</span>
+            <span v-show="!sendMosaic">Choose from above</span>
           </div>
         </v-ons-list-item>
         <v-ons-list-item v-show="sendMosaic==='nem:xem'">
@@ -68,7 +68,7 @@
           <div class="left" v-if="h.transaction.recipient!==address">Send</div>
           <div class="left" v-if="h.transaction.recipient===address">Receive</div>
           <div class="center" v-if="h.transaction.message.payload">{{h.transaction.message.payload | hex2str}}</div>
-          <div class="center" v-if="!h.transaction.message.payload">Messageなし</div>
+          <div class="center" v-if="!h.transaction.message.payload">(no message)</div>
           <div class="right">
             <currency-set :amount="h.transaction.amount/1e6" ticker="nem:xem" :notKnown="true"></currency-set></div>
         </v-ons-list-item>
@@ -77,7 +77,7 @@
           <div class="left" v-if="h.transaction.recipient!==address">Send</div>
           <div class="left" v-if="h.transaction.recipient===address">Receive</div>
           <div class="center" v-if="h.transaction.message.payload">{{h.transaction.message.payload | hex2str}}</div>
-          <div class="center" v-if="!h.transaction.message.payload">Messageなし</div>
+          <div class="center" v-if="!h.transaction.message.payload">(no message)</div>
           <div class="right">
             <currency-set :amount="h.transaction.amount/1e6" ticker="nem:xem" :notKnown="true"></currency-set></div>
         </v-ons-list-item>
@@ -86,7 +86,7 @@
         </v-ons-list-item>
         <v-ons-list-header>Not Enough Money</v-ons-list-header>
         <v-ons-list-item @click="donateMe">
-          Creatorに寄付
+          Donate Me
         </v-ons-list-item>
       </v-ons-list>
     </div>
@@ -110,19 +110,6 @@
     <template slot="footer">
       <div class="alert-dialog-button" @click="broadcast">Send</div>
       <div class="alert-dialog-button" @click="confirm=false">Back</div>
-    </template>
-  </v-ons-alert-dialog>
-  
-  <v-ons-alert-dialog
-    modifier="rowfooter"
-    :visible.sync="serverDlg"
-    >
-    <span slot="title">サーバー変更</span>
-    <p><v-ons-input v-model="server" placehodler="wss://s2.ripple.com:443"></v-ons-input></p>
-    
-    <template slot="footer">
-      <div class="alert-dialog-button" @click="serverDlg=false">Close</div>
-      <div class="alert-dialog-button" @click="connect">接続</div>
     </template>
   </v-ons-alert-dialog>
 </v-ons-page>

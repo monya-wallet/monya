@@ -11,7 +11,7 @@ const NEM_COIN_TYPE =43
 const DEFAULT_ACCOUNT=0
 const NETWORK=nem.model.network.data.mainnet.id
 
-const endpoint = nem.model.objects.create("endpoint")(nem.model.nodes.defaultMainnet, nem.model.nodes.defaultPort);
+const endpoint = nem.model.objects.create("endpoint")("https://shibuya.supernode.me", 7891);
 
 module.exports=require("../js/lang.js")({ja:require("./ja/nem.html"),en:require("./en/nem.html")})({
   data(){
@@ -33,7 +33,7 @@ module.exports=require("../js/lang.js")({ja:require("./ja/nem.html"),en:require(
       histError:false,
       history:null,
       message:"",
-      server:'',
+      server:'https://shibuya.supernode.me:7891/heartbeat',
       confirm:false,
       price:1,
       serverDlg:false,
