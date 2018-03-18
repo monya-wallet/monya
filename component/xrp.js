@@ -198,7 +198,7 @@ module.exports=require("../js/lang.js")({ja:require("./ja/xrp.html"),en:require(
     }
   },
   mounted(){
-    const rSend = this.$store.state.rippleSend||{}
+    const rSend = this.$store.state.extensionSend||{}
     const sa = parseFloat(rSend.amount)||0
     if(rSend.address){
       this.sendAddress=rSend.address
@@ -207,6 +207,7 @@ module.exports=require("../js/lang.js")({ja:require("./ja/xrp.html"),en:require(
         this.confirm=true
       }
     }
+    this.$store.commit("setExtensionSend",{})
     this.connect()
     this.getPrice()
     storage.verifyBiometric().then(pwd=>{

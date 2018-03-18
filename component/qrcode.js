@@ -37,14 +37,14 @@ module.exports=require("../js/lang.js")({ja:require("./ja/qrcode.html"),en:requi
             this.$emit("push",require("./send.js"))
           });
           
-        }else if(res.isRipple){
-          this.$store.commit("setRippleSend",{
+        }else if(res.extension){
+          this.$store.commit("setExtensionSend",{
             memo:res.message,
             address:res.address,
             amount:res.amount
           })
           this.$emit("pop")
-          this.$emit("push",ext.get("xrp").component)
+          this.$emit("push",res.extension.component)
         }else if(res.protocol==="http"||res.protocol==="https"){
           coinUtil.openUrl(res.url)
           QRScanner.destroy((status)=>{

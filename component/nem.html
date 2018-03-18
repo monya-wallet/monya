@@ -13,17 +13,6 @@
       <v-ons-button modifier="large" @click="decrypt" :disabled="loading">はじめる</v-ons-button>
     </div>
     <div v-show="address">
-      <div v-show="plzActivate" class="description">
-        <h1>ネム</h1>
-        <p>
-          ネムは、新しい経済運動を起こすために作られた暗号通貨です。 <br/></p>
-        <p>
-          Q. ビットコインと何が違うの? <br/>
-          A. ビットコインは、ブロックチェーンを用いています。その書き込み権利と利益はプルーフ・オブ・ワークによって決定されています。この欠点は、大量のエネルギーを消費することです。それに対してネムはプルーフ・オブ・インポータンスを用いて書き込み権利と利益を決定しているので<b>エネルギーを無駄にせずに取引</b>することができます。</p>
-        
-          ネムを始めるには、下記のアドレスにいくらか送金してアカウントを有効化してください。
-        </p>
-      </div>
       <div id="simple">
         <div id="qrArea">
           <div id="qrcode">
@@ -31,7 +20,7 @@
           </div>
           <div class="address">{{address||"読み込み中"}}</div>
         </div>
-        <p><v-ons-input v-model="invAmt" placeholder="請求額" type="number"></v-ons-input></p>
+        <p><v-ons-input v-model="invAmt" placeholder="請求額" type="number"></v-ons-input><v-ons-input v-model="invMosaic" placeholder="請求モザイク"></v-ons-input></p>
         <v-ons-button @click="copyAddress" modifier="quiet">
           <v-ons-icon icon="fa-clipboard"></v-ons-icon>
           アドレスコピー
@@ -41,11 +30,11 @@
         </v-ons-button>
         
       </div>
-      <v-ons-list v-show="!plzActivate">
+      <v-ons-list>
         <v-ons-list-header>残高</v-ons-list-header>
-        <v-ons-list-item v-for="b in mosaics" @click="sendMosaic=b.mosaicId.description()">
+        <v-ons-list-item v-for="b in mosaics" @click="sendMosaic=b.mosaicId.namespaceId+':'+b.mosaicId.name">
           <div class="center">{{b.normalizedQty}}</div>
-          <div class="right">{{b.mosaicId.description()}}</div>
+          <div class="right">{{b.mosaicId.namespaceId}}:{{b.mosaicId.name}}</div>
         </v-ons-list-item>
         <v-ons-list-header>送る</v-ons-list-header>
         <v-ons-list-item>
@@ -64,7 +53,7 @@
             <span v-show="!sendMosaic">上から選んでください。</span>
           </div>
         </v-ons-list-item>
-         <v-ons-list-item v-show="sendMosaic==='nem:xem'">
+        <v-ons-list-item v-show="sendMosaic==='nem:xem'">
           <div class="center">法定通貨換算</div>
           <div class="right">
             <v-ons-input type="number" v-model="fiatConv"></v-ons-input>
@@ -73,25 +62,24 @@
         <v-ons-list-item>
           <v-ons-input placeholder="メッセージ" v-model="message"></v-ons-input>
         </v-ons-list-item>
-        <v-ons-list-item><v-ons-button @click="confirm=true" modifier="large" :disabled="!sendAddress||!sendAmount||!sendMosaic">送信</v-ons-button></v-ons-list-item>
+        <v-ons-list-item><v-ons-button @click="send" modifier="large" :disabled="!sendAddress||!sendAmount||!sendMosaic||!isValidAddress">送信</v-ons-button></v-ons-list-item>
         <v-ons-list-header>履歴</v-ons-list-header>
-        <v-ons-list-item v-for="h in history">
-          <div class="left" v-if="h.recipient.value!==address">送金</div>
-          <div class="left" v-if="h.recipient.value===address">受け取り</div>
-          <div class="center" v-if="h.message.payload">{{h.message.payload | hex2str}}</div>
-          <div class="center" v-if="!h.message.payload">メッセージなし</div>
+        <v-ons-list-item v-for="h in history" @click="openExplorer(h.meta.hash.data)">
+          <div class="left" v-if="h.transaction.recipient!==address">送金</div>
+          <div class="left" v-if="h.transaction.recipient===address">受け取り</div>
+          <div class="center" v-if="h.transaction.message.payload">{{h.transaction.message.payload | hex2str}}</div>
+          <div class="center" v-if="!h.transaction.message.payload">メッセージなし</div>
           <div class="right">
-            <currency-set v-if="!h._mosaics.length" :amount="h._xem.amount" ticker="nem:xem" :notKnown="true"></currency-set>
-            <currency-set v-for="ch in h._mosaics" :amount="ch.amount" :ticker="ch.mosaicId.description()" :notKnown="true"></currency-set></div>
+            <currency-set :amount="h.transaction.amount/1e6" ticker="nem:xem" :notKnown="true"></currency-set></div>
         </v-ons-list-item>
         <v-ons-list-header>未承認</v-ons-list-header>
         <v-ons-list-item v-for="h in unconfirmed">
-          <div class="left" v-if="h.recipient.value!==address">送金</div>
-          <div class="left" v-if="h.recipient.value===address">受け取り</div>
-          <div class="center" v-if="h.message.payload">{{h.message.payload | hex2str}}</div>
-          <div class="center" v-if="!h.message.payload">メッセージなし</div>
+          <div class="left" v-if="h.transaction.recipient!==address">送金</div>
+          <div class="left" v-if="h.transaction.recipient===address">受け取り</div>
+          <div class="center" v-if="h.transaction.message.payload">{{h.transaction.message.payload | hex2str}}</div>
+          <div class="center" v-if="!h.transaction.message.payload">メッセージなし</div>
           <div class="right">
-            <currency-set v-for="ch in h._mosaics" :ticker="ch.mosaicId.description()" :notKnown="true"></currency-set></div>
+            <currency-set :amount="h.transaction.amount/1e6" ticker="nem:xem" :notKnown="true"></currency-set></div>
         </v-ons-list-item>
         <v-ons-list-item v-show="histError">
           エラーが発生しました。
@@ -118,8 +106,9 @@
     <span slot="title">送金確認</span>
     <p>{{sendAddress}}</p>
     <p>{{sendAmount}}</p>
+    <p>Fee: {{transactionEntity.fee/1e6}}</p>
     <template slot="footer">
-      <div class="alert-dialog-button" @click="send">送金</div>
+      <div class="alert-dialog-button" @click="broadcast">送金</div>
       <div class="alert-dialog-button" @click="confirm=false">戻る</div>
     </template>
   </v-ons-alert-dialog>

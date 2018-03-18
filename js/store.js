@@ -29,7 +29,7 @@ module.exports = new Vuex.Store({
     includeUnconfirmedFunds:false,
     utxoStr:"",
     error:"",
-    rippleSend:{}
+    extensionSend:{}
   },
   mutations: {
     setEntropy(state,ent) {
@@ -115,8 +115,8 @@ module.exports = new Vuex.Store({
     setError(s,e){
       s.error=e
     },
-    setRippleSend(s,e){
-      s.rippleSend=e
+    setExtensionSend(s,e){
+      s.extensionSend=e
     }
   }
 })

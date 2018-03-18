@@ -5,6 +5,7 @@ const bip39 = require("bip39")
 const crypto = require('crypto');
 const errors=require("./errors")
 const axios=require("axios")
+const ext = require("./extension.js")
 
 const addressRegExp = /^\w+:(?:\/\/)?(\w{32,36})\??/
 
@@ -216,8 +217,8 @@ exports.parseUrl=url=>new Promise((resolve,reject)=>{
     opReturn:"",
     signature:"",
     label:"",
-    isRipple:false,
-    isValidUrl:false
+    isValidUrl:false,
+    extension:null
   }
   let raw;
   try{
@@ -228,37 +229,33 @@ exports.parseUrl=url=>new Promise((resolve,reject)=>{
   ret.raw=raw
   ret.protocol=raw.protocol.slice(0,-1)
   ret.isValidUrl=true
-  if(ret.protocol==="ripple"){
-    ret.isRipple=true
-    ret.amount=raw.searchParams.get("amount")
-    ret.message=raw.searchParams.get("message")
-    const addrRes = addressRegExp.exec(url)
-    if(addrRes){
-      ret.address=addrRes[1]
+  ext.each(v=>{
+    if(ret.protocol===v.scheme){
+      ret.extension=v
     }
-    return resolve(ret)
-  }
+  })
   currencyList.each(v=>{
     if(v.bip21===ret.protocol){
       ret.isCoinAddress=true
       ret.coinId=v.coinId
-      const addrRes = addressRegExp.exec(url)
-      if(addrRes){
-        ret.address=addrRes[1]
-      }
+      
       if (v.isValidAddress(ret.address)) {
         ret.isPrefixOk=true
       }
       ret.isValidAddress=exports.isValidAddress(ret.address)
-      ret.message=raw.searchParams.get("message")
-      ret.label=raw.searchParams.get("label")
-      ret.amount=raw.searchParams.get("amount")
-      ret.opReturn=raw.searchParams.get("req-opreturn")
-      ret.signature=raw.searchParams.get("req-signature")
-      ret.utxo=raw.searchParams.get("req-utxo")
+      
     }
   })
-  
+  const addrRes = addressRegExp.exec(url)
+  if(addrRes){
+    ret.address=addrRes[1]
+  }
+  ret.message=raw.searchParams.get("message")
+  ret.label=raw.searchParams.get("label")
+  ret.amount=raw.searchParams.get("amount")
+  ret.opReturn=raw.searchParams.get("req-opreturn")
+  ret.signature=raw.searchParams.get("req-signature")
+  ret.utxo=raw.searchParams.get("req-utxo")
   resolve(ret)
 })
 

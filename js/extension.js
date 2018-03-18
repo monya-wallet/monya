@@ -4,18 +4,14 @@ const extensions={
     name:"Ripple",
     component:require("../component/xrp.js"),
     icon:null,
-    variables:[{
-      name:"address"
-    }]
+    scheme:"ripple"
   },
   nem:{
     id:"nem",
     name:"NEM",
     component:require("../component/nem.js"),
     icon:null,
-    variables:[{
-      name:"address"
-    }]
+    scheme:"nem"
   }
 }
 exports.get=extId=>{

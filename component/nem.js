@@ -1,15 +1,17 @@
 const bip39 = require("bip39")
 const coinUtil = require("../js/coinUtil")
 const storage = require("../js/storage")
-const nemLib = require("nem-library")
+const nem = require("nem-sdk").default
 const qrcode = require("qrcode")
 const BigNumber = require('bignumber.js');
 const axios = require('axios');
+const bcLib = require('bitcoinjs-lib')
 
-nemLib.NEMLibrary.bootstrap(nemLib.NetworkTypes.MAIN_NET);
-const accountHttp = new nemLib.AccountHttp();
-const mosaicHttp=new nemLib.MosaicHttp()
-const transactionHttp=new nemLib.TransactionHttp()
+const NEM_COIN_TYPE =43
+const DEFAULT_ACCOUNT=0
+const NETWORK=nem.model.network.data.mainnet.id
+
+const endpoint = nem.model.objects.create("endpoint")(nem.model.nodes.defaultMainnet, nem.model.nodes.defaultPort);
 
 module.exports=require("../js/lang.js")({ja:require("./ja/nem.html"),en:require("./en/nem.html")})({
   data(){
@@ -36,11 +38,14 @@ module.exports=require("../js/lang.js")({ja:require("./ja/nem.html"),en:require(
       price:1,
       serverDlg:false,
       invAmt:"",
+      invMosaic:"",
       account:null,
       accountInfo:null,
       mosaics:null,
-      histPageable:null,
-      unconfirmed:null
+      unconfirmed:null,
+
+      common:null,
+      transactionEntity:{}
     }
   },
   store:require("../js/store.js"),
@@ -48,8 +53,19 @@ module.exports=require("../js/lang.js")({ja:require("./ja/nem.html"),en:require(
     decrypt(){
       this.loading=true
       storage.get("keyPairs").then(c=>{
-        this.account=nemLib.Account.createWithPrivateKey(coinUtil.decrypt(c.entropy,this.password))
-        this.address =this.account.address.value
+        let seed=
+        bip39.mnemonicToSeed(
+          bip39.entropyToMnemonic(
+            coinUtil.decrypt(c.entropy,this.password)
+          )
+        )
+        const node = bcLib.HDNode.fromSeedBuffer(seed)
+                   .deriveHardened(44)
+                   .deriveHardened(NEM_COIN_TYPE)
+              .deriveHardened(DEFAULT_ACCOUNT)
+        this.privateKey=node.keyPair.d.toBuffer().toString("hex")
+        this.keyPair=nem.crypto.keyPair.create(this.privateKey)
+        this.address =nem.model.address.toAddress(this.keyPair.publicKey.toString(),NETWORK)
         this.loading=false
         this.requirePassword=false
         this.getBalance()
@@ -67,21 +83,72 @@ module.exports=require("../js/lang.js")({ja:require("./ja/nem.html"),en:require(
         return
       }
       this.loading=true
-      accountHttp.getFromPublicKey(this.account.publicKey).subscribe(b=>{
+      nem.com.requests.account.data(endpoint,this.address).then(b=>{
         this.loading=false
         this.accountInfo=b
-      },e=>{
+      }).catch(e=>{
         this.loading=false
         this.$store.commit("setError",e.message)
       })
-      accountHttp.getMosaicOwnedByAddress(this.account.address).toPromise().then(b=>{
+      nem.com.requests.account.mosaics.owned(endpoint,this.address).then(b=>{
         this.loading=false
-        return Promise.all(b.map(mos=>{
+        return Promise.all(b.data.map(mos=>{
           if(mos.mosaicId.namespaceId==="nem"){
-            return Promise.resolve({properties:new nemLib.MosaicProperties(6, 8999999999, true, false),quantity:mos.quantity,mosaicId:mos.mosaicId,normalizedQty:(new BigNumber(mos.quantity)).shift(-6).toNumber()})
+            return Promise.resolve({
+              definitions:{
+                "creator": "3e82e1c1e4a75adaa3cba8c101c3cd31d9817a2eb966eb3b511fb2ed45b8e262",
+                "description": "reserved xem mosaic",
+                "id": {
+                  "namespaceId": "nem",
+                  "name": "xem"
+                },
+                "properties": [{
+                  "name": "divisibility",
+                  "value": "6"
+                }, {
+                  "name": "initialSupply",
+                  "value": "8999999999"
+                }, {
+                  "name": "supplyMutable",
+                  "value": "false"
+                }, {
+                  "name": "transferable",
+                  "value": "true"
+                }],
+                "levy": {}
+              },
+              quantity:mos.quantity,
+              initialSupply:8999999999,
+              mosaicId:mos.mosaicId,
+              divisibility:6,
+              normalizedQty:(new BigNumber(mos.quantity)).shift(-6).toNumber()
+            })
           }
-          return mosaicHttp.getMosaicDefinition(mos.mosaicId).toPromise().then(def=>{
-            return {properties:def.properties,quantity:mos.quantity,mosaicId:mos.mosaicId,normalizedQty:(new BigNumber(mos.quantity)).shift(-def.properties.divisibility).toNumber()}
+          return nem.com.requests.namespace.mosaicDefinitions(endpoint,mos.mosaicId.namespaceId).then(def=>{
+            let divisibility=6;
+            let initialSupply=0
+            for(let i=0;i<def.data.length;i++){
+              const mData=def.data[i].mosaic
+              if(mData.id.name!==mos.mosaicId.name){
+                continue
+              }
+              const prp=mData.properties
+              for(let j=0;j<prp.length;j++){
+                if(prp[j].name==="divisibility"){
+                  divisibility=prp[j].value|0
+                }else if(prp[j].name==="initialSupply"){
+                  initialSupply=prp[j].value|0
+                }
+              }
+              return {
+                definitions:mData,
+                initialSupply,
+                divisibility,
+                quantity:mos.quantity,
+                mosaicId:mos.mosaicId,
+                normalizedQty:(new BigNumber(mos.quantity)).shift(-divisibility).toNumber()
+              }
+            }
           })
         }))
       }).then(res=>{
@@ -90,14 +157,12 @@ module.exports=require("../js/lang.js")({ja:require("./ja/nem.html"),en:require(
         this.loading=false
         this.$store.commit("setError",e.message)
       })
-      this.histPageable = accountHttp.allTransactionsPaginated(this.account.address);
 
-      this.histPageable.subscribe(txs => {
-        this.history=txs
+      nem.com.requests.account.transactions.all(endpoint,this.address).then(txs => {
+        this.history=txs.data
       });
-      accountHttp.unconfirmedTransactions(this.account.address)
-        .subscribe(x => {
-          this.unconfirmed=x;
+      nem.com.requests.account.transactions.unconfirmed(endpoint,this.address).then(x => {
+          this.unconfirmed=x.data;
         });
     },
     copyAddress(){
@@ -118,8 +183,9 @@ module.exports=require("../js/lang.js")({ja:require("./ja/nem.html"),en:require(
       this.loading=true
       let mosToSend
       for(let i=0;i<this.mosaics.length;i++){
-        if(this.mosaics[i].mosaicId.description()===this.sendMosaic){
-          mosToSend=this.mosaics[i]
+        const m=this.mosaics[i]
+        if(m.mosaicId.namespaceId+":"+m.mosaicId.name===this.sendMosaic){
+          mosToSend=m
           break;
         }
       }
@@ -128,20 +194,34 @@ module.exports=require("../js/lang.js")({ja:require("./ja/nem.html"),en:require(
         return 
         
       }
-      (
-        (mosToSend.mosaicId.namespaceId==="nem")
-          ?Promise.resolve(new nemLib.XEM(parseFloat(this.sendAmount)))
-          :mosaicHttp.getMosaicTransferableWithAmount(mosToSend.mosaicId.namespaceId,mosToSend.mosaicId.mosaic,parseFloat(this.sendAmount)).toPromise()
-      ).then(txMos=>{
-        const transferTransaction = nemLib.TransferTransaction.create(
-          nemLib.TimeWindow.createWithDeadline(),
-          new nemLib.Address(this.sendAddress),
-          txMos,
-          nemLib.PlainMessage.create(this.message)
-        );
-        const signedTransaction = this.account.signTransaction(transferTransaction)
-        return transactionHttp.announceTransaction(signedTransaction).toPromise()
-      }).then(m=>{
+      const sendQty = (new BigNumber(this.sendAmount)).shift(mosToSend.divisibility).toNumber()
+      const mosAttach=nem.model.objects.create("mosaicAttachment")(mosToSend.mosaicId.namespaceId,mosToSend.mosaicId.name,sendQty)
+      
+      const transferTransaction = nem.model.objects.get("transferTransaction")
+      transferTransaction.mosaics.push(mosAttach)
+      transferTransaction.amount=parseFloat(this.sendAmount)
+      transferTransaction.recipient=this.sendAddress
+      const mosaicDefinitionMetaDataPair = nem.model.objects.get("mosaicDefinitionMetaDataPair")
+      mosaicDefinitionMetaDataPair[this.sendMosaic]={mosaicDefinition:mosToSend.definitions,supply:mosToSend.initialSupply}
+      const common =this.common= nem.model.objects.get("common")
+      common.privateKey=this.privateKey
+      let transactionEntity;
+      if(this.sendMosaic==="nem:xem"){
+        transactionEntity=nem.model.transactions.prepare("transferTransaction")(common, transferTransaction, NETWORK)
+      }else{
+        transactionEntity = nem.model.transactions.prepare("mosaicTransferTransaction")(common, transferTransaction, mosaicDefinitionMetaDataPair, NETWORK);
+      }
+      this.transactionEntity=transactionEntity
+      this.confirm=true
+      this.loading=false
+    },
+    broadcast(){
+      this.confirm=false
+      this.loading=true
+      nem.model.transactions.send(this.common,this.transactionEntity,endpoint).then(m=>{
+        if(m.code>=2){
+          throw m.message
+        }
         this.loading=false
         this.sendAddress=""
         this.sendAmount=0
@@ -153,7 +233,7 @@ module.exports=require("../js/lang.js")({ja:require("./ja/nem.html"),en:require(
         this.$emit("replace",require("./finished.js"))
       }).catch(e=>{
         this.loading=false
-        this.$store.commit("setError",e.message)
+        this.$store.commit("setError",e.data?e.data.message:e)
       })
     },
     connect(){
@@ -182,13 +262,19 @@ module.exports=require("../js/lang.js")({ja:require("./ja/nem.html"),en:require(
         this.qrDataUrl=url
       })
     },
+    openExplorer(txId){
+      coinUtil.openUrl("http://explorer.ournem.com/#/s_tx?hash="+txId)
+    },
     donateMe(){
-      location.href="https://missmonacoin.github.io"
+      coinUtil.openUrl("https://missmonacoin.github.io")
     }
   },
   computed:{
     url(){
-      return `https://monya-wallet.github.io/monya/a/?amount=${parseFloat(this.invAmt)||0}&address=${this.address}&scheme=nem`
+      return `https://monya-wallet.github.io/monya/a/?amount=${parseFloat(this.invAmt)||0}&address=${this.address}&label=${this.invMosaic}&scheme=nem`
+    },
+    isValidAddress(){
+      return nem.model.address.isValid(this.sendAddress)
     }
   },
   watch:{
@@ -200,18 +286,23 @@ module.exports=require("../js/lang.js")({ja:require("./ja/nem.html"),en:require(
     },
     invAmt(){
       this.getQrCode()
+    },
+    invMosaic(){
+      this.getQrCode()
     }
   },
   mounted(){
-    const rSend = this.$store.state.nemSend||{}
+    const rSend = this.$store.state.extensionSend||{}
     const sa = parseFloat(rSend.amount)||0
     if(rSend.address){
       this.sendAddress=rSend.address
+      this.sendMosaic=rSend.label||"nem:xem"
       if(sa){
         this.sendAmount=sa
         this.confirm=true
       }
     }
+    this.$store.commit("setExtensionSend",{})
     this.connect()
     this.getPrice()
     storage.verifyBiometric().then(pwd=>{
