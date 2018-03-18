@@ -3,14 +3,14 @@ const extensions={
     id:"xrp",
     name:"Ripple",
     component:require("../component/xrp.js"),
-    icon:null,
+    icon:require("../res/coins/xrp.png"),
     scheme:"ripple"
   },
   nem:{
     id:"nem",
     name:"NEM",
     component:require("../component/nem.js"),
-    icon:null,
+    icon:require("../res/coins/nem.png"),
     scheme:"nem"
   }
 }

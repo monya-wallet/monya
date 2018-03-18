@@ -94,6 +94,7 @@ module.exports=lang({ja:require("./ja/settings.html"),en:require("./en/settings.
       this.extensions.push({
         id:x.id,
         name:x.name,
+        icon:x.icon,
         usable:!!~this.d.enabledExts.indexOf(x.id)
       })
     })

@@ -719,6 +719,12 @@ $zaifPayLogoSize:200px;
   .monappyNotExist{
     background-color:#fdc;
   }
+  .left{
+    img{
+      width:$homeCurIconSize;
+      height:$homeCurIconSize;
+    }
+  }
 }
 
 [data-page="customCoin"],[data-page="importExport"]{
