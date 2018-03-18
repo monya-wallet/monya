@@ -267,7 +267,7 @@ exports.proxyUrl=url=>{
   }
 }
 exports.shortWait=()=>new Promise(r=>{
-  setTimeout(r,160)
+  setTimeout(r,140)
 })
 exports._url=""
 exports._urlCb=null
