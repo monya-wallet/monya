@@ -280,6 +280,12 @@ const defaultCoins=[
 		  "scriptHash": 6203,
 		  "wif": 128
 	  },
+    price: {
+      url: "https://www.coin-chain.info/json/jamapi.cgi",
+      json: true,
+      jsonPath: '$.data.last',
+      fiat: "btc"
+    },
 	  "enableSegwit": false,
 	  "confirmations": 6,
 	  "lib": "zec",
