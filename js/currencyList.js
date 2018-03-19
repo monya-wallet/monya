@@ -269,7 +269,7 @@ const defaultCoins=[
 	  },
 	  "bip21": "koto",
 	  "defaultFeeSatPerByte": 200,
-	  "icon": require("../res/coins/neet.png"),
+	  "icon": require("../res/coins/koto.png"),
 	  "network": {
 		  "messagePrefix": "\u0015Koto Signed Message:\n",
 		  "bip32": {
