@@ -67,9 +67,6 @@ module.exports=require("../js/lang.js")({ja:require("./ja/invoice.html"),en:requ
         this.price=res
       })
     },
-    zaifPay(){
-      this.$emit("push",require("./zaifPay.js"))
-    },
     changeMonappy(){
       this.generateQR()
       this.monappyNotExist=false

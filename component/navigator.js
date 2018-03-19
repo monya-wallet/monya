@@ -51,9 +51,6 @@ module.exports=require("../js/lang.js")({ja:require("./ja/navigator.html"),en:re
     monaparty(){
       this.openSide=false;this.$set(this,"pageStack",[require("./monaparty.js")])
     },
-    zaifPay(){
-      this.openSide=false;this.$set(this,"pageStack",[require("./zaifPay.js")])
-    },
     openExt(extId){
       this.openSide=false;this.$set(this,"pageStack",[ext.get(extId).component])
     }

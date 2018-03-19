@@ -20,7 +20,11 @@
           </div>
           <div class="address">{{address||"Loading"}}</div>
         </div>
-        <p><v-ons-input v-model="invAmt" placeholder="invoice amount" type="number"></v-ons-input><v-ons-input v-model="invMosaic" placeholder="invoice mosaic"></v-ons-input></p>
+        <p><v-ons-select v-model="addressFormat">
+            <option value="url">URLformat</option>
+            <option value="monya">Monya compatible</option>
+            <option value="nemWallet">NEM Walletcompatible</option>
+        </v-ons-select><v-ons-input v-model="invAmt" placeholder="invoice amount" type="number"></v-ons-input>{{sendMosaic||'Choose from below'}}</p>
         <v-ons-button @click="copyAddress" modifier="quiet">
           <v-ons-icon icon="fa-clipboard"></v-ons-icon>
           Copy address
@@ -64,22 +68,22 @@
         </v-ons-list-item>
         <v-ons-list-item><v-ons-button @click="send" modifier="large" :disabled="!sendAddress||!sendAmount||!sendMosaic||!isValidAddress">Send</v-ons-button></v-ons-list-item>
         <v-ons-list-header>History</v-ons-list-header>
-        <v-ons-list-item v-for="h in history" @click="openExplorer(h.meta.hash.data)">
+        <v-ons-list-item v-for="h in history" @click="openExplorer(h.meta.hash.data)" modifier="chevron">
           <div class="left" v-if="h.transaction.recipient!==address">Send</div>
           <div class="left" v-if="h.transaction.recipient===address">Receive</div>
           <div class="center" v-if="h.transaction.message.payload">{{h.transaction.message.payload | hex2str}}</div>
           <div class="center" v-if="!h.transaction.message.payload">(no message)</div>
           <div class="right">
-            <currency-set :amount="h.transaction.amount/1e6" ticker="nem:xem" :notKnown="true"></currency-set></div>
+            <timestamp :timestamp="h.transaction.timeStamp*1e2"></timestamp>
+          </div>
         </v-ons-list-item>
         <v-ons-list-header>unconfirmed</v-ons-list-header>
-        <v-ons-list-item v-for="h in unconfirmed">
+        <v-ons-list-item v-for="h in unconfirmed" modifier="chevron">
           <div class="left" v-if="h.transaction.recipient!==address">Send</div>
           <div class="left" v-if="h.transaction.recipient===address">Receive</div>
           <div class="center" v-if="h.transaction.message.payload">{{h.transaction.message.payload | hex2str}}</div>
           <div class="center" v-if="!h.transaction.message.payload">(no message)</div>
-          <div class="right">
-            <currency-set :amount="h.transaction.amount/1e6" ticker="nem:xem" :notKnown="true"></currency-set></div>
+          
         </v-ons-list-item>
         <v-ons-list-item v-show="histError">
           Error occurred

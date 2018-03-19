@@ -1,3 +1,4 @@
+const storage = require("./storage.js")
 const extensions={
   xrp:{
     id:"xrp",
@@ -12,6 +13,13 @@ const extensions={
     component:require("../component/nem.js"),
     icon:require("../res/coins/nem.png"),
     scheme:"nem"
+  },
+  zaifPay:{
+    id:"zaifPay",
+    name:"Zaif Payment",
+    component:require("../component/zaifPay.js"),
+    icon:require("../res/zaifPay.png"),
+    scheme:"zaifPay"
   }
 }
 exports.get=extId=>{
@@ -23,3 +31,25 @@ exports.each=(fn)=>{
     fn(extensions[extName])
   }
 }
+
+exports.extStorage=(extId)=>({
+  set:(key,data)=>storage.get("extData").then(d=>{
+    if (!d) {
+      d={}
+    }
+    if (!d[extId]) {
+      d[extId]={}
+    }
+    d[extId][key]=data
+    storage.set("extData",d)
+  }),
+  get:key=>storage.get("extData").then(d=>{
+    if (!d) {
+      return null
+    }
+    if (!d[extId]) {
+      return null
+    }
+    return d[extId][key]
+  })
+})

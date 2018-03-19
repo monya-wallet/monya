@@ -18,7 +18,7 @@
       <div class="label">とりあえず送ってもらう</div>
       <div id="qrArea">
         <div id="qrcode">
-          <img :src="qrDataUrl" alt="QR code" id="qrcodeImage"/>
+          <img v-if="qrDataUrl" :src="qrDataUrl" alt="QR code" id="qrcodeImage"/>
           <div id="currentCurIcon" :style="{'background-image':'url('+currentCurIcon+')'}"></div>
         </div>
         <div class="address">{{mainAddress||"読み込み中"}}</div>

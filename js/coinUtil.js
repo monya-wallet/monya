@@ -229,6 +229,10 @@ exports.parseUrl=url=>new Promise((resolve,reject)=>{
   ret.raw=raw
   ret.protocol=raw.protocol.slice(0,-1)
   ret.isValidUrl=true
+  const addrRes = addressRegExp.exec(url)
+  if(addrRes){
+    ret.address=addrRes[1]
+  }
   ext.each(v=>{
     if(ret.protocol===v.scheme){
       ret.extension=v
@@ -246,10 +250,7 @@ exports.parseUrl=url=>new Promise((resolve,reject)=>{
       
     }
   })
-  const addrRes = addressRegExp.exec(url)
-  if(addrRes){
-    ret.address=addrRes[1]
-  }
+  
   ret.message=raw.searchParams.get("message")
   ret.label=raw.searchParams.get("label")
   ret.amount=raw.searchParams.get("amount")

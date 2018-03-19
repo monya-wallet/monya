@@ -560,11 +560,6 @@ module.exports=lang({ja:require("./ja/question.html"),en:require("./en/question.
         case -2://User declined.Go to key generation
           storage.set("settings",{
             includeUnconfirmedFunds:false,
-            zaifPay:{
-              enabled:!!this.answers[8],
-              apiKey:"",
-              secret:""
-            },
             useEasyUnit:!!this.answers[7],
             absoluteTime:false,
             fiat:"jpy",

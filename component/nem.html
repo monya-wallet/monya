@@ -20,7 +20,11 @@
           </div>
           <div class="address">{{address||"読み込み中"}}</div>
         </div>
-        <p><v-ons-input v-model="invAmt" placeholder="請求額" type="number"></v-ons-input><v-ons-input v-model="invMosaic" placeholder="請求モザイク"></v-ons-input></p>
+        <p><v-ons-select v-model="addressFormat">
+            <option value="url">URL形式</option>
+            <option value="monya">もにゃ互換</option>
+            <option value="nemWallet">NEM Wallet互換</option>
+        </v-ons-select><v-ons-input v-model="invAmt" placeholder="請求額" type="number"></v-ons-input>{{sendMosaic||'下から選んでください'}}</p>
         <v-ons-button @click="copyAddress" modifier="quiet">
           <v-ons-icon icon="fa-clipboard"></v-ons-icon>
           アドレスコピー
@@ -64,22 +68,22 @@
         </v-ons-list-item>
         <v-ons-list-item><v-ons-button @click="send" modifier="large" :disabled="!sendAddress||!sendAmount||!sendMosaic||!isValidAddress">送信</v-ons-button></v-ons-list-item>
         <v-ons-list-header>履歴</v-ons-list-header>
-        <v-ons-list-item v-for="h in history" @click="openExplorer(h.meta.hash.data)">
+        <v-ons-list-item v-for="h in history" @click="openExplorer(h.meta.hash.data)" modifier="chevron">
           <div class="left" v-if="h.transaction.recipient!==address">送金</div>
           <div class="left" v-if="h.transaction.recipient===address">受け取り</div>
           <div class="center" v-if="h.transaction.message.payload">{{h.transaction.message.payload | hex2str}}</div>
           <div class="center" v-if="!h.transaction.message.payload">メッセージなし</div>
           <div class="right">
-            <currency-set :amount="h.transaction.amount/1e6" ticker="nem:xem" :notKnown="true"></currency-set></div>
+            <timestamp :timestamp="h.transaction.timeStamp*1e2"></timestamp>
+          </div>
         </v-ons-list-item>
         <v-ons-list-header>未承認</v-ons-list-header>
-        <v-ons-list-item v-for="h in unconfirmed">
+        <v-ons-list-item v-for="h in unconfirmed" modifier="chevron">
           <div class="left" v-if="h.transaction.recipient!==address">送金</div>
           <div class="left" v-if="h.transaction.recipient===address">受け取り</div>
           <div class="center" v-if="h.transaction.message.payload">{{h.transaction.message.payload | hex2str}}</div>
           <div class="center" v-if="!h.transaction.message.payload">メッセージなし</div>
-          <div class="right">
-            <currency-set :amount="h.transaction.amount/1e6" ticker="nem:xem" :notKnown="true"></currency-set></div>
+          
         </v-ons-list-item>
         <v-ons-list-item v-show="histError">
           エラーが発生しました。

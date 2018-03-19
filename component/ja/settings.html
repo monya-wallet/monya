@@ -56,24 +56,7 @@
           </v-ons-select>
         </div>
       </v-ons-list-item>
-      <v-ons-list-header class="condZaif">Zaif Payment</v-ons-list-header>
-      <v-ons-list-item class="condZaif"><div class="center">Zaif Paymentメニュー</div>
-        <div class="right">
-          <v-ons-switch @change="save" v-model="d.zaifPay.enabled"></v-ons-switch>
-        </div>
-      </v-ons-list-item>
-      <div v-show="d.zaifPay.enabled" class="condZaif">
-      <v-ons-list-item><div class="center">API Key</div>
-        <div class="right">
-          <v-ons-input placeholder="Type here" @change="save" v-model="d.zaifPay.apiKey"></v-ons-input>
-        </div>
-      </v-ons-list-item>
-      <v-ons-list-item><div class="center">Secret Key</div>
-        <div class="right">
-          <v-ons-input placeholder="Raw Secret Key" @change="save" v-model="d.zaifPay.secret"></v-ons-input>
-        </div>
-      </v-ons-list-item>
-      </div>
+      
       <v-ons-list-header class="condMonappy">Monappy</v-ons-list-header>
       <v-ons-list-item class="condMonappy">
         <div class="center">Monappyメニュー</div>

@@ -10,7 +10,6 @@ module.exports = new Vuex.Store({
     showLabelPayload:{},
     tsMode:"relative",
     detail:{},
-    zaifPayEnabled:false,
     monappyEnabled:false,
     monapartyEnabled:true,
     enabledExts:[],
@@ -46,7 +45,6 @@ module.exports = new Vuex.Store({
     },
     setSettings(state,d){
       //d can be incomplete,please be careful
-      state.zaifPayEnabled=d.zaifPay?d.zaifPay.enabled:false
       state.monappyEnabled=d.monappy?d.monappy.enabled:false
       state.fiat=d.fiat||"jpy"
       state.easyUnit=d.useEasyUnit
@@ -95,9 +93,6 @@ module.exports = new Vuex.Store({
     },
     setSendUrl(state,url){
       state.sendUrl=url||""
-    },
-    setZaifPayInvoiceId(state,id){
-      state.zaifPayInvoiceId=id||""
     },
     setKeyPairsExistence(state,flag){
       state.hasKeyPairs=flag

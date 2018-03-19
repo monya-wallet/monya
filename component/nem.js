@@ -38,11 +38,11 @@ module.exports=require("../js/lang.js")({ja:require("./ja/nem.html"),en:require(
       price:1,
       serverDlg:false,
       invAmt:"",
-      invMosaic:"",
       account:null,
       accountInfo:null,
       mosaics:null,
       unconfirmed:null,
+      addressFormat:"url",
 
       common:null,
       transactionEntity:{}
@@ -201,6 +201,7 @@ module.exports=require("../js/lang.js")({ja:require("./ja/nem.html"),en:require(
       transferTransaction.mosaics.push(mosAttach)
       transferTransaction.amount=parseFloat(this.sendAmount)
       transferTransaction.recipient=this.sendAddress
+      transferTransaction.message=this.message
       const mosaicDefinitionMetaDataPair = nem.model.objects.get("mosaicDefinitionMetaDataPair")
       mosaicDefinitionMetaDataPair[this.sendMosaic]={mosaicDefinition:mosToSend.definitions,supply:mosToSend.initialSupply}
       const common =this.common= nem.model.objects.get("common")
@@ -271,7 +272,17 @@ module.exports=require("../js/lang.js")({ja:require("./ja/nem.html"),en:require(
   },
   computed:{
     url(){
-      return `https://monya-wallet.github.io/monya/a/?amount=${parseFloat(this.invAmt)||0}&address=${this.address}&label=${this.invMosaic}&scheme=nem`
+      this.invAmt=parseFloat(this.invAmt)||0
+      switch(this.addressFormat){
+        case "url":
+          return `https://monya-wallet.github.io/monya/a/?amount=${parseFloat(this.invAmt)||0}&address=${this.address}&label=${this.sendMosaic}&scheme=nem`
+        case "monya":
+          return `nem:${this.address}?amount=${this.invAmt}&label=${this.sendMosaic}`
+        case "nemWallet":
+          return `{"v":2,"type":2,"data":{"addr":"${this.address}","amount":${this.invAmt*1e6}}}`
+        default:
+          return this.address
+      }
     },
     isValidAddress(){
       return nem.model.address.isValid(this.sendAddress)
@@ -287,7 +298,10 @@ module.exports=require("../js/lang.js")({ja:require("./ja/nem.html"),en:require(
     invAmt(){
       this.getQrCode()
     },
-    invMosaic(){
+    sendMosaic(){
+      this.getQrCode()
+    },
+    addressFormat(){
       this.getQrCode()
     }
   },

@@ -11,11 +11,6 @@ module.exports=lang({ja:require("./ja/settings.html"),en:require("./en/settings.
       monappyNotExist:false,
       d:{
         includeUnconfirmedFunds:false,
-        zaifPay:{
-          enabled:null,
-          apiKey:"",
-          secret:""
-        },
         useEasyUnit:false,
         absoluteTime:false,
         fiat:"jpy",
@@ -83,19 +78,18 @@ module.exports=lang({ja:require("./ja/settings.html"),en:require("./en/settings.
       storage.changeLang(this.lang)
     }
   },
-  created(){
+  mounted(){
     this.isWebView=this.$ons.isWebView()
     storage.get("settings").then(d=>{
       Object.assign(this.d,d)
-    })
-    
-    this.lang=lang.getLang()
-    ext.each(x=>{
-      this.extensions.push({
-        id:x.id,
-        name:x.name,
-        icon:x.icon,
-        usable:!!~this.d.enabledExts.indexOf(x.id)
+      this.lang=lang.getLang()
+      ext.each(x=>{
+        this.extensions.push({
+          id:x.id,
+          name:x.name,
+          icon:x.icon,
+          usable:!!~this.d.enabledExts.indexOf(x.id)
+        })
       })
     })
   }
