@@ -259,6 +259,37 @@ const defaultCoins=[
     },
     confirmations:6
   },{
+	  "coinScreenName": j?"コト":"Koto",
+	  "coinId": "koto",
+	  "unit": "KOTO",
+	  "unitEasy": "コト",
+	  "bip44": {
+		  "coinType": 2001,
+		  "account": 0
+	  },
+	  "bip21": "koto",
+	  "defaultFeeSatPerByte": 200,
+	  "icon": require("../res/coins/neet.png"),
+	  "network": {
+		  "messagePrefix": "\u0015Koto Signed Message:\n",
+		  "bip32": {
+			  "public": 76067358,
+			  "private": 76066276
+		  },
+		  "pubKeyHash": 6198,
+		  "scriptHash": 6203,
+		  "wif": 128
+	  },
+	  "enableSegwit": false,
+	  "confirmations": 6,
+	  "lib": "zec",
+	  "apiEndpoints": [
+		  {
+			  "url": "https://insight.kotocoin.info/api",
+			  "explorer": "https://insight.kotocoin.info"
+		  }
+	  ]
+  },{
     coinScreenName: j?"NEETCOIN":"NeetCoin",
     coinId: "neet",
     unit: "NEET",
