@@ -5,9 +5,7 @@ const storage = require("../js/storage")
 const bip39 = require("bip39")
 const BigNumber = require('bignumber.js');
 const coinUtil = require("../js/coinUtil")
-const coinSelect = require('coinselect')
-const LOCKTIME = 1
-const csvCoins=["mona","btc","tmona","ltc","btcsw","bch","btg"]
+
 const getPriv = (coinId,change,index,password)=>storage.get("keyPairs").then((cipher)=>{
   const cur = currencyList.get(coinId)
   let seed=
@@ -32,8 +30,8 @@ const getPriv = (coinId,change,index,password)=>storage.get("keyPairs").then((ci
       .derive(change).derive(index)
     }
 })
-const atomicSwapContract = (pkhMe/*refund*/,pkhThem/*redeem*/,lockTime,secretHash,enableCSV=true,secretSize)=>{
-  if(enableCSV){
+const atomicSwapContract = (pkhMe/*refund*/,pkhThem/*redeem*/,lockTime,secretHash,enableCLTV=true,secretSize)=>{
+  if(enableCLTV){
     return bitcoin.script.compile([
       bitcoin.opcodes.OP_IF,
       bitcoin.opcodes.OP_SIZE,
@@ -47,7 +45,7 @@ const atomicSwapContract = (pkhMe/*refund*/,pkhThem/*redeem*/,lockTime,secretHas
       pkhThem,
       bitcoin.opcodes.OP_ELSE,
       bitcoin.script.number.encode(lockTime),
-      bitcoin.opcodes.OP_NOP3,
+      bitcoin.opcodes.OP_NOP2,
       bitcoin.opcodes.OP_DROP,
       bitcoin.opcodes.OP_DUP,
       bitcoin.opcodes.OP_HASH160,
@@ -72,8 +70,9 @@ const atomicSwapContract = (pkhMe/*refund*/,pkhThem/*redeem*/,lockTime,secretHas
 }
 
 const createContract=(contract,coinId)=>{
+  const cur = currencyList.get(coinId)
   return {
-    address:bitcoin.address.toBase58Check(bitcoin.crypto.hash160(contract),currencyList.get(coinId).network.scriptHash),
+    address:cur.lib.address.toBase58Check(bitcoin.crypto.hash160(contract),cur.network.scriptHash),
     redeemScript:contract
   }
 }
@@ -104,17 +103,20 @@ const signClaimTxWithSecret = (txb, coinId, addressIndex, redeemScript, secret, 
     txb.inputs.forEach((v,i)=>{
       let signatureScript = redeemScript;
       let signatureHash;
+      let scriptSig;
       if(cur.libName==="bch"){
-        signatureHash = txb.tx.hashForCashSignature(i, signatureScript, v.value, cur.lib.Transaction.SIGHASH_ALL | this.lib.Transaction.SIGHASH_BITCOINCASHBIP143);
+        signatureHash = txb.tx.hashForCashSignature(i, signatureScript, v.value, cur.lib.Transaction.SIGHASH_ALL | cur.lib.Transaction.SIGHASH_BITCOINCASHBIP143);
+        const signature= pk.sign(signatureHash);
+        scriptSig=redeemP2SHContract(redeemScript,signature.toScriptSignature(cur.lib.Transaction.SIGHASH_ALL | cur.lib.Transaction.SIGHASH_BITCOINCASHBIP143),Buffer.from(cur.getPubKey(0,addressIndex),"hex"),secret)
       }else if(cur.libName==="btg"){
-        signatureHash = txb.tx.hashForGoldSignature(i, signatureScript, v.value, cur.lib.Transaction.SIGHASH_ALL | this.lib.Transaction.SIGHASH_BITCOINCASHBIP143);
+        signatureHash = txb.tx.hashForGoldSignature(i, signatureScript, v.value, cur.lib.Transaction.SIGHASH_ALL | cur.lib.Transaction.SIGHASH_BITCOINCASHBIP143);
+        const signature= pk.sign(signatureHash);
+        scriptSig=redeemP2SHContract(redeemScript,signature.toScriptSignature(cur.lib.Transaction.SIGHASH_ALL | cur.lib.Transaction.SIGHASH_BITCOINCASHBIP143),Buffer.from(cur.getPubKey(0,addressIndex),"hex"),secret)
       }else{
         signatureHash = txb.tx.hashForSignature(i, signatureScript, cur.lib.Transaction.SIGHASH_ALL);
+        const signature= pk.sign(signatureHash);
+        scriptSig=redeemP2SHContract(redeemScript,signature.toScriptSignature(cur.lib.Transaction.SIGHASH_ALL),Buffer.from(cur.getPubKey(0,addressIndex),"hex"),secret)
       }
-      const signature= pk.sign(signatureHash);
-      
-
-      let scriptSig=redeemP2SHContract(redeemScript,signature.toScriptSignature(cur.lib.Transaction.SIGHASH_ALL),Buffer.from(cur.getPubKey(0,addressIndex),"hex"),secret)
       tx.setInputScript(i, scriptSig);
     })
     return tx;
@@ -188,13 +190,15 @@ module.exports=require("../js/lang.js")({ja:require("./ja/atomicswap.html"),en:r
       cpAmount:0,
       cpToken:"XMP",
 
-      isRefund:0
+      isRefund:0,
+
+      contractType:"cltv"
     }
   },
   methods:{
     save(){
       const saveData={
-        addrIndex:this.addrIndex,refundAddrIndex:this.refundAddrIndex,giveCoinId:this.giveCoinId,getCoinId:this.getCoinId,getCoinIsCP:this.getCoinIsCP,giveCoinIsCP:this.giveCoinIsCP,secret:this.secret,lockTime:this.lockTime,secretHash:this.secretHash,redeemAddressWithSecret:this.redeemAddressWithSecret,refundAddressWithSecret:this.refundAddressWithSecret,redeemAddressWOSecret:this.redeemAddressWOSecret,refundAddressWOSecret:this.refundAddressWOSecret,fee:this.fee,cpDivisible:this.cpDivisible,cpAmount:this.cpAmount,cpToken:this.cpToken
+        addrIndex:this.addrIndex,refundAddrIndex:this.refundAddrIndex,giveCoinId:this.giveCoinId,getCoinId:this.getCoinId,getCoinIsCP:this.getCoinIsCP,giveCoinIsCP:this.giveCoinIsCP,secret:this.secret,secretSize:this.secretSize,lockTime:this.lockTime,secretHash:this.secretHash,redeemAddressWithSecret:this.redeemAddressWithSecret,refundAddressWithSecret:this.refundAddressWithSecret,redeemAddressWOSecret:this.redeemAddressWOSecret,refundAddressWOSecret:this.refundAddressWOSecret,fee:this.fee,cpDivisible:this.cpDivisible,cpAmount:this.cpAmount,cpToken:this.cpToken
       }
       storage.set("swapData",saveData)
     },
@@ -228,7 +232,9 @@ module.exports=require("../js/lang.js")({ja:require("./ja/atomicswap.html"),en:r
 
         cpDivisible:false,
         cpAmount:0,
-        cpToken:"XMP"
+        cpToken:"XMP",
+
+        isRefund:0
       })
       this.getLabels()
       this.getRefundLabels()
@@ -262,12 +268,13 @@ module.exports=require("../js/lang.js")({ja:require("./ja/atomicswap.html"),en:r
         const b = Buffer.from(this.secret,"utf8")
         this.secretHash = bitcoin.crypto.hash160(b).toString("hex")
         this.secretSize=b.length
+        this.lockTime=Math.floor(Date.now()/1000)+60*60*24
       }else{
         this.secretHash =""
         this.secretSize = ""
       }
       this.getPubKey()
-      this.lockTime=60
+      
     },
     getPubKey(){
       const pk=currencyList.get(this.getCoinId).getAddress(0,this.addrIndex|0)
@@ -288,14 +295,16 @@ module.exports=require("../js/lang.js")({ja:require("./ja/atomicswap.html"),en:r
       
     },
     generateP2SH(){
+      const giveCur=currencyList.get(this.giveCoinId)
+      const getCur=currencyList.get(this.getCoinId)
       if (this.secret) {
         this.myP2SH=createContract(
           atomicSwapContract(
-            bitcoin.address.fromBase58Check(this.refundAddressWithSecret).hash,
-            bitcoin.address.fromBase58Check(this.redeemAddressWOSecret).hash,
+            giveCur.lib.address.fromBase58Check(this.refundAddressWithSecret).hash,
+            giveCur.lib.address.fromBase58Check(this.redeemAddressWOSecret).hash,
             this.lockTime,
             Buffer.from(this.secretHash,"hex"),
-            this.csvAvailable,
+            this.contractType,
             this.secretSize
           ),
           this.giveCoinId
@@ -303,11 +312,11 @@ module.exports=require("../js/lang.js")({ja:require("./ja/atomicswap.html"),en:r
         );
         this.opponentP2SH = createContract(
           atomicSwapContract(
-            bitcoin.address.fromBase58Check(this.refundAddressWOSecret).hash,
-            bitcoin.address.fromBase58Check(this.redeemAddressWithSecret).hash,
+            getCur.lib.address.fromBase58Check(this.refundAddressWOSecret).hash,
+            getCur.lib.address.fromBase58Check(this.redeemAddressWithSecret).hash,
             this.lockTime,
             Buffer.from(this.secretHash,"hex"),
-            this.csvAvailable,
+            this.contractType,
             this.secretSize
           ),
           this.getCoinId
@@ -316,22 +325,22 @@ module.exports=require("../js/lang.js")({ja:require("./ja/atomicswap.html"),en:r
       }else{
         this.opponentP2SH=createContract(
           atomicSwapContract(
-            bitcoin.address.fromBase58Check(this.refundAddressWithSecret).hash,
-            bitcoin.address.fromBase58Check(this.redeemAddressWOSecret).hash,
+            getCur.lib.address.fromBase58Check(this.refundAddressWithSecret).hash,
+            getCur.lib.address.fromBase58Check(this.redeemAddressWOSecret).hash,
             this.lockTime,
             Buffer.from(this.secretHash,"hex"),
-            this.csvAvailable,
+            this.contractType,
             this.secretSize
           ),
           this.getCoinId
         );
         this.myP2SH =createContract(
           atomicSwapContract(
-            bitcoin.address.fromBase58Check(this.refundAddressWOSecret).hash,
-            bitcoin.address.fromBase58Check(this.redeemAddressWithSecret).hash,
+            giveCur.lib.address.fromBase58Check(this.refundAddressWOSecret).hash,
+            giveCur.lib.address.fromBase58Check(this.redeemAddressWithSecret).hash,
             this.lockTime,
             Buffer.from(this.secretHash,"hex"),
-            this.csvAvailable,
+            this.contractType,
             this.secretSize
           ),
           this.giveCoinId
@@ -346,10 +355,15 @@ module.exports=require("../js/lang.js")({ja:require("./ja/atomicswap.html"),en:r
       const cur =currencyList.get(coinId||this.getCoinId)
       return cur.getUtxos([inAddr],true).then(res=>{
         const txb = new cur.lib.TransactionBuilder(cur.network)
-        if(this.csvAvailable){
+        if(this.contractType==="csv"){
           txb.setVersion(2)
           res.utxos.forEach(v=>{
             const vin =txb.addInput(v.txId, v.vout,isRefund?(this.lockTime|0):0)
+            txb.inputs[vin].value=v.value
+          })
+        }else if(this.contractType==="cltv"){
+          res.utxos.forEach(v=>{
+            const vin =txb.addInput(v.txId, 0)
             txb.inputs[vin].value=v.value
           })
         }else{
@@ -387,10 +401,14 @@ module.exports=require("../js/lang.js")({ja:require("./ja/atomicswap.html"),en:r
         extendedTxInfo:true
       }).then(res=>{
         const txb = coinUtil.buildBuilderfromPubKeyTx(title.cp.lib.Transaction.fromHex(res.tx_hex),title.cp.network)
-        if(this.csvAvailable){
+        if(this.contractType==="csv"){
           txb.setVersion(2)
           isRefund&&txb.tx.ins.forEach(r=>{
             r.sequence = this.lockTime
+          })
+        }else if(this.contractType==="cltv"){
+          txb.tx.ins.forEach(r=>{
+            r.sequence = 0
           })
         }
         return txb
@@ -404,6 +422,7 @@ module.exports=require("../js/lang.js")({ja:require("./ja/atomicswap.html"),en:r
         txbProm=this.buildNormalTransaction(this.opponentP2SH.address,currencyList.get(this.getCoinId).getAddress(0,this.addrIndex|0),false)
       }
       txbProm.then(txb=>{
+        txb.setLockTime(this.lockTime|0)
         return signClaimTxWithSecret(
           txb,this.getCoinId
           ,this.addrIndex|0,this.opponentP2SH.redeemScript,
@@ -434,15 +453,6 @@ module.exports=require("../js/lang.js")({ja:require("./ja/atomicswap.html"),en:r
       }).catch(e=>{
         this.$store.commit("setError",(e.resopnse&&e.response.data)||e.message)
       })
-    }
-  },
-  computed:{
-    csvAvailable(){
-      if(csvCoins.indexOf(this.getCoinId)>=0 && csvCoins.indexOf(this.giveCoinId)>=0){
-        return true
-      }
-      this.isRefund=false
-      return false
     }
   },
   mounted(){

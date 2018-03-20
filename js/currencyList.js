@@ -296,6 +296,65 @@ const defaultCoins=[
 		  }
 	  ]
   },{
+	  "coinScreenName": j?"ダッシュ":"Dash",
+	  "coinId": "dash",
+	  "unit": "DASH",
+	  "unitEasy": j?"ダッシュ":"Dash",
+	  "bip44": {
+		  "coinType": 5,
+		  "account": 0
+	  },
+	  "bip21": "dash",
+	  "defaultFeeSatPerByte": 200,
+	  "icon": require("../res/coins/dash.png"),
+	  "network": {
+		  "messagePrefix": "\u0019DarkCoin Signed Message:\n",
+		  "bip32": {
+			  "public": 76067358,
+			  "private": 76066276
+		  },
+		  "pubKeyHash": 76,
+		  "scriptHash": 16,
+		  "wif": 204
+	  },
+	  "enableSegwit": false,
+	  "confirmations": 6,
+	  "apiEndpoints": [
+		  {
+			  "url": "https://dash-bitcore1.trezor.io/api",
+			  "explorer": "https://dash-bitcore1.trezor.io"
+		  }
+	  ]
+  },{
+	  "coinScreenName": j?"ジーキャッシュ":"Zcash",
+	  "coinId": "zec",
+	  "unit": "ZEC",
+	  "unitEasy": "Zcash",
+	  "bip44": {
+		  "coinType": 133,
+		  "account": 0
+	  },
+	  "bip21": "zcash",
+	  "defaultFeeSatPerByte": 200,
+	  "icon": require("../res/coins/zec.png"),
+	  "network": {
+		  "messagePrefix": "\u0016Zcash Signed Message:\n",
+		  "bip32": {
+			  "public": 76067358,
+			  "private": 76066276
+		  },
+		  "pubKeyHash": 7352,
+		  "scriptHash": 7357,
+		  "wif": 128
+	  },
+    "apiEndpoints": [
+		  {
+			  "url": "https://zec-bitcore1.trezor.io/api",
+			  "explorer": "https://zec-bitcore1.trezor.io"
+		  }
+	  ],
+    lib:"zec"
+  },{
     coinScreenName: j?"NEETCOIN":"NeetCoin",
     coinId: "neet",
     unit: "NEET",

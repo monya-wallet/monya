@@ -55,7 +55,6 @@
           <v-ons-switch v-model="getCoinIsCP"></v-ons-switch>
         </div>
       </v-ons-list-item>
-      <v-ons-list-item v-show="!csvAvailable"><div class="right">この通貨ペアでは返金はできなくなります。失敗しても知りませーん</div></v-ons-list-item>
       <v-ons-list-item>
         <v-ons-button modifier="large" @click="getPubKey" :disabled="!labels.length||!giveCoinId||!getCoinId">アドレス取得</v-ons-button>
       </v-ons-list-item>
@@ -99,11 +98,11 @@
       </v-ons-list-item>
       <v-ons-list-header>資金の引き出し</v-ons-list-header>
       <v-ons-list-item>
-      <v-ons-segment :index.sync="isRefund" v-show="csvAvailable">
+        <v-ons-segment :index.sync="isRefund">
           <button>引き出し</button>
           <button>返金</button>
-      </v-ons-segment>
-      <div v-show="!csvAvailable">引き出しのみできます</div>
+        </v-ons-segment>
+        
       </v-ons-list-item>
       <div v-show="(getCoinIsCP&&!isRefund)||(giveCoinIsCP&&isRefund)">
         <v-ons-list-item>
@@ -123,12 +122,12 @@
           <div class="right">
             <v-ons-input v-model="cpAmount" placeholder="数量" type="number"></v-ons-input>
           </div>
-      </v-ons-list-item>
+        </v-ons-list-item>
       </div>
       <v-ons-list-item>
         <v-ons-input v-model="secret" placeholder="Secret"></v-ons-input>
       </v-ons-list-item>
-      <v-ons-list-item v-show="!(getCoinIsCP&&!isRefund)||(giveCoinIsCP&&isRefund)">
+      <v-ons-list-item v-show="!((getCoinIsCP&&!isRefund)||(giveCoinIsCP&&isRefund))">
         <v-ons-input v-model="fee" placeholder="手数料(satoshi)" type="number"></v-ons-input>
       </v-ons-list-item>
       <v-ons-list-item v-show="(getCoinIsCP&&!isRefund)||(giveCoinIsCP&&isRefund)">

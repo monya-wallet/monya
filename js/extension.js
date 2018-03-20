@@ -18,7 +18,7 @@ const extensions={
     id:"zaifPay",
     name:"Zaif Payment",
     component:require("../component/zaifPay.js"),
-    icon:require("../res/zaifPay.png"),
+    icon:require("../res/zaifpay.png"),
     scheme:"zaifPay"
   }
 }
