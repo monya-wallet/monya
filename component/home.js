@@ -21,9 +21,7 @@ module.exports=require("../js/lang.js")({ja:require("./ja/home.html"),en:require
       this.fiatConv=0
       this.loading=true;
       this.error=false
-      let timer=setTimeout(()=>{
-        this.loading=false
-      },10000)
+      
       const promises=[]
       currencyList.eachWithPub(cur=>{
         let obj={
@@ -54,7 +52,6 @@ module.exports=require("../js/lang.js")({ja:require("./ja/home.html"),en:require
       Promise.all(promises).then(data=>{
         this.curs=data
         this.loading=false
-        clearTimeout(timer)
         typeof(done)==='function'&&done()
       })
     },

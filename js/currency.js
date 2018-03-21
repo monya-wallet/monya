@@ -105,11 +105,11 @@ module.exports=class{
     }
     return false
   }
-  getReceiveBalance(includeUnconfirmedFunds){
-    return this.getUtxos(this.getReceiveAddr(),includeUnconfirmedFunds)
+  getReceiveBalance(includeUnconfirmedFunds,fallback){
+    return this.getUtxos(this.getReceiveAddr(),includeUnconfirmedFunds,fallback)
   }
-  getChangeBalance(includeUnconfirmedFunds){
-    return this.getUtxos(this.getChangeAddr(),includeUnconfirmedFunds).then(d=>{
+  getChangeBalance(includeUnconfirmedFunds,fallback){
+    return this.getUtxos(this.getChangeAddr(),includeUnconfirmedFunds,fallback).then(d=>{
       let newestCnf=Infinity
       let newestAddr=""
       const res=d.utxos
@@ -131,31 +131,33 @@ module.exports=class{
   
   getWholeBalanceOfThisAccount(){
     if(this.dummy){return Promise.resolve()}
-    return Promise.all([this.getReceiveBalance(false),this.getChangeBalance(false)]).then(vals=>({
+    return Promise.all([this.getReceiveBalance(false),this.getChangeBalance(false,false)]).then(vals=>({
       balance:(new BigNumber(vals[0].balance)).add(vals[1].balance).toNumber(),
       unconfirmed:(new BigNumber(vals[0].unconfirmed)).add(vals[1].unconfirmed).toNumber()
     }))
   }
 
-  fbGet(url){
+  fbGet(url,fallback=true,cnt=0){
     return axios({
       url:this.apiEndpoint + url,
       json:true,
       method:"GET"
     }).catch((r)=>{
+      if(!fallback){
+        throw r
+      }
       this.changeApiEndpoint()
-      if(this.apiIndex===this.apiEndpoints.length-1){
-        
+      if(cnt>3){
         throw r;
       }
-      return this.fbGet(url)
+      return this.fbGet(url,true,++cnt)
     })
   }
   
-  getUtxos(addressList,includeUnconfirmedFunds=false){
+  getUtxos(addressList,includeUnconfirmedFunds=false,fallback=true){
     let promise
     if(typeof(addressList[0])==="string"){//address mode
-      promise=this.fbGet("/addrs/"+addressList.join(",")+"/utxo")
+      promise=this.fbGet("/addrs/"+addressList.join(",")+"/utxo",fallback)
     }else{// manual utxo mode
       promise=Promise.resolve({data:addressList})
     }
