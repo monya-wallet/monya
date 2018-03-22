@@ -1,4 +1,4 @@
-const bip39 = require("bip39")
+const bip39 = require("@missmonacoin/bip39-eng")
 const coinUtil = require("../js/coinUtil")
 const storage = require("../js/storage")
 const bcLib = require('bitcoinjs-lib')

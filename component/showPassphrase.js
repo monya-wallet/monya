@@ -1,4 +1,4 @@
-const bip39 = require("bip39")
+const bip39 = require("@missmonacoin/bip39-eng")
 const storage = require("../js/storage.js")
 const coinUtil = require("../js/coinUtil.js")
 module.exports=require("../js/lang.js")({ja:require("./ja/showPassphrase.html"),en:require("./en/showPassphrase.html")})({

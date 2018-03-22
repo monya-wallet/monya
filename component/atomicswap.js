@@ -2,7 +2,7 @@ const Title = require("../js/title.js")
 const currencyList = require("../js/currencyList")
 const bitcoin = require("bitcoinjs-lib")
 const storage = require("../js/storage")
-const bip39 = require("bip39")
+const bip39 = require("@missmonacoin/bip39-eng")
 const BigNumber = require('bignumber.js');
 const coinUtil = require("../js/coinUtil")
 

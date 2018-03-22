@@ -1,7 +1,7 @@
 const currencyList = require("./currencyList.js")
 const bcLib = require('bitcoinjs-lib')
 const zecLib = require("@missmonacoin/bitcoinjs-lib-zcash")
-const bip39 = require("bip39")
+const bip39 = require("@missmonacoin/bip39-eng")
 const crypto = require('crypto');
 const errors=require("./errors")
 const axios=require("axios")

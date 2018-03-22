@@ -1,4 +1,4 @@
-const bip39 = require("bip39")
+const bip39 = require("@missmonacoin/bip39-eng")
 const coinUtil = require("../js/coinUtil")
 const storage = require("../js/storage")
 const nem = require("nem-sdk").default
@@ -19,6 +19,7 @@ module.exports=require("../js/lang.js")({ja:require("./ja/nem.html"),en:require(
       sendAmount:0,
       sendAddress:"",
       sendMosaic:"",
+      invMosaic:"",
       fiatConv:0,
       password:"",
       address:"",
@@ -26,8 +27,7 @@ module.exports=require("../js/lang.js")({ja:require("./ja/nem.html"),en:require(
       shareable:coinUtil.shareable(),
       incorrect:false,
       requirePassword:true,
-      connected:false,
-      loading:false,plzActivate:false,
+      loading:false,
       balances:null,
       sent:false,
       histError:false,
@@ -79,7 +79,7 @@ module.exports=require("../js/lang.js")({ja:require("./ja/nem.html"),en:require(
       })
     },
     getBalance(){
-      if(!this.address||!this.connected){
+      if(!this.address){
         return
       }
       this.loading=true
@@ -212,6 +212,7 @@ module.exports=require("../js/lang.js")({ja:require("./ja/nem.html"),en:require(
         transferTransaction.amount=parseFloat(this.sendAmount)
         transactionEntity=nem.model.transactions.prepare("transferTransaction")(common, transferTransaction, NETWORK)
       }else{
+        transferTransaction.amount=1
         transactionEntity = nem.model.transactions.prepare("mosaicTransferTransaction")(common, transferTransaction, mosaicDefinitionMetaDataPair, NETWORK);
         if (Math.floor(transactionEntity.mosaics[0].quantity)!==sendQty) {
           throw "Too small decimals."
@@ -249,8 +250,6 @@ module.exports=require("../js/lang.js")({ja:require("./ja/nem.html"),en:require(
     },
     connect(){
       this.serverDlg=false
-      
-      this.connected=true
     },
     getPrice(){
       axios({
@@ -278,6 +277,9 @@ module.exports=require("../js/lang.js")({ja:require("./ja/nem.html"),en:require(
     },
     donateMe(){
       coinUtil.openUrl("https://missmonacoin.github.io")
+    },
+    toUnixDate(d){
+      return 1427587585+d
     }
   },
   computed:{
@@ -285,9 +287,9 @@ module.exports=require("../js/lang.js")({ja:require("./ja/nem.html"),en:require(
       this.invAmt=parseFloat(this.invAmt)||0
       switch(this.addressFormat){
         case "url":
-          return `https://monya-wallet.github.io/monya/a/?amount=${parseFloat(this.invAmt)||0}&address=${this.address}&label=${this.sendMosaic}&scheme=nem`
+          return `https://monya-wallet.github.io/monya/a/?amount=${parseFloat(this.invAmt)||0}&address=${this.address}&label=${this.invMosaic}&scheme=nem`
         case "monya":
-          return `nem:${this.address}?amount=${this.invAmt}&label=${this.sendMosaic}`
+          return `nem:${this.address}?amount=${this.invAmt}&label=${this.invMosaic}`
         case "nemWallet":
           return `{"v":2,"type":2,"data":{"addr":"${this.address}","amount":${this.invAmt*1e6}}}`
         default:
@@ -308,8 +310,11 @@ module.exports=require("../js/lang.js")({ja:require("./ja/nem.html"),en:require(
     invAmt(){
       this.getQrCode()
     },
-    sendMosaic(){
+    invMosaic(){
       this.getQrCode()
+    },
+    sendMosaic(){
+      this.invMosaic=this.sendMosaic
     },
     addressFormat(){
       this.getQrCode()
