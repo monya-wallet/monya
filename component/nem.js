@@ -118,36 +118,37 @@ module.exports=require("../js/lang.js")({ja:require("./ja/nem.html"),en:require(
                 "levy": {}
               },
               quantity:mos.quantity,
-              initialSupply:8999999999,
               mosaicId:mos.mosaicId,
               divisibility:6,
               normalizedQty:(new BigNumber(mos.quantity)).shift(-6).toNumber()
             })
           }
+          
+          let divisibility=6;
+          let mData
           return nem.com.requests.namespace.mosaicDefinitions(endpoint,mos.mosaicId.namespaceId).then(def=>{
-            let divisibility=6;
-            let initialSupply=0
+            
             for(let i=0;i<def.data.length;i++){
-              const mData=def.data[i].mosaic
+              mData=def.data[i].mosaic
               if(mData.id.name!==mos.mosaicId.name){
                 continue
               }
               const prp=mData.properties
               for(let j=0;j<prp.length;j++){
                 if(prp[j].name==="divisibility"){
-                  divisibility=prp[j].value|0
-                }else if(prp[j].name==="initialSupply"){
-                  initialSupply=prp[j].value|0
+                  divisibility=parseInt(prp[j].value)
                 }
               }
-              return {
-                definitions:mData,
-                initialSupply,
-                divisibility,
-                quantity:mos.quantity,
-                mosaicId:mos.mosaicId,
-                normalizedQty:(new BigNumber(mos.quantity)).shift(-divisibility).toNumber()
-              }
+            }
+            return nem.com.requests.mosaic.supply(endpoint,nem.utils.format.mosaicIdToName(mos.mosaicId))
+          }).then(res=>{
+            return {
+              definitions:mData,
+              supply:res.supply,
+              divisibility,
+              quantity:mos.quantity,
+              mosaicId:mos.mosaicId,
+              normalizedQty:(new BigNumber(mos.quantity)).shift(-divisibility).toNumber()
             }
           })
         }))
@@ -179,6 +180,7 @@ module.exports=require("../js/lang.js")({ja:require("./ja/nem.html"),en:require(
       })
     },
     send(){
+      try{
       this.confirm=false
       this.loading=true
       let mosToSend
@@ -190,31 +192,39 @@ module.exports=require("../js/lang.js")({ja:require("./ja/nem.html"),en:require(
         }
       }
       if(!mosToSend){
-        this.$store.commit("setError","You don't have this mosaic")
-        return 
-        
+        throw "You don't have this mosaic."
+
       }
       const sendQty = (new BigNumber(this.sendAmount)).shift(mosToSend.divisibility).toNumber()
       const mosAttach=nem.model.objects.create("mosaicAttachment")(mosToSend.mosaicId.namespaceId,mosToSend.mosaicId.name,sendQty)
       
       const transferTransaction = nem.model.objects.get("transferTransaction")
       transferTransaction.mosaics.push(mosAttach)
-      transferTransaction.amount=parseFloat(this.sendAmount)
+      
       transferTransaction.recipient=this.sendAddress
       transferTransaction.message=this.message
       const mosaicDefinitionMetaDataPair = nem.model.objects.get("mosaicDefinitionMetaDataPair")
-      mosaicDefinitionMetaDataPair[this.sendMosaic]={mosaicDefinition:mosToSend.definitions,supply:mosToSend.initialSupply}
+      mosaicDefinitionMetaDataPair[this.sendMosaic]={mosaicDefinition:mosToSend.definitions,supply:mosToSend.supply}
       const common =this.common= nem.model.objects.get("common")
       common.privateKey=this.privateKey
       let transactionEntity;
       if(this.sendMosaic==="nem:xem"){
+        transferTransaction.amount=parseFloat(this.sendAmount)
         transactionEntity=nem.model.transactions.prepare("transferTransaction")(common, transferTransaction, NETWORK)
       }else{
         transactionEntity = nem.model.transactions.prepare("mosaicTransferTransaction")(common, transferTransaction, mosaicDefinitionMetaDataPair, NETWORK);
+        if (Math.floor(transactionEntity.mosaics[0].quantity)!==sendQty) {
+          throw "Too small decimals."
+        }
       }
+      
       this.transactionEntity=transactionEntity
       this.confirm=true
-      this.loading=false
+        this.loading=false
+      }catch(e){
+        this.loading=false
+        this.$store.commit("setError",e)
+      }
     },
     broadcast(){
       this.confirm=false

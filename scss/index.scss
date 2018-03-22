@@ -37,10 +37,10 @@ ons-list-item{
 }
 
 ons-dialog .dialog{
-    max-height:100%;
-    max-width:100%;
-    overflow-y:scroll;
-    overflow-y:auto;
+  max-height:100%;
+  max-width:100%;
+  overflow-y:scroll;
+  overflow-y:auto;
   
 }
 .shake{
@@ -520,7 +520,12 @@ $passwordHeight:35px;
   }
 }
 [data-page="xrp"],[data-page="nem"]{
-  v-ons-list ons-input{width:100%}
+  ons-list-item{
+    ons-input{
+      width:100%
+    }
+  }
+  
   .description{
     text-align:left;
   }
