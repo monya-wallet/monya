@@ -362,6 +362,7 @@ module.exports=require("../js/lang.js")({ja:require("./ja/atomicswap.html"),en:r
             txb.inputs[vin].value=v.value
           })
         }else if(this.contractType==="cltv"){
+          isRefund&&txb.setLockTime(parseInt(this.lockTime))
           res.utxos.forEach(v=>{
             const vin =txb.addInput(v.txId, 0)
             txb.inputs[vin].value=v.value
@@ -407,6 +408,7 @@ module.exports=require("../js/lang.js")({ja:require("./ja/atomicswap.html"),en:r
             r.sequence = this.lockTime
           })
         }else if(this.contractType==="cltv"){
+          isRefund&&txb.setLockTime(parseInt(this.lockTime))
           txb.tx.ins.forEach(r=>{
             r.sequence = 0
           })

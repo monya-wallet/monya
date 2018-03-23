@@ -180,52 +180,59 @@ module.exports=require("../js/lang.js")({ja:require("./ja/nem.html"),en:require(
       })
     },
     send(){
-      try{
       this.confirm=false
       this.loading=true
-      let mosToSend
-      for(let i=0;i<this.mosaics.length;i++){
-        const m=this.mosaics[i]
-        if(m.mosaicId.namespaceId+":"+m.mosaicId.name===this.sendMosaic){
-          mosToSend=m
-          break;
-        }
-      }
-      if(!mosToSend){
-        throw "You don't have this mosaic."
-
-      }
-      const sendQty = (new BigNumber(this.sendAmount)).shift(mosToSend.divisibility).toNumber()
-      const mosAttach=nem.model.objects.create("mosaicAttachment")(mosToSend.mosaicId.namespaceId,mosToSend.mosaicId.name,sendQty)
-      
-      const transferTransaction = nem.model.objects.get("transferTransaction")
-      transferTransaction.mosaics.push(mosAttach)
-      
-      transferTransaction.recipient=this.sendAddress
-      transferTransaction.message=this.message
-      const mosaicDefinitionMetaDataPair = nem.model.objects.get("mosaicDefinitionMetaDataPair")
-      mosaicDefinitionMetaDataPair[this.sendMosaic]={mosaicDefinition:mosToSend.definitions,supply:mosToSend.supply}
-      const common =this.common= nem.model.objects.get("common")
-      common.privateKey=this.privateKey
-      let transactionEntity;
-      if(this.sendMosaic==="nem:xem"){
-        transferTransaction.amount=parseFloat(this.sendAmount)
-        transactionEntity=nem.model.transactions.prepare("transferTransaction")(common, transferTransaction, NETWORK)
+      let addrProm;
+      if(this.sendAddress[0]==="@"){
+        addrProm=nem.com.requests.namespace.info(endpoint,this.sendAddress.slice(1)).then(r=>r.owner).catch(()=>{throw "Namespace not found"})
       }else{
-        transferTransaction.amount=1
-        transactionEntity = nem.model.transactions.prepare("mosaicTransferTransaction")(common, transferTransaction, mosaicDefinitionMetaDataPair, NETWORK);
-        if (Math.floor(transactionEntity.mosaics[0].quantity)!==sendQty) {
-          throw "Too small decimals."
-        }
+        addrProm=Promise.resolve(this.sendAddress)
       }
-      
-      this.transactionEntity=transactionEntity
-      this.confirm=true
+      addrProm.then(addr=>{
+        this.sendAddress=addr
+        let mosToSend
+        for(let i=0;i<this.mosaics.length;i++){
+          const m=this.mosaics[i]
+          if(m.mosaicId.namespaceId+":"+m.mosaicId.name===this.sendMosaic){
+            mosToSend=m
+            break;
+          }
+        }
+        if(!mosToSend){
+          throw "You don't have this mosaic."
+
+        }
+        const sendQty = (new BigNumber(this.sendAmount)).shift(mosToSend.divisibility).toNumber()
+        const mosAttach=nem.model.objects.create("mosaicAttachment")(mosToSend.mosaicId.namespaceId,mosToSend.mosaicId.name,sendQty)
+        
+        const transferTransaction = nem.model.objects.get("transferTransaction")
+        transferTransaction.mosaics.push(mosAttach)
+        
+        transferTransaction.recipient=addr
+        transferTransaction.message=this.message
+        const mosaicDefinitionMetaDataPair = nem.model.objects.get("mosaicDefinitionMetaDataPair")
+        mosaicDefinitionMetaDataPair[this.sendMosaic]={mosaicDefinition:mosToSend.definitions,supply:mosToSend.supply}
+        const common =this.common= nem.model.objects.get("common")
+        common.privateKey=this.privateKey
+        let transactionEntity;
+        if(this.sendMosaic==="nem:xem"){
+          transferTransaction.amount=parseFloat(this.sendAmount)
+          transactionEntity=nem.model.transactions.prepare("transferTransaction")(common, transferTransaction, NETWORK)
+        }else{
+          transferTransaction.amount=1
+          transactionEntity = nem.model.transactions.prepare("mosaicTransferTransaction")(common, transferTransaction, mosaicDefinitionMetaDataPair, NETWORK);
+          if (Math.floor(transactionEntity.mosaics[0].quantity)!==sendQty) {
+            throw "Too small decimals."
+          }
+        }
+        
+        this.transactionEntity=transactionEntity
+        this.confirm=true
         this.loading=false
-      }catch(e){
+      }).catch((e)=>{
         this.loading=false
         this.$store.commit("setError",e)
-      }
+      })
     },
     broadcast(){
       this.confirm=false
@@ -297,7 +304,11 @@ module.exports=require("../js/lang.js")({ja:require("./ja/nem.html"),en:require(
       }
     },
     isValidAddress(){
-      return nem.model.address.isValid(this.sendAddress)
+      if(this.sendAddress[0]==="@"){
+        return true
+      }else{
+        return nem.model.address.isValid(this.sendAddress)
+      }
     }
   },
   watch:{
