@@ -364,7 +364,7 @@ module.exports=require("../js/lang.js")({ja:require("./ja/atomicswap.html"),en:r
         }else if(this.contractType==="cltv"){
           isRefund&&txb.setLockTime(parseInt(this.lockTime))
           res.utxos.forEach(v=>{
-            const vin =txb.addInput(v.txId, 0)
+            const vin =txb.addInput(v.txId, 0,0)
             txb.inputs[vin].value=v.value
           })
         }else{
