@@ -7,7 +7,7 @@ const errors=require("./errors")
 const axios=require("axios")
 const ext = require("./extension.js")
 
-const addressRegExp = /^\w+:(?:\/\/)?(\w{32,36})\??/
+const addressRegExp = /^\w+:(?:\/\/)?(\w{32,40})\??/
 
 exports.DEFAULT_LABEL_NAME = "Default"
 exports.GAP_LIMIT=20

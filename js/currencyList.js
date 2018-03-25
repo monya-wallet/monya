@@ -16,7 +16,7 @@ const defaultCoins=[
       account:0
     },
     bip21:"monacoin",
-    defaultFeeSatPerByte:200,
+    defaultFeeSatPerByte:150,
     icon:require("../res/coins/mona.png"),
     apiEndpoints:[
       {
@@ -61,7 +61,7 @@ const defaultCoins=[
       account:0
     },
     bip21:"bitzeny",
-    defaultFeeSatPerByte:200,
+    defaultFeeSatPerByte:150,
     icon:require("../res/coins/zny.png"),
     apiEndpoints:[
       {url:"https://zeny.insight.monaco-ex.org/api",
@@ -102,7 +102,7 @@ const defaultCoins=[
     bip21:"bitcoin",
     defaultFeeSatPerByte:100,
     icon:require("../res/coins/btc.png"),
-    apiEndpoints:[{url:"https://btc-bitcore1.trezor.io/api",explorer:"https://btc-bitcore1.trezor.io"},{explorer:"https://insight.bitpay.com",url:"https://insight.bitpay.com"}],
+    apiEndpoints:[{url:"https://btc-bitcore1.trezor.io/api",explorer:"https://btc-bitcore1.trezor.io"},{explorer:"https://insight.bitpay.com/api",url:"https://insight.bitpay.com"}],
     network:{
       messagePrefix: '\x18Bitcoin Signed Message:\n',
       bip32: {
@@ -133,7 +133,7 @@ const defaultCoins=[
       account:0
     },
     bip21:"litecoin",
-    defaultFeeSatPerByte:500,
+    defaultFeeSatPerByte:300,
     icon:require("../res/coins/ltc.png"),
     apiEndpoints:[{url:"https://insight.litecore.io/api",
     explorer:"https://insight.litecore.io"}],
@@ -262,7 +262,7 @@ const defaultCoins=[
 	  "coinScreenName": j?"コト":"Koto",
 	  "coinId": "koto",
 	  "unit": "KOTO",
-	  "unitEasy": "コト",
+	  "unitEasy": j?"コト":"Koto",
 	  "bip44": {
 		  "coinType": 2001,
 		  "account": 0
@@ -360,7 +360,7 @@ const defaultCoins=[
     unit: "NEET",
     unitEasy: j?"ニート":"Neet",
     bip44: {
-      coinType: 0,
+      coinType: 2002,
       account: 0
     },
     bip21: "neetcoin",

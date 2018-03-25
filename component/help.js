@@ -3,7 +3,7 @@ const coinUtil = require("../js/coinUtil")
 module.exports=require("../js/lang.js")({ja:require("./ja/help.html"),en:require("./en/help.html")})({
   data(){
     return {
-
+      question:false
     }
   },
   methods:{

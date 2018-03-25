@@ -11,6 +11,11 @@ const NEM_COIN_TYPE =43
 const DEFAULT_ACCOUNT=0
 const NETWORK=nem.model.network.data.mainnet.id
 
+const icons={
+  'nem:xem':require("../res/coins/nem.png"),
+  'ecobit:eco':require("../res/coins/ecob.png")
+}
+
 const endpoint = nem.model.objects.create("endpoint")("https://shibuya.supernode.me", 7891);
 
 module.exports=require("../js/lang.js")({ja:require("./ja/nem.html"),en:require("./en/nem.html")})({
@@ -120,7 +125,8 @@ module.exports=require("../js/lang.js")({ja:require("./ja/nem.html"),en:require(
               quantity:mos.quantity,
               mosaicId:mos.mosaicId,
               divisibility:6,
-              normalizedQty:(new BigNumber(mos.quantity)).shift(-6).toNumber()
+              normalizedQty:(new BigNumber(mos.quantity)).shift(-6).toNumber(),
+              icon:icons["nem:xem"]
             })
           }
           
@@ -148,7 +154,8 @@ module.exports=require("../js/lang.js")({ja:require("./ja/nem.html"),en:require(
               divisibility,
               quantity:mos.quantity,
               mosaicId:mos.mosaicId,
-              normalizedQty:(new BigNumber(mos.quantity)).shift(-divisibility).toNumber()
+              normalizedQty:(new BigNumber(mos.quantity)).shift(-divisibility).toNumber(),
+              icon:icons[mos.mosaicId.namespaceId+':'+mos.mosaicId.name]
             }
           })
         }))
@@ -280,7 +287,7 @@ module.exports=require("../js/lang.js")({ja:require("./ja/nem.html"),en:require(
       })
     },
     openExplorer(txId){
-      coinUtil.openUrl("http://explorer.ournem.com/#/s_tx?hash="+txId)
+      coinUtil.openUrl("http:///explorer.nemchina.com//#/s_tx?hash="+txId)
     },
     donateMe(){
       coinUtil.openUrl("https://missmonacoin.github.io")
@@ -339,7 +346,6 @@ module.exports=require("../js/lang.js")({ja:require("./ja/nem.html"),en:require(
       this.sendMosaic=rSend.label||"nem:xem"
       if(sa){
         this.sendAmount=sa
-        this.confirm=true
       }
     }
     this.$store.commit("setExtensionSend",{})

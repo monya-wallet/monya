@@ -133,18 +133,20 @@ const signRefund = (txb, coinId, addressIndex, redeemScript, password)=>{
     txb.inputs.forEach((v,i)=>{
       let signatureScript = redeemScript;
       let signatureHash;
+      let scriptSig;
       if(cur.libName==="bch"){
-        signatureHash = txb.tx.hashForCashSignature(i, signatureScript, v.value, cur.lib.Transaction.SIGHASH_ALL | this.lib.Transaction.SIGHASH_BITCOINCASHBIP143);
+        signatureHash = txb.tx.hashForCashSignature(i, signatureScript, v.value, cur.lib.Transaction.SIGHASH_ALL | cur.lib.Transaction.SIGHASH_BITCOINCASHBIP143);
+        const signature= pk.sign(signatureHash);
+        scriptSig=refundP2SHContract(redeemScript,signature.toScriptSignature(cur.lib.Transaction.SIGHASH_ALL | cur.lib.Transaction.SIGHASH_BITCOINCASHBIP143),Buffer.from(cur.getPubKey(0,addressIndex),"hex"))
       }else if(cur.libName==="btg"){
-        signatureHash = txb.tx.hashForGoldSignature(i, signatureScript, v.value, cur.lib.Transaction.SIGHASH_ALL | this.lib.Transaction.SIGHASH_BITCOINCASHBIP143);
+        signatureHash = txb.tx.hashForGoldSignature(i, signatureScript, v.value, cur.lib.Transaction.SIGHASH_ALL | cur.lib.Transaction.SIGHASH_BITCOINCASHBIP143);
+        const signature= pk.sign(signatureHash);
+        scriptSig=refundP2SHContract(redeemScript,signature.toScriptSignature(cur.lib.Transaction.SIGHASH_ALL | cur.lib.Transaction.SIGHASH_BITCOINCASHBIP143),Buffer.from(cur.getPubKey(0,addressIndex),"hex"))
       }else{
         signatureHash = txb.tx.hashForSignature(i, signatureScript, cur.lib.Transaction.SIGHASH_ALL);
+        const signature= pk.sign(signatureHash);
+        scriptSig=refundP2SHContract(redeemScript,signature.toScriptSignature(cur.lib.Transaction.SIGHASH_ALL),Buffer.from(cur.getPubKey(0,addressIndex),"hex"))
       }
-      
-      const signature= pk.sign(signatureHash);
-      
-
-      let scriptSig=refundP2SHContract(redeemScript,signature.toScriptSignature(cur.lib.Transaction.SIGHASH_ALL),Buffer.from(cur.getPubKey(0,addressIndex),"hex"))
       tx.setInputScript(i, scriptSig);
     })
     return tx;

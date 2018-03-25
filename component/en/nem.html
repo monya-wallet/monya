@@ -8,7 +8,7 @@
     <div v-show="requirePassword" class="wrap">
       <p>Please enter the password.</p>
       <div :class="{shake:incorrect}" class="passwordBox">
-        <input :disabled="loading" type="password" v-model="password"/>
+        <input :disabled="loading" type="password" v-model="password" @keydown.enter="decrypt"/>
       </div>
       <v-ons-button modifier="large" @click="decrypt" :disabled="loading">Start</v-ons-button>
     </div>
@@ -49,6 +49,9 @@
         
         <v-ons-list-header>balance</v-ons-list-header>
         <v-ons-list-item v-for="b in mosaics" @click="sendMosaic=b.mosaicId.namespaceId+':'+b.mosaicId.name">
+          <div class="left">
+            <img v-if="b.icon" :src="b.icon"/>
+          </div>
           <div class="center">{{b.normalizedQty}}</div>
           <div class="right">{{b.mosaicId.namespaceId}}:{{b.mosaicId.name}}</div>
         </v-ons-list-item>
@@ -65,7 +68,7 @@
         <v-ons-list-item>
           <div class="center">Mosaic</div>
           <div class="right">
-            <span v-show="sendMosaic">{{sendMosaic}}</span>
+            <span v-show="sendMosaic">{{(sendMosaic==='ecobit:eco')?'Ecobit' :sendMosaic}}</span>
             <span v-show="!sendMosaic">Choose from above</span>
           </div>
         </v-ons-list-item>
@@ -78,7 +81,9 @@
         <v-ons-list-item>
           <v-ons-input placeholder="Message" v-model="message"></v-ons-input>
         </v-ons-list-item>
-        <v-ons-list-item><v-ons-button @click="send" modifier="large" :disabled="!sendAddress||!sendAmount||!sendMosaic||!isValidAddress">Send</v-ons-button></v-ons-list-item>
+        <v-ons-list-item>
+          <v-ons-button @click="send" modifier="large" :disabled="!sendAddress||!sendAmount||!sendMosaic||!isValidAddress">{{(sendMosaic==='ecobit:eco')?'Mother Earth' : 'Send'}}</v-ons-button>
+        </v-ons-list-item>
         <v-ons-list-header>History</v-ons-list-header>
         <v-ons-list-item v-for="h in history" @click="openExplorer(h.meta.hash.data)" modifier="chevron">
           <div class="left" v-if="h.transaction.recipient!==address">Send</div>
@@ -99,10 +104,6 @@
         </v-ons-list-item>
         <v-ons-list-item v-show="histError">
           Error occurred
-        </v-ons-list-item>
-        <v-ons-list-header>Not Enough Money</v-ons-list-header>
-        <v-ons-list-item @click="donateMe">
-          Donate Me
         </v-ons-list-item>
       </v-ons-list>
     </div>

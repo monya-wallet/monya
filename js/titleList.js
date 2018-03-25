@@ -10,13 +10,6 @@ const defaultTitles=[{
   apiEndpoint:"https://card.mona.jp/api",
   icon:require("../res/coins/xmp.png")
 },{
-  cpCoinId:"mona",//Monaparty
-  titleId:"scamgirs",
-  titleName:"Scam Girls",
-  apiVer:2,
-  apiEndpoint:"https://zaif-status.herokuapp.com/scamgirls/api",
-  icon:require("../res/coins/xmp.png")
-},{
   cpCoinId:"btc",//Monaparty
   titleId:"cp",
   titleName:"Counterparty",

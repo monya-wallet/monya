@@ -3,6 +3,7 @@ const coinUtil = require("../js/coinUtil")
 const crypto = require("crypto")
 const currencyList = require("../js/currencyList")
 const extension=require("../js/extension.js")
+const storage=require("../js/storage.js")
 let ext;
 
 const qrcode = require("qrcode")
@@ -138,7 +139,7 @@ module.exports=require("../js/lang.js")({ja:require("./ja/zaifPay.html"),en:requ
       })
     },
     saveCredentials(){
-      if(this.apiKey&&this.apiKey){
+      if(this.apiKey){
         this.md5secret=crypto.createHash("md5").update(this.secret).digest("hex")
         ext.set("credentials",{
           apiKey:this.apiKey,
@@ -152,14 +153,28 @@ module.exports=require("../js/lang.js")({ja:require("./ja/zaifPay.html"),en:requ
       ext.set("credentials",{})
       this.resetDialog=false;
       this.hasCredentials=false
+    },
+    migrate(){
+      storage.get("settings").then(s=>{
+        if(s.zaifPay.apiKey){
+          const md5s = crypto.createHash("md5").update(s.zaifPay.secret).digest("hex")
+          ext.set("credentials",{
+            apiKey:s.zaifPay.apiKey,
+            md5secret:md5s
+          })
+          this.apiKey=s.zaifPay.apiKey
+          this.md5secret=md5s
+          this.hasCredentials=true
+        }
+      })
     }
   },
   mounted(){
     ext=extension.extStorage("zaifPay")// because of circular referrence
-    ext.get("credentials").then((data)=>{
+   ext.get("credentials").then((data)=>{
       this.hasCredentials=data&&data.apiKey&&data.md5secret
       if(!this.hasCredentials){
-        return
+        return this.migrate()
       }
       this.apiKey=data.apiKey
       this.md5secret=data.md5secret

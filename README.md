@@ -38,6 +38,12 @@ DMD様
 
 `npm run start`で開発用になります。browser-syncあります
 
+### 多言語化
+
+- `gulp addWord`でcomponent/*.htmlの日本語部分を抜き出して、lang/dict.jsonに出力
+- `gulp translateEn`で適用
+- エラーが起こったら、lang/dict.jsonの内容を`{}`に変更
+
 ### Cordovaビルド
 
 1. `npm install -g cordova@7.1.0` **注意: Cordovaのバージョンは7.1.0です。8.0以上ではありません。**

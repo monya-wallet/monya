@@ -32,8 +32,11 @@ ons-list-item{
   }
 }
 
-.toolbar-button .ons-icon{
-  vertical-align:bottom;
+ons-toolbar-button.toolbar-button{
+  padding:4px 7px;
+  .ons-icon{
+    vertical-align:bottom;
+  }
 }
 
 ons-dialog .dialog{
@@ -521,6 +524,12 @@ $passwordHeight:35px;
 }
 [data-page="xrp"],[data-page="nem"]{
   ons-list-item{
+    .left{
+      img{
+        width:$homeCurIconSize;
+        height:$homeCurIconSize;
+      }
+    }
     ons-input{
       width:100%
     }
