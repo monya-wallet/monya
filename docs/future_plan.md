@@ -25,7 +25,7 @@ addcoins/ へのPull Requestは許可してもOK。もともと自己責任で�
 すでにかなり揉めているので、コイン追加はしません。
 addcoinsへのPull Requestはするのだから、問題はないはず
 
-ただし、Yajucoin、Ethereumの全機能のテストをした上での追加はOK
+ただし、Yajucoin、Ethereum、OpenAssetsなどのColoredCoins の全機能のテストをした上での追加は歓迎
 (そもそもNeetcoinはYajucoinの対応ができるというメリットがなければマージするつもりはなかった)
 
 ### 質問の受付はDiscordに移行する

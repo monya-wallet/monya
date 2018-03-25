@@ -99,8 +99,8 @@
       <v-ons-list-header>資金の引き出し</v-ons-list-header>
       <v-ons-list-item>
         <v-ons-segment :index.sync="isRefund">
-          <button>引き出し</button>
-          <button>返金</button>
+          <button @click="isRefund=0">引き出し</button>
+          <button @click="isRefund=1">返金</button>
         </v-ons-segment>
         
       </v-ons-list-item>
