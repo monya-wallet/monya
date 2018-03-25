@@ -28,7 +28,9 @@ exports.get=extId=>{
 
 exports.each=(fn)=>{
   for(let extName in extensions){
-    fn(extensions[extName])
+    if (extensions[extName]&&extensions[extName].id) {
+      fn(extensions[extName])
+    }
   }
 }
 
