@@ -34,11 +34,17 @@ module.exports = function (context) {
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data android:scheme="litecoin" />
             </intent-filter>
-<intent-filter>
+            <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data android:scheme="koto" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="nem" />
             </intent-filter>
            
     `;

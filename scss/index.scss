@@ -32,7 +32,13 @@ ons-list-item{
   }
 }
 
-ons-toolbar-button.toolbar-button{
+ons-toolbar-button.toolbar-button:not(.toolbar-button--material){
+  padding:4px 7px;
+  .ons-icon{
+    vertical-align:bottom;
+  }
+}
+ons-toolbar-button.toolbar-button:not(.toolbar-button--material){
   padding:4px 7px;
   .ons-icon{
     vertical-align:bottom;
@@ -496,10 +502,10 @@ ons-popover .popover__content{
     width:100%
   }
 }
-$passwordHeight:35px;
+$passwordHeight:30px;
 [data-page="login"],[data-page="xrp"],[data-page="nem"]{
   .wrap{
-    padding:40px;
+    padding:35px;
     text-align:center;
     .passwordBox{
       line-height: $passwordHeight;

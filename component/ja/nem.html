@@ -86,13 +86,25 @@
         </v-ons-list-item>
         <v-ons-list-header>履歴</v-ons-list-header>
         <v-ons-list-item v-for="h in history" @click="openExplorer(h.meta.hash.data)" modifier="chevron">
-          <div class="left" v-if="h.transaction.recipient!==address">送金</div>
-          <div class="left" v-if="h.transaction.recipient===address">受け取り</div>
-          <div class="center" v-if="h.transaction.message.payload">{{h.transaction.message.payload | hex2str}}</div>
-          <div class="center" v-if="!h.transaction.message.payload">メッセージなし</div>
-          <div class="right">
-            <timestamp :timestamp="toUnixDate(h.transaction.timeStamp)"></timestamp>
+          <div v-if="h.transaction.otherTrans">
+            <div class="left" v-if="h.transaction.otherTrans.recipient!==address">送金</div>
+            <div class="left" v-if="h.transaction.otherTrans.recipient===address">受け取り</div>
+            <div class="center" v-if="h.transaction.otherTrans.message.payload">{{h.transaction.otherTrans.message.payload | hex2str}}</div>
+            <div class="center" v-if="!h.transaction.otherTrans.message.payload">メッセージなし</div>
+            <div class="right">
+              <timestamp :timestamp="toUnixDate(h.transaction.otherTrans.timeStamp)"></timestamp>
+            </div>
           </div>
+          <div v-if="!h.transaction.otherTrans">
+            <div class="left" v-if="h.transaction.recipient!==address">送金</div>
+            <div class="left" v-if="h.transaction.recipient===address">受け取り</div>
+            <div class="center" v-if="h.transaction.message.payload">{{h.transaction.message.payload | hex2str}}</div>
+            <div class="center" v-if="!h.transaction.message.payload">メッセージなし</div>
+            <div class="right">
+              <timestamp :timestamp="toUnixDate(h.transaction.timeStamp)"></timestamp>
+            </div>
+          </div>
+          
         </v-ons-list-item>
         <v-ons-list-header>未承認</v-ons-list-header>
         <v-ons-list-item v-for="h in unconfirmed" modifier="chevron">

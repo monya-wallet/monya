@@ -86,13 +86,25 @@
         </v-ons-list-item>
         <v-ons-list-header>History</v-ons-list-header>
         <v-ons-list-item v-for="h in history" @click="openExplorer(h.meta.hash.data)" modifier="chevron">
-          <div class="left" v-if="h.transaction.recipient!==address">Send</div>
-          <div class="left" v-if="h.transaction.recipient===address">Receive</div>
-          <div class="center" v-if="h.transaction.message.payload">{{h.transaction.message.payload | hex2str}}</div>
-          <div class="center" v-if="!h.transaction.message.payload">(no message)</div>
-          <div class="right">
-            <timestamp :timestamp="toUnixDate(h.transaction.timeStamp)"></timestamp>
+          <div v-if="h.transaction.otherTrans">
+            <div class="left" v-if="h.transaction.otherTrans.recipient!==address">Send</div>
+            <div class="left" v-if="h.transaction.otherTrans.recipient===address">Receive</div>
+            <div class="center" v-if="h.transaction.otherTrans.message.payload">{{h.transaction.otherTrans.message.payload | hex2str}}</div>
+            <div class="center" v-if="!h.transaction.otherTrans.message.payload">(no message)</div>
+            <div class="right">
+              <timestamp :timestamp="toUnixDate(h.transaction.otherTrans.timeStamp)"></timestamp>
+            </div>
           </div>
+          <div v-if="!h.transaction.otherTrans">
+            <div class="left" v-if="h.transaction.recipient!==address">Send</div>
+            <div class="left" v-if="h.transaction.recipient===address">Receive</div>
+            <div class="center" v-if="h.transaction.message.payload">{{h.transaction.message.payload | hex2str}}</div>
+            <div class="center" v-if="!h.transaction.message.payload">(no message)</div>
+            <div class="right">
+              <timestamp :timestamp="toUnixDate(h.transaction.timeStamp)"></timestamp>
+            </div>
+          </div>
+          
         </v-ons-list-item>
         <v-ons-list-header>unconfirmed</v-ons-list-header>
         <v-ons-list-item v-for="h in unconfirmed" modifier="chevron">
