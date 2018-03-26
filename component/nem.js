@@ -18,6 +18,15 @@ const icons={
 
 const endpoint = nem.model.objects.create("endpoint")("https://shibuya.supernode.me", 7891);
 
+
+function toUnixDate(d){
+  return 1427587585+d
+}
+function hex2str(s){
+  if(!s){return ""}
+  return (Buffer.from(s,"hex")).toString("utf8")
+}
+
 module.exports=require("../js/lang.js")({ja:require("./ja/nem.html"),en:require("./en/nem.html")})({
   data(){
     return {
@@ -34,8 +43,6 @@ module.exports=require("../js/lang.js")({ja:require("./ja/nem.html"),en:require(
       requirePassword:true,
       loading:false,
       balances:null,
-      sent:false,
-      histError:false,
       history:null,
       message:"",
       server:'https://shibuya.supernode.me:7891/heartbeat',
@@ -167,11 +174,35 @@ module.exports=require("../js/lang.js")({ja:require("./ja/nem.html"),en:require(
       })
 
       nem.com.requests.account.transactions.all(endpoint,this.address).then(txs => {
-        this.history=txs.data
+        this.history=txs.data.map(el=>{
+          let tr;
+          if(el.transaction.otherTrans){
+            tr=el.transaction.otherTrans
+          }else{
+            tr=el.transaction
+          }
+          return {
+            txHash:el.meta.hash.data,
+            recipient:tr.recipient,
+            message:hex2str(tr.message.payload),
+            timeStamp:toUnixDate(tr.timeStamp)
+          }
+        })
       });
       nem.com.requests.account.transactions.unconfirmed(endpoint,this.address).then(x => {
-          this.unconfirmed=x.data;
+        this.unconfirmed=x.data.map(el=>{
+          let tr;
+          if(el.transaction.otherTrans){
+            tr=el.transaction.otherTrans
+          }else{
+            tr=el.transaction
+          }
+          return {
+            recipient:tr.recipient,
+            message:hex2str(tr.message.payload,"hex")
+          }
         });
+      });
     },
     copyAddress(){
       coinUtil.copy(this.address)
@@ -291,9 +322,6 @@ module.exports=require("../js/lang.js")({ja:require("./ja/nem.html"),en:require(
     },
     donateMe(){
       coinUtil.openUrl("https://missmonacoin.github.io")
-    },
-    toUnixDate(d){
-      return 1427587585+d
     }
   },
   computed:{
@@ -357,10 +385,5 @@ module.exports=require("../js/lang.js")({ja:require("./ja/nem.html"),en:require(
     }).catch(()=>{
       return
     })
-  },
-  filters:{
-    hex2str(d){
-      return (Buffer.from(d,"hex")).toString("utf8")
-    }
   }
 })
