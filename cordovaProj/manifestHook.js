@@ -46,6 +46,18 @@ module.exports = function (context) {
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data android:scheme="nem" />
             </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="zcash" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="dash" />
+            </intent-filter>
            
     `;
     const manifestPath = context.opts.projectRoot + '/platforms/android/AndroidManifest.xml';
