@@ -50,6 +50,11 @@ gulp.task('webpackProd', function(){
     .pipe(webpack(require("./webpack.config")))
     .pipe(gulp.dest('./'))
 });
+gulp.task('webpackCordova', function(){
+  return gulp.src('js/main.js')
+    .pipe(webpack(require("./webpack.config.cordova")))
+    .pipe(gulp.dest('./cordovaProj/www'))
+});
 gulp.task("watch", function() {
   gulp.watch("dist/dist.js", ["reload"]);
   gulp.watch("component/*.html", ["copyJa"]);
@@ -92,7 +97,16 @@ gulp.task("prod", function(cb) {
     "translateEn",
     ["lint","webpackProd"],
     "compressImage",
-    ["setCordova","setDocs","setChrome"],
+    ["setDocs","setChrome"],
+    cb
+  );
+});
+gulp.task("cordova", function(cb) {
+  return runSequence(
+    "copyJa",
+    "translateEn",
+    "webpackCordova",
+    "compressImage",
     cb
   );
 });
