@@ -45,7 +45,10 @@ module.exports=require("../js/lang.js")({ja:require("./ja/qrcode.html"),en:requi
           })
           this.$emit("pop")
           this.$emit("push",res.extension.component)
-        }else if(res.protocol==="http"||res.protocol==="https"){
+        }else if(res.apiName){
+            coinUtil.callAPI(res.apiName,res.apiParam)
+            return
+          }else if(res.protocol==="http"||res.protocol==="https"){
           coinUtil.openUrl(res.url)
           QRScanner.destroy((status)=>{
             this.$emit("pop")

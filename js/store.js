@@ -28,7 +28,10 @@ module.exports = new Vuex.Store({
     includeUnconfirmedFunds:false,
     utxoStr:"",
     error:"",
-    extensionSend:{}
+    extensionSend:{},
+    apiName:"",
+    apiParam:null
+    
   },
   mutations: {
     setEntropy(state,ent) {
@@ -112,6 +115,10 @@ module.exports = new Vuex.Store({
     },
     setExtensionSend(s,e){
       s.extensionSend=e
+    },
+    setAPICall(s,name,param){
+      s.apiName=name
+      s.apiParam=param
     }
   }
 })

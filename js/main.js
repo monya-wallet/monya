@@ -10,6 +10,7 @@ const VueOnsen = require('vue-onsenui')
 const Vuex = require("vuex")
 const template = require("../lang/template.json")
 
+
 Vue.use(VueOnsen)
 Vue.use(Vuex)
 
@@ -50,14 +51,18 @@ exports.vm= new Vue({
     }
   }
 })
-const coinUtil=require("../js/coinUtil")
-window.handleOpenURL=function(url) {
-  if (!window.cordova||window.cordova&&(window.cordova.platformName==="browser")) {
-    return 
-  }
-  coinUtil.queueUrl(url)
-}
-
 if ('serviceWorker' in navigator&&!window.cordova) {
   navigator.serviceWorker.register('./dist/sw.js').then(()=>true).catch(()=>true);
+}
+const coinUtil=require("../js/coinUtil")
+window.handleOpenURL=function(url) {
+  coinUtil.queueUrl(url)
+}
+const kvs=location.search.slice(1).split("&")
+for (let i = 0; i < kvs.length; i++) {
+  const kv=kvs[i].split("=")
+  if(kv[0]==="url"){
+    coinUtil.queueUrl(decodeURIComponent(kv[1]))
+    break;
+  }
 }

@@ -80,6 +80,9 @@ module.exports=require("../js/lang.js")({ja:require("./ja/send.html"),en:require
             this.label=u.label
             this.utxoStr=u.utxo
             return
+          }else if(u.apiName){
+            coinUtil.callAPI(u.apiName,u.apiParam)
+            return
           }else{
             currencyList.eachWithPub((cur)=>{
               const ver = coinUtil.getAddrVersion(this.address)

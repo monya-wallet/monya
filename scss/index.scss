@@ -754,6 +754,20 @@ $zaifPayLogoSize:200px;
   }
 }
 
+[data-page="api"]>div{
+  padding:20px;
+  ons-button{
+    margin: 10px 0;
+    display: block;
+  }
+  .text-input{
+    margin:20px 0;
+    display: block;
+    width:100%;
+  }
+  
+}
+
 @keyframes shake {
   10%, 90% {
     transform: translate3d(-1px, 0, 0);

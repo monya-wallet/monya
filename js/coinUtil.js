@@ -7,7 +7,9 @@ const errors=require("./errors")
 const axios=require("axios")
 const ext = require("./extension.js")
 
-const addressRegExp = /^\w+:(?:\/\/)?(\w{32,40})\??/
+const addressRegExp = /^\w+:(?:\/\/)?(\w{10,255})\??/
+
+const API_PREFIX="api_v1_"
 
 exports.DEFAULT_LABEL_NAME = "Default"
 exports.GAP_LIMIT=20
@@ -218,7 +220,9 @@ exports.parseUrl=url=>new Promise((resolve,reject)=>{
     signature:"",
     label:"",
     isValidUrl:false,
-    extension:null
+    extension:null,
+    apiName:"",
+    apiParam:null
   }
   let raw;
   try{
@@ -232,6 +236,15 @@ exports.parseUrl=url=>new Promise((resolve,reject)=>{
   const addrRes = addressRegExp.exec(url)
   if(addrRes){
     ret.address=addrRes[1]
+  }
+  if(ret.address.slice(0,API_PREFIX.length)===API_PREFIX){
+    ret.apiName=ret.address.slice(API_PREFIX.length)
+    try{
+      ret.apiParam=JSON.parse(raw.searchParams.get("param"))
+    }catch(e){
+      ret.apiParam=null
+    }
+    return resolve(ret)
   }
   ext.each(v=>{
     if(ret.protocol===v.scheme){
@@ -259,6 +272,14 @@ exports.parseUrl=url=>new Promise((resolve,reject)=>{
   ret.utxo=raw.searchParams.get("req-utxo")
   resolve(ret)
 })
+let apiCb
+exports.callAPI=(name,param)=>{
+  apiCb(name,param)
+}
+
+exports.setAPICallback = cb=>{
+  apiCb=cb
+}
 
 exports.proxyUrl=url=>{
   if(exports.isNative()){

@@ -100,18 +100,32 @@ module.exports=require("../js/lang.js")({ja:require("./ja/navigator.html"),en:re
     }
   },
   mounted(){
+    coinUtil.setAPICallback((name,param)=>{
+      this.$store.commit("setAPICall",name,param)
+      this.pageStack.push(require("./api.js"))
+    })
     coinUtil.setUrlCallback(url=>{
       coinUtil.parseUrl(url).then(res=>{
         if(res.isCoinAddress&&res.isValidAddress){
           this.$store.commit("setSendUrl",res.url)
           this.pageStack.push(require("./send.js"))
+        }else if(res.extension){
+          this.$store.commit("setExtensionSend",{
+            memo:res.message,
+            address:res.address,
+            amount:res.amount
+          })
+          this.$emit("pop")
+          this.$emit("push",res.extension.component)
+        }else if(res.apiName){
+          coinUtil.callAPI(res.apiName,res.apiParam)
         }
       })
     })
     if(window.cordova&&window.cordova.platformId==="android"&&window.StatusBar){
       window.StatusBar.backgroundColorByHexString("#222222")
       window.StatusBar.styleBlackTranslucent()
-      }
+    }
   },
   watch:{
     pageStack(){
