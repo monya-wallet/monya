@@ -153,6 +153,7 @@ const signRefund = (txb, coinId, addressIndex, redeemScript, password)=>{
   })
 
 };
+
 module.exports=require("../js/lang.js")({ja:require("./ja/atomicswap.html"),en:require("./en/atomicswap.html")})({
   data(){
     return {
@@ -162,17 +163,19 @@ module.exports=require("../js/lang.js")({ja:require("./ja/atomicswap.html"),en:r
       
       addrIndex:0,
       refundAddrIndex:0,
-      giveCoinId:"mona",
-      getCoinId:"mona",
+      giveCoinId:"",
+      getCoinId:"",
       getCoinCPAvailable:false,
       getCoinIsCP:false,
       giveCoinCPAvailable:false,
       giveCoinIsCP:false,
 
       secret:"",
-      lockTime:0,
 
+      manual:false,
+      lockTime:0,
       secretHash:"",
+      secretSize:0,
       redeemAddressWithSecret:"",
       refundAddressWithSecret:"",
       redeemAddressWOSecret:"",
@@ -194,7 +197,9 @@ module.exports=require("../js/lang.js")({ja:require("./ja/atomicswap.html"),en:r
 
       isRefund:0,
 
-      contractType:"cltv"
+      contractType:"cltv",
+
+      strToRecv:""
     }
   },
   methods:{
@@ -208,8 +213,8 @@ module.exports=require("../js/lang.js")({ja:require("./ja/atomicswap.html"),en:r
       Object.assign(this,{
         addrIndex:0,
         refundAddrIndex:0,
-        giveCoinId:"mona",
-        getCoinId:"mona",
+        giveCoinId:"",
+        getCoinId:"",
         getCoinIsCP:false,
         giveCoinIsCP:false,
 
@@ -243,10 +248,15 @@ module.exports=require("../js/lang.js")({ja:require("./ja/atomicswap.html"),en:r
     },
     restore(){
       storage.get("swapData").then(d=>{
-        Object.assign(this,d||{})        
+        Object.assign(this,d||{})
+        this.getLabels()
+        this.getRefundLabels()
       })
     },
     getLabels(){
+      if (!this.getCoinId) {
+        return
+      }
       const cur = currencyList.get(this.getCoinId)
       cur.getLabels().then(res=>{
         this.$set(this,"labels",res)
@@ -254,6 +264,10 @@ module.exports=require("../js/lang.js")({ja:require("./ja/atomicswap.html"),en:r
       this.getCoinCPAvailable = !!cur.counterpartyEndpoint
     },
     getRefundLabels(){
+      if (!this.giveCoinId) {
+        return
+      }
+
       const cur = currencyList.get(this.giveCoinId)
       cur.getLabels().then(res=>{
         this.$set(this,"refundLabels",res)
@@ -284,14 +298,9 @@ module.exports=require("../js/lang.js")({ja:require("./ja/atomicswap.html"),en:r
       
       if(this.secret){
         this.redeemAddressWithSecret=pk
-        this.redeemAddressWOSecret=""
-        this.refundAddressWithSecret=rpk
-        this.refundAddressWOSecret=""
-        
+        this.refundAddressWithSecret=rpk        
       }else{
-        this.redeemAddressWithSecret=""
         this.redeemAddressWOSecret=pk
-        this.refundAddressWithSecret=""
         this.refundAddressWOSecret=rpk
       }
       
@@ -457,6 +466,42 @@ module.exports=require("../js/lang.js")({ja:require("./ja/atomicswap.html"),en:r
       }).catch(e=>{
         this.$store.commit("setError",(e.resopnse&&e.response.data)||e.message)
       })
+    },
+    applyStr(){
+      try{
+      const parsed=JSON.parse(this.strToRecv)
+      this.getCoinIsCP=parsed.giveCoinIdIsCP
+      this.giveCoinIsCP=parsed.getCoinIsCP
+      this.secretHash=parsed.secretHash
+      this.secretSize=parsed.secretSize
+      this.redeemAddressWithSecret=parsed.redeemAddressWithSecret
+      this.refundAddressWithSecret=parsed.refundAddressWithSecret
+      this.redeemAddressWOSecret=parsed.redeemAddressWOSecret
+      this.refundAddressWOSecret=parsed.refundAddressWOSecret
+        this.lockTime=parsed.lockTime
+      }catch(e){
+        return
+      }
+    }
+  },
+  computed:{
+    strToSend(){
+      if(this.redeemAddressWithSecret||this.redeemAddressWOSecret){
+        
+        return JSON.stringify({
+          giveCoinIsCP:this.giveCoinIsCP,
+          getCoinIsCP:this.getCoinIsCP,
+          secretHash:this.secretHash,
+          secretSize:this.secretSize,
+          redeemAddressWithSecret:this.redeemAddressWithSecret,
+          refundAddressWithSecret:this.refundAddressWithSecret,
+          redeemAddressWOSecret:this.redeemAddressWOSecret,
+          refundAddressWOSecret:this.refundAddressWOSecret,
+          lockTime:this.lockTime
+        })
+      }else{
+        return ""
+      }
     }
   },
   mounted(){

@@ -577,10 +577,12 @@ module.exports=lang({ja:require("./ja/question.html"),en:require("./en/question.
             },
             isTamamiCute:ans.to===-1
           })
+          delete require.cache[require.resolve("./generateKeyWarn.js")]
           this.$emit("push",require("./generateKeyWarn.js"))
           break;
         case -3:
           //User has passphrase so start recover
+          delete require.cache[require.resolve("./restorePassphrase.js")]
           this.$emit("push",require("./restorePassphrase.js"))
           break;
         case -4:
