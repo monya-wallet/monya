@@ -3,20 +3,20 @@
   <div>
     <div v-if="qType==='yOrN'" id="yOrNAPI">
       <div v-if="name==='enableExtendedMode'">
-        Extended Modeを有効化します。
+        Extended Mode will be enabled.
       </div>
       <div v-if="name==='disableExtendedMode'">
-        Extended ModeをDisable化します。
+        Extended Mode will be disabled.
       </div>
       <div v-if="name==='disableExtendedMode'">
-        アトミックスワップデータをShareします。
+        Atomic swap data will be shared.
       </div>
-      <v-ons-button modifier="large cta" @click="yes">はい</v-ons-button>
-      <v-ons-button modifier="large" @click="no">いいえ</v-ons-button>
+      <v-ons-button modifier="large cta" @click="yes">Yes</v-ons-button>
+      <v-ons-button modifier="large" @click="no">No</v-ons-button>
     </div>
     <div v-if="qType==='password'" id="passwordAPI">
       <div v-if="name==='signTx'">
-        Signします
+        Sign
       </div>
       
       <input v-model="password" placeholder="Password" class="text-input text-input--underbar" type="text">
@@ -24,11 +24,11 @@
       <v-ons-button modifier="large" @click="no">Cancel</v-ons-button>
     </div>
     <div v-if="qType==='direct'">
-      直接OKします
+      Running...
     </div>
     <div v-if="qType==='none'" id="noneAPI">
       <div>
-        DisableなメソッドがOKされました。
+        Invalid method.
       </div>
     </div>
   </div>

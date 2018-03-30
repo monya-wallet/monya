@@ -41,7 +41,8 @@ module.exports=require("../js/lang.js")({ja:require("./ja/qrcode.html"),en:requi
           this.$store.commit("setExtensionSend",{
             memo:res.message,
             address:res.address,
-            amount:res.amount
+            amount:res.amount,
+            label:res.label
           })
           this.$emit("pop")
           this.$emit("push",res.extension.component)

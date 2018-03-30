@@ -348,7 +348,8 @@ module.exports=require("../js/lang.js")({ja:require("./ja/nem.html"),en:require(
   },
   watch:{
     fiatConv(v){
-      this.sendAmount=parseFloat(v)/this.price
+      if(v){this.sendAmount=parseFloat(v)/this.price}
+      else{this.sendAmount=0}
     },
     sendAmount(v){
       this.fiatConv=parseFloat(v)*this.price

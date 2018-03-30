@@ -217,10 +217,7 @@ module.exports=require("../js/lang.js")({ja:require("./ja/xrp.html"),en:require(
     const sa = parseFloat(rSend.amount)||0
     if(rSend.address){
       this.sendAddress=rSend.address
-      if(sa){
-        this.sendAmount=sa
-        this.confirm=true
-      }
+      this.sendAmount=sa
     }
     this.$store.commit("setExtensionSend",{})
     this.connect()

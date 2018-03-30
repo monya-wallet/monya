@@ -85,7 +85,7 @@
         <v-ons-list-item v-for="h in history">
           <div class="left" v-if="h.type==='send'">Send</div>
           <div class="left" v-if="h.type==='receive'">Receive</div>
-          <div class="left" v-if="h.type==='unknown'">非対応のコマンド</div>
+          <div class="left" v-if="h.type==='unknown'">Unknown command</div>
           <div class="center" v-if="h.type==='send'">{{h.destAddr}}</div>
           <div class="center" v-if="h.type==='receive'">{{h.srcAddr}}</div>
           <div class="right">
@@ -122,7 +122,7 @@
     :visible.sync="serverDlg"
     >
     <span slot="title">Change Server</span>
-    <p><v-ons-input v-model="server" placehodler="wss://s2.ripple.com:443"></v-ons-input></p>
+    <p><v-ons-input v-model="server" placeholder="wss://s2.ripple.com:443"></v-ons-input></p>
     
     <template slot="footer">
       <div class="alert-dialog-button" @click="serverDlg=false">Close</div>
