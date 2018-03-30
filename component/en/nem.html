@@ -85,7 +85,7 @@
           <v-ons-button @click="send" modifier="large" :disabled="!sendAddress||!sendAmount||!sendMosaic||!isValidAddress">{{(sendMosaic==='ecobit:eco')?'Mother Earth' : 'Send'}}</v-ons-button>
         </v-ons-list-item>
         <v-ons-list-header>History</v-ons-list-header>
-        <v-ons-list-item v-for="h in history" @click="openExplorer(txHash)" modifier="chevron">
+        <v-ons-list-item v-for="h in history" @click="openExplorer(h.txHash)" modifier="chevron">
           
             <div class="left" v-if="h.recipient!==address">Send</div>
             <div class="left" v-if="h.recipient===address">Receive</div>
