@@ -21,7 +21,9 @@ module.exports=require("../js/lang.js")({ja:require("./ja/importExport.html"),en
       if(!this.impJson){
         return
       }
-      storage.setAll(JSON.parse(this.impJson))
+      storage.setAll(JSON.parse(this.impJson)).then(()=>{
+        window.location.reload()
+      })
     },
     reset(){
       storage.setAll({}).then(()=>{
@@ -32,7 +34,9 @@ module.exports=require("../js/lang.js")({ja:require("./ja/importExport.html"),en
     },
     resetCoins(){
       this.resetCur=false
-      return storage.set("customCoins",[])
+      return storage.set("customCoins",[]).then(()=>{
+        window.location.reload()
+      })
     },
     regenerateAddress(){
       this.loading=true
@@ -43,6 +47,9 @@ module.exports=require("../js/lang.js")({ja:require("./ja/importExport.html"),en
         }).catch(()=>{
           this.loading=false
         })
+    },
+    copy(){
+      coinUtil.copy(this.expJson)
     }
   }
 })

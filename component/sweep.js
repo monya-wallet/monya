@@ -29,6 +29,9 @@ module.exports=require("../js/lang.js")({ja:require("./ja/sweep.html"),en:requir
           this.$store.commit("setError",e)
         })
       }
+    },
+    getDefaultAddress(){
+      this.address=currencyList.get(this.currency[this.currencyIndex].coinId).getAddress(0,0)
     }
     
   },

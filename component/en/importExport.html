@@ -6,13 +6,21 @@
       <v-ons-list-item modifier="tappable chevron" @click="regenerateAddress"><div class="center">Regenerate address</div></v-ons-list-item>
       <v-ons-list-item modifier="tappable chevron" @click="resetCur=true"><div class="center">Reset coin parameters</div></v-ons-list-item>
       <v-ons-list-header>Export</v-ons-list-header>
-      <v-ons-list-item modifier="small">It contains encrypted private key. Please be careful</v-ons-list-item>
       <v-ons-list-item>
-        <textarea class="textarea--transparent" cols="30" readonly="readonly" rows="10" :value="expJson" ></textarea>
+        <div class="center">It contains encrypted private key. Please be careful</div>
+        <div class="right">
+          <v-ons-button @click="copy">
+            <v-ons-icon icon="fa-clipboard"></v-ons-icon>
+            Copy
+          </v-ons-button>
+        </div>
+      </v-ons-list-item>
+      <v-ons-list-item>
+        <textarea class="textarea--transparent" readonly="readonly" :value="expJson" ></textarea>
       </v-ons-list-item>
       <v-ons-list-header>Import</v-ons-list-header>
       <v-ons-list-item>
-        <textarea class="textarea--transparent" cols="30" id="" name="" rows="10" v-model="impJson"></textarea>
+        <textarea class="textarea--transparent" v-model="impJson"></textarea>
       </v-ons-list-item>
       <v-ons-list-item>
         <v-ons-button modifier="large" @click="confirm = true">SAVE</v-ons-button>
@@ -63,7 +71,7 @@
     :visible.sync="resetCur"
     >
     <span slot="title">Reset parameters</span>
-    <p>Do you really reset coin parameters? Changed contents will be lost.</p>
+    <p>Do you really reset coin parameters? Changed contents will be lost.。</p>
     <template slot="footer">
       <div class="alert-dialog-button" @click="resetCur=false">Cancel</div>
       <div class="alert-dialog-button" @click="resetCoins">NEXT</div>
