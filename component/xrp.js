@@ -74,14 +74,29 @@ module.exports=require("../js/lang.js")({ja:require("./ja/xrp.html"),en:require(
           minLedgerVersion:7400000
         })
       }).then(h=>{
-        this.$set(this,"history",h)
+        this.$set(this,"history",h.map(v=>{
+          let ret={
+            type:"unknown" //default is unknown
+          }
+          if(v.specification.source){
+            if(v.specification.source.address===this.address){
+              ret.type="send"
+            }else if(v.specification.destination.address===this.address){
+              ret.type="receive"
+            }
+            ret.srcAddr=v.specification.source.address
+            ret.destAddr=v.specification.destination.address
+            ret.balanceChange=v.outcome.balanceChanges[this.address]
+          }
+          return ret
+        }))
+        this.plzActivate=false
       }).catch(e=>{
         this.loading=false
         if(e.message==="actNotFound"){
           this.plzActivate =true
           return
         }
-        this.histError=true
         this.$store.commit("setError",e.message)
       })
     },
