@@ -135,7 +135,7 @@ gulp.task("translateEn", function(cb) {
   })).pipe(gulp.dest("./component/en"))
 });
 gulp.task("serviceWorker", function(cb) {
-  var files = fs.readdirSync("./dist/assets")
+  var files = fs.readdirSync("./dist/assets").filter(n=>n[0]!==".")
   return gulp.src("js/sw.js").pipe(translator.translate({
     dictFile:"../lang/template.json",
     dict:{

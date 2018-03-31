@@ -3,18 +3,18 @@ const axios = require('axios');
 const coinUtil=require("../js/coinUtil")
 
 const defaultTitles=[{
+  cpCoinId:"btc",//Monaparty
+  titleId:"cp",
+  titleName:"Counterparty",
+  apiVer:false,
+  icon:require("../res/coins/xcp.png")
+},{
   cpCoinId:"mona",//Monaparty
   titleId:"monacard",
   titleName:"Monacard",
   apiVer:1,
   apiEndpoint:"https://card.mona.jp/api",
   icon:require("../res/coins/xmp.png")
-},{
-  cpCoinId:"btc",//Monaparty
-  titleId:"cp",
-  titleName:"Counterparty",
-  apiVer:false,
-  icon:require("../res/coins/xcp.png")
 }]
 
 const titles={}

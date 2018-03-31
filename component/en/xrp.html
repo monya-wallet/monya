@@ -8,7 +8,7 @@
     <div v-show="requirePassword" class="wrap">
       <p>Please enter the password.</p>
       <div :class="{shake:incorrect}" class="passwordBox">
-        <input :disabled="loading" type="password" v-model="password"/>
+        <input :disabled="loading" type="password" v-model="password"  @keydown.enter="decrypt"/>
       </div>
       <v-ons-button modifier="large" @click="decrypt" :disabled="loading">Start</v-ons-button>
     </div>

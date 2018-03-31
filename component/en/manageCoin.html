@@ -13,7 +13,7 @@
         <v-ons-button modifier="quiet" @click="showInfo(c.coinId)"><v-ons-icon icon="ion-ios-information"></v-ons-icon></v-ons-button>
       </div>
       <div class="right">
-        <v-ons-checkbox v-model="c.usable"></v-ons-checkbox>
+        <v-ons-checkbox v-model="c.usable" @click="edited"></v-ons-checkbox>
       </div>
     </v-ons-list-item>
     <v-ons-list-header>Disable</v-ons-list-header>
@@ -24,9 +24,22 @@
         <v-ons-button modifier="quiet" @click="showInfo(c.coinId)"><v-ons-icon icon="ion-ios-information"></v-ons-icon></v-ons-button>
       </div>
       <div class="right">
-        <v-ons-checkbox v-model="c.usable"></v-ons-checkbox>
+        <v-ons-checkbox v-model="c.usable" @click="edited"></v-ons-checkbox>
       </div>
     </v-ons-list-item>
+
+    <v-ons-list-header>Extension</v-ons-list-header>
+    <v-ons-list-item v-for="x in extensions">
+      <div class="left"><img :src="x.icon"/></div>
+      <div class="center">
+        <div class="screenName">{{x.name}}</div>
+      </div>
+      <div class="right">
+        <v-ons-checkbox v-model="x.usable" @click="edited"></v-ons-checkbox>
+      </div>
+    </v-ons-list-item>
+
+    <v-ons-list-item><!-- spacer for toast--></v-ons-list-item>
   </v-ons-list>
   <v-ons-alert-dialog
     modifier="rowfooter"
@@ -40,7 +53,10 @@
       <div class="alert-dialog-button" @click="operateCoins">NEXT</div>
     </template>
   </v-ons-alert-dialog>
-
+  <v-ons-toast :visible.sync="unsaved" animation="ascend">
+    まだSAVEされていません
+    <button @click="requirePassword=true">SAVE</button>
+  </v-ons-toast>
   <v-ons-modal :visible="loading">
     <p style="text-align: center">
       Calculating. It will take a few minutes, please do not cancel. 
