@@ -68,7 +68,9 @@
     "start": "gulp",
     "lint": "eslint ./js/*.js",
     "build": "gulp prod",
-    "build:cordova": "gulp cordova"
+    "build:cordova": "gulp cordova",
+
+    "postinstall": "cd ./node_modules/har-validator;npm install ajv@6.4.0;cd ../../"
   },
   "author": "monya-wallet",
   "license": "GPL-3.0-only"

@@ -85,8 +85,11 @@ gulp.task("default", function(cb) {
   return runSequence(
     "copyJa",
     "translateEn",
+    
+    ['browserSync',"webpack"],
     "serviceWorker",
-    ['browserSync',"webpack","watch"],
+    "watch",
+    
     cb
   );
 });
