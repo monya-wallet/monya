@@ -7,8 +7,8 @@ npm-debug.log*
 dist
 cordovaProj/www/dist
 docs/wallet/dist
+!.circleci
 .*
-!.circleci/
 cordovaProj/node_modules
 cordovaProj/platforms
 cordovaProj/plugins
