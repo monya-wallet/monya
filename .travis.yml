@@ -1,9 +1,13 @@
 language: node_js
 node_js:
   - "node"
-  - "7"
 install:
   - npm install
-before_script:
-  - npm install -g gulp-cli
-script: gulp prod
+script: npm start
+deploy:
+  provider: pages
+  skip-cleanup: true
+  github-token: $GITHUB_TOKEN  # Set in travis-ci.org dashboard, marked secure
+  keep-history: true
+  on:
+    branch: master
