@@ -7,7 +7,7 @@ script: npm run build
 deploy:
   provider: pages
   skip-cleanup: true
-  repo: dev
+  repo: monya-wallet/dev
   local-dir: docs
   github-token: $GITHUB_TOKEN  # Set in travis-ci.org dashboard, marked secure
   keep-history: true
