@@ -142,6 +142,9 @@ module.exports=require("../js/lang.js")({ja:require("./ja/navigator.html"),en:re
   },
   filters:{
     translate(v){
+      if(!v){
+        return
+      }
       v=v.toString()
       return v.replace(regexp,(match)=>{
         return match+"("+translationTable[match.toLowerCase()]+")"
