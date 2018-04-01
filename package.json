@@ -9,7 +9,6 @@
     "@missmonacoin/bitcoincashjs-lib": "^1.0.1",
     "@missmonacoin/bitcoinjs-lib-zcash": "^1.0.0",
     "@missmonacoin/blackcoinjs-lib": "^1.0.0",
-    "ajv": "^6.3.0",
     "axios": "^0.17.1",
     "babel-polyfill": "^6.26.0",
     "bignumber.js": "^5.0.0",
@@ -69,7 +68,6 @@
     "lint": "eslint ./js/*.js",
     "build": "gulp prod",
     "build:cordova": "gulp cordova",
-
     "postinstall": "cd ./node_modules/har-validator;npm install ajv@6.4.0;cd ../../"
   },
   "author": "monya-wallet",
