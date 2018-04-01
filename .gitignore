@@ -8,7 +8,7 @@ dist
 cordovaProj/www/dist
 docs/wallet/dist
 .*
-!.travis.yml
+!.circleci/
 cordovaProj/node_modules
 cordovaProj/platforms
 cordovaProj/plugins
