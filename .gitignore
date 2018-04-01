@@ -4,6 +4,9 @@ node_modules
 *~
 npm-debug.log*
 .DS_Store
+dist
+cordovaProj/www/dist
+docs/wallet/dist
 .*
 !.travis.yml
 cordovaProj/node_modules
