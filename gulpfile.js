@@ -93,10 +93,11 @@ gulp.task("default", function(cb) {
 gulp.task("prod", function(cb) {
   return runSequence(
     "copyJa",
-    "serviceWorker",
+    
     "translateEn",
     ["lint","webpackProd"],
     "compressImage",
+    "serviceWorker",
     ["setDocs","setChrome"],
     cb
   );
@@ -116,6 +117,7 @@ try{
 }catch(e){
   height=-1
 }
+console.log("Monacoin Block Height is ",height)
 gulp.task("copyJa", function(cb) {
   return gulp.src("component/*.html").pipe(translator.translate({
     dictFile:"../lang/template.json",
