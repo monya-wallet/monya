@@ -5,6 +5,7 @@ node_modules
 npm-debug.log*
 .DS_Store
 .*
+!.travis.yml
 cordovaProj/node_modules
 cordovaProj/platforms
 cordovaProj/plugins
