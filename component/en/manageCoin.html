@@ -54,7 +54,7 @@
     </template>
   </v-ons-alert-dialog>
   <v-ons-toast :visible.sync="unsaved" animation="ascend">
-    まだSAVEされていません
+    There is unsaved changes.
     <button @click="requirePassword=true">SAVE</button>
   </v-ons-toast>
   <v-ons-modal :visible="loading">
