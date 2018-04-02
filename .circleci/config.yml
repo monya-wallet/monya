@@ -54,12 +54,12 @@ jobs:
 
     steps:
       - run: |
-        npm i
-        npm run build:cordova
-        cd cordovaProj
-        npm i
-        cordova platform add android
-        cordova build android --release
+             npm i
+             npm run build:cordova
+             cd cordovaProj
+             npm i
+             cordova platform add android
+             cordova build android --release
 
 workflows:
   version: 2
