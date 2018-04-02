@@ -1,7 +1,7 @@
 {
   "name": "org.missmonacoin.monya",
   "displayName": "Monya",
-  "version": "1.0.0",
+  "version": "2.2.0",
   "description": "The easiest cryptocurrency wallet",
   "main": "index.js",
   "scripts": {
@@ -10,15 +10,15 @@
   "author": "Apache Cordova Team",
   "license": "Apache-2.0",
   "dependencies": {
+    "@missmonacoin/cordova-clipboard": "^1.1.7",
+    "@missmonacoin/cordova-plugin-browsertab-monya": "^0.2.2",
+    "@missmonacoin/cordova-plugin-qrscanner": "^2.5.7",
     "cordova-android": "^6.4.0",
     "cordova-browser": "^5.0.3",
-    "cordova-clipboard-monya": "^1.1.6",
     "cordova-ios": "^4.5.4",
-    "cordova-plugin-browsertab": "^0.2.0",
     "cordova-plugin-compat": "^1.2.0",
     "cordova-plugin-customurlscheme": "^4.3.0",
     "cordova-plugin-keychain-touch-id": "^3.2.1",
-    "cordova-plugin-qrscanner-monya": "^2.5.4",
     "cordova-plugin-splashscreen": "^4.1.0",
     "cordova-plugin-statusbar": "^2.4.1",
     "cordova-plugin-swift-support": "^3.1.1",
@@ -36,12 +36,12 @@
       },
       "cordova-plugin-statusbar": {},
       "cordova-plugin-keychain-touch-id": {},
-      "cordova-plugin-qrscanner-monya": {},
+      "cordova-plugin-x-socialsharing": {},
       "cordova-clipboard-monya": {},
       "cordova-plugin-browsertab": {
         "CUSTOM_TAB_COLOR_RGB": "#ffffff"
       },
-      "cordova-plugin-x-socialsharing": {}
+      "cordova-plugin-qrscanner-monya": {}
     },
     "platforms": [
       "ios",
