@@ -35,16 +35,13 @@ jobs:
         
       - run: yarn run build
 
-    deployment:
-      publish:
-        branch: master
-          commands:
-            - npm run build
-            - git clone "git@github.com:monya-wallet/dev.git" dev
-            - git config --global user.name "circleci"
-            - git config --global user.email "circleci@chatbox-inc.com"
-            - cp docs/wallet dev
-            - cd dev
-            - git add 
-            - git commit -m "[ci skip] build on circle ci"
-            - git push origin master
+      - run: |
+          git clone "git@github.com:monya-wallet/dev.git" dev
+          git config --global user.name "circleci"
+          git config --global user.email "circleci@chatbox-inc.com"
+          rm -r dev/*
+          cp -r docs/wallet/* dev
+          cd dev
+          git add .
+          git commit -m "[ci skip] build on circle ci"
+          git push origin master
