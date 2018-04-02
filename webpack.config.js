@@ -15,7 +15,7 @@ module.exports = {
     rules: [
       {
         test: /\.js$/,
-        exclude: /node_modules\/(?!(bech32|ripple-lib))/,
+        exclude: /node_modules\/(?!(bech32|ripple-lib|nem-sdk))/,
         use: {
           loader: 'babel-loader',
           options: {
