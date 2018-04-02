@@ -1,0 +1,57 @@
+<v-ons-page data-page="qrcode">
+  <div id="container">
+    <div id="overlay">
+      
+    </div>
+    
+  </div>
+  <v-ons-fab
+    position="top left"
+    @click="back"
+    >
+      <v-ons-icon icon="fa-arrow-left"></v-ons-icon>
+    </v-ons-fab>
+    <v-ons-fab
+      position="bottom right"
+      @click="settings"
+      :visible="!loading"
+    >
+      <v-ons-icon icon="fa-cog"></v-ons-icon>
+      
+    </v-ons-fab>
+    <v-ons-fab
+      position="bottom left"
+      @click="toggleLight"
+      :visible="canEnableLight"
+    >
+      <v-ons-icon icon="fa-bolt"></v-ons-icon>
+      
+    </v-ons-fab>
+    <v-ons-fab
+      position="top right"
+      @click="changeCam"
+      :visible="canChangeCamera"
+    >
+      <v-ons-icon icon="fa-refresh"></v-ons-icon>
+      
+    </v-ons-fab>
+    <v-ons-alert-dialog modifier="rowfooter"
+                        :visible="!!result"
+                        >
+      <span slot="title">Read result</span>
+      <p>{{result}}</p>
+      <template slot="footer">
+        <div class="alert-dialog-button" @click="copyResult">Copy</div>
+        <div class="alert-dialog-button" @click="back">Do not copy</div>
+      </template>
+    </v-ons-alert-dialog>
+    <v-ons-alert-dialog modifier="rowfooter"
+                        :visible="isIOSStandalone"
+                        >
+      <span slot="title">iOS　Camera doesn't work.</span>
+      <p>iOS malfunction ,QR scanner doesn't work.Android will help you.</p>
+      <template slot="footer">
+        <div class="alert-dialog-button" @click="back">Back</div>
+      </template>
+    </v-ons-alert-dialog>
+</v-ons-page>

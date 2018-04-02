@@ -43,6 +43,9 @@ module.exports=lang({ja:require("./ja/settings.html"),en:require("./en/settings.
     goToSign(){
       this.$emit("push",require("./sign.js"))
     },
+    goToSignTx(){
+      this.$emit("push",require("./signTx.js"))
+    },
     goToSetPassword(){
       this.$emit("push",require("./setPassword.js"))
     },

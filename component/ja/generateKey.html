@@ -1,0 +1,14 @@
+<v-ons-page data-page="generateKey">
+  <custom-bar title="秘密鍵を生成">
+    <v-ons-toolbar-button @click="skip">スキップ</v-ons-toolbar-button>
+  </custom-bar>
+  <div class="touchArea" ref="touchArea">
+    <p v-show="cnt<wordCount">
+      ここをスワイプしたりドラッグしたりしてセキュリティを高めましょう<br>
+      <small v-show="sensorAvailable">または端末を振ってください。</small><br/>
+      {{cnt}}<small>/{{wordCount}}</small>
+    </p>
+    <p v-show="cnt>=wordCount">計算中<br><small>数分かかる場合があります。</small></p> 
+    <v-ons-progress-bar :value="cnt/wordCount*100"></v-ons-progress-bar>
+  </div>
+</v-ons-page>

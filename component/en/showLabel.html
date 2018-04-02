@@ -1,0 +1,51 @@
+<v-ons-page data-page="showLabel">
+  <custom-bar :title="label||hdPath" menu="true">
+    <v-ons-toolbar-button @click="edit=true" v-if="label">
+      <v-ons-icon icon="ion-edit"></v-ons-icon>
+    </v-ons-toolbar-button>
+  </custom-bar>
+  <div>
+    <div id="simple">
+      <div class="label" v-show="!label">Because it is a manually derived address, the balance may not be reflected. Please be careful when sending.</div>
+      <div id="qrArea">
+        <div id="qrcode">
+          <img :src="qrDataUrl" alt="QR code" id="qrcodeImage"/>
+          <div id="currentCurIcon" :style="{'background-image':'url('+currentCurIcon+')'}"></div>
+        </div>
+        <div class="address">{{address}}</div>
+      </div>
+      <v-ons-button @click="copyAddress" modifier="quiet">
+        <v-ons-icon icon="fa-clipboard"></v-ons-icon>
+        Copy address
+      </v-ons-button>
+      <v-ons-button @click="share" modifier="quiet" v-if="shareable">
+        <v-ons-icon icon="fa-share-square-o"></v-ons-icon>Share
+      </v-ons-button>
+      <v-ons-list>
+        <v-ons-list-item>
+          <div class="center">HD Node Derivation Path</div>
+          <div class="right">{{hdPath}}</div>
+        </v-ons-list-item>
+        <v-ons-list-item>
+          <div class="center">balance</div>
+          <div class="right">{{balance}}</div>
+        </v-ons-list-item>
+        <v-ons-list-item>
+          <div class="center">Public key</div>
+          <div class="right"><v-ons-input :value="pubKey"></v-ons-input></div>
+        </v-ons-list-item>
+      </v-ons-list>
+    </div>
+  </div>
+  <v-ons-alert-dialog modifier="rowfooter"
+      :visible.sync="edit"
+    >
+      <span slot="title">edit label</span>
+      <p>Please change the label</p>
+      <v-ons-input placeholder="label" v-model="labelInput"></v-ons-input>
+      <template slot="footer">
+        <div class="alert-dialog-button" @click="edit = false">Cancel</div>
+        <div class="alert-dialog-button" @click="update">OK</div>
+      </template>
+    </v-ons-alert-dialog>
+</v-ons-page>

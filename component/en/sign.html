@@ -1,17 +1,17 @@
 <v-ons-page data-page="sign">
-  <custom-bar title="署名と検証" menu="true"></custom-bar>
+  <custom-bar title="Sign and Verify" menu="true"></custom-bar>
   <div>
     <v-ons-list>
-      <v-ons-list-header>署名/検証するアドレス</v-ons-list-header>
+      <v-ons-list-header>Sign / verify address</v-ons-list-header>
       <v-ons-list-item>
         <div class="center">
-          <v-ons-input v-model="address" placeholder="アドレス"></v-ons-input>
+          <v-ons-input v-model="address" placeholder="address"></v-ons-input>
         </div>
         <div class="right">
-          <v-ons-button modifier="quiet" @click="goToReceive">アドレス確認</v-ons-button>
+          <v-ons-button modifier="quiet" @click="goToReceive">address確認</v-ons-button>
         </div>
       </v-ons-list-item>
-      <v-ons-list-header>コイン種類</v-ons-list-header>
+      <v-ons-list-header>Coin type</v-ons-list-header>
       <v-ons-list-item v-for="co in possibility">
         <div class="left">
           <v-ons-radio
@@ -26,26 +26,26 @@
         </div>
       </v-ons-list-item>
       <v-ons-list-item v-show="possibility.length<=0">
-        <label class="center">まずはアドレスを指定してください。</label>
+        <label class="center">Please input the address first</label>
       </v-ons-list-item>
-      <v-ons-list-header>メッセージ</v-ons-list-header>
+      <v-ons-list-header>Message</v-ons-list-header>
       <v-ons-list-item>
-        <textarea class="textarea--transparent" v-model="message" placeholder="メッセージ"></textarea>
+        <textarea class="textarea--transparent" v-model="message" placeholder="Message"></textarea>
       </v-ons-list-item>
-      <v-ons-list-header>署名された文</v-ons-list-header>
+      <v-ons-list-header>Signature</v-ons-list-header>
       <v-ons-list-item>
-        <textarea class="textarea--transparent" v-model="signature" placeholder="署名文"></textarea>
+        <textarea class="textarea--transparent" v-model="signature" placeholder="Signature"></textarea>
       </v-ons-list-item>
-      <v-ons-list-header>パスワード</v-ons-list-header>
+      <v-ons-list-header>Password</v-ons-list-header>
       <v-ons-list-item>
-        <v-ons-input v-model="password" type="password" placeholder="署名用パスワード"></v-ons-input>
+        <v-ons-input v-model="password" type="password" placeholder="Signature password"></v-ons-input>
       </v-ons-list-item>
       <v-ons-list-item>
         <v-ons-col>
-          <v-ons-button :disabled="!address||!message||!path" modifier="large" @click="sign">署名</v-ons-button>
+          <v-ons-button :disabled="!address||!message||!path" modifier="large" @click="sign">Sign</v-ons-button>
         </v-ons-col>
          <v-ons-col>
-          <v-ons-button :disabled="!address||!message||!signature" modifier="large" @click="verify">検証</v-ons-button>
+          <v-ons-button :disabled="!address||!message||!signature" modifier="large" @click="verify">Verify</v-ons-button>
         </v-ons-col>
       </v-ons-list-item>
     </v-ons-list>
@@ -60,11 +60,11 @@
   <v-ons-alert-dialog modifier="rowfooter"
       :visible.sync="dlg"
     >
-      <span slot="title">検証結果</span>
-      <p v-show="result">署名が正しいことを検証できました。</p>
-      <p v-show="!result">署名が不正です。</p>
+      <span slot="title">verification result</span>
+      <p v-show="result">Successfully verified.</p>
+      <p v-show="!result">Signature is invalid.</p>
       <template slot="footer">
-        <div class="alert-dialog-button" @click="dlg = false">もどる</div>
+        <div class="alert-dialog-button" @click="dlg = false">Back</div>
       </template>
     </v-ons-alert-dialog>
 </v-ons-page>

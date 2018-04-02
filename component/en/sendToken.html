@@ -1,0 +1,51 @@
+<v-ons-page data-page="sendToken">
+  <custom-bar title="Send the token"></custom-bar>
+  <div>
+    <v-ons-list>
+      
+      <v-ons-list-item>
+        <div class="center">Label of address containing the token.</div>
+        <div class="right">
+          {{labelName}}
+        </div>
+      </v-ons-list-item>
+      <v-ons-list-item modifier="small">
+        The small amount of MONA needs to be consumed as the fee.
+      </v-ons-list-item>
+      <v-ons-list-item>
+        <v-ons-input v-model="dest" placeholder="send address"></v-ons-input></v-ons-list-item>
+      <v-ons-list-item>
+        <div class="center">Token name</div>
+        <div class="right">{{token}}</div>
+      </v-ons-list-item>
+      <v-ons-list-item>
+        <div class="center">amount to send</div>
+        <div class="right"><v-ons-input placeholder="amount" type="number" v-model="sendAmount"></v-ons-input></div>
+      </v-ons-list-item><v-ons-list-item><v-ons-input placeholder="memo" v-model="sendMemo"></v-ons-input>
+        </v-ons-list-item>
+      <v-ons-list-item>
+        <div class="center">fee(sat/B)</div>
+        <div class="right"><v-ons-input placeholder="satoshi/Byte" v-model="feePerByte"></v-ons-input></div>
+      </v-ons-list-item>
+      <v-ons-list-item><v-ons-input type="password" placeholder="Password" v-model="password"></v-ons-input></v-ons-list-item>
+      <v-ons-list-item><v-ons-button @click="createTx" modifier="large" :disabled="!dest||!sendAmount||!password">Send</v-ons-button></v-ons-list-item>
+    </v-ons-list>
+  </div>
+  <v-ons-modal :visible="loading">
+    <p style="text-align: center">
+      processing 
+      <br><br>
+      <div class="spinner"></div>
+    </p>
+  </v-ons-modal>
+  <v-ons-alert-dialog modifier="rowfooter"
+                        :visible="!!noFund"
+                        >
+      <span slot="title">There is not enough fee.</span>
+      <p>There is not enough fee.You may fail to send.</p>
+      <template slot="footer">
+        <div class="alert-dialog-button" @click="noFund=false">Close</div>
+        <div class="alert-dialog-button" @click="deposit">refill</div>
+      </template>
+    </v-ons-alert-dialog>
+</v-ons-page>

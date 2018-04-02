@@ -1,0 +1,50 @@
+<v-ons-page data-page="about">
+  <custom-bar title="このアプリについて" menu="true"></custom-bar>
+  <div>
+    <h1>もにゃ</h1>
+    <v-ons-list>
+      <v-ons-list-item>
+        <div class="center">バージョン</div>
+        <div class="right">2.2.0,1288609,original</div>
+      </v-ons-list-item>
+      <v-ons-list-item modifier="chevron tappable" @click="goToTwitter('monya_wallet')">
+        <div class="center">作った人</div>
+        <div class="right">もにゃ 開発チーム</div>
+      </v-ons-list-item>
+      <v-ons-list-item modifier="chevron tappable" @click="openLink('https://missmonacoin.github.io')">作者に寄付する</v-ons-list-item>
+      
+      <v-ons-list-header>バックエンドをお借りした方々(敬称略)</v-ons-list-header>
+      <v-ons-list-item modifier="chevron tappable" @click="goToTwitter('Fujiwaraizuho')">
+        <div class="center">Monacoin</div>
+        <div class="right">ふじしゃん</div>
+      </v-ons-list-item>
+      
+      <v-ons-list-item modifier="chevron tappable" @click="goToTwitter('tomotomo_9696')">
+        <div class="center">BitZeny</div>
+        <div class="right">tomotomo9696</div>
+      </v-ons-list-item>
+      
+      <v-ons-list-item modifier="chevron tappable" @click="goToTwitter('cryptcoinjunkey')">
+        <div class="center">Monacoin,BitZeny</div>
+        <div class="right">Cryptcoin Junkey</div>
+      </v-ons-list-item>
+      <v-ons-list-header>翻訳協力</v-ons-list-header>
+      <v-ons-list-item modifier="chevron tappable" @click="goToTwitter('dianmuhaiyan')">
+        <div class="center">Haiyan</div>
+      </v-ons-list-item>
+      
+      <v-ons-list-item modifier="chevron tappable" @click="openLink('https://bitcointalk.org/index.php?action=profile;u=669983')">
+        <div class="center">hitobb</div>
+      </v-ons-list-item>
+      
+      </v-ons-list-item>
+      <v-ons-list-header>オープンソース</v-ons-list-header>
+      <v-ons-list-item modifier="chevron tappable" @click="openLink('https://github.com/monya-wallet/monya')">ソースコード</v-ons-list-item>
+      <v-ons-list-item modifier="small">
+        <div class="center">ライセンス</div>
+        <div class="right">GNU GPL v3</div>
+        
+      </v-ons-list-item>
+    </v-ons-list>
+  </div>
+</v-ons-page>

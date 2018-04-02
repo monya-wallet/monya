@@ -1,0 +1,26 @@
+<v-ons-page data-page="editOrder">
+  <custom-bar title="Edit invoice list"></custom-bar>
+  <div>
+    <v-ons-list>
+      <v-ons-list-item v-for="(o,i) in orders" modifier="small">
+        <div class="left">
+          <v-ons-button modifier="quiet" @click="remove(i)"><v-ons-icon icon="ion-close"></v-ons-icon></v-ons-button>
+        </div>
+        <div class="center">
+          <v-ons-input v-model="o.name" placeholder="Item name" style="width:100%"></v-ons-input>
+        </div>
+        <div class="right">
+          <v-ons-input v-model="o.price" type="number" placeholder="Amount (JPY)"></v-ons-input>
+        </div>
+      </v-ons-list-item>
+      <v-ons-list-item @click="add">
+        <div class="left"><v-ons-icon icon="ion-plus"></v-ons-icon></div>
+        <div class="center">OK</div>
+      </v-ons-list-item>
+      <v-ons-list-item>
+        <v-ons-button modifier="large" @click="save">SAVE</v-ons-button>
+      </v-ons-list-item>
+    </v-ons-list>
+    
+  </div>
+</v-ons-page>

@@ -1,0 +1,13 @@
+<span class="timestamp">
+  <span class="absolute" v-if="mode==='absolute'">
+    {{d.year|pad}}/{{d.month|pad}}/{{d.date|pad}}&nbsp;{{d.hour|pad}}:{{d.minute|pad}}:{{d.sec|pad}}
+  </span>
+  <span class="relative" v-if="mode==='relative'">
+    <span v-if="d.rightnow">たった今</span>
+    <span v-if="d.minAgo">{{d.minAgo}}分前</span>
+    <span v-if="d.hrAgo">{{d.hrAgo}}時間前</span>
+    <span v-if="d.dayAgo">{{d.dayAgo}}日前</span>
+    <span v-if="d.monthAgo">{{d.monthAgo}}か月前</span>
+    <span v-if="d.yearAgo">{{d.yearAgo}}年前</span>
+  </span>
+</span>

@@ -1,0 +1,39 @@
+<v-ons-page data-page="first">
+  <div class="wrap">
+    <div class="logo">
+      <div class="icon"></div>
+      <div class="appName">Monya</div>
+      <div class="label">The easiest Cryptocurrency Wallet</div>
+      <div class="buttons">
+        <v-ons-button @click="start">Start!</v-ons-button>
+      </div>
+    </div>
+    <div id="popoverTarget"></div>
+  </div>
+  
+  <v-ons-popover
+    cancelable
+    :visible.sync="popoverVisible"
+    :target="popoverTarget"
+    :direction="popoverDirection"
+    :cover-target= "false"
+    mask-color="rgba(0, 0, 0, 0)"
+    >
+    <v-ons-button modifier="large quiet" @click="howTo=true;popoverVisible=false">Add to the home screen</v-ons-button>
+  </v-ons-popover>
+  <v-ons-dialog :visible.sync="howTo" cancelable>
+    
+    <div id="howTo"></div>
+    If there is not [Add to the home screen], please look for [Open with Safari]
+  </v-ons-dialog>
+  <v-ons-alert-dialog
+    modifier="rowfooter"
+    :visible.sync="showAlert"
+    >
+    <span slot="title">Safariis recommended.</span>
+    <p>LINE browser is high risk. Please use Safari.</p>
+    <template slot="footer">
+      <div class="alert-dialog-button" @click="showAlert=false">NEXT</div>
+    </template>
+  </v-ons-alert-dialog>
+</v-ons-page>

@@ -1,0 +1,37 @@
+<v-ons-page data-page="showPassphrase">
+  <custom-bar title="パスフレーズ"></custom-bar>
+  <div class="wrap">
+    <ul>
+      <li>英単語を正確に、紙に手書きしてください。</li>
+      <li>英単語のスクリーンショットを撮影・コピーしないでください。</li>
+      <li>他人に知れ渡ると、モナコインを盗まれる可能性があります。</li>
+      <li>チェックボックスは確認のためにお使いください。</li>
+    </ul>
+    <v-ons-list>
+      <v-ons-list-item v-for="(word,index) in words">
+        <label class="left">
+          {{index+1}}
+        </label>
+        <label class="center">{{word}}</label>
+        <label class="right">
+          <v-ons-checkbox></v-ons-checkbox>
+        </label>
+      </v-ons-list-item>
+      <v-ons-list-item v-show="showNext">
+        <v-ons-button @click="next" modifier="large" :disable="!words.length">次へ</v-ons-button>
+      </v-ons-list-item>
+    </v-ons-list>
+    <v-ons-alert-dialog
+      modifier="rowfooter"
+      :visible.sync="requirePassword"
+                        >
+      <span slot="title">パスワード</span>
+      <p>パスワードを入力してください</p>
+      <v-ons-input placeholder="パスワード" v-model="password" type="password" :class="{shake:incorrect}"></v-ons-input>
+      <template slot="footer">
+        <div class="alert-dialog-button" @click="$emit('pop')">やめる</div>
+        <div class="alert-dialog-button" @click="decrypt">ロック解除</div>
+      </template>
+    </v-ons-alert-dialog>
+  </div>
+</v-ons-page>

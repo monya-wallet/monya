@@ -1,0 +1,10 @@
+<v-ons-page data-page="login">
+  <div class="wrap">
+    <p>パスワードを入力して下さい。</p>
+    <div :class="{passwordBox:true,shake:incorrect}">
+      <input name="" :type="showPassword?'text':'password'" @input="password=$event.target.value" id="password" @change="start" :disabled="loading"/>
+    </div>
+    <v-ons-button modifier="large" @click="start" :disabled="loading">はじめる</v-ons-button>
+    <div class="spinner" v-show="loading"></div>
+  </div>
+</v-ons-page>

@@ -1,0 +1,113 @@
+<v-ons-page data-page="sign">
+  <custom-bar title="マルチシグ" menu="true">
+    <v-ons-toolbar-button @click="advanced=true">TX</v-ons-toolbar-button>
+  </custom-bar>
+  <div>
+    <v-ons-list>
+      <v-ons-list-header>署名するアドレス</v-ons-list-header>
+      <v-ons-list-item>
+        <div class="center">
+          <v-ons-select v-model="coinId">
+            <option :value="c.coinId" v-for="c in coins">{{c.name}}</option>
+          </v-ons-select>
+        </div>
+        <div class="right">
+          <v-ons-select v-model="addrIndex"><option :value="i" v-for="(l,i) in labels">{{l}}</option></v-ons-select>
+        </div>
+      </v-ons-list-item>
+      <v-ons-list-header>公開鍵リスト</v-ons-list-header>
+      <v-ons-list-item v-for="(p,i) in pubs">
+        <div class="left">{{i}}</div>
+        <div class="center">
+          <v-ons-input v-model="pubs[i]" placeholder="公開鍵"></v-ons-input>
+        </div>
+        <div class="right">
+          <v-ons-button @click="removePub(i)" modifier="quiet">削除</v-ons-button>
+        </div>
+      </v-ons-list-item>
+      <v-ons-list-item @click="addPub">
+        <div class="center">追加</div>
+      </v-ons-list-item>
+      <v-ons-list-item>
+        <div class="center">
+          必要な署名数
+        </div>
+        <div class="right">
+          <v-ons-input type="number" v-model="neededSig"></v-ons-input>
+        </div>
+      </v-ons-list-item>
+      <v-ons-list-item v-show="multisigAddr">
+        <div class="center">
+          マルチシグアドレス
+        </div>
+        <div class="right">
+          <v-ons-input readonly="readonly" :value="multisigAddr"></v-ons-input>
+        </div>
+      </v-ons-list-item>
+      <v-ons-list-header>未署名トランザクション</v-ons-list-header>
+      <v-ons-list-item>
+        <textarea class="textarea--transparent" v-model="unsigned" placeholder="未署名トランザクション"></textarea>
+      </v-ons-list-item>
+      
+      <v-ons-list-header>パスワード</v-ons-list-header>
+      <v-ons-list-item>
+        <v-ons-input v-model="password" type="password" placeholder="署名用パスワード"></v-ons-input>
+      </v-ons-list-item>
+      <v-ons-list-item>
+        <v-ons-button :disabled="!coinId||!unsigned||!password||(neededSig>pubs.length)" modifier="large" @click="sign">署名</v-ons-button>
+      </v-ons-list-item>
+      <v-ons-list-header>署名されたトランザクション</v-ons-list-header>
+      <v-ons-list-item>
+        <textarea class="textarea--transparent" v-model="signed" placeholder="署名されたトランザクション"></textarea>
+      </v-ons-list-item>
+    </v-ons-list>
+    
+  </div>
+  <v-ons-dialog cancelable
+                :visible.sync="advanced"
+                >
+    <v-ons-list>
+      <v-ons-list-item v-for="i in ins">
+        <v-ons-list  modifier="inset">
+          <v-ons-list-item><v-ons-input v-model="i.txId" placeholder="TXID"></v-ons-input></v-ons-list-item>
+          <v-ons-list-item>
+            <div class="center">vout</div>
+            <div class="right">
+              <v-ons-input type="number" v-model="i.vout"></v-ons-input>
+            </div>
+          </v-ons-list-item>
+          <v-ons-list-item>
+            <div class="center">Sequence</div>
+            <div class="right">
+              <v-ons-input type="number" v-model="i.sequence"></v-ons-input>
+            </div>
+          </v-ons-list-item>
+        </v-ons-list>
+      </v-ons-list-item>
+      <v-ons-list-item @click="ins.push({txId:'',vout:''})">追加</v-ons-list-item>
+      <v-ons-list-item v-for="out in outs">
+        <v-ons-list  modifier="inset">
+          <v-ons-list-item><v-ons-input v-model="out.addr" placeholder="アドレス"></v-ons-input></v-ons-list-item>
+          <v-ons-list-item>
+            <div class="center">出力(Satoshi)</div>
+            <div class="right">
+              <v-ons-input type="number" v-model="out.value"></v-ons-input>
+            </div>
+          </v-ons-list-item>
+        </v-ons-list>
+      </v-ons-list-item>
+      <v-ons-list-item @click="outs.push({addr:'',value:''})">追加</v-ons-list-item>
+      <v-ons-list-item>
+        <div class="center">LockTime</div>
+        <div class="right">
+          <v-ons-input type="number" v-model="lockTime"></v-ons-input>
+        </div>
+      </v-ons-list-item>
+
+      <v-ons-list-item>
+        <textarea class="textarea--transparent" v-model="createdTx" placeholder="未署名トランザクション"></textarea>
+      </v-ons-list-item>
+    </v-ons-list>
+
+  </v-ons-dialog>
+</v-ons-page> 

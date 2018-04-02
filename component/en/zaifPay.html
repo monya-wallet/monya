@@ -1,0 +1,199 @@
+<v-ons-page data-page="zaifPay">
+  <custom-bar title="Zaif Payment" menu="true">
+  <v-ons-toolbar-button @click="resetDialog=true">
+      <v-ons-icon icon="fa-eraser"></v-ons-icon>
+  </v-ons-toolbar-button>
+  </custom-bar>
+  <div>
+    <div v-show="!hasCredentials" class="hasNoCredentials">
+      <div class="logo"></div>
+      <p>Zaif PaymentisZaif the payment service by an exchange. You will receive Japanese yen, not crypto currency. This frees you from the risk by rate fluctuation. <br/>
+        FirstAPIPlease enter a secret key
+      </p>
+      <v-ons-list>
+        <v-ons-list-item><div class="center">API Key</div>
+          <div class="right">
+            <v-ons-input placeholder="Type here" v-model="apiKey"></v-ons-input>
+          </div>
+        </v-ons-list-item>
+        <v-ons-list-item><div class="center">Secret Key</div>
+          <div class="right">
+            <v-ons-input placeholder="Raw Secret Key" v-model="secret"></v-ons-input>
+          </div>
+        </v-ons-list-item>
+        <v-ons-list-item>
+        <v-ons-button modifier="large" @click="saveCredentials">SAVE</v-ons-button>
+      </v-ons-list-item>
+      </v-ons-list>
+    </div>
+
+    <div v-show="hasCredentials">
+      <p>
+        Caution: Zaifserver is very unstable when crowded. Please check the health meter before you settle. <br/></p>
+      <v-ons-list>
+        
+        <v-ons-list-header>Create invoice</v-ons-list-header>
+        <v-ons-list-item>
+          <div class="center">cryptocurrency used for settlement</div>
+          <div class="right">
+            <v-ons-select v-model="cur">
+              <option value="mona">mona</option>
+              <option value="btc">btc</option>
+            </v-ons-select>
+          </div>
+        </v-ons-list-item>
+        <v-ons-list-item>
+          <div class="center">Speed regarded as settlement completion</div>
+          <div class="right">
+            <v-ons-select v-model="speed">
+              <option value="low">slow but firm</option>
+              <option value="medium">Minimum confirmation</option>
+              <option value="high">Fast but high risk</option>
+            </v-ons-select>
+          </div>
+        </v-ons-list-item>
+        <v-ons-list-item>
+          <div class="center">amount to be settled (JPY)</div>
+          <div class="right">
+            <v-ons-input v-model="amount" type="number" placeholder="amount to be settled"></v-ons-input>
+            <currency-set ticker="jpy"></currency-set>
+          </div>
+        </v-ons-list-item>
+        <v-ons-list-item>
+          <div class="center">Product name</div>
+          <div class="right">
+            <v-ons-input v-model="itemName" placeholder="It will appear in the invoice list"></v-ons-input>
+          </div>
+        </v-ons-list-item>
+        <v-ons-list-item>
+          <div class="center">Order ID</div>
+          <div class="right">
+            <v-ons-input v-model="orderId" placeholder="optional"></v-ons-input>
+          </div>
+        </v-ons-list-item>
+         <v-ons-list-item>
+          <div class="center">Reference number</div>
+          <div class="right">
+            <v-ons-input v-model="ref" placeholder="optional"></v-ons-input>
+          </div>
+         </v-ons-list-item>
+         <v-ons-list-item>
+           <v-ons-button modifier="large" @click="createInvoice">SAVE & issue the invoice</v-ons-button>
+         </v-ons-list-item>
+         <v-ons-list-header>Saved invoice</v-ons-list-header>
+         <v-ons-list-item modifier="tappable chevron" v-for="inv in invoices" @click="showInvoice(inv.invoiceId)">
+           <div class="center">{{inv.itemName}}</div>
+           <div class="right">
+             <timestamp :timestamp="inv.created"></timestamp>
+           </div>
+         </v-ons-list-item>
+      </v-ons-list>
+    </div>
+  </div>
+  <v-ons-dialog cancelable
+                :visible.sync="invoiceDlg"
+                >
+    <v-ons-toolbar inline>
+      <div class="left">
+        <v-ons-toolbar-button @click="invoiceDlg=false">
+          <v-ons-icon icon="ion-close"></v-ons-icon>
+        </v-ons-toolbar-button>
+      </div>
+      <div class="center">invoice</div>
+    </v-ons-toolbar>
+    <div id="zaifPayInvoice">
+      <div id="qrArea">
+        <div id="qrcode">
+          <img v-if="qrDataUrl" :src="qrDataUrl" alt="QR code" id="qrcodeImage"/>
+          <div id="currentCurIcon" :style="{'background-image':'url('+currentCurIcon+')'}"></div>
+        </div>
+        <div class="address">{{res.address}}</div>
+        <v-ons-button @click="copyAddress" modifier="quiet">
+        <v-ons-icon icon="fa-clipboard"></v-ons-icon>
+        Copy address
+      </v-ons-button>
+      <v-ons-button @click="share" modifier="quiet" v-if="shareable">
+        <v-ons-icon icon="fa-share-square-o"></v-ons-icon>Share
+      </v-ons-button>
+      </div>
+      
+      <v-ons-list>
+        <v-ons-list-item>
+          <div class="center">Payment request</div>
+          <div class="right">
+            <div v-show="res.currency==='mona'"><currency-set :amount="res.mona" ticker="mona"></currency-set></div>
+            <div v-show="res.currency==='btc'"><currency-set :amount="res.btc" ticker="btc"></currency-set></div>
+          </div>
+        </v-ons-list-item>
+        <v-ons-list-item>
+          <div class="center">Speed regarded as settlement completion</div>
+          <div class="right">
+            <div v-show="res.speed==='low'">slow but firm</div>
+            <div v-show="res.speed==='medium'">Minimum confirmation</div>
+            <div v-show="res.speed==='high'">Fast but high risk</div>
+            
+          </div>
+        </v-ons-list-item>
+        <v-ons-list-item>
+          <div class="center">Progress of settlement</div>
+          <div class="right">
+            <div v-show="res.status==='new'">Receiving invoice</div>
+            <div v-show="res.status==='paid'">It seems to be sent</div>
+            <div v-show="res.status==='confirmed'">Confirmed</div>
+            <div v-show="res.status==='complete'">Done</div>
+            <div v-show="res.status==='expired'">Expired</div>
+            <div v-show="res.status==='invalid'">Failed</div>
+            <div v-show="res.status==='canceled'">Cancelled</div>
+          </div>
+        </v-ons-list-item>
+        <v-ons-list-item>
+          <div class="center">amount to be settled (cryptocurrency)</div>
+          <div class="right">
+            <currency-set :amount="curAmt" :ticker="res.currency"></currency-set>
+          </div>
+        </v-ons-list-item>
+        <v-ons-list-item>
+          <div class="center">BIP 21</div>
+          <div class="right">
+            <v-ons-input v-model="res.BIP21" readonly="readonly"></v-ons-input>
+          </div>
+        </v-ons-list-item>
+        <v-ons-list-item>
+          <div class="center">Invoice ID</div>
+          <div class="right">
+            <v-ons-input v-model="res.invoiceId" readonly="readonly"></v-ons-input>
+          </div>
+        </v-ons-list-item>
+        <v-ons-list-item>
+          <div class="center">(JPY)</div>
+          <div class="right">
+            <currency-set :amount="res.amount" ticker="jpy"></currency-set>
+          </div>
+        </v-ons-list-item>
+        <v-ons-list-item>
+          <div class="center">Order ID</div>
+          <div class="right">
+            <div>{{res.orderNumber}}</div>
+          </div>
+        </v-ons-list-item>
+        <v-ons-list-item>
+          <div class="center">Created at</div>
+          <div class="right">
+            <timestamp :timestamp="res.created"></timestamp>
+          </div>
+        </v-ons-list-item>
+      </v-ons-list>
+      
+    </div>
+  </v-ons-dialog>
+   <v-ons-alert-dialog modifier="rowfooter"
+      :visible.sync="resetDialog"
+    >
+      <span slot="title">Erase credentials</span>
+      <p>API key and secret will be deleted.</p>
+      <template slot="footer">
+        <div class="alert-dialog-button" @click="resetDialog = false">Cancel</div>
+        <div class="alert-dialog-button" @click="eraseCredentials">OK</div>
+      </template>
+    </v-ons-alert-dialog>
+</v-ons-page>

@@ -44,6 +44,9 @@ module.exports=require("../js/lang.js")({ja:require("./ja/sign.html"),en:require
       })
         this.currentCurIcon=currencyList.get(this.coinType).icon
     },
+    goToReceive(){
+      this.$emit("push",require("./receive.js"))
+    }
   },
   watch:{
     address(){

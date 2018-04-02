@@ -1,0 +1,132 @@
+<v-ons-page data-page="xrp">
+  <custom-bar title="Ripple" menu="true">
+    <v-ons-toolbar-button @click="getBalance" @click.right="serverDlg=true">
+      <v-ons-icon icon="ion-ios-loop-strong"></v-ons-icon>
+    </v-ons-toolbar-button>
+  </custom-bar>
+  <div>
+    <div v-show="requirePassword" class="wrap">
+      <p>Please enter the password.</p>
+      <div :class="{shake:incorrect}" class="passwordBox">
+        <input :disabled="loading" type="password" v-model="password"  @keydown.enter="decrypt"/>
+      </div>
+      <v-ons-button modifier="large" @click="decrypt" :disabled="loading">Start</v-ons-button>
+    </div>
+    <div v-show="address">
+      <div v-show="plzActivate" class="description">
+        <h1>Ripple</h1>
+        <p>
+          Ripple is the distributed ledger system to send funds internationally, inspired by bitcoin. But by its fast money reception, it is also used as <b>Payment System</b>.  <br/></p>
+        <p>
+          Q. What is the difference between bitcoin?? <br/>
+          A. Bitcoin uses the blockchain. The right to write it is decided by Proof of Work. Shortcomings is that it consumes many time and energy. Whereas, transactions of Ripple is written in Ripple Ledger, which is different from blockchain. Instead of restricting write permission, Ripple can <b>complete transactions in a moment without wasting energy</b>. </p>
+        <p>
+          Q. In other words, is Ripple centralized solution? <br/>
+          A. Yes. That's right. When writers betray, this network will break down.
+        </p>
+        <p>
+          Q. Is it public chain, or private chain? <br/>
+          A. Neither is incorrect because Ripple isn't the blockchain. I say repeatedly. <b>Ripple does not use blockchain. </b>
+        </p>
+        <p>
+          To begin Ripple, send  20 XRP  and activate this account.
+        </p>
+      </div>
+      <div id="simp1le">
+        <div id="qrArea">
+          <div id="qrcode">
+            <img :src="qrDataUrl" alt="No Address" id="qrcodeImage"/>
+          </div>
+          <div class="address">{{address||"Loading"}}</div>
+        </div>
+        <p><v-ons-input v-model="invAmt" placeholder="invoice amount" type="number"></v-ons-input></p>
+        <v-ons-button @click="copyAddress" modifier="quiet">
+          <v-ons-icon icon="fa-clipboard"></v-ons-icon>
+          Copy address
+        </v-ons-button>
+        <v-ons-button @click="share" modifier="quiet" v-if="shareable">
+          <v-ons-icon icon="fa-share-square-o"></v-ons-icon>Share
+        </v-ons-button>
+        
+      </div>
+      <v-ons-list v-show="!plzActivate">
+        <v-ons-list-header>balance</v-ons-list-header>
+        <v-ons-list-item v-for="b in balances">
+          <div class="center">{{b.value}}</div>
+          <div class="right">{{b.currency}}</div>
+        </v-ons-list-item>
+        <v-ons-list-header>Send</v-ons-list-header>
+        <v-ons-list-item>
+          <v-ons-input placeholder="send address" v-model="sendAddress"></v-ons-input>
+        </v-ons-list-item>
+        <v-ons-list-item>
+          <div class="center">amount to send</div>
+          <div class="right">
+            <v-ons-input type="number" v-model="sendAmount"></v-ons-input>
+          </div>
+        </v-ons-list-item>
+         <v-ons-list-item>
+          <div class="center">Legal currency conversion</div>
+          <div class="right">
+            <v-ons-input type="number" v-model="fiatConv"></v-ons-input>
+          </div>
+        </v-ons-list-item>
+        <v-ons-list-item>
+          <div class="center">Destination Tag</div>
+          <div class="right">
+            <v-ons-input type="number" v-model="destTag"></v-ons-input>
+          </div>
+        </v-ons-list-item>
+        <v-ons-list-item>
+          <v-ons-input placeholder="memo" v-model="memo"></v-ons-input>
+        </v-ons-list-item>
+        <v-ons-list-item><v-ons-button @click="confirm=true" modifier="large" :disabled="!sendAddress||!sendAmount">Send</v-ons-button></v-ons-list-item>
+        <v-ons-list-header>History</v-ons-list-header>
+        <v-ons-list-item v-for="h in history">
+          <div class="left" v-if="h.type==='send'">Send</div>
+          <div class="left" v-if="h.type==='receive'">Receive</div>
+          <div class="left" v-if="h.type==='unknown'">Unknown command</div>
+          <div class="center" v-if="h.type==='send'">{{h.destAddr}}</div>
+          <div class="center" v-if="h.type==='receive'">{{h.srcAddr}}</div>
+          <div class="right">
+            
+            <currency-set v-for="ch in h.balanceChange" :amount="ch.value" :ticker="ch.currency" :notKnown="true"></currency-set></div>
+        </v-ons-list-item>
+      </v-ons-list>
+    </div>
+  </div>
+  <v-ons-modal :visible="loading">
+    <p style="text-align: center">
+      processing
+      <br><br>
+      <div class="spinner"></div>
+      <br/>
+    </p>
+  </v-ons-modal>
+  <v-ons-alert-dialog
+    modifier="rowfooter"
+    :visible.sync="confirm"
+    >
+    <span slot="title">Confirm</span>
+    <p>{{sendAddress}}</p>
+    <p>{{sendAmount}}XRP</p>
+    <p>Please pay attention because fee is collected even failure. </p>
+    <template slot="footer">
+      <div class="alert-dialog-button" @click="send">Send</div>
+      <div class="alert-dialog-button" @click="confirm=false">Back</div>
+    </template>
+  </v-ons-alert-dialog>
+  
+  <v-ons-alert-dialog
+    modifier="rowfooter"
+    :visible.sync="serverDlg"
+    >
+    <span slot="title">Change Server</span>
+    <p><v-ons-input v-model="server" placeholder="wss://s2.ripple.com:443"></v-ons-input></p>
+    
+    <template slot="footer">
+      <div class="alert-dialog-button" @click="serverDlg=false">Close</div>
+      <div class="alert-dialog-button" @click="connect">Connect</div>
+    </template>
+  </v-ons-alert-dialog>
+</v-ons-page>

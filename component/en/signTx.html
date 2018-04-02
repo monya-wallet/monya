@@ -1,0 +1,36 @@
+<v-ons-page data-page="sign">
+  <custom-bar title="マルチシグSign" menu="true"></custom-bar>
+  <div>
+    <v-ons-list>
+      <v-ons-list-header>Signするaddress</v-ons-list-header>
+      <v-ons-list-item>
+        <div class="center">
+          <v-ons-select v-model="coinId">
+            <option :value="c.coinId" v-for="c in coins">{{c.name}}</option>
+          </v-ons-select>
+        </div>
+        <div class="right">
+          <v-ons-select v-model="addrIndex"><option :value="i" v-for="(l,i) in labels">{{l}}</option></v-ons-select>
+        </div>
+      </v-ons-list-item>
+      <v-ons-list-header>未Signtransaction</v-ons-list-header>
+      <v-ons-list-item>
+        <textarea class="textarea--transparent" v-model="unsigned" placeholder="未Signtransaction"></textarea>
+      </v-ons-list-item>
+      
+      <v-ons-list-header>Password</v-ons-list-header>
+      <v-ons-list-item>
+        <v-ons-input v-model="password" type="password" placeholder="Signature password"></v-ons-input>
+      </v-ons-list-item>
+      <v-ons-list-item>
+        <v-ons-button :disabled="!address||!message||!path" modifier="large" @click="sign">Sign</v-ons-button>
+      </v-ons-list-item>
+      <v-ons-list-header>Signされたtransaction</v-ons-list-header>
+      <v-ons-list-item>
+        <textarea class="textarea--transparent" v-model="signed" placeholder="Signされたtransaction"></textarea>
+      </v-ons-list-item>
+    </v-ons-list>
+    
+  </div>
+  
+</v-ons-page>

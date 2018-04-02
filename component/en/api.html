@@ -1,0 +1,35 @@
+<v-ons-page data-page="api">
+  <custom-bar title="API" menu="true"></custom-bar>
+  <div>
+    <div v-if="qType==='yOrN'" id="yOrNAPI">
+      <div v-if="name==='enableExtendedMode'">
+        Extended Mode will be enabled.
+      </div>
+      <div v-if="name==='disableExtendedMode'">
+        Extended Mode will be disabled.
+      </div>
+      <div v-if="name==='disableExtendedMode'">
+        Atomic swap data will be shared.
+      </div>
+      <v-ons-button modifier="large cta" @click="yes">Yes</v-ons-button>
+      <v-ons-button modifier="large" @click="no">No</v-ons-button>
+    </div>
+    <div v-if="qType==='password'" id="passwordAPI">
+      <div v-if="name==='signTx'">
+        Sign
+      </div>
+      
+      <input v-model="password" placeholder="Password" class="text-input text-input--underbar" type="text">
+      <v-ons-button modifier="large cta" @click="goWithPassword" :disabled="!password">NEXT</v-ons-button>
+      <v-ons-button modifier="large" @click="no">Cancel</v-ons-button>
+    </div>
+    <div v-if="qType==='direct'">
+      Running...
+    </div>
+    <div v-if="qType==='none'" id="noneAPI">
+      <div>
+        Invalid method.
+      </div>
+    </div>
+  </div>
+</v-ons-page>
