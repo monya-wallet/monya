@@ -53,13 +53,20 @@ jobs:
     working_directory: ~/repo
 
     steps:
+      - checkout
+
       - run: |
-             npm i
-             npm run build:cordova
-             cd cordovaProj
-             npm i
-             cordova platform add android
-             cordova build android --release
+            /opt/sdk_install.sh "build-tools;19.1.0" "platforms;android-19"
+            git clone https://github.com/monya-wallet/monya.git monya
+            npm i
+            npm run build:cordova
+            cd cordovaProj
+            npm i
+            gradle wrapper
+            cordova platform add android
+            cordova build android --release
+      - store_artifacts:
+          path: monya/cordovaProj/platforms/android/build/outputs/apk/
 
 workflows:
   version: 2
