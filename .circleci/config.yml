@@ -70,8 +70,6 @@ workflows:
     jobs:
       - build
       - cordova:
-          requires:
-            - build
           filters:
             branches:
               only: master
