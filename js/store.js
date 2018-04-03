@@ -116,9 +116,9 @@ module.exports = new Vuex.Store({
     setExtensionSend(s,e){
       s.extensionSend=e
     },
-    setAPICall(s,name,param){
-      s.apiName=name
-      s.apiParam=param
+    setAPICall(s,e){
+      s.apiName=e.name
+      s.apiParam=e.param
     }
   }
 })

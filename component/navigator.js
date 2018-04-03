@@ -101,7 +101,7 @@ module.exports=require("../js/lang.js")({ja:require("./ja/navigator.html"),en:re
   },
   mounted(){
     coinUtil.setAPICallback((name,param)=>{
-      this.$store.commit("setAPICall",name,param)
+      this.$store.commit("setAPICall",{name,param})
       this.pageStack.push(require("./api.js"))
     })
     coinUtil.setUrlCallback(url=>{
