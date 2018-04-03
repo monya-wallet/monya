@@ -4,13 +4,12 @@ const BrowserWindow = electron.BrowserWindow;
 
 const path = require('path');
 const url = require('url');
-const xss = require('xss');
 
 let mainWindow;
 
 const singleInstance = app.makeSingleInstance((argv, workingDirectory) => {
   if (process.platform == 'win32' || process.platform === 'linux') {
-    customURI = xss(argv.slice(1));
+    customURI = argv.slice(1)
   }
   if (mainWindow) {
     mainWindow.webContents.executeJavaScript(`window.handleOpenURL('${customURI}');`);
@@ -40,7 +39,7 @@ app.on('ready', () => {
   });
 
   if (process.platform == 'win32' || process.platform === 'linux') {
-    customURI = xss(process.argv.slice(1));
+    customURI = process.argv.slice(1)
     if (typeof customURI !== 'undefined' && customURI !== '') {
       mainWindow.webContents.executeJavaScript(`window.handleOpenURL('${customURI}');`);
     }
@@ -56,6 +55,5 @@ app.on('activate', () => {
 });
 
 app.on('open-url', (event, url) => {
-  url = xss(url);
   mainWindow.webContents.executeJavaScript(`window.handleOpenURL('${url}');`);
 });
