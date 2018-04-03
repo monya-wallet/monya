@@ -15,7 +15,7 @@ module.exports = {
     rules: [
       {
         test: /\.js$/,
-        exclude: /node_modules\/(?!(bech32))/,
+        exclude: /node_modules\/(?!(bech32|ripple-lib))/,
         use: {
           loader: 'babel-loader',
           options: {
@@ -57,23 +57,7 @@ module.exports = {
     ]
   },
   plugins: [
-    new Uglify({
-      uglifyOptions:{
-        mangle:{
-          safari10: true,
-          reserved:[
-            //bitcoinjs-lib
-            'BigInteger','ECPair','Point'
-            //ripple-lib
-            ,'_', 'RippleError', 'RippledError', 'UnexpectedError',
-            'LedgerVersionError', 'ConnectionError', 'NotConnectedError',
-            'DisconnectedError', 'TimeoutError', 'ResponseFormatError',
-            'ValidationError', 'NotFoundError', 'MissingLedgerHistoryError',
-            'PendingLedgerVersionError'
-          ]
-        }
-      }
-    }),
+    
     new webpack.IgnorePlugin(/cordova-plugin-qrscanner-lib/)
   ]
 };

@@ -4,7 +4,13 @@ node_modules
 *~
 npm-debug.log*
 .DS_Store
+dist
+cordovaProj/www/dist
+docs/wallet/dist
+!.circleci
 .*
+component/ja
+component/en
 cordovaProj/node_modules
 cordovaProj/platforms
 cordovaProj/plugins

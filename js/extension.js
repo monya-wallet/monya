@@ -1,5 +1,12 @@
 const storage = require("./storage.js")
 const extensions={
+  xrp:{
+    id:"xrp",
+    name:"Ripple",
+    component:require("../component/xrp.js"),
+    icon:require("../res/coins/xrp.png"),
+    scheme:"ripple"
+  },
   nem:{
     id:"nem",
     name:"NEM",

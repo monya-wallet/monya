@@ -100,7 +100,15 @@ module.exports=require("../js/lang.js")({ja:require("./ja/monaparty.html"),en:re
   },
   mounted(){
     titleList.init([])
-    this.titles=titleList.getTitleList()
+    
+    const tl=titleList.getTitleList()
+    for(let k in tl){
+      if(tl[k].cp.hdPubNode){
+        this.$set(this.titles,k,tl[k])
+        this.titleId=k
+      }
+    }
+    
     this.getMyAssets()
     if(window.StatusBar){
       window.StatusBar.styleLightContent();

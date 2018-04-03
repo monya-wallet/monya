@@ -89,18 +89,22 @@ gulp.task("default", function(cb) {
   return runSequence(
     "copyJa",
     "translateEn",
+    
+    ['browserSync',"webpack"],
     "serviceWorker",
-    ['browserSync',"webpack","watch"],
+    "watch",
+    
     cb
   );
 });
 gulp.task("prod", function(cb) {
   return runSequence(
     "copyJa",
-    "serviceWorker",
+    
     "translateEn",
     ["lint","webpackProd"],
     "compressImage",
+    "serviceWorker",
     ["setDocs","setChrome","setElectron"],
     cb
   );
@@ -120,6 +124,7 @@ try{
 }catch(e){
   height=-1
 }
+console.log("Monacoin Block Height is ",height)
 gulp.task("copyJa", function(cb) {
   return gulp.src("component/*.html").pipe(translator.translate({
     dictFile:"../lang/template.json",
@@ -139,7 +144,7 @@ gulp.task("translateEn", function(cb) {
   })).pipe(gulp.dest("./component/en"))
 });
 gulp.task("serviceWorker", function(cb) {
-  var files = fs.readdirSync("./dist/assets")
+  var files = fs.readdirSync("./dist/assets").filter(n=>n[0]!==".")
   return gulp.src("js/sw.js").pipe(translator.translate({
     dictFile:"../lang/template.json",
     dict:{

@@ -1,6 +1,7 @@
 const currencyList = require("../js/currencyList")
 const storage = require("../js/storage.js")
 const coinUtil = require("../js/coinUtil")
+const ext = require("../js/extension.js")
 module.exports=require("../js/lang.js")({ja:require("./ja/manageCoin.html"),en:require("./en/manageCoin.html")})({
   data:()=>({
     coins:[],
@@ -14,24 +15,15 @@ module.exports=require("../js/lang.js")({ja:require("./ja/manageCoin.html"),en:r
       coinId:"",
       unit:"",
       apiEndpoint:""
-    }
+    },
+    extensions:[],
+    unsaved:false
   }),
   methods:{
     push(){
       this.$emit("push",require("./send.js"))
     },
-    load(){
-      this.curs=[]
-      this.fiatConv=0
-      currencyList.each(cur=>{
-        this.coins.push({
-          coinId:cur.coinId,
-          screenName:cur.coinScreenName,
-          icon:cur.icon,
-          usable:!!cur.hdPubNode
-        })
-      })
-    },
+    
     
     operateCoins(){
       const curs=[]
@@ -42,6 +34,8 @@ module.exports=require("../js/lang.js")({ja:require("./ja/manageCoin.html"),en:r
         }
       })
       this.requirePassword=false
+      
+
       
       coinUtil.shortWait()
         .then(()=>storage.get("keyPairs"))
@@ -54,6 +48,17 @@ module.exports=require("../js/lang.js")({ja:require("./ja/manageCoin.html"),en:r
         .then((cipher)=>{
           this.password=""
           this.$emit("replace",require("./login.js"))
+
+          storage.get("settings").then(s=>{
+            if (!s.enabledExts) {
+              s.enabledExts=[]
+            }
+            this.extensions.forEach(v=>{
+              v.usable&&s.enabledExts.push(v.id)
+            })
+            storage.set("settings",s)
+            this.$store.commit("setSettings",s)
+          })
         }).catch(()=>{
           this.password=""
           this.requirePassword=true
@@ -84,11 +89,44 @@ module.exports=require("../js/lang.js")({ja:require("./ja/manageCoin.html"),en:r
     },
     openBlock(h){
       currencyList.get(this.info.coinId).openExplorer({blockHash:h})
+    },
+    edited(){
+      this.unsaved=true
     }
   },
   
   store:require("../js/store.js"),
-  mounted(){
-    this.$nextTick(this.load)
+  created(){
+    this.curs=[]
+      this.fiatConv=0
+      currencyList.each(cur=>{
+        this.coins.push({
+          coinId:cur.coinId,
+          screenName:cur.coinScreenName,
+          icon:cur.icon,
+          usable:!!cur.hdPubNode
+        })
+      })
+
+    storage.get("settings").then(d=>{
+      if (!d.enabledExts) {
+        d.enabledExts=[]
+      }
+      ext.each(x=>{
+        this.extensions.push({
+          id:x.id,
+          name:x.name,
+          icon:x.icon,
+          usable:!!~d.enabledExts.indexOf(x.id)
+        })
+      })
+      this.unsaved=false
+    })
   }
 });
+
+
+
+
+
+

@@ -241,6 +241,18 @@ module.exports=class{
     const address = this.lib.address.fromOutputScript(scriptPubKey,this.network)
     return address
   }
+
+  getMultisig(pubKeyBufArr,neededSig){
+    const redeemScript=this.lib.script.multisig.output.encode(neededSig|0, pubKeyBufArr)
+    const scriptPubKey = this.lib.script.scriptHash.output.encode(this.lib.crypto.hash160(redeemScript))
+    const address=this.lib.address.fromOutputScript(scriptPubKey)
+    return {
+      address,
+      scriptPubKey,
+      redeemScript
+    }
+  }
+  
   seedToPubB58(privSeed){
     if(this.dummy){return}
     let node;
@@ -409,6 +421,44 @@ module.exports=class{
     }
     return txb.build()
     
+  }
+  signMultisigTx(option){
+    if(!this.hdPubNode){throw new errors.HDNodeNotFoundError()}
+    const entropyCipher = option.entropyCipher
+    const password= option.password
+    let txb=option.txBuilder
+    const path=option.path // this is not signTx() one. path=[0,0]
+    const mSig=this.getMultisig(option.pubKeyBufArr,option.neededSig)
+    let seed=
+        bip39.mnemonicToSeed(
+          bip39.entropyToMnemonic(
+            coinUtil.decrypt(entropyCipher,password)
+          )
+        )
+    const node = this.lib.HDNode.fromSeedBuffer(seed,this.network)
+
+    for(let i=0;i<txb.inputs.length;i++){
+      if(this.bip44){
+        txb.sign(i,node
+                 .deriveHardened(44)
+                 .deriveHardened(this.bip44.coinType)
+                 .deriveHardened(this.bip44.account)
+                 .derive(path[0]|0)
+                 .derive(path[1]|0).keyPair,
+                 mSig.redeemScript
+                )
+      }else if(this.bip49){
+        txb.sign(i,node
+                 .deriveHardened(49)
+                 .deriveHardened(this.bip49.coinType)
+                 .deriveHardened(this.bip49.account)
+                 .derive(path[0]|0)
+                 .derive(path[1]|0).keyPair,
+                 mSig.redeemScript
+                )
+      }
+    }
+    return txb.buildIncomplete()
   }
   signMessage(m,entropyCipher,password,path){
     if(!this.hdPubNode){throw new errors.HDNodeNotFoundError()}

@@ -102,7 +102,13 @@ const defaultCoins=[
     bip21:"bitcoin",
     defaultFeeSatPerByte:100,
     icon:require("../res/coins/btc.png"),
-    apiEndpoints:[{url:"https://btc-bitcore1.trezor.io/api",explorer:"https://btc-bitcore1.trezor.io"},{explorer:"https://insight.bitpay.com/api",url:"https://insight.bitpay.com"}],
+    apiEndpoints:[
+      {url:"https://btc-bitcore1.trezor.io/api",explorer:"https://btc-bitcore1.trezor.io"},
+      {url:"https://btc-bitcore4.trezor.io/api",explorer:"https://btc-bitcore4.trezor.io"},
+      {url:"https://btc-bitcore5.trezor.io/api",explorer:"https://btc-bitcore5.trezor.io"},
+      {url:"https://btc-bitcore2.trezor.io/api",explorer:"https://btc-bitcore2.trezor.io"},
+      {explorer:"https://insight.bitpay.com",url:"https://insight.bitpay.com"}
+    ],
     network:{
       messagePrefix: '\x18Bitcoin Signed Message:\n',
       bip32: {
@@ -204,7 +210,12 @@ const defaultCoins=[
     bip21:"bitcoin",
     defaultFeeSatPerByte:100,
     icon:require("../res/coins/btcsw.png"),
-    apiEndpoints:[{url:"https://btc-bitcore1.trezor.io/api",explorer:"https://btc-bitcore1.trezor.io"},{explorer:"https://insight.bitpay.com",url:"https://insight.bitpay.com"}],
+    apiEndpoints:[
+      {url:"https://btc-bitcore1.trezor.io/api",explorer:"https://btc-bitcore1.trezor.io"},
+      {url:"https://btc-bitcore4.trezor.io/api",explorer:"https://btc-bitcore4.trezor.io"},
+      {url:"https://btc-bitcore5.trezor.io/api",explorer:"https://btc-bitcore5.trezor.io"},
+      {url:"https://btc-bitcore2.trezor.io/api",explorer:"https://btc-bitcore2.trezor.io"}
+    ],
     network:{
       messagePrefix: '\x18Bitcoin Signed Message:\n',
       bip32: {
@@ -237,7 +248,11 @@ const defaultCoins=[
     bip21:"bitcoincash",
     defaultFeeSatPerByte:100,
     icon:require("../res/coins/bch.png"),
-    apiEndpoints:[{url:"https://bch-bitcore1.trezor.io/api",explorer:"https://bch-bitcore1.trezor.io"}],
+    apiEndpoints:[
+      {url:"https://bch-bitcore1.trezor.io/api",explorer:"https://bch-bitcore1.trezor.io"},
+      {url:"https://bch-bitcore3.trezor.io/api",explorer:"https://bch-bitcore3.trezor.io"},
+      {url:"https://bch-bitcore2.trezor.io/api",explorer:"https://bch-bitcore2.trezor.io"}
+    ],
     network:{
       messagePrefix: '\x18Bitcoin Signed Message:\n',
       bip32: {
@@ -323,6 +338,14 @@ const defaultCoins=[
 		  {
 			  "url": "https://dash-bitcore1.trezor.io/api",
 			  "explorer": "https://dash-bitcore1.trezor.io"
+		  },
+      {
+			  "url": "https://dash-bitcore2.trezor.io/api",
+			  "explorer": "https://dash-bitcore1.trezor.io"
+		  },
+      {
+			  "url": "https://dash-bitcore3.trezor.io/api",
+			  "explorer": "https://dash-bitcore1.trezor.io"
 		  }
 	  ]
   },{
@@ -350,6 +373,14 @@ const defaultCoins=[
     "apiEndpoints": [
 		  {
 			  "url": "https://zec-bitcore1.trezor.io/api",
+			  "explorer": "https://zec-bitcore1.trezor.io"
+		  },
+      {
+			  "url": "https://zec-bitcore3.trezor.io/api",
+			  "explorer": "https://zec-bitcore1.trezor.io"
+		  },
+      {
+			  "url": "https://zec-bitcore2.trezor.io/api",
 			  "explorer": "https://zec-bitcore1.trezor.io"
 		  }
 	  ],

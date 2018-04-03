@@ -4,7 +4,12 @@
     <v-ons-list>
       <v-ons-list-header>署名/検証するアドレス</v-ons-list-header>
       <v-ons-list-item>
-        <v-ons-input v-model="address" placeholder="アドレス"></v-ons-input>
+        <div class="center">
+          <v-ons-input v-model="address" placeholder="アドレス"></v-ons-input>
+        </div>
+        <div class="right">
+          <v-ons-button modifier="quiet" @click="goToReceive">アドレス確認</v-ons-button>
+        </div>
       </v-ons-list-item>
       <v-ons-list-header>コイン種類</v-ons-list-header>
       <v-ons-list-item v-for="co in possibility">
@@ -21,7 +26,6 @@
         </div>
       </v-ons-list-item>
       <v-ons-list-item v-show="possibility.length<=0">
-        <div class="left"></div>
         <label class="center">まずはアドレスを指定してください。</label>
       </v-ons-list-item>
       <v-ons-list-header>メッセージ</v-ons-list-header>
@@ -38,7 +42,7 @@
       </v-ons-list-item>
       <v-ons-list-item>
         <v-ons-col>
-          <v-ons-button :disabled="!address||!message||!path||!password" modifier="large" @click="sign">署名</v-ons-button>
+          <v-ons-button :disabled="!address||!message||!path" modifier="large" @click="sign">署名</v-ons-button>
         </v-ons-col>
          <v-ons-col>
           <v-ons-button :disabled="!address||!message||!signature" modifier="large" @click="verify">検証</v-ons-button>

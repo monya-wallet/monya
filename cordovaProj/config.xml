@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="org.missmonacoin.monya" version="2.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget id="org.missmonacoin.monya" version="2.2.0" android-versionCode="220000" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>もにゃ</name>
     <description>
     The easiest cryptocurrency wallet
@@ -24,6 +24,7 @@
     <preference name="DisallowOverscroll" value="true" />
     <platform name="android">
         <preference name="android-minSdkVersion" value="21" />
+        <preference name="android-targetSdkVersion" value="27" />
         <allow-intent href="market:*" />
         <preference name="SplashShowOnlyFirstTime" value="false" />
         <preference name="SplashMaintainAspectRatio" value="true" />
@@ -114,10 +115,10 @@
     </plugin>
     <plugin name="cordova-plugin-statusbar" spec="^2.4.1" />
     <plugin name="cordova-plugin-keychain-touch-id" spec="^3.2.1" />
-    <plugin name="cordova-plugin-qrscanner-monya" spec="^2.5.4" />
-    <plugin name="cordova-clipboard-monya" spec="^1.1.6" />
-    <plugin name="cordova-plugin-browsertab" spec="^0.2.0">
+    <plugin name="cordova-plugin-x-socialsharing" spec="^5.2.1" />
+    <plugin name="cordova-clipboard-monya" spec="@missmonacoin/cordova-clipboard@~1.1.7" />
+    <plugin name="cordova-plugin-browsertab" spec="@missmonacoin/cordova-plugin-browsertab-monya@~0.2.1">
         <variable name="CUSTOM_TAB_COLOR_RGB" value="#ffffff" />
     </plugin>
-    <plugin name="cordova-plugin-x-socialsharing" spec="^5.2.1" />
+    <plugin name="cordova-plugin-qrscanner-monya" spec="@missmonacoin/cordova-plugin-qrscanner@~2.5.7" />
 </widget>
