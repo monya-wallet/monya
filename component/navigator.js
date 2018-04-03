@@ -145,7 +145,11 @@ module.exports=require("../js/lang.js")({ja:require("./ja/navigator.html"),en:re
       if(!v){
         return
       }
-      v=v.toString()
+      if(typeof(v)==="object"){
+        v=JSON.stringify(v)
+      }else{
+        v=v.toString()
+      }
       return v.replace(regexp,(match)=>{
         return match+"("+translationTable[match.toLowerCase()]+")"
       })

@@ -13,10 +13,18 @@ const NETWORK=nem.model.network.data.mainnet.id
 
 const icons={
   'nem:xem':require("../res/coins/nem.png"),
-  'ecobit:eco':require("../res/coins/ecob.png")
+  'ecobit:eco':require("../res/coins/ecob.png"),
+  "lc:jpy":require("../res/coins/lc/jpy.png"),
+  "lc:usd":require("../res/coins/lc/usd.png"),
+  "lc:zar":require("../res/coins/lc/zar.png"),
+  "lc:hkd":require("../res/coins/lc/hkd.png"),
+  "lc:eur":require("../res/coins/lc/eur.png"),
+  "lc:aud": require("../res/coins/lc/aud.png"),
+  "lc:gbp":require("../res/coins/lc/gbp.png"),
+  "lc:chf":require("../res/coins/lc/chf.png")
 }
 
-const endpoint = nem.model.objects.create("endpoint")("https://shibuya.supernode.me", 7891);
+let endpoint = nem.model.objects.create("endpoint")("https://shibuya.supernode.me", 7891);
 
 
 function toUnixDate(d){
@@ -45,7 +53,7 @@ module.exports=require("../js/lang.js")({ja:require("./ja/nem.html"),en:require(
       balances:null,
       history:null,
       message:"",
-      server:'https://shibuya.supernode.me:7891/heartbeat',
+      server:'shibuya.supernode.me:7891',
       confirm:false,
       price:1,
       serverDlg:false,
@@ -100,7 +108,7 @@ module.exports=require("../js/lang.js")({ja:require("./ja/nem.html"),en:require(
         this.accountInfo=b
       }).catch(e=>{
         this.loading=false
-        this.$store.commit("setError",e.message)
+        this.$store.commit("setError",e)
       })
       nem.com.requests.account.mosaics.owned(endpoint,this.address).then(b=>{
         this.loading=false
@@ -170,7 +178,7 @@ module.exports=require("../js/lang.js")({ja:require("./ja/nem.html"),en:require(
         this.mosaics=res
       }).catch(e=>{
         this.loading=false
-        this.$store.commit("setError",e.message)
+        this.$store.commit("setError",e)
       })
 
       nem.com.requests.account.transactions.all(endpoint,this.address).then(txs => {
@@ -322,6 +330,17 @@ module.exports=require("../js/lang.js")({ja:require("./ja/nem.html"),en:require(
     },
     donateMe(){
       coinUtil.openUrl("https://missmonacoin.github.io")
+    },
+    setServer(){
+      
+      const spl=this.server.split(":")
+      if(!spl[1]){
+        this.server="shibuya.supernode.me:7891"
+        endpoint=nem.model.objects.create("endpoint")("https://shibuya.supernode.me",7891)
+        return
+      }
+      endpoint=nem.model.objects.create("endpoint")("https://"+spl[0], spl[1]|0)
+      
     }
   },
   computed:{
@@ -386,5 +405,20 @@ module.exports=require("../js/lang.js")({ja:require("./ja/nem.html"),en:require(
     }).catch(()=>{
       return
     })
+  },
+  filters:{
+    friendlyName(n){
+      return {
+        "ecobit:eco":"EcoBit",
+        "lc:jpy":"円",// LCNEM currency name are recommened to be local notation
+        "lc:usd":"Dollar",
+        "lc:zar":"South African Dollar",
+        "lc:hkd":"Hong Kong Dollar",
+        "lc:eur":"Euro",
+        "lc:aud":"Australian Dollar",
+        "lc:gbp":"Pound sterling",
+        "lc:chf":"Schweizer Franken"
+      }[n]||n
+    }
   }
 })

@@ -14,6 +14,7 @@ module.exports=require("../js/lang.js")({ja:require("./ja/signTx.html"),en:requi
       neededSig:0,
       pubs:[""],
       advanced:false,
+      complete:false,
 
       ins:[{
         txId:"",
@@ -39,7 +40,8 @@ module.exports=require("../js/lang.js")({ja:require("./ja/signTx.html"),en:requi
           txBuilder:txb,
           path:[0,this.addrIndex],
           pubKeyBufArr,
-          neededSig:this.neededSig|0
+          neededSig:this.neededSig|0,
+          complete:this.complete
         }).toHex()
         this.password=""
         
@@ -50,28 +52,41 @@ module.exports=require("../js/lang.js")({ja:require("./ja/signTx.html"),en:requi
     goToReceive(){
       this.$emit("push",require("./receive.js"))
     },
-    debug(){
-      const cur =currencyList.get(this.coinId)
-      Buffer;
-      coinUtil;
-      storage;
-      debugger;
-    },
+    
     addPub(){
-      if(this.pubs[this.pubs.length-1]){
-        this.pubs.push("")
-      }
+      
+      this.pubs.push("")
+      
     },
     removePub(i){
       this.pubs.splice(i,1)
+    },
+    broadcast(){
+      currencyList.get(this.coinId).pushTx(this.signed).then((res)=>{
+        this.$store.commit("setFinishNextPage",{page:require("./home.js"),infoId:"sent",payload:{
+          txId:res.txid
+        }})
+        this.$emit("replace",require("./finished.js"))
+
+        
+      }).catch(e=>{
+        this.loading=false
+        if(e.request){
+          this.$store.commit("setError",e.request.responseText||"Network Error.Please try again")
+          
+        }else{
+          this.$store.commit("setError",e.message)
+        }
+      })
     }
   },
   computed:{
     multisigAddr(){
-      if(!this.coinId||!this.pubs.length||!this.neededSig){
-        return
+      try{
+        return currencyList.get(this.coinId).getMultisig(this.pubs.map(v=>Buffer.from(v,"hex")),this.neededSig).address
+      }catch(e){
+        return 
       }
-      return currencyList.get(this.coinId).getMultisig(this.pubs.map(v=>Buffer.from(v,"hex")),this.neededSig).address
     },
     createdTx(){
       const cur=currencyList.get(this.coinId)
@@ -98,8 +113,29 @@ module.exports=require("../js/lang.js")({ja:require("./ja/signTx.html"),en:requi
         this.$set(this,"labels",res)
       })
     },
-    addrIndex(){
-      this.debug()
+    unsigned(){
+      const lib =currencyList.get(this.coinId).lib
+      const decompiled=lib.script.decompile(lib.Transaction.fromHex(this.unsigned).ins[0].script)
+      
+      const decoded=lib.script.multisig.output.decode(decompiled[decompiled.length-1])
+      const pks=decoded.pubKeys
+      if(pks.length){
+        this.pubs=[]
+        pks.forEach(p=>{
+          this.pubs.push(p.toString("hex"))
+        })
+        this.neededSig=decoded.m
+      }
+      if(decompiled.length<=2){
+        return
+      }
+      let validSigLen=0
+      for(let i=1;i<decompiled.length-1;i++){
+        if(decompiled[i]){
+          validSigLen++
+        }
+      }
+      this.complete=(this.neededSig<=validSigLen+1)   
     }
   },
   created(){

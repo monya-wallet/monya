@@ -245,7 +245,7 @@ module.exports=class{
   getMultisig(pubKeyBufArr,neededSig){
     const redeemScript=this.lib.script.multisig.output.encode(neededSig|0, pubKeyBufArr)
     const scriptPubKey = this.lib.script.scriptHash.output.encode(this.lib.crypto.hash160(redeemScript))
-    const address=this.lib.address.fromOutputScript(scriptPubKey)
+    const address=this.lib.address.fromOutputScript(scriptPubKey,this.network)
     return {
       address,
       scriptPubKey,
@@ -458,7 +458,11 @@ module.exports=class{
                 )
       }
     }
-    return txb.buildIncomplete()
+    if(option.complete){
+      return txb.build()
+    }else{
+      return txb.buildIncomplete()
+    }
   }
   signMessage(m,entropyCipher,password,path){
     if(!this.hdPubNode){throw new errors.HDNodeNotFoundError()}

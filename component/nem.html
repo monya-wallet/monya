@@ -1,6 +1,6 @@
 <v-ons-page data-page="nem">
   <custom-bar title="NEM" menu="true">
-    <v-ons-toolbar-button @click="getBalance">
+    <v-ons-toolbar-button @click="getBalance" @click.right="serverDlg=true">
       <v-ons-icon icon="ion-ios-loop-strong"></v-ons-icon>
     </v-ons-toolbar-button>
   </custom-bar>
@@ -63,7 +63,7 @@
             <img v-if="b.icon" :src="b.icon"/>
           </div>
           <div class="center">{{b.normalizedQty}}</div>
-          <div class="right">{{b.mosaicId.namespaceId}}:{{b.mosaicId.name}}</div>
+          <div class="right">{{(b.mosaicId.namespaceId+':'+b.mosaicId.name) | friendlyName}}</div>
         </v-ons-list-item>
         <v-ons-list-header>送る</v-ons-list-header>
         <v-ons-list-item>
@@ -78,7 +78,7 @@
         <v-ons-list-item>
           <div class="center">モザイク</div>
           <div class="right">
-            <span v-show="sendMosaic">{{(sendMosaic==='ecobit:eco')?'エコビー' :sendMosaic}}</span>
+            <span v-show="sendMosaic">{{sendMosaic | friendlyName}}</span>
             <span v-show="!sendMosaic">上から選んでください。</span>
           </div>
         </v-ons-list-item>
@@ -106,6 +106,9 @@
             </div>
             
         </v-ons-list-item>
+        <v-ons-list-item @click="serverDlg=true">
+          サーバー変更
+        </v-ons-list-item>
       </v-ons-list>
     </div>
   </div>
@@ -131,5 +134,15 @@
     </template>
   </v-ons-alert-dialog>
 
-  
+  <v-ons-alert-dialog
+    modifier="rowfooter"
+    :visible.sync="serverDlg"
+    >
+    <span slot="title">サーバー変更</span>
+    <p><v-ons-input v-model="server" placeholder="shibuya.supernode.me:7891" @change="setServer"></v-ons-input></p>
+    
+    <template slot="footer">
+      <div class="alert-dialog-button" @click="serverDlg=false">閉じる</div>
+    </template>
+  </v-ons-alert-dialog>
 </v-ons-page>

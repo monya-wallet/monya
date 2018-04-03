@@ -446,7 +446,12 @@ module.exports=require("../js/lang.js")({ja:require("./ja/atomicswap.html"),en:r
       }).then(t=>{
         this.$ons.notification.alert("Successfully sent transaction.Transaction ID is: "+t.txid)
       }).catch(e=>{
-        this.$store.commit("setError",e.message)
+        if(e.request){
+          this.$store.commit("setError",e.request.responseText||"Network Error.Please try again")
+          
+        }else{
+          this.$store.commit("setError",e.message)
+        }
       })
     },
     signRefundTx(){

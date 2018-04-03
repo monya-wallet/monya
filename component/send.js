@@ -45,6 +45,11 @@ module.exports=require("../js/lang.js")({ja:require("./ja/send.html"),en:require
     getPrice(){
       coinUtil.getPrice(this.coinType,this.fiatTicker).then(res=>{
         this.price=res
+        if(this.amount){
+          this.calcFiat()
+        }else if(this.fiat){
+          this.calcCur()
+        }
       })
     },
     calcFiat(){

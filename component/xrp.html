@@ -92,6 +92,9 @@
             
             <currency-set v-for="ch in h.balanceChange" :amount="ch.value" :ticker="ch.currency" :notKnown="true"></currency-set></div>
         </v-ons-list-item>
+        <v-ons-list-item @click="serverDlg=true">
+          サーバー変更
+        </v-ons-list-item>
       </v-ons-list>
     </div>
   </div>

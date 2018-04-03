@@ -1,4 +1,4 @@
-<v-ons-page data-page="sign">
+<v-ons-page data-page="signTx">
   <custom-bar title="マルチシグ" menu="true">
     <v-ons-toolbar-button @click="advanced=true">TX</v-ons-toolbar-button>
   </custom-bar>
@@ -22,7 +22,7 @@
           <v-ons-input v-model="pubs[i]" placeholder="公開鍵"></v-ons-input>
         </div>
         <div class="right">
-          <v-ons-button @click="removePub(i)" modifier="quiet"><v-ons-icon icon="ion-close"></v-ons-icon></v-ons-button>
+          <v-ons-button v-show="i" @click="removePub(i)" modifier="quiet"><v-ons-icon icon="ion-close"></v-ons-icon></v-ons-button>
         </div>
       </v-ons-list-item>
       <v-ons-list-item @click="addPub">
@@ -45,21 +45,24 @@
           <v-ons-input readonly="readonly" :value="multisigAddr"></v-ons-input>
         </div>
       </v-ons-list-item>
-      <v-ons-list-header>未署名トランザクション</v-ons-list-header>
       <v-ons-list-item>
         <textarea class="textarea--transparent" v-model="unsigned" placeholder="未署名トランザクション"></textarea>
       </v-ons-list-item>
-      
-      <v-ons-list-header>パスワード</v-ons-list-header>
       <v-ons-list-item>
-        <v-ons-input v-model="password" type="password" placeholder="署名用パスワード"></v-ons-input>
+        <v-ons-input v-model="password" type="password" placeholder="パスワード"></v-ons-input>
       </v-ons-list-item>
+      <v-ons-list-item>
+          <label class="left"><v-ons-checkbox input-id="complete" v-model="complete"></v-ons-checkbox></label>
+          <label class="center" for="complete">十分な署名数が集まっています</label>
+        </v-ons-list-item>
       <v-ons-list-item>
         <v-ons-button :disabled="!coinId||!unsigned||!password||(neededSig>pubs.length)" modifier="large" @click="sign">署名</v-ons-button>
       </v-ons-list-item>
-      <v-ons-list-header>署名されたトランザクション</v-ons-list-header>
       <v-ons-list-item>
         <textarea class="textarea--transparent" v-model="signed" placeholder="署名されたトランザクション"></textarea>
+      </v-ons-list-item>
+      <v-ons-list-item v-show="complete&&signed">
+        <v-ons-button @click="broadcast" modifier="large">送信</v-ons-button>
       </v-ons-list-item>
     </v-ons-list>
     
@@ -68,7 +71,7 @@
                 :visible.sync="advanced"
                 >
     <v-ons-list>
-      <v-ons-list-item v-for="i in ins">
+      <v-ons-list-item v-for="i in ins" modifier="small">
         <v-ons-list  modifier="inset">
           <v-ons-list-item><v-ons-input v-model="i.txId" placeholder="TXID"></v-ons-input></v-ons-list-item>
           <v-ons-list-item>
@@ -80,16 +83,19 @@
           <v-ons-list-item>
             <div class="center">Sequence</div>
             <div class="right">
-              <v-ons-input type="number" v-model="i.sequence"></v-ons-input>
+              <v-ons-input type="number" v-model="i.sequence" placeholder="省略可"></v-ons-input>
             </div>
           </v-ons-list-item>
         </v-ons-list>
       </v-ons-list-item>
-      <v-ons-list-item @click="ins.push({txId:'',vout:''})">
-        <div class="left"><v-ons-icon icon="ion-plus"></v-ons-icon></div>
-        <div class="center">追加</div>
+      <v-ons-list-item modifier="small">
+        <v-ons-row>
+          <v-ons-col><v-ons-button modifier="quiet" @click="ins.push({txId:'',vout:''})"><v-ons-icon icon="ion-plus"></v-ons-icon>追加</v-ons-button></v-ons-col>
+          <v-ons-col><v-ons-button modifier="quiet" @click="ins.pop()"><v-ons-icon icon="ion-close"></v-ons-icon>削除</v-ons-button></v-ons-col>
+        </v-ons-row>
       </v-ons-list-item>
-      <v-ons-list-item v-for="out in outs">
+      
+      <v-ons-list-item v-for="out in outs" modifier="small">
         <v-ons-list  modifier="inset">
           <v-ons-list-item><v-ons-input v-model="out.addr" placeholder="アドレス"></v-ons-input></v-ons-list-item>
           <v-ons-list-item>
@@ -100,18 +106,20 @@
           </v-ons-list-item>
         </v-ons-list>
       </v-ons-list-item>
-      <v-ons-list-item @click="outs.push({addr:'',value:''})">
-        <div class="left"><v-ons-icon icon="ion-plus"></v-ons-icon></div>
-        <div class="center">追加</div>
+      <v-ons-list-item  modifier="small">
+        <v-ons-row>
+          <v-ons-col><v-ons-button modifier="quiet" @click="outs.push({addr:'',value:''})"><v-ons-icon icon="ion-plus"></v-ons-icon>追加</v-ons-button></v-ons-col>
+          <v-ons-col><v-ons-button modifier="quiet" @click="outs.pop()"><v-ons-icon icon="ion-close"></v-ons-icon>削除</v-ons-button></v-ons-col>
+        </v-ons-row>
       </v-ons-list-item>
       <v-ons-list-item>
         <div class="center">LockTime</div>
         <div class="right">
-          <v-ons-input type="number" v-model="lockTime"></v-ons-input>
+          <v-ons-input type="number" v-model="lockTime" placeholder="省略可"></v-ons-input>
         </div>
       </v-ons-list-item>
 
-      <v-ons-list-item>
+      <v-ons-list-item modifier="small">
         <textarea class="textarea--transparent" v-model="createdTx" placeholder="未署名トランザクション"></textarea>
       </v-ons-list-item>
     </v-ons-list>
