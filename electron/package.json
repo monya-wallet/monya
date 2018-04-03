@@ -18,15 +18,38 @@
     "appId": "org.missmonacoin.monya",
     "linux": {
       "category": "Office;Finance;",
-      "icon": "assets/"
+      "icon": "assets/",
+      "desktop": {
+        "Name": "monya",
+        "GenericName": "monya",
+        "X-GNOME-FullName": "monya",
+        "Comment": "The easiest cryptocurrency wallet",
+        "Type": "Application",
+        "Terminal": "false",
+        "StartupNotify": "false",
+        "Categories": "Office;Fomamce;",
+        "MimeType": "application/x-monacoin;x-scheme-handler/monacoin;"
+      }
     },
     "mac": {
       "category": "public.app-category.finance",
       "type": "distribution"
     },
     "win": {
-      "target": "Squirrel",
+      "target": "nsis",
       "icon": "assets/icon.ico"
-    }
+    },
+    "nsis": {
+      "perMachine": true
+    },
+    "protocols": [
+      {
+        "name": "monacoin",
+        "role": "Viewer",
+        "schemes": [
+          "monacoin"
+        ]
+      }
+    ]
   }
 }
