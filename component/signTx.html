@@ -46,7 +46,7 @@
         </div>
       </v-ons-list-item>
       <v-ons-list-item>
-        <textarea class="textarea--transparent" v-model="unsigned" placeholder="未署名トランザクション"></textarea>
+        <textarea class="textarea--transparent" v-model="unsigned" placeholder="署名するトランザクション"></textarea>
       </v-ons-list-item>
       <v-ons-list-item>
         <v-ons-input v-model="password" type="password" placeholder="パスワード"></v-ons-input>
@@ -121,6 +121,9 @@
 
       <v-ons-list-item modifier="small">
         <textarea class="textarea--transparent" v-model="createdTx" placeholder="未署名トランザクション"></textarea>
+      </v-ons-list-item>
+      <v-ons-list-item v-show="">
+        <v-ons-button @click="unsigned=createTx" modifier="large">「署名するトランザクション」に反映</v-ons-button>
       </v-ons-list-item>
     </v-ons-list>
 
