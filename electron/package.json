@@ -1,0 +1,32 @@
+{
+  "name": "monya",
+  "version": "2.0.2",
+  "description": "The easiest cryptocurrency wallet",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node_modules/.bin/electron ./src",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder"
+  },
+  "author": "",
+  "license": "GPL-3.0-only",
+  "devDependencies": {
+    "electron": "^1.8.4",
+    "electron-builder": "^20.6.2"
+  },
+  "build": {
+    "appId": "org.missmonacoin.monya",
+    "linux": {
+      "category": "Office;Finance;",
+      "icon": "assets/"
+    },
+    "mac": {
+      "category": "public.app-category.finance",
+      "type": "distribution"
+    },
+    "win": {
+      "target": "Squirrel",
+      "icon": "assets/icon.ico"
+    }
+  }
+}

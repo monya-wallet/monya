@@ -75,6 +75,10 @@ gulp.task("setChrome", function() {
   return gulp.src(["dist/**"])
     .pipe(gulp.dest("./chrome_extension/dist"))
 });
+gulp.task("setElectron", function() {
+  return gulp.src(["dist/**"])
+    .pipe(gulp.dest("./electron/src/dist"))
+});
 gulp.task("compressImage", function() {
   return gulp.src(["dist/assets/*.png"])
     .pipe(imagemin())
@@ -97,7 +101,7 @@ gulp.task("prod", function(cb) {
     "translateEn",
     ["lint","webpackProd"],
     "compressImage",
-    ["setDocs","setChrome"],
+    ["setDocs","setChrome","setElectron"],
     cb
   );
 });
