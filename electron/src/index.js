@@ -1,7 +1,4 @@
-const electron = require('electron');
-const app = electron.app;
-const BrowserWindow = electron.BrowserWindow;
-
+const {app, BrowserWindow} = require('electron');
 const path = require('path');
 const url = require('url');
 
@@ -9,10 +6,10 @@ let mainWindow;
 
 const singleInstance = app.makeSingleInstance((argv, workingDirectory) => {
   if (process.platform == 'win32' || process.platform === 'linux') {
-    customURI = argv.slice(1)
+    customURI = argv.slice(1);
   }
   if (mainWindow) {
-    mainWindow.webContents.executeJavaScript(`window.handleOpenURL('${customURI}');`);
+    mainWindow.webContents.send('handle-open-url', customURI);
   }
 })
 
@@ -39,9 +36,11 @@ app.on('ready', () => {
   });
 
   if (process.platform == 'win32' || process.platform === 'linux') {
-    customURI = process.argv.slice(1)
+    customURI = process.argv.slice(1);
     if (typeof customURI !== 'undefined' && customURI !== '') {
-      mainWindow.webContents.executeJavaScript(`window.handleOpenURL('${customURI}');`);
+      mainWindow.webContents.on('did-finish-load', () => {
+        mainWindow.webContents.send('handle-open-url', customURI);
+      });
     }
   }
 });
@@ -55,5 +54,5 @@ app.on('activate', () => {
 });
 
 app.on('open-url', (event, url) => {
-  mainWindow.webContents.executeJavaScript(`window.handleOpenURL('${url}');`);
+  mainWindow.webContents.send('handle-open-url', url);
 });
