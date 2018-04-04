@@ -37,22 +37,22 @@ self.addEventListener('fetch', (event) => {
         let fetchRequest = event.request.clone();
 
         return fetch(fetchRequest)
-          .then((response) => {
-            if (!response || response.status !== 200 || response.type !== 'basic') {
-              return response;
+          .then((response2) => {
+            if (!response2 || response2.status !== 200 || response2.type !== 'basic') {
+              return response2;
             }
 
             // 重要：レスポンスを clone する。レスポンスは Stream で
             // ブラウザ用とキャッシュ用の2回必要。なので clone して
             // 2つの Stream があるようにする
-            let responseToCache = response.clone();
+            let responseToCache = response2.clone();
 
             caches.open(cName)
               .then((cache) => {
                 cache.put(event.request, responseToCache);
               });
 
-            return response;
+            return response2;
           });
       })
   );

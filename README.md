@@ -48,7 +48,7 @@ DMD様
 
 ### Cordovaビルド
 
-事前に`npm run build:cordova`でCordova用のビルドを作成したことを確認してください。
+事前に`npm run build`でビルドを作成したことを確認してください。
 
 1. `npm install -g cordova@7.1.0` **注意: Cordovaのバージョンは7.1.0です。8.0以上ではありません。**
 1. `cd cordovaProj`

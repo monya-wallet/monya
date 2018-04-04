@@ -1,6 +1,6 @@
 {
-  "name": "monya",
-  "version": "2.0.2",
+  "name": "Monya",
+  "version": "2.2.2",
   "description": "The easiest cryptocurrency wallet",
   "main": "src/index.js",
   "scripts": {
@@ -20,9 +20,9 @@
       "category": "Office;Finance;",
       "icon": "assets/",
       "desktop": {
-        "Name": "monya",
-        "GenericName": "monya",
-        "X-GNOME-FullName": "monya",
+        "Name": "Monya",
+        "GenericName": "Monya",
+        "X-GNOME-FullName": "Monya",
         "Comment": "The easiest cryptocurrency wallet",
         "Type": "Application",
         "Terminal": "false",
@@ -33,6 +33,7 @@
     },
     "mac": {
       "category": "public.app-category.finance",
+      "icon": "assets/",
       "type": "distribution"
     },
     "win": {

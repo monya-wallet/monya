@@ -479,7 +479,7 @@ exports.init =customCoins=>{
     try{
       coins[defCoin.coinId]=new Currency(defCoin)
     }catch(e){
-      
+      continue
     }
   }
   exports.isSingleWallet = (defaultCoins.length+customCoins.length)<2

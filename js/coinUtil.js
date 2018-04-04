@@ -164,10 +164,15 @@ exports.copy=data=>{
   }
 }
 exports.openUrl=(url)=>{
+  if(exports.isElectron()){
+    window.electronOpenExternal(url)
+    return 
+  }
   if(!window.cordova){
     window.open(url,"_blank")
     return
   }
+  
   window.cordova.plugins.browsertab.isAvailable(
     result=> {
       if (result)  {
@@ -333,8 +338,9 @@ exports.buildBuilderfromPubKeyTx=(transaction,network)=>{
   })
   return txb
 }
-
-exports.isNative = ()=>window.cordova&&window.cordova.platformId!=="browser"
+exports.isCordovaNative=()=>(window.cordova&&window.cordova.platformId!=="browser")
+exports.isElectron=()=>(window.process && window.process.type)
+exports.isNative = ()=>(exports.isCordovaNative()||exports.isElectron())
 exports.shareable=()=>window.plugins&&window.plugins.socialsharing||navigator.share
 exports.share = (option,pos)=> new Promise((resolve,reject)=>{
   if(!window.plugins||!window.plugins.socialsharing){

@@ -57,7 +57,23 @@ module.exports = {
     ]
   },
   plugins: [
-    
+    new Uglify({
+      uglifyOptions:{
+        mangle:{
+          safari10: true,
+          reserved:[
+            //bitcoinjs-lib
+            'BigInteger','ECPair','Point'
+            //ripple-lib
+            ,'_', 'RippleError', 'RippledError', 'UnexpectedError',
+            'LedgerVersionError', 'ConnectionError', 'NotConnectedError',
+            'DisconnectedError', 'TimeoutError', 'ResponseFormatError',
+            'ValidationError', 'NotFoundError', 'MissingLedgerHistoryError',
+            'PendingLedgerVersionError'
+          ]
+        }
+      }
+    }),
     new webpack.IgnorePlugin(/cordova-plugin-qrscanner-lib/)
   ]
 };

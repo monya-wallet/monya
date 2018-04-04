@@ -9,9 +9,14 @@
   <div id=app></div>
   <script src=dist/dist.js></script>
   <script>
-    require('electron').ipcRenderer.on('handle-open-url', (event, url) => {
+    const electron = require('electron')
+
+    electron.ipcRenderer.on('handle-open-url', (event, url) => {
       window.handleOpenURL(url);
     });
+    function electronOpenExternal(url){
+      electron.shell.openExternal(url)
+    }
   </script>
 </body>
 </html>

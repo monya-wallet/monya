@@ -16,3 +16,4 @@ cordovaProj/platforms
 cordovaProj/plugins
 electron/node_modules
 electron/dist
+electron/src/dist/*

@@ -62,9 +62,9 @@ gulp.task("watch", function() {
 
 
 
-gulp.task("setCordova", function() {
-  return gulp.src(["dist/**"])
-    .pipe(gulp.dest("./cordovaProj/www/dist"))
+gulp.task("setAssetsCordova", function() {
+  return gulp.src(["dist/assets/**"])
+    .pipe(gulp.dest("./cordovaProj/www/dist/assets"))
 });
 
 gulp.task("setDocs", function() {
@@ -98,14 +98,15 @@ gulp.task("prod", function(cb) {
     "copyJa",
     
     "translateEn",
-    ["lint","webpackProd"],
+    ["lint","webpackProd","webpackCordova"],
     "compressImage",
     "serviceWorker",
-    ["setDocs","setChrome","setElectron"],
+    ["setDocs","setChrome","setElectron","setAssetsCordova"],
     cb
   );
 });
 gulp.task("cordova", function(cb) {
+  console.log("cordova is deprecated")
   return runSequence(
     "copyJa",
     "translateEn",

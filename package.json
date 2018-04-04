@@ -1,6 +1,6 @@
 {
   "name": "monya",
-  "version": "2.2.0",
+  "version": "2.2.2",
   "description": "",
   "main": "dist/dist.js",
   "repository": "https://github.com/monya-wallet/monya.git",
@@ -67,7 +67,7 @@
     "start": "gulp",
     "lint": "eslint ./js/*.js",
     "build": "gulp prod",
-    "build:cordova": "gulp cordova",
+    "build:cordova": "echo 'cordova command is deprecated';gulp prod",
     "postinstall": "cd ./node_modules/har-validator;npm install ajv@6.3.0;cd ../../"
   },
   "author": "monya-wallet",

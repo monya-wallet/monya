@@ -17,7 +17,7 @@ Vue.use(Vuex)
 Vue.component('custom-bar', require("../component/customBar.js"))
 Vue.component('currency-set', require("../component/currencySet.js"))
 Vue.component('timestamp', require("../component/timestamp.js"))
-
+const coinUtil=require("../js/coinUtil") // can conflict
 Vue.directive('focus', {
   inserted: function (el,binding) {
     el.focus()
@@ -40,7 +40,13 @@ exports.vm= new Vue({
     
     if(this.$ons.platform.isAndroid()&&window.StatusBar){
        window.StatusBar.styleLightContent()
-     }
+    }
+    if(coinUtil.isElectron() && window.process.platform==="darwin"){
+      const elem=document.createElement("div")
+      elem.className="ons-status-bar-mock ios"
+      elem.style.webkitAppRegion="drag"
+      document.body.insertBefore(elem, document.body.firstChild)
+    }
     this.$ons.enableAutoStatusBarFill()
     const html = document.documentElement;
     if (this.$ons.platform.isIPhoneX()) {
@@ -51,10 +57,10 @@ exports.vm= new Vue({
     }
   }
 })
-if ('serviceWorker' in navigator&&!window.cordova) {
+if ('serviceWorker' in navigator&&!window.cordova&&!coinUtil.isElectron()) {
   navigator.serviceWorker.register('./dist/sw.js').then(()=>true).catch(()=>true);
 }
-const coinUtil=require("../js/coinUtil")
+
 window.handleOpenURL=function(url) {
   coinUtil.queueUrl(url)
 }
