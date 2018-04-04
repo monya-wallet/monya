@@ -60,9 +60,15 @@ jobs:
             cordova platform add android
             cordova build android --release
             cordova build android --debug
+            cd ../electron
+            npm install
+            npm run dist
             
       - store_artifacts:
           path: cordovaProj/platforms/android/build/outputs/apk/
+
+      - store_artifacts:
+          path: electron/  
 
 workflows:
   version: 2

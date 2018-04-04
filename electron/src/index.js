@@ -3,6 +3,7 @@ const path = require('path');
 const url = require('url');
 
 let mainWindow;
+let customURI;
 
 const singleInstance = app.makeSingleInstance((argv, workingDirectory) => {
   if (process.platform == 'win32' || process.platform === 'linux') {
@@ -17,9 +18,12 @@ if (singleInstance) {
   app.quit()
 }
 
-app.setAsDefaultProtocolClient('monacoin');
+["monacoin","bitzeny","bitcoin","litecoin","fujicoin","bitcoin","bitcoincash","koto","dash","zcash","neetcoin","ripple","nem"].forEach(d=>{
 
-app.on('ready', () => {
+  app.setAsDefaultProtocolClient(d);
+})
+
+const createWindow= () => {
   mainWindow = new BrowserWindow({
     width: 360,
     height: 600
@@ -43,10 +47,12 @@ app.on('ready', () => {
       });
     }
   }
-});
+}
+
+app.on('ready',createWindow);
 
 app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin')  app.quit();
+  app.quit();
 });
 
 app.on('activate', () => {
