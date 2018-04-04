@@ -42,14 +42,7 @@
     "nsis": {
       "perMachine": true
     },
-    "protocols": [
-      {
-        "name": "monacoin",
-        "role": "Viewer",
-        "schemes": [
-          "monacoin"
-        ]
-      }
-    ]
+    "protocols":[[{"name":"monacoin","role":"Viewer","schemes":["monacoin"]}],[{"name":"bitzeny","role":"Viewer","schemes":["bitzeny"]}],[{"name":"bitcoin","role":"Viewer","schemes":["bitcoin"]}],[{"name":"litecoin","role":"Viewer","schemes":["litecoin"]}],[{"name":"fujicoin","role":"Viewer","schemes":["fujicoin"]}],[{"name":"bitcoin","role":"Viewer","schemes":["bitcoin"]}],[{"name":"bitcoincash","role":"Viewer","schemes":["bitcoincash"]}],[{"name":"koto","role":"Viewer","schemes":["koto"]}],[{"name":"dash","role":"Viewer","schemes":["dash"]}],[{"name":"zcash","role":"Viewer","schemes":["zcash"]}],[{"name":"neetcoin","role":"Viewer","schemes":["neetcoin"]}],[{"name":"ripple","role":"Viewer","schemes":["ripple"]}],[{"name":"nem","role":"Viewer","schemes":["nem"]}]] 
+    
   }
 }

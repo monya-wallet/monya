@@ -68,7 +68,7 @@ jobs:
           path: cordovaProj/platforms/android/build/outputs/apk/
 
       - store_artifacts:
-          path: electron/  
+          path: electron/dist 
 
 workflows:
   version: 2
