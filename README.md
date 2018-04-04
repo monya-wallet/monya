@@ -69,6 +69,16 @@ git cloneした先のディレクトリ（README.mdがあるディレクトリ�
 $ cd dist && find assets|sed -e 's/assets\///'|grep -e '\(\.png\|\.jpg\)'|while read a;do cwebp -q 90 -z 9 -mt -af -progress -v assets/$a -o ../chrome_extension/assets-webp/$(echo $a|sed -e 's/\(\.png\|\.jpg\)//').webp;done
 ```
 
+## Electronビルド
+
+事前に`npm run build`で`electron/src/dist`以下に最新ビルドがコピーされていることを確認してください。
+
+1. `cd electron`
+1. `npm install`
+1. `npm run dist`
+
+作業が完了すると、`electron/dist`以下にビルド済みパッケージが生成されます。
+
 ## License
 
 GPLv3
