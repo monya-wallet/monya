@@ -56,7 +56,7 @@ module.exports=require("../js/lang.js")({ja:require("./ja/navigator.html"),en:re
     }
   },
   created(){
-    storage.get("keyPairs").then((data)=>{
+    storage.hasData().then((data)=>{
       if(data){
         this.pageStack.push(require("./login.js"))
       }else{
@@ -65,9 +65,7 @@ module.exports=require("../js/lang.js")({ja:require("./ja/navigator.html"),en:re
       this.$store.commit("setKeyPairsExistence",!!data)
       this.dataLoaded=true
     })
-    storage.get("settings").then((data)=>{
-      this.$store.commit("setSettings",data||{})
-    })
+    
   },
   computed:{
     openSide:{

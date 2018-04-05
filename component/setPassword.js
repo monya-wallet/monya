@@ -17,7 +17,10 @@ module.exports=require("../js/lang.js")({ja:require("./ja/setPassword.html"),en:
       error:false,
       loading:false,
       biometric:true,
-      biometricAvailable:false
+      biometricAvailable:false,
+      encrypt:false,
+      encrypted:false,
+      answers:this.$store.state.answers
     }
   },
   store:require("../js/store.js"),
@@ -38,19 +41,42 @@ module.exports=require("../js/lang.js")({ja:require("./ja/setPassword.html"),en:
           password:this.password,
           makeCur:Object.keys(cipher.pubs)
         }))
+        if(this.encrypt&&!this.encrypted){
+          storage.setEncryption(this.password)
+        }
       }else{
         currencyList.init([])
-        cipherPromise=storage.get("settings").then(s=>{
-          if(!s){
-            s={monappy:{},monaparty:{enabled:true}}
-            storage.set("settings",s)
-          }
-          this.$store.commit("setSettings",s)
-          return coinUtil.makePairsAndEncrypt({
-            entropy:this.$store.state.entropy,
-            password:this.password,
-            makeCur:[template["<!--t:primaryCoinId-->"]||"mona"]
-          })
+        const exts=[]
+        if(this.answers[5]==="xrp"){
+          exts.push("xrp")
+        }
+        if(this.answers[5]==="xem"){
+          exts.push("nem")
+        }
+        if(this.answers[9]){
+          exts.push("zaifPay")
+        }
+        storage.set("settings",{
+          includeUnconfirmedFunds:false,
+          useEasyUnit:!!this.answers[8],
+          absoluteTime:false,
+          fiat:"jpy",
+          paySound:false,
+          monappy:{
+            enabled:false,
+            myUserId:""
+          },
+          monaparty:{
+            bgClass:"sand"
+          },
+          enabledExts:exts
+        })
+        
+
+        cipherPromise=coinUtil.makePairsAndEncrypt({
+          entropy:this.$store.state.entropy,
+          password:this.password,
+          makeCur:[template["<!--t:primaryCoinId-->"]||"mona"]
         })
       }
       cipherPromise.then((data)=>storage.set("keyPairs",data))
@@ -71,7 +97,7 @@ module.exports=require("../js/lang.js")({ja:require("./ja/setPassword.html"),en:
     }
     
   },
-  mounted(){
+  created(){
     if(this.$store.state.entropy){
       this.change=false
     }else{
@@ -80,6 +106,12 @@ module.exports=require("../js/lang.js")({ja:require("./ja/setPassword.html"),en:
     storage.isBiometricAvailable().then(flag=>{
       this.biometricAvailable=flag
       this.biometric=flag
+    })
+    storage.dataState().then(flag=>{
+      if(flag===2){
+        this.encrypted=true
+        this.encrypt=true
+      }
     })
   }
 })

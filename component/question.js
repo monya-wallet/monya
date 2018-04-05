@@ -544,6 +544,7 @@ module.exports=lang({ja:require("./ja/question.html"),en:require("./en/question.
       lastQNo:[0]
     }
   },
+  store:require("../js/store"),
   methods:{
     answer(ans){
       this.answers[this.questionNumber]=ans.value;
@@ -558,25 +559,7 @@ module.exports=lang({ja:require("./ja/question.html"),en:require("./en/question.
       switch(ans.to){
         case -1://User seems to be a great Monacoiner.
         case -2://User declined.Go to key generation
-          storage.set("settings",{
-            includeUnconfirmedFunds:false,
-            useEasyUnit:!!this.answers[7],
-            absoluteTime:false,
-            fiat:"jpy",
-            paySound:false,
-            monappy:{
-              enabled:false,
-              myUserId:""
-            },
-            monaparty:{
-              enabled:true,
-              bgClass:"sand"
-            },
-            xrp:{
-              enabled:this.answers[5]==="xrp"
-            },
-            isTamamiCute:ans.to===-1
-          })
+          this.$store.commit("setAnswers",this.answers)
           delete require.cache[require.resolve("./generateKeyWarn.js")]
           this.$emit("push",require("./generateKeyWarn.js"))
           break;

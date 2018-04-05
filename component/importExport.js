@@ -26,7 +26,7 @@ module.exports=require("../js/lang.js")({ja:require("./ja/importExport.html"),en
       })
     },
     reset(){
-      storage.setAll({}).then(()=>{
+      storage.erase().then(()=>{
         this.$store.commit("deleteEntropy")
         this.$store.commit("setFinishNextPage",{page:require("./first.js"),infoId:"reset"})
         this.$emit("replace",require("./finished.js"))

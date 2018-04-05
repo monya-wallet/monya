@@ -33,9 +33,9 @@ module.exports=require("../js/lang.js")({ja:require("./ja/monaparty.html"),en:re
     getMyAssets(){
       this.loading=true
       const title = titleList.get(this.titleId)
-      storage.get("addresses").then(r=>title.callCP("get_normalized_balances",{
+      title.callCP("get_normalized_balances",{
         addresses:title.cp.getReceiveAddr()
-      }))
+      })
         .then(res=>{
           this.assets=res
           this.loading=false

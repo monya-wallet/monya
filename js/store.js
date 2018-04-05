@@ -30,10 +30,13 @@ module.exports = new Vuex.Store({
     error:"",
     extensionSend:{},
     apiName:"",
-    apiParam:null
-    
+    apiParam:null,
+    answers:[]
   },
   mutations: {
+    setAnswers(state,ent) {
+      state.answers=ent;
+    },
     setEntropy(state,ent) {
       state.entropy=ent;
     },
