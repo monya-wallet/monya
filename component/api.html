@@ -2,15 +2,6 @@
   <custom-bar title="API" menu="true"></custom-bar>
   <div>
     <div v-if="qType==='yOrN'" id="yOrNAPI">
-      <div v-if="name==='enableExtendedMode'">
-        Extended Modeを有効化します。
-      </div>
-      <div v-if="name==='disableExtendedMode'">
-        Extended Modeを無効化します。
-      </div>
-      <div v-if="name==='disableExtendedMode'">
-        アトミックスワップデータを共有します。
-      </div>
       <v-ons-button modifier="large cta" @click="yes">はい</v-ons-button>
       <v-ons-button modifier="large" @click="no">いいえ</v-ons-button>
     </div>

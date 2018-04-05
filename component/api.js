@@ -18,15 +18,7 @@ module.exports=require("../js/lang.js")({ja:require("./ja/api.html"),en:require(
   methods:{
     yes(){
       switch(this.name){
-        case "enableExtendedMode":
-          storage.set("extendedMode",true)
-          this.$emit("pop")
-          break;
-        case "disableExtendedMode":
-          storage.set("extendedMode",false)
-          this.$emit("pop")
-          break;
-          
+
           
       }
     },
