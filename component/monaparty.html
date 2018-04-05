@@ -51,7 +51,56 @@
         <div class="left"><img id="titleImg" :src="v.icon"/></div>
         <div class="center">{{v.titleName}}</div>
       </v-ons-list-item>
-      
+      <v-ons-list-item v-show="!titleAdd" @click="titleAdd=true">
+        <div class="left"><v-ons-icon icon="ion-plus"></v-ons-icon></div>
+        <div class="center">タイトルを追加</div>
+      </v-ons-list-item>
+      <div v-show="titleAdd">
+        <v-ons-list-header>タイトル追加</v-ons-list-header>
+        <v-ons-list-item>
+          <div class="center">cpCoinId</div>
+          <div class="right">
+            <v-ons-select v-model="t.cpCoinId"><option :value="c.coinId" v-for="c in coins">{{c.name}}</option></v-ons-select>
+          </div>
+        </v-ons-list-item>
+        <v-ons-list-item>
+          <div class="center">titleId</div>
+          <div class="right">
+            <v-ons-input v-model="t.titleId" placeholder="タイトルID"></v-ons-input>
+          </div>
+        </v-ons-list-item>
+        <v-ons-list-item>
+          <div class="center">titleName</div>
+          <div class="right">
+            <v-ons-input v-model="t.titleName" placeholder="名称"></v-ons-input>
+          </div>
+        </v-ons-list-item>
+        <v-ons-list-item>
+          <div class="center">apiVer</div>
+          <div class="right">
+            <v-ons-select v-model="t.apiVer">
+              <option value="0">No API</option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+            </v-ons-select>
+          </div>
+        </v-ons-list-item>
+        <v-ons-list-item v-show="parseInt(t.apiVer)">
+          <div class="center">apiEndpoint</div>
+          <div class="right">
+            <v-ons-input v-model="t.apiEndpoint" placeholder="APIエンドポイント"></v-ons-input>
+          </div>
+        </v-ons-list-item>
+        <v-ons-list-item>
+          <div class="center">icon</div>
+          <div class="right">
+            <v-ons-input v-model="t.icon" placeholder="アイコンURL"></v-ons-input>
+          </div>
+        </v-ons-list-item>
+        <v-ons-list-item>
+          <v-ons-button modifier="large" @click="addTitle" :disabled="!t.cpCoinId||!t.titleId||!t.titleName">追加</v-ons-button>
+        </v-ons-list-item>
+      </div>
     </v-ons-list>
   </v-ons-dialog>
 </v-ons-page>

@@ -17,7 +17,7 @@ const defaultTitles=[{
   icon:require("../res/coins/xmp.png")
 }]
 
-const titles={}
+let titles={}
 /**
  * Get supported titles
  * @param {function} fn(Title).
@@ -47,6 +47,7 @@ exports.getTitleList=()=>{
 }
 
 exports.init =customTitles=>{
+  titles={}
   for(let i = 0;i<defaultTitles.length;i++){
     const defCoin = defaultTitles[i]
     titles[defCoin.titleId]=new Title(defCoin)
@@ -55,7 +56,4 @@ exports.init =customTitles=>{
     const defCoin = customTitles[i]
     titles[defCoin.titleId]=new Title(defCoin)
   }
-}
-exports.addTitle=customTitle=>{
-  titles[customTitle.titleId]=customTitle
 }

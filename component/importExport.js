@@ -34,7 +34,11 @@ module.exports=require("../js/lang.js")({ja:require("./ja/importExport.html"),en
     },
     resetCoins(){
       this.resetCur=false
-      return storage.set("customCoins",[]).then(()=>{
+      return storage.set("customCoins",[])
+        .then(()=>{
+          return storage.set("customTitles",[])
+        })
+        .then(()=>{
         window.location.reload()
       })
     },

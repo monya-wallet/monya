@@ -2,8 +2,7 @@ const titleList = require("../js/titleList")
 const BigNumber = require('bignumber.js');
 const storage = require("../js/storage")
 const axios = require("axios")
-
-const COIN_ID="mona"//
+const currencyList = require("../js/currencyList")
 
 module.exports=require("../js/lang.js")({ja:require("./ja/monaparty.html"),en:require("./en/monaparty.html")})({
   data:()=>({
@@ -16,7 +15,18 @@ module.exports=require("../js/lang.js")({ja:require("./ja/monaparty.html"),en:re
     loading:false,searchKeyword:"",
     titles:{},
     titleId:"monacard",
-    titDlg:false
+    titDlg:false,
+    titleAdd:false,
+    coins:[],
+
+    t:{
+      cpCoinId:"",
+      titleId:"",
+      titleName:"",
+      apiVer:false,
+      apiEndpoint:"",
+      icon:""
+    }
   }),
   store:require("../js/store.js"),
   methods:{
@@ -78,6 +88,35 @@ module.exports=require("../js/lang.js")({ja:require("./ja/monaparty.html"),en:re
     goToDex(){
       this.$store.commit("setTokenInfo",{coinId:titleList.get(this.titleId).cpCoinId})
       this.$emit("push",require("./dexOrder.js"))
+    },
+    addTitle(){
+      storage.get("customTitles").then(res=>{
+        this.t.apiVer=parseInt(this.t.apiVer)
+        if(res){
+          res.push(this.t)
+        }else{
+          res=[this.t]
+        }
+        titleList.init(res||[])
+        
+        const tl=titleList.getTitleList()
+        for(let k in tl){
+          if(tl[k].cp.hdPubNode){
+            this.$set(this.titles,k,tl[k])
+          }
+        }
+        return storage.set("customTitles",res)
+      }).then(()=>{
+        this.t = {
+          cpCoinId:"",
+          titleId:"",
+          titleName:"",
+          apiVer:false,
+          apiEndpoint:"",
+          icon:""
+        }
+      })
+        
     }
   },
   computed:{
@@ -98,18 +137,22 @@ module.exports=require("../js/lang.js")({ja:require("./ja/monaparty.html"),en:re
       this.getMyAssets()
     }
   },
-  mounted(){
-    titleList.init([])
-    
-    const tl=titleList.getTitleList()
-    for(let k in tl){
-      if(tl[k].cp.hdPubNode){
-        this.$set(this.titles,k,tl[k])
-        this.titleId=k
+  created(){
+    storage.get("customTitles").then(res=>{
+      titleList.init(res||[])
+      
+      const tl=titleList.getTitleList()
+      for(let k in tl){
+        if(tl[k].cp.hdPubNode){
+          this.$set(this.titles,k,tl[k])
+          this.titleId=k
+        }
       }
-    }
-    
-    this.getMyAssets()
+      this.getMyAssets()
+    })
+    currencyList.eachWithPub(cur=>{
+      this.coins.push({coinId:cur.coinId,name:cur.coinScreenName})
+    })
     if(window.StatusBar){
       window.StatusBar.styleLightContent();
     }
