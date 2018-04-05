@@ -1,6 +1,9 @@
 const {app, BrowserWindow} = require('electron');
 const path = require('path');
 const url = require('url');
+let protocol = require('protocol');
+
+const protocols=["monacoin","bitzeny","bitcoin","litecoin","fujicoin","bitcoin","bitcoincash","koto","dash","zcash","neetcoin","ripple","nem"]
 
 let mainWindow;
 let customURI;
@@ -8,9 +11,7 @@ let customURI;
 const enableDevTools = true
 
 const singleInstance = app.makeSingleInstance((argv, workingDirectory) => {
-  if (process.platform == 'win32' || process.platform === 'linux') {
-    customURI = argv.slice(1);
-  }
+  customURI = argv[argv.length-1];
   if (mainWindow) {
     mainWindow.webContents.send('handle-open-url', customURI);
   }
@@ -20,9 +21,10 @@ if (singleInstance) {
   app.quit()
 }
 
-["monacoin","bitzeny","bitcoin","litecoin","fujicoin","bitcoin","bitcoincash","koto","dash","zcash","neetcoin","ripple","nem"].forEach(d=>{
+protocols.forEach(d=>{
 
   app.setAsDefaultProtocolClient(d);
+  protocol.registerStandardSchemes([d])
 })
 
 const createWindow= () => {
@@ -49,14 +51,22 @@ const createWindow= () => {
     mainWindow = null;
   });
 
-  if (process.platform == 'win32' || process.platform === 'linux') {
-    customURI = process.argv.slice(1);
-    if (typeof customURI !== 'undefined' && customURI !== '') {
-      mainWindow.webContents.on('did-finish-load', () => {
-        mainWindow.webContents.send('handle-open-url', customURI);
-      });
+  protocols.forEach(pr=>{
+  protocol.registerStringProtocol(pr, function (request, callback) {
+    mainWindow.webContents.send('handle-open-url', request.url);
+  }, function (err) {
+    if (!err) {
+      console.log('Registered protocol succesfully');
     }
+  });
+  })
+  customURI = process.argv[ process.argv.length-1];
+  if (typeof customURI !== 'undefined' && customURI !== '') {
+    mainWindow.webContents.on('did-finish-load', () => {
+      mainWindow.webContents.send('handle-open-url', customURI);
+    });
   }
+  
 }
 
 app.on('ready',createWindow);
@@ -69,6 +79,11 @@ app.on('activate', () => {
   if (mainWindow === null)  createWindow();
 });
 
+
 app.on('open-url', (event, url) => {
-  mainWindow.webContents.send('handle-open-url', url);
+  if(mainWindow){
+    mainWindow.webContents.send('handle-open-url', url);
+  }else{
+    customURI=url
+  }
 });
