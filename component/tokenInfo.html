@@ -24,9 +24,9 @@
           <div class="center">作者名</div>
           <div class="right">{{card.ownerName}}</div>
         </v-ons-list-item>
-        <v-ons-list-item>
+        <v-ons-list-item modifier="chevron" @click="openTwitter">
           <div class="center">作者Twitterアカウント名</div>
-          <div class="right">{{card.twitterScreenName}}</div>
+          <div class="right">@{{card.twitterScreenName}}</div>
         </v-ons-list-item>
         <v-ons-list-item>
           <div class="center">説明文</div>
@@ -57,11 +57,11 @@
         </v-ons-list-item>
         <v-ons-list-item>
           <div class="center">オーナーアドレス</div>
-          <div class="right"><v-ons-input :value="asset.owner"></v-ons-input></div>
+          <div class="right"><v-ons-input :value="asset.owner" readonly="readonly"></v-ons-input></div>
         </v-ons-list-item>
         <v-ons-list-item>
           <div class="center">発行者アドレス</div>
-          <div class="right"><v-ons-input :value="asset.issuer"></v-ons-input></div>
+          <div class="right"><v-ons-input :value="asset.issuer" readonly="readonly"></v-ons-input></div>
         </v-ons-list-item>
         <v-ons-list-item>
           <div class="center">小数点分割</div>

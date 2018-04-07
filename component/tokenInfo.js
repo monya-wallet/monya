@@ -1,5 +1,6 @@
 const currencyList = require("../js/currencyList")
 const titleList = require("../js/titleList")
+const coinUtil = require("../js/coinUtil")
 const axios = require("axios")
 module.exports=require("../js/lang.js")({ja:require("./ja/tokenInfo.html"),en:require("./en/tokenInfo.html")})({
   data(){return{
@@ -16,6 +17,9 @@ module.exports=require("../js/lang.js")({ja:require("./ja/tokenInfo.html"),en:re
     sendToken(){
       this.$store.commit("setTokenInfo",{token:this.token,coinId:this.coinId,sendable:this.sendable,divisible:this.asset.divisible})
       this.$emit("push",require("./sendToken.js"))
+    },
+    openTwitter(){
+      coinUtil.openUrl("https://twitter.com/"+this.card.twitterScreenName)
     }
   },
   computed:{

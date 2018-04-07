@@ -151,7 +151,9 @@ module.exports=require("../js/lang.js")({ja:require("./ja/monaparty.html"),en:re
       this.getMyAssets()
     })
     currencyList.eachWithPub(cur=>{
-      this.coins.push({coinId:cur.coinId,name:cur.coinScreenName})
+      if(cur.counterpartyEndpoint){
+        this.coins.push({coinId:cur.coinId,name:cur.coinScreenName})
+      }
     })
     if(window.StatusBar){
       window.StatusBar.styleLightContent();
