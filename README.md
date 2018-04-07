@@ -33,7 +33,7 @@ DMD様
 
 ### 初期設定とアセットビルド
 
-1. `git clone https://github.com/MissMonacoin/monya`
+1. `git clone https://github.com/monya-wallet/monya`
 1. `npm install`
 1. `npm run build`
 

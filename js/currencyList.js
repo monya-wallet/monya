@@ -50,7 +50,8 @@ const defaultCoins=[
       fiat:"jpy"
     },
     confirmations:6,
-    counterpartyEndpoint:"https://wallet.monaparty.me/_api"
+    counterpartyEndpoint:"https://wallet.monaparty.me/_api",
+    opReturnLength:40
   },{
     coinScreenName:j?"ビットゼニー":"BitZeny",
     coinId:"zny",
@@ -89,7 +90,8 @@ const defaultCoins=[
       jsonPath:'$[?(@.id=="ZNY_BTC")].last',
       fiat:"btc"
     },
-    sound:require("../res/coins/paySound/zny.m4a")
+    sound:require("../res/coins/paySound/zny.m4a"),
+    opReturnLength:40
   },{
     coinScreenName:j?"ビットコイン":"Bitcoin",
     coinId:"btc",
@@ -128,7 +130,8 @@ const defaultCoins=[
       fiat:"jpy"
     },
     confirmations:6,
-    counterpartyEndpoint:"https://wallet.counterwallet.io/_api"
+    counterpartyEndpoint:"https://wallet.counterwallet.io/_api",
+    opReturnLength:40
   },{
     coinScreenName:j?"ライトコイン":"Litecoin",
     coinId:"ltc",
@@ -162,7 +165,8 @@ const defaultCoins=[
       jsonPath:'$.data.last',
       fiat:"btc"
     },
-    confirmations:6
+    confirmations:6,
+    opReturnLength:40
   },{
     coinScreenName:j?"フジコイン":"FujiCoin",
     coinId:"fjc",
@@ -197,7 +201,8 @@ const defaultCoins=[
       jsonPath:'$.stats[-1:][1]',
       fiat:"jpy"
     },
-    confirmations:6
+    confirmations:6,
+    opReturnLength:40
   },{
     coinScreenName:j?"ビットコイン(SegWit)":"Bitcoin(SegWit)",
     coinId:"btcsw",
@@ -235,7 +240,8 @@ const defaultCoins=[
       fiat:"jpy"
     },
     confirmations:6,
-    counterpartyEndpoint:"https://wallet.counterwallet.io/_api"
+    counterpartyEndpoint:"https://wallet.counterwallet.io/_api",
+    opReturnLength:40
   },{
     coinScreenName:j?"ビットコインキャッシュ":"Bitcoin Cash",
     coinId:"bch",
@@ -272,7 +278,8 @@ const defaultCoins=[
       jsonPath:'$.data.last',
       fiat:"jpy"
     },
-    confirmations:6
+    confirmations:6,
+    opReturnLength:40 // change after hard fork
   },{
 	  "coinScreenName": j?"コト":"Koto",
 	  "coinId": "koto",
@@ -309,7 +316,8 @@ const defaultCoins=[
 			  "url": "https://insight.kotocoin.info/api",
 			  "explorer": "https://insight.kotocoin.info"
 		  }
-	  ]
+	  ],
+    opReturnLength:40
   },{
 	  "coinScreenName": j?"ダッシュ":"Dash",
 	  "coinId": "dash",
@@ -347,7 +355,8 @@ const defaultCoins=[
 			  "url": "https://dash-bitcore3.trezor.io/api",
 			  "explorer": "https://dash-bitcore1.trezor.io"
 		  }
-	  ]
+	  ],
+    opReturnLength:40
   },{
 	  "coinScreenName": j?"ジーキャッシュ":"Zcash",
 	  "coinId": "zec",
@@ -384,7 +393,8 @@ const defaultCoins=[
 			  "explorer": "https://zec-bitcore1.trezor.io"
 		  }
 	  ],
-    lib:"zec"
+    lib:"zec",
+    opReturnLength:40
   },{
     coinScreenName: j?"NEETCOIN":"NeetCoin",
     coinId: "neet",
@@ -415,7 +425,8 @@ const defaultCoins=[
       json: true,
       jsonPath: '$[?(@.id=="NEET_BTC")].last',
       fiat: "btc"
-    }
+    },
+    opReturnLength:0
   }
 ]
 

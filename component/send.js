@@ -118,7 +118,9 @@ module.exports=require("../js/lang.js")({ja:require("./ja/send.html"),en:require
   },
   computed:{
     remainingBytes(){
-      return 40-Buffer.from(this.message||"", 'utf8').length
+      if(this.coinType){
+        return currencyList.get(this.coinType).opReturnLength-Buffer.from(this.message||"", 'utf8').length
+      }else{return 0}
     },
     cannotSendMessage(){
       if(this.coinType==="neet"){
