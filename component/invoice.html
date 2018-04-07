@@ -4,7 +4,7 @@
   </custom-bar>
   <div>
     <div id="currencySelector">
-      <v-ons-carousel swipeable overscrollable direction="horizontal" item-height="50px" item-width="50px" :index="currencyIndex">
+      <v-ons-carousel swipeable overscrollable centered direction="horizontal" item-height="50px" item-width="50px" :index="currencyIndex">
         <v-ons-carousel-item class="currencyIcon monappy" @click="currencyIndex=-1" v-show="monappyEnabled">
           <div class="checked" v-show="currencyIndex===-1"></div>
         </v-ons-carousel-item>

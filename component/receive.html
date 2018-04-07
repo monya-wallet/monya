@@ -8,7 +8,7 @@
   </custom-bar>
   <div>
     <div id="currencySelector">
-      <v-ons-carousel swipeable overscrollable direction="horizontal" item-height="50px" item-width="50px" :index="currencyIndex">
+      <v-ons-carousel swipeable overscrollable centered direction="horizontal" item-height="50px" item-width="50px" :index="currencyIndex">
         <v-ons-carousel-item v-for="(crc,i) in currency" class="currencyIcon" :style="{'background-image':'url('+crc.icon+')'}" @click="currencyIndex=i">
           <div class="checked" v-show="currencyIndex==i"></div>
         </v-ons-carousel-item>

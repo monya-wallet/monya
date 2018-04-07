@@ -20,6 +20,10 @@ module.exports=require("../js/lang.js")({ja:require("./ja/tokenInfo.html"),en:re
     },
     openTwitter(){
       coinUtil.openUrl("https://twitter.com/"+this.card.twitterScreenName)
+    },
+    goToListTokens(addr){
+      this.$store.commit("setTokenInfo",{addr,coinId:titleList.get(this.titleId).cpCoinId})
+      this.$emit("push",require("./listTokens.js"))
     }
   },
   computed:{

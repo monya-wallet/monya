@@ -7,18 +7,15 @@
           <v-ons-button modifier="quiet" @click="remove(i)"><v-ons-icon icon="ion-close"></v-ons-icon></v-ons-button>
         </div>
         <div class="center">
-          <v-ons-input v-model="o.name" placeholder="品名" style="width:100%"></v-ons-input>
+          <v-ons-input v-model="o.name" placeholder="品名" style="width:100%" @change="save"></v-ons-input>
         </div>
         <div class="right">
-          <v-ons-input v-model="o.price" type="number" placeholder="金額(日本円)"></v-ons-input>
+          <v-ons-input v-model="o.price" type="number" placeholder="金額(日本円)" @change="save"></v-ons-input>
         </div>
       </v-ons-list-item>
       <v-ons-list-item @click="add">
         <div class="left"><v-ons-icon icon="ion-plus"></v-ons-icon></div>
         <div class="center">追加</div>
-      </v-ons-list-item>
-      <v-ons-list-item>
-        <v-ons-button modifier="large" @click="save">保存</v-ons-button>
       </v-ons-list-item>
     </v-ons-list>
     

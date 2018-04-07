@@ -14,7 +14,6 @@ module.exports=require("../js/lang.js")({ja:require("./ja/monaparty.html"),en:re
     assetName:"",
     loading:false,searchKeyword:"",
     titles:{},
-    titleId:"monacard",
     titDlg:false,
     titleAdd:false,
     coins:[],
@@ -127,28 +126,24 @@ module.exports=require("../js/lang.js")({ja:require("./ja/monaparty.html"),en:re
       set(v){
         this.$store.commit("setTitle",v)
         this.getMyAssets()
+        this.titDlg=false
         return v
       }
-    }
-  },
-  watch:{
-    titleId(){
-      this.titDlg=false
-      this.getMyAssets()
     }
   },
   created(){
     storage.get("customTitles").then(res=>{
       titleList.init(res||[])
-      
+
+      let id=""
       const tl=titleList.getTitleList()
       for(let k in tl){
         if(tl[k].cp.hdPubNode){
           this.$set(this.titles,k,tl[k])
-          this.titleId=k
+          id=k
         }
       }
-      this.getMyAssets()
+      this.titleId=id
     })
     currencyList.eachWithPub(cur=>{
       if(cur.counterpartyEndpoint){

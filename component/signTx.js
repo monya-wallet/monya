@@ -93,12 +93,12 @@ module.exports=require("../js/lang.js")({ja:require("./ja/signTx.html"),en:requi
       try{
         const txb= new cur.lib.TransactionBuilder(cur.network)
         this.ins.forEach(v=>{
-          txb.addInput(v.txId,v.vout|0,v.sequence||null)
+          txb.addInput(v.txId,v.vout|0,parseInt(v.sequence)||null)
         })
         this.outs.forEach(v=>{
           txb.addOutput(v.addr,parseInt(v.value))
         })
-        this.lockTime&&txb.setLockTime(this.lockTime|0)
+        this.lockTime&&txb.setLockTime(parseInt(this.lockTime)|0)
         return txb.buildIncomplete().toHex()
         
       }catch(e){
@@ -114,6 +114,7 @@ module.exports=require("../js/lang.js")({ja:require("./ja/signTx.html"),en:requi
       })
     },
     unsigned(){
+      try{
       const lib =currencyList.get(this.coinId).lib
       const decompiled=lib.script.decompile(lib.Transaction.fromHex(this.unsigned).ins[0].script)
       
@@ -135,7 +136,10 @@ module.exports=require("../js/lang.js")({ja:require("./ja/signTx.html"),en:requi
           validSigLen++
         }
       }
-      this.complete=(this.neededSig<=validSigLen+1)   
+        this.complete=(this.neededSig<=validSigLen+1)
+      }catch(e){
+        return
+      }
     }
   },
   created(){

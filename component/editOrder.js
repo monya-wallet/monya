@@ -15,7 +15,7 @@ module.exports=require("../js/lang.js")({ja:require("./ja/editOrder.html"),en:re
   methods:{
     save(){
       storage.set("orders",this.orders).then(r=>{
-        this.$emit("pop")
+        console.log(this.orders)
       })
     },
     add(){
@@ -28,6 +28,11 @@ module.exports=require("../js/lang.js")({ja:require("./ja/editOrder.html"),en:re
     remove(i){
 
       this.orders.splice(i,1)
+    }
+  },
+  watch:{
+    orders(){
+      this.save()
     }
   }
 })

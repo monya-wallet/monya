@@ -55,13 +55,13 @@
           <div class="center">説明文</div>
           <div class="right">{{asset.description}}</div>
         </v-ons-list-item>
-        <v-ons-list-item>
+        <v-ons-list-item @click="goToListTokens(asset.owner)">
           <div class="center">オーナーアドレス</div>
-          <div class="right"><v-ons-input :value="asset.owner" readonly="readonly"></v-ons-input></div>
+          <div class="right">{{asset.owner}}</div>
         </v-ons-list-item>
-        <v-ons-list-item>
+        <v-ons-list-item @click="goToListTokens(asset.issuer)">
           <div class="center">発行者アドレス</div>
-          <div class="right"><v-ons-input :value="asset.issuer" readonly="readonly"></v-ons-input></div>
+          <div class="right">{{asset.issuer}}</div>
         </v-ons-list-item>
         <v-ons-list-item>
           <div class="center">小数点分割</div>

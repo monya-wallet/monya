@@ -51,7 +51,7 @@ const defaultCoins=[
     },
     confirmations:6,
     counterpartyEndpoint:"https://wallet.monaparty.me/_api",
-    opReturnLength:40
+    opReturnLength:83
   },{
     coinScreenName:j?"ビットゼニー":"BitZeny",
     coinId:"zny",
@@ -91,7 +91,7 @@ const defaultCoins=[
       fiat:"btc"
     },
     sound:require("../res/coins/paySound/zny.m4a"),
-    opReturnLength:40
+    opReturnLength:83
   },{
     coinScreenName:j?"ビットコイン":"Bitcoin",
     coinId:"btc",
@@ -131,7 +131,7 @@ const defaultCoins=[
     },
     confirmations:6,
     counterpartyEndpoint:"https://wallet.counterwallet.io/_api",
-    opReturnLength:40
+    opReturnLength:83
   },{
     coinScreenName:j?"ライトコイン":"Litecoin",
     coinId:"ltc",
@@ -166,7 +166,7 @@ const defaultCoins=[
       fiat:"btc"
     },
     confirmations:6,
-    opReturnLength:40
+    opReturnLength:83
   },{
     coinScreenName:j?"フジコイン":"FujiCoin",
     coinId:"fjc",
@@ -202,7 +202,7 @@ const defaultCoins=[
       fiat:"jpy"
     },
     confirmations:6,
-    opReturnLength:40
+    opReturnLength:83
   },{
     coinScreenName:j?"ビットコイン(SegWit)":"Bitcoin(SegWit)",
     coinId:"btcsw",
@@ -241,7 +241,7 @@ const defaultCoins=[
     },
     confirmations:6,
     counterpartyEndpoint:"https://wallet.counterwallet.io/_api",
-    opReturnLength:40
+    opReturnLength:83
   },{
     coinScreenName:j?"ビットコインキャッシュ":"Bitcoin Cash",
     coinId:"bch",
@@ -279,7 +279,7 @@ const defaultCoins=[
       fiat:"jpy"
     },
     confirmations:6,
-    opReturnLength:40 // change after hard fork
+    opReturnLength:83 // change after hard fork
   },{
 	  "coinScreenName": j?"コト":"Koto",
 	  "coinId": "koto",
@@ -317,7 +317,7 @@ const defaultCoins=[
 			  "explorer": "https://insight.kotocoin.info"
 		  }
 	  ],
-    opReturnLength:40
+    opReturnLength:80
   },{
 	  "coinScreenName": j?"ダッシュ":"Dash",
 	  "coinId": "dash",
@@ -356,7 +356,7 @@ const defaultCoins=[
 			  "explorer": "https://dash-bitcore1.trezor.io"
 		  }
 	  ],
-    opReturnLength:40
+    opReturnLength:83
   },{
 	  "coinScreenName": j?"ジーキャッシュ":"Zcash",
 	  "coinId": "zec",
@@ -394,7 +394,7 @@ const defaultCoins=[
 		  }
 	  ],
     lib:"zec",
-    opReturnLength:40
+    opReturnLength:80
   },{
     coinScreenName: j?"NEETCOIN":"NeetCoin",
     coinId: "neet",

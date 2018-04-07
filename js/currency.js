@@ -33,7 +33,7 @@ module.exports=class{
     this.sound=opt.sound||""
     this.counterpartyEndpoint=opt.counterpartyEndpoint
     this.enableSegwit=opt.enableSegwit
-    this.opReturnLength=opt.opReturnLength
+    this.opReturnLength=opt.opReturnLength||40
 
     this.libName = opt.lib
     switch(opt.lib){

@@ -39,7 +39,11 @@ this.icon=opt.icon
           assetsList:[token]
       }).then(a=>{
         d.asset=a
-        return this.getCardDetail(a[0].asset_longname||a[0].asset)
+        if(a.length){
+          return this.getCardDetail(a[0].asset_longname||a[0].asset)
+        }else{
+          return []
+        }
       }).then(b=>{
         d.card = b
         return d
