@@ -5,6 +5,25 @@
       <input name="" :type="showPassword?'text':'password'" @input="password=$event.target.value" id="password" @change="start" :disabled="loading"/>
     </div>
     <v-ons-button modifier="large" @click="start" :disabled="loading">はじめる</v-ons-button>
+    <v-ons-button modifier="large quiet" @click="helpMe=true" :disabled="loading" v-show="mistaken">パスワードがわからない？</v-ons-button>
     <div class="spinner" v-show="loading"></div>
   </div>
+  <v-ons-alert-dialog :visible.sync="helpMe" cancelable>
+    <p>パスフレーズを使って残高を復帰させることができます。</p>
+    <template slot="footer">
+      <div class="alert-dialog-button" @click="resetDialog=true;helpMe=false">リセット＆リストア</div>
+      <div class="alert-dialog-button" @click="helpMe = false">やめる</div>
+    </template>
+  </v-ons-alert-dialog>
+  
+  <v-ons-alert-dialog modifier="rowfooter"
+                      :visible.sync="resetDialog"
+                      >
+    <span slot="title">本当に削除しますか？</span>
+    <p>全データを消去します。バックアップが用意されていることを必ず確認してください。</p>
+    <template slot="footer">
+      <div class="alert-dialog-button" @click="resetDialog = false">やめる</div>
+      <div class="alert-dialog-button" @click="erase">理解しました</div>
+    </template>
+  </v-ons-alert-dialog>
 </v-ons-page>

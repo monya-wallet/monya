@@ -7,7 +7,10 @@ module.exports=require("../js/lang.js")({ja:require("./ja/login.html"),en:requir
       showPassword:false,
       password:"",
       incorrect:false,
-      loading:true
+      loading:true,
+      mistaken:false,
+      helpMe:false,
+      resetDialog:false
     }
   },
   methods:{
@@ -18,6 +21,7 @@ module.exports=require("../js/lang.js")({ja:require("./ja/login.html"),en:requir
       })
       .catch(()=>{
         this.loading=false
+        this.mistaken=true
         this.incorrect=true;
         setTimeout(()=>{
           this.incorrect=false;
@@ -54,6 +58,13 @@ module.exports=require("../js/lang.js")({ja:require("./ja/login.html"),en:requir
         return storage.set("addresses",addrs)
       }).catch(e=>{
         this.$store.commit("setError",e.message)
+      })
+    },
+    erase(){
+      storage.erase().then(()=>{
+        this.$store.commit("deleteEntropy")
+        this.$store.commit("setFinishNextPage",{page:require("./restorePassphrase.js"),infoId:"reset"})
+        this.$emit("replace",require("./finished.js"))
       })
     }
   },
