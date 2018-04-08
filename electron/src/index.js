@@ -1,14 +1,13 @@
-const {app, BrowserWindow} = require('electron');
+const {app, BrowserWindow, protocol} = require('electron');
 const path = require('path');
 const url = require('url');
-let protocol = require('protocol');
 
 const protocols=["monacoin","bitzeny","bitcoin","litecoin","fujicoin","bitcoin","bitcoincash","koto","dash","zcash","neetcoin","ripple","nem"]
 
 let mainWindow;
 let customURI;
 
-const enableDevTools = true
+const enableDevTools = false
 
 const singleInstance = app.makeSingleInstance((argv, workingDirectory) => {
   customURI = argv[argv.length-1];
@@ -45,7 +44,7 @@ const createWindow= () => {
     slashes: true
   }));
   if (enableDevTools) {
-    mainWindow.webContents.openDevTools() 
+    mainWindow.webContents.openDevTools()
   }
   mainWindow.on('closed', () => {
     mainWindow = null;
@@ -66,7 +65,7 @@ const createWindow= () => {
       mainWindow.webContents.send('handle-open-url', customURI);
     });
   }
-  
+
 }
 
 app.on('ready',createWindow);
