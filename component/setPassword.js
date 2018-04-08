@@ -41,7 +41,7 @@ module.exports=require("../js/lang.js")({ja:require("./ja/setPassword.html"),en:
           password:this.password,
           makeCur:Object.keys(cipher.pubs)
         }))
-        if(this.encrypt&&!this.encrypted){
+        if(this.encrypt||this.encrypted){// if already encrypted, always encrypt
           storage.setEncryption(this.password)
         }
       }else{

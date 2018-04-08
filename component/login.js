@@ -70,6 +70,7 @@ module.exports=require("../js/lang.js")({ja:require("./ja/login.html"),en:requir
   },
   mounted(){
     this.loading=true
+    this.$store.commit("setKeyPairsExistence",false)
     storage.dataState().then(state=>{
       if(state===2){
         this.loading=false

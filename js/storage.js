@@ -76,7 +76,7 @@ exports.setAll = (obj) => new Promise((resolve, reject) => {
 });
 
 exports.erase = () => new Promise((resolve, reject) => {
-  localStorage.setItem(KEY_NAME,null)
+  localStorage.setItem(KEY_NAME,"")
   password=null
   resolve()
 });
@@ -85,6 +85,7 @@ exports.setEncryption =(pw)=> exports.getAll().then(res=>{
   if(!res){
     res={}
   }
+  
   password=pw
   return exports.setAll(res)
 })

@@ -28,7 +28,7 @@ module.exports=require("../js/lang.js")({ja:require("./ja/first.html"),en:requir
       this.popoverTarget=false
       this.popoverVisible=false
     }
-
+    this.$store.commit("setKeyPairsExistence",false)
     this.showAlert=/line/i.test(navigator.userAgent)
   }
 })
