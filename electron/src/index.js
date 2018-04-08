@@ -7,7 +7,7 @@ const protocols=["monacoin","bitzeny","bitcoin","litecoin","fujicoin","bitcoin",
 let mainWindow;
 let customURI;
 
-const enableDevTools = false
+const enableDevTools = true
 
 const singleInstance = app.makeSingleInstance((argv, workingDirectory) => {
   customURI = argv[argv.length-1];

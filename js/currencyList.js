@@ -51,7 +51,8 @@ const defaultCoins=[
     },
     confirmations:6,
     counterpartyEndpoint:"https://wallet.monaparty.me/_api",
-    opReturnLength:83
+    opReturnLength:83,
+    isAtomicSwapAvailable:true
   },{
     coinScreenName:j?"ビットゼニー":"BitZeny",
     coinId:"zny",
@@ -91,7 +92,8 @@ const defaultCoins=[
       fiat:"btc"
     },
     sound:require("../res/coins/paySound/zny.m4a"),
-    opReturnLength:83
+    opReturnLength:83,
+    isAtomicSwapAvailable:false //enable after activates CLTV
   },{
     coinScreenName:j?"ビットコイン":"Bitcoin",
     coinId:"btc",
@@ -131,7 +133,7 @@ const defaultCoins=[
     },
     confirmations:6,
     counterpartyEndpoint:"https://wallet.counterwallet.io/_api",
-    opReturnLength:83
+    opReturnLength:83,isAtomicSwapAvailable:true
   },{
     coinScreenName:j?"ライトコイン":"Litecoin",
     coinId:"ltc",
@@ -166,7 +168,8 @@ const defaultCoins=[
       fiat:"btc"
     },
     confirmations:6,
-    opReturnLength:83
+    opReturnLength:83,
+    isAtomicSwapAvailable:true
   },{
     coinScreenName:j?"フジコイン":"FujiCoin",
     coinId:"fjc",
@@ -202,7 +205,8 @@ const defaultCoins=[
       fiat:"jpy"
     },
     confirmations:6,
-    opReturnLength:83
+    opReturnLength:83,
+    isAtomicSwapAvailable:true
   },{
     coinScreenName:j?"ビットコイン(SegWit)":"Bitcoin(SegWit)",
     coinId:"btcsw",
@@ -241,7 +245,8 @@ const defaultCoins=[
     },
     confirmations:6,
     counterpartyEndpoint:"https://wallet.counterwallet.io/_api",
-    opReturnLength:83
+    opReturnLength:83,
+    isAtomicSwapAvailable:false
   },{
     coinScreenName:j?"ビットコインキャッシュ":"Bitcoin Cash",
     coinId:"bch",
@@ -279,7 +284,8 @@ const defaultCoins=[
       fiat:"jpy"
     },
     confirmations:6,
-    opReturnLength:83 // change after hard fork
+    opReturnLength:83, // change after hard fork,
+    isAtomicSwapAvailable:true
   },{
 	  "coinScreenName": j?"コト":"Koto",
 	  "coinId": "koto",
@@ -303,9 +309,9 @@ const defaultCoins=[
 		  "wif": 128
 	  },
     price: {
-      url: "https://www.coin-chain.info/json/jamapi.cgi",
+      url: "https://exvo.io/api/v2/tickers/kotobtc.json",
       json: true,
-      jsonPath: '$.data.last',
+      jsonPath: '$.ticker.last',
       fiat: "btc"
     },
 	  "enableSegwit": false,
@@ -317,7 +323,8 @@ const defaultCoins=[
 			  "explorer": "https://insight.kotocoin.info"
 		  }
 	  ],
-    opReturnLength:80
+    opReturnLength:80,
+    isAtomicSwapAvailable:true
   },{
 	  "coinScreenName": j?"ダッシュ":"Dash",
 	  "coinId": "dash",
@@ -356,7 +363,7 @@ const defaultCoins=[
 			  "explorer": "https://dash-bitcore1.trezor.io"
 		  }
 	  ],
-    opReturnLength:83
+    opReturnLength:83,isAtomicSwapAvailable:true
   },{
 	  "coinScreenName": j?"ジーキャッシュ":"Zcash",
 	  "coinId": "zec",
@@ -394,7 +401,7 @@ const defaultCoins=[
 		  }
 	  ],
     lib:"zec",
-    opReturnLength:80
+    opReturnLength:80,isAtomicSwapAvailable:true
   },{
     coinScreenName: j?"NEETCOIN":"NeetCoin",
     coinId: "neet",
@@ -426,7 +433,7 @@ const defaultCoins=[
       jsonPath: '$[?(@.id=="NEET_BTC")].last',
       fiat: "btc"
     },
-    opReturnLength:0
+    opReturnLength:0,isAtomicSwapAvailable:false
   }
 ]
 

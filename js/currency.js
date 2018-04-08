@@ -34,7 +34,7 @@ module.exports=class{
     this.counterpartyEndpoint=opt.counterpartyEndpoint
     this.enableSegwit=opt.enableSegwit
     this.opReturnLength=opt.opReturnLength||40
-
+    this.isAtomicSwapAvailable=!!opt.isAtomicSwapAvailable
     this.libName = opt.lib
     switch(opt.lib){
       case "zec":

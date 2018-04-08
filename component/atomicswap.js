@@ -5,6 +5,7 @@ const storage = require("../js/storage")
 const bip39 = require("@missmonacoin/bip39-eng")
 const BigNumber = require('bignumber.js');
 const coinUtil = require("../js/coinUtil")
+const qrcode = require("qrcode")
 
 const getPriv = (coinId,change,index,password)=>storage.get("keyPairs").then((cipher)=>{
   const cur = currencyList.get(coinId)
@@ -199,7 +200,10 @@ module.exports=require("../js/lang.js")({ja:require("./ja/atomicswap.html"),en:r
 
       contractType:"cltv",
 
-      strToRecv:""
+      strToRecv:"",
+      myP2SHQrcode:false,
+      myP2SHQrcodeUrl:"",
+      secretNotFound:false
     }
   },
   methods:{
@@ -211,13 +215,12 @@ module.exports=require("../js/lang.js")({ja:require("./ja/atomicswap.html"),en:r
     },
     reset(){
       Object.assign(this,{
-        addrIndex:0,
+        addrIndex:0, // reset parameter start
         refundAddrIndex:0,
         giveCoinId:"",
         getCoinId:"",
         getCoinIsCP:false,
         giveCoinIsCP:false,
-
         secret:"",
         secretSize:"",
         lockTime:"",
@@ -226,22 +229,21 @@ module.exports=require("../js/lang.js")({ja:require("./ja/atomicswap.html"),en:r
         refundAddressWithSecret:"",
         redeemAddressWOSecret:"",
         refundAddressWOSecret:"",
-
         myP2SH:null,
         scriptWithSecret:"",
         opponentP2SH:null,
         scriptWithoutSecret:"",
-
         utxo:"",
         password:"",
         fee:80000,
         signedTx:"",
-
         cpDivisible:false,
         cpAmount:0,
         cpToken:"XMP",
-
-        isRefund:0
+        isRefund:0,
+        strToRecv:"",
+        myP2SHQrcode:false,
+        myP2SHQrcodeUrl:""// reset parameter end
       })
       this.getLabels()
       this.getRefundLabels()
@@ -262,6 +264,7 @@ module.exports=require("../js/lang.js")({ja:require("./ja/atomicswap.html"),en:r
         this.$set(this,"labels",res)
       })
       this.getCoinCPAvailable = !!cur.counterpartyEndpoint
+      this.getCoinIsCP=false
     },
     getRefundLabels(){
       if (!this.giveCoinId) {
@@ -273,9 +276,13 @@ module.exports=require("../js/lang.js")({ja:require("./ja/atomicswap.html"),en:r
         this.$set(this,"refundLabels",res)
       })
       this.giveCoinCPAvailable = !!cur.counterpartyEndpoint
+      this.giveCoinIsCP=false
     },
     getCurrencies(){
       currencyList.eachWithPub(cur=>{
+        if(!cur.isAtomicSwapAvailable){
+          return
+        }
         this.coins.push({coinId:cur.coinId,name:cur.coinScreenName})
       })
     },
@@ -293,8 +300,17 @@ module.exports=require("../js/lang.js")({ja:require("./ja/atomicswap.html"),en:r
       
     },
     getPubKey(){
-      const pk=currencyList.get(this.getCoinId).getAddress(0,this.addrIndex|0)
-      const rpk=currencyList.get(this.giveCoinId).getAddress(0,this.refundAddrIndex|0)
+      if(!this.getCoinId||!this.giveCoinId){
+        return
+      }
+      let pk,rpk
+      try{pk=currencyList.get(this.getCoinId).getAddress(0,this.addrIndex|0)}catch(e){
+        this.$ons.notification.alert("Error: Add currency "+this.getCoinId)
+      }
+      
+      try{rpk=currencyList.get(this.giveCoinId).getAddress(0,this.refundAddrIndex|0)}catch(e){
+        this.$ons.notification.alert("Error: Add currency "+this.giveCoinId)
+      }
       
       if(this.secret){
         this.redeemAddressWithSecret=pk
@@ -306,6 +322,9 @@ module.exports=require("../js/lang.js")({ja:require("./ja/atomicswap.html"),en:r
       
     },
     generateP2SH(){
+      if(!(this.secretSize&&this.secretHash&&this.refundAddressWithSecret&&this.redeemAddressWOSecret&&this.lockTime)){
+        return
+      }
       const giveCur=currencyList.get(this.giveCoinId)
       const getCur=currencyList.get(this.getCoinId)
       if (this.secret) {
@@ -357,9 +376,10 @@ module.exports=require("../js/lang.js")({ja:require("./ja/atomicswap.html"),en:r
           this.giveCoinId
         );
       }
-      if(this.getCoinIsCP){
-        this.fee=400
-      }
+
+      this.isRefund=1
+      this.isRefund=0 // to emit an event
+      
     },
 
     buildNormalTransaction(inAddr,outAddr,coinId,isRefund){
@@ -469,32 +489,48 @@ module.exports=require("../js/lang.js")({ja:require("./ja/atomicswap.html"),en:r
       }).then(t=>{
         this.$ons.notification.alert("Successfully sent transaction.Transaction ID is: "+t.txid)
       }).catch(e=>{
-        this.$store.commit("setError",(e.resopnse&&e.response.data)||e.message)
+        this.$store.commit("setError",(e.response&&e.response.data)||e.message)
       })
     },
     applyStr(){
       try{
-      const parsed=JSON.parse(this.strToRecv)
-      this.getCoinIsCP=parsed.giveCoinIdIsCP
-      this.giveCoinIsCP=parsed.getCoinIsCP
-      this.secretHash=parsed.secretHash
-      this.secretSize=parsed.secretSize
-      this.redeemAddressWithSecret=parsed.redeemAddressWithSecret
-      this.refundAddressWithSecret=parsed.refundAddressWithSecret
-      this.redeemAddressWOSecret=parsed.redeemAddressWOSecret
-      this.refundAddressWOSecret=parsed.refundAddressWOSecret
+        const parsed=JSON.parse(this.strToRecv)
+        this.getCoinId=parsed.giveCoinId
+        this.giveCoinId=parsed.getCoinId
+        this.getCoinIsCP=parsed.giveCoinIsCP
+        this.giveCoinIsCP=parsed.getCoinIsCP
+        this.secretHash=parsed.secretHash
+        this.secretSize=parsed.secretSize
+        this.redeemAddressWithSecret=parsed.redeemAddressWithSecret
+        this.refundAddressWithSecret=parsed.refundAddressWithSecret
+        this.redeemAddressWOSecret=parsed.redeemAddressWOSecret
+        this.refundAddressWOSecret=parsed.refundAddressWOSecret
         this.lockTime=parsed.lockTime
       }catch(e){
         return
       }
+    },
+    copy(c){
+      coinUtil.copy(c)
+    },
+    getSecret(){
+      const cur = currencyList.get(this.giveCoinId)
+      cur.getAddressProp("",this.myP2SH.address).then(f=>f.transactions.length&&cur.getTx(f.transactions[0])).then(res=>{
+        this.secret=cur.lib.script.decompile(Buffer.from(res.vin[0].scriptSig.hex,"hex"))[2].toString("utf8")
+      }).catch(()=>{
+        this.secretNotFound=true
+      })
     }
   },
   computed:{
     strToSend(){
+      this.getPubKey()
       if(this.redeemAddressWithSecret||this.redeemAddressWOSecret){
         
         return JSON.stringify({
+          giveCoinId:this.giveCoinId,
           giveCoinIsCP:this.giveCoinIsCP,
+          getCoinId:this.getCoinId,
           getCoinIsCP:this.getCoinIsCP,
           secretHash:this.secretHash,
           secretSize:this.secretSize,
@@ -507,13 +543,48 @@ module.exports=require("../js/lang.js")({ja:require("./ja/atomicswap.html"),en:r
       }else{
         return ""
       }
+
+      this.generateP2SH()
+      
+    }
+  },
+  created(){
+    this.getCurrencies()
+  },
+  watch:{
+    getCoinId(){
+      this.getLabels()
+       
+    },
+    giveCoinId(){
+      this.getRefundLabels()
+    },
+    strToRecv(){
+      this.applyStr()
+      this.generateP2SH()
+    },
+    secret(){
+      this.generateHash()
+    },
+    isRefund(){
+      if(!((this.getCoinIsCP&&!this.isRefund)||(this.giveCoinIsCP&&this.isRefund))){
+        this.fee=80000
+      }else{
+        this.fee=400
+      }
+    },
+    myP2SHQrcode(){
+      qrcode.toDataURL(currencyList.get(this.giveCoinId).bip21+":"+this.myP2SH.address,{
+        errorCorrectionLevel: 'M',
+        type: 'image/png'
+      },(err,url)=>{
+        this.myP2SHQrcodeUrl=url
+      })
+
     }
   },
   mounted(){
-    this.getCurrencies()
     this.restore()
-    this.getLabels()
-    this.getRefundLabels()
   },
   filters:{
     stringify:(j)=>JSON.stringify(j)
