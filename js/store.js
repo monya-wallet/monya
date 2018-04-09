@@ -32,6 +32,7 @@ module.exports = new Vuex.Store({
     apiName:"",
     apiParam:null,
     answers:[]
+    
   },
   mutations: {
     setAnswers(state,ent) {

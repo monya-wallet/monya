@@ -71,10 +71,12 @@ module.exports=require("../js/lang.js")({ja:require("./ja/confirm.html"),en:requ
         return cur.pushTx(this.hash)
       }).then((res)=>{
         cur.saveTxLabel(res.txid,{label:this.txLabel,price:parseFloat(this.price)})
-        this.$store.commit("setFinishNextPage",{page:require("./home.js"),infoId:"sent",payload:{
+        this.$store.commit("setFinishNextPage",{infoId:"sent",payload:{
           txId:res.txid
         }})
-        this.$emit("replace",require("./finished.js"))
+        this.$emit("pop")
+        this.$emit("pop")
+        this.$emit("push",require("./finished.js"))
 
         
       }).catch(e=>{

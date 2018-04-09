@@ -112,31 +112,35 @@
         </v-ons-list-item>
       </div>
       <v-ons-list-item>
-        <v-ons-button modifier="large" @click="generateP2SH" :disabled="!(secretSize&&secretHash&&refundAddressWithSecret&&redeemAddressWOSecret&&lockTime)">Get Address</v-ons-button>
+        <v-ons-button modifier="large" @click="generateP2SH" :disabled="!(secretSize&&secretHash&&refundAddressWithSecret&&redeemAddressWOSecret&&lockTime)">アドレスゲット</v-ons-button>
       </v-ons-list-item>
-      <v-ons-list-header> {{giveCoinId}} を預ける</v-ons-list-header>
-      <v-ons-list-item modifier="small">
-        <div class="center">
-          <v-ons-input :value="myP2SH&&myP2SH.address" readonly="readonly" placeholder="myP2SH"></v-ons-input>
-        </div>
-        <div class="right">
-          <v-ons-button @click="myP2SHQrcode=true" modifier="quiet"><v-ons-icon icon="fa-qrcode"></v-ons-icon></v-ons-button>
-          <v-ons-button @click="copy(myP2SH.address)" modifier="quiet"><v-ons-icon icon="fa-clipboard"></v-ons-icon></v-ons-button>
-        </div>
-      </v-ons-list-item>
-      <v-ons-list-header>相手は以下のアドレスに預けます</v-ons-list-header>
-      <v-ons-list-item modifier="small">
-        <div class="center">
-          <v-ons-input :value="opponentP2SH&&opponentP2SH.address" readonly="readonly" placeholder="opponentP2SH"></v-ons-input>
-        </div>
-        <div class="right">
-          <v-ons-button @click="copy(opponentP2SH.address)" modifier="quiet"><v-ons-icon icon="fa-clipboard"></v-ons-icon></v-ons-button>
-        </div>
-      </v-ons-list-item>
+      <div v-show="myP2SH">
+        <v-ons-list-header> {{giveCoinId}} を預ける</v-ons-list-header>
+        <v-ons-list-item modifier="small">
+          <div class="center">
+            <v-ons-input :value="myP2SH&&myP2SH.address" readonly="readonly" placeholder="myP2SH"></v-ons-input>
+          </div>
+          <div class="right">
+            
+            <v-ons-button @click="myP2SHQrcode=true" modifier="quiet"><v-ons-icon icon="ion-navicon"></v-ons-icon></v-ons-button>
+          </div>
+        </v-ons-list-item>
+      </div>
+      <div v-show="opponentP2SH">
+        <v-ons-list-header>相手は以下のアドレスに預けます</v-ons-list-header>
+        <v-ons-list-item modifier="small">
+          <div class="center">
+            <v-ons-input :value="opponentP2SH&&opponentP2SH.address" readonly="readonly" placeholder="opponentP2SH"></v-ons-input>
+          </div>
+          <div class="right">
+            <v-ons-button @click="copy(opponentP2SH.address)" modifier="quiet"><v-ons-icon icon="fa-clipboard"></v-ons-icon></v-ons-button>
+          </div>
+        </v-ons-list-item>
+      </div>
       <div v-show="this.opponentP2SH&&this.myP2SH">
         <v-ons-list-header>資金の引き出し</v-ons-list-header>
         <v-ons-list-item>
-          <v-ons-segment :index="isRefund|0">
+          <v-ons-segment :index="isRefund|castInt">
             <button @click="isRefund=0">引き出し</button>
             <button @click="isRefund=1">返金</button>
           </v-ons-segment>
@@ -162,7 +166,7 @@
             </div>
           </v-ons-list-item>
         </div>
-        <v-ons-list-item>
+        <v-ons-list-item v-show="!isRefund">
           <div class="center">
             <v-ons-input v-model="secret" placeholder="Secret"></v-ons-input>
           </div>
@@ -188,10 +192,10 @@
           
         </v-ons-list-item>
         <v-ons-list-item v-show="!isRefund">
-          <v-ons-button modifier="large" @click="signTx">Let's go.</v-ons-button>
+          <v-ons-button modifier="large" :disabled="!password" @click="signTx">Let's go.</v-ons-button>
         </v-ons-list-item>
         <v-ons-list-item v-show="isRefund">
-          <v-ons-button modifier="large" @click="signRefundTx">返金</v-ons-button>
+          <v-ons-button modifier="large" :disabled="!password" @click="signRefundTx">返金</v-ons-button>
         </v-ons-list-item>
         <v-ons-list-header>署名されたトランザクション</v-ons-list-header>
         <v-ons-list-item>
@@ -199,15 +203,20 @@
         </v-ons-list-item>
       </div>
     </v-ons-list>
-    <v-ons-dialog cancelable
-                  :visible.sync="myP2SHQrcode"
-                  >
-      <div>
-        <img v-if="myP2SHQrcodeUrl" :src="myP2SHQrcodeUrl" alt="QR code" id="qrcodeImage" style="width:100%"/></div>
-    </v-ons-dialog>
+    
     <v-ons-toast :visible.sync="secretNotFound" animation="ascend">
-    シークレットが見つかりませんでした。相手が送金するまで待ちましょう。
-    <button @click="secretNotFound=false"><v-ons-icon icon="ion-close"></v-ons-icon></button>
-  </v-ons-toast>
+      シークレットが見つかりませんでした。相手が送金するまで待ちましょう。
+      <button @click="secretNotFound=false"><v-ons-icon icon="ion-close"></v-ons-icon></button>
+    </v-ons-toast>
+    <v-ons-action-sheet
+      :visible.sync="myP2SHQrcode"
+      cancelable
+      >
+      
+      <v-ons-action-sheet-button style="height:auto"><img v-if="myP2SHQrcodeUrl" :src="myP2SHQrcodeUrl" alt="QR code" id="qrcodeImage" style="width:100%"/></v-ons-action-sheet-button>
+      <v-ons-action-sheet-button @click="myP2SHQrcode=false;copy(myP2SH.address)">コピー</v-ons-action-sheet-button>
+      <v-ons-action-sheet-button @click="myP2SHQrcode=false;send(giveCoinId,myP2SH.address)">送金</v-ons-action-sheet-button>
+      <v-ons-action-sheet-button modifier="destructive" @click="myP2SHQrcode=false">キャンセル</v-ons-action-sheet-button>
+    </v-ons-action-sheet>
   </div>
 </v-ons-page>

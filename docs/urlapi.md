@@ -55,3 +55,10 @@
       
 Extended modeを有効/無効にします
 Extended modeが無効な状態でMWvMbgon623A4Fp6QG9VirhkFezZ3vrajcに1MONA以上、または1EJyNBDW2a3oNoMn3SPg2A9hFNbezGjMSVに1BTC以上送金することでも有効にできます。
+
+## アトミックスワップ 呼出
+
+  * method
+      * shareSwapData
+  * param
+      * component/atomicswap.js strToRecvに準ずる

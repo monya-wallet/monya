@@ -513,6 +513,10 @@ module.exports=require("../js/lang.js")({ja:require("./ja/atomicswap.html"),en:r
     copy(c){
       coinUtil.copy(c)
     },
+    send(coinId,addr){
+      this.$store.commit("setSendUrl",currencyList.get(coinId).bip21+":"+addr)
+      this.$emit("push",require("./send.js"))
+    },
     getSecret(){
       const cur = currencyList.get(this.giveCoinId)
       cur.getAddressProp("",this.myP2SH.address).then(f=>f.transactions.length&&cur.getTx(f.transactions[0])).then(res=>{
@@ -584,10 +588,15 @@ module.exports=require("../js/lang.js")({ja:require("./ja/atomicswap.html"),en:r
     }
   },
   mounted(){
-    this.restore()
+    if(this.$store.state.apiName==="shareSwapData"){
+      this.strToRecv=JSON.stringify(this.$store.state.apiParam)
+    }else{
+      this.restore()
+    }
   },
   filters:{
-    stringify:(j)=>JSON.stringify(j)
+    stringify:(j)=>JSON.stringify(j),
+    castInt:d=>parseInt(d)
   }
   
 })

@@ -34,25 +34,25 @@ module.exports=require("../js/lang.js")({ja:require("./ja/navigator.html"),en:re
       this.openSide=false;this.$set(this,"pageStack",[require("./home.js")])
     },
     receive(){
-      this.openSide=false;this.$set(this,"pageStack",[require("./receive.js")])
+      this.openSide=false;this.pageStack.push(require("./receive.js"))
     },
     send(){
-      this.openSide=false;this.$set(this,"pageStack",[require("./send.js")])
+      this.openSide=false;this.pageStack.push(require("./send.js"))
     },
     history(){
-      this.openSide=false;this.$set(this,"pageStack",[require("./history.js")])
+      this.openSide=false;this.pageStack.push(require("./history.js"))
     },
     settings(){
-      this.openSide=false;this.$set(this,"pageStack",[require("./settings.js")])
+      this.openSide=false;this.pageStack.push(require("./settings.js"))
     },
     help(){
-      this.openSide=false;this.$set(this,"pageStack",[require("./help.js")])
+      this.openSide=false;this.pageStack.push(require("./help.js"))
     },
     monaparty(){
-      this.openSide=false;this.$set(this,"pageStack",[require("./monaparty.js")])
+      this.openSide=false;this.pageStack.push(require("./monaparty.js"))
     },
     openExt(extId){
-      this.openSide=false;this.$set(this,"pageStack",[ext.get(extId).component])
+      this.openSide=false;this.pageStack.push(ext.get(extId).component)
     }
   },
   created(){

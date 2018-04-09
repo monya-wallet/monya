@@ -11,7 +11,12 @@ module.exports=require("../js/lang.js")({ja:require("./ja/finished.html"),en:req
       this.loading=true
       coinUtil.shortWait().then(()=>{
         this.loading=false
-        this.$emit("replace",this.$store.state.finishNextPage.page)
+        if(this.$store.state.finishNextPage.page){
+          this.$emit("replace",this.$store.state.finishNextPage.page)
+        }else{
+          this.$emit("pop")
+        }
+        this.$store.commit("setFinishNextPage",{infoId:"",payload:{}})
       })
       
     }
