@@ -34,31 +34,30 @@ module.exports=require("../js/lang.js")({ja:require("./ja/monaparty.html"),en:re
       const title = titleList.get(this.titleId)
       title.callCP("get_normalized_balances",{
         addresses:title.cp.getReceiveAddr()
-      })
-        .then(res=>{
-          this.assets=res
-          this.loading=false
-          return title.getCardDetail(res.map(v=>v.asset_longname||v.asset))
-        }).then(r=>{
-          if(r.length&&this.assets.length){
-            r.forEach(k=>{
-              this.assets.forEach(v=>{
-                if(v.asset===k.asset){
-                  this.$set(v,"image",{'background-image':'url('+k.imageUrl+')'})
-                }else if(!v.image){
-                  this.$set(v,"image",{'background-image':'radial-gradient(ellipse at center, #ffffff 0%,#dbdbdb 100%)'})
-                }
-              })
-            })
-          }else{
+      }).then(res=>{
+        this.assets=res
+        this.loading=false
+        return title.getCardDetail(res.map(v=>v.asset_longname||v.asset))
+      }).then(r=>{
+        if(r.length&&this.assets.length){
+          r.forEach(k=>{
             this.assets.forEach(v=>{
+              if(v.asset===k.asset){
+                this.$set(v,"image",{'background-image':'url('+k.imageUrl+')'})
+              }else if(!v.image){
                 this.$set(v,"image",{'background-image':'radial-gradient(ellipse at center, #ffffff 0%,#dbdbdb 100%)'})
+              }
             })
-          }
-        }).catch(e=>{
-          this.loading=false
-          this.$store.commit("setError",e.message)
-        })
+          })
+        }else{
+          this.assets.forEach(v=>{
+            this.$set(v,"image",{'background-image':'radial-gradient(ellipse at center, #ffffff 0%,#dbdbdb 100%)'})
+          })
+        }
+      }).catch(e=>{
+        this.loading=false
+        this.$store.commit("setError",e.message)
+      })
     },
     searchByKeyword(){
       if(!this.searchKeyword){
@@ -114,6 +113,8 @@ module.exports=require("../js/lang.js")({ja:require("./ja/monaparty.html"),en:re
           apiEndpoint:"",
           icon:""
         }
+        this.titleAdd=false
+        this.titDlg=false
       })
         
     }

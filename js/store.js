@@ -73,7 +73,8 @@ module.exports = new Vuex.Store({
         message:payload.message,
         coinType:payload.coinType,
         txLabel:payload.txLabel,
-        utxoStr:payload.utxoStr
+        utxoStr:payload.utxoStr,
+        signOnly:payload.signOnly
       }
     },
     setFinishNextPage(state,pageData){

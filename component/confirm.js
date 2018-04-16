@@ -33,7 +33,7 @@ module.exports=require("../js/lang.js")({ja:require("./ja/confirm.html"),en:requ
   },
   store:require("../js/store.js"),
   mounted(){
-    ["address","amount","fiat","feePerByte","message","coinType","txLabel","utxoStr"].forEach(v=>{
+    ["address","amount","fiat","feePerByte","message","coinType","txLabel","utxoStr","signOnly"].forEach(v=>{
       this[v]=this.$store.state.confPayload[v]
     })
     this.cur=currencyList.get(this.coinType)
@@ -68,6 +68,9 @@ module.exports=require("../js/lang.js")({ja:require("./ja/confirm.html"),en:requ
           path:this.path
         })
         this.hash=finalTx.toHex()
+        if(this.signOnly){
+          throw "signOnly"
+        }
         return cur.pushTx(this.hash)
       }).then((res)=>{
         cur.saveTxLabel(res.txid,{label:this.txLabel,price:parseFloat(this.price)})
@@ -83,7 +86,6 @@ module.exports=require("../js/lang.js")({ja:require("./ja/confirm.html"),en:requ
         this.loading=false
         if(e.request){
           this.$store.commit("setError",e.request.responseText||"Network Error.Please try again")
-          
         }else{
           this.incorrect=true
           this.ready=true

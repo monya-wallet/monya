@@ -199,9 +199,9 @@ const defaultCoins=[
     },
     enableSegwit:false,
     price:{
-      url:coinUtil.proxyUrl("https://www.coingecko.com/price_charts/fujicoin/jpy/24_hours.json"),
+      url:"https://min-api.cryptocompare.com/data/price?fsym=FJC&tsyms=JPY",
       json:true,
-      jsonPath:'$.stats[-1:][1]',
+      jsonPath:'$.JPY',
       fiat:"jpy"
     },
     confirmations:6,

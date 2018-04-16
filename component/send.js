@@ -19,7 +19,8 @@ module.exports=require("../js/lang.js")({ja:require("./ja/send.html"),en:require
       txLabel:"",
       verifyResult:true,
       signature:false,
-      utxoStr:""
+      utxoStr:"",
+      signOnly:false
     }
   },
   store:require("../js/store.js"),
@@ -38,7 +39,8 @@ module.exports=require("../js/lang.js")({ja:require("./ja/send.html"),en:require
         message:this.message,
         coinType:this.coinType,
         txLabel:this.txLabel,
-        utxoStr:this.utxoStr
+        utxoStr:this.utxoStr,
+        signOnly:this.signOnly
       })
       this.$emit("push",require("./confirm.js"))
     },
