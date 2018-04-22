@@ -68,6 +68,16 @@ module.exports=require("../js/lang.js")({ja:require("./ja/login.html"),en:requir
       })
     }
   },
+  watch:{
+    password(){
+      storage.setPassword(this.password).then(()=>{
+        this.next()
+      }).catch(()=>{
+        return true
+      })
+    }
+  },
+  
   mounted(){
     this.loading=true
     this.$store.commit("setKeyPairsExistence",false)
@@ -76,7 +86,6 @@ module.exports=require("../js/lang.js")({ja:require("./ja/login.html"),en:requir
         this.loading=false
         storage.verifyBiometric().then(pwd=>{
           this.password=pwd
-          this.start()
         }).catch(()=>{
           return true
         })

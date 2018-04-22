@@ -2,18 +2,21 @@ module.exports=require("../js/lang.js")({ja:require("./ja/timestamp.html"),en:re
   data(){
     return {
       dateObj:null,
-      d:{},
-      mode:"absolute"
+      mode:"absolute",
+      now:Date.now(),
+      handler:null
     }
   },
   props:["timestamp","absolute"],//must be second
-  methods:{
-    
-    render(){
+
+  store:require("../js/store.js"),
+  computed:{
+    d(){
+      this.now=Date.now()
       const dt=this.dateObj=new Date(this.timestamp*1000)
-      const diffMsec=Date.now()-this.timestamp*1000
+      const diffMsec=this.now-this.timestamp*1000
       !this.absolute&&(this.mode=this.$store.state.tsMode)
-      this.d={
+      const d={
         year:dt.getFullYear()
         ,month:dt.getMonth()+1
         ,date:dt.getDate()
@@ -23,28 +26,26 @@ module.exports=require("../js/lang.js")({ja:require("./ja/timestamp.html"),en:re
       }
 
       if(diffMsec<1000*60){
-        this.d.rightnow=true
+        d.rightnow=true
       }else if(diffMsec<1000*60*60){
-        this.d.minAgo=(diffMsec/1000/60)|0
+        d.minAgo=(diffMsec/1000/60)|0
       }else if(diffMsec<1000*60*60*24){
-        this.d.hrAgo=(diffMsec/1000/60/60)|0
+        d.hrAgo=(diffMsec/1000/60/60)|0
       }else if(diffMsec<1000*60*60*24*30){
-        this.d.dayAgo=(diffMsec/1000/60/60/24)|0
+        d.dayAgo=(diffMsec/1000/60/60/24)|0
       }else if(diffMsec<1000*60*60*24*30*12){
-        this.d.monthAgo=(diffMsec/1000/60/60/24/30)|0
+        d.monthAgo=(diffMsec/1000/60/60/24/30)|0
       }else{
-        this.d.yearAgo=(diffMsec/1000/60/60/24/30/12)|0
+        d.yearAgo=(diffMsec/1000/60/60/24/30/12)|0
       }
+      return d
     }
   },
-  store:require("../js/store.js"),
-  watch:{
-    timestamp(){
-      this.render()
-    }
+  created(){
+    this.handler=setInterval(()=>this.now=Date.now(),30000)
   },
-  mounted(){
-    this.render()
+  beforeDestroy(){
+    clearInterval(this.handler)
   },
   filters:{
     pad:v=>("0"+v).slice(-2)

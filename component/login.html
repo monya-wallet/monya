@@ -2,7 +2,7 @@
   <div class="wrap">
     <p>パスワードを入力して下さい。</p>
     <div :class="{passwordBox:true,shake:incorrect}">
-      <input name="" :type="showPassword?'text':'password'" @input="password=$event.target.value" id="password" @change="start" :disabled="loading"/>
+      <input name="" :type="showPassword?'text':'password'" v-model="password" id="password" @change="start" :disabled="loading"/>
     </div>
     <v-ons-button modifier="large" @click="start" :disabled="loading">はじめる</v-ons-button>
     <v-ons-button modifier="large quiet" @click="helpMe=true" :disabled="loading" v-show="mistaken">パスワードがわからない？</v-ons-button>

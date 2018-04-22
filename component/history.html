@@ -58,7 +58,7 @@
       <v-ons-list-item v-show="hasMore" @click="loadMore">もっと見る</v-ons-list-item>
     </v-ons-list>
     <v-ons-alert-dialog modifier="rowfooter"
-      :visible.sync="filterDlg"
+      :visible.sync="filterDlg" cancelable
     >
       <span slot="title">絞り込み</span>
       <v-ons-select v-model="currencyIndex">

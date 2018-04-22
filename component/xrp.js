@@ -42,7 +42,19 @@ module.exports=require("../js/lang.js")({ja:require("./ja/xrp.html"),en:require(
   methods:{
     decrypt(){
       this.loading=true
-      storage.get("keyPairs").then(c=>{
+      this._decrypt().catch(()=>{
+        this.loading=false
+        this.incorrect=true
+        setTimeout(()=>{
+          this.incorrect=false
+        },3000)
+      })
+    },
+    _decrypt(){
+      if(this.keyPair){
+        throw new Error("keypair is already decrypted")
+      }
+      return storage.get("keyPairs").then(c=>{
         const seed = keypairs.generateSeed({
           entropy: Buffer.from(coinUtil.decrypt(c.entropy,this.password),"hex")
         })
@@ -54,12 +66,6 @@ module.exports=require("../js/lang.js")({ja:require("./ja/xrp.html"),en:require(
         this.requirePassword=false
         this.getBalance()
         this.getQrCode()
-      }).catch(()=>{
-        this.loading=false
-        this.incorrect=true
-        setTimeout(()=>{
-          this.incorrect=false
-        },3000)
       })
     },
     getBalance(){
@@ -210,6 +216,9 @@ module.exports=require("../js/lang.js")({ja:require("./ja/xrp.html"),en:require(
     },
     invAmt(){
       this.getQrCode()
+    },
+    password(){
+      this._decrypt().catch(()=>true)
     }
   },
   mounted(){

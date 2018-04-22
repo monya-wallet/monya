@@ -5,13 +5,13 @@ const crypto = require("crypto")
 let password=""
 
 // this crypto algo can be changed
-exports.encryptData=(plain,password)=>{
-  const cipher = crypto.createCipher('aes256', password);
+exports.encryptData=(plain,p)=>{
+  const cipher = crypto.createCipher('aes256', p);
   return cipher.update(plain, 'utf8', 'base64')+cipher.final('base64');
 }
-exports.decryptData=(cipher,password)=>{
+exports.decryptData=(cipher,p)=>{
   try{
-  const decipher = crypto.createDecipher('aes256', password);
+  const decipher = crypto.createDecipher('aes256', p);
     return decipher.update(cipher, 'base64', 'utf8')+decipher.final('utf8');
   }catch(e){
     throw new errors.PasswordFailureError()
@@ -101,7 +101,7 @@ exports.setPassword = pw=>new Promise((resolve, reject) => {
 
 exports.setBiometricPassword= (credential)=> new Promise((resolve, reject) => {
   if (window.plugins) {
-    window.plugins.touchid.save("password", credential, (password)=> {
+    window.plugins.touchid.save("password", credential, (p)=> {
       resolve(true)
     },m=>{
       reject(new errors.BiometricError("Failed to set."))
@@ -123,8 +123,8 @@ exports.isBiometricAvailable= ()=> new Promise((resolve, reject) => {
 });
 exports.verifyBiometric= ()=> new Promise((resolve, reject) => {
   if (window.plugins) {
-    window.plugins.touchid.verify("password", "Password", password=>{
-      resolve(password)
+    window.plugins.touchid.verify("password", "Password", p=>{
+      resolve(p)
     },m=>{
       reject(new errors.BiometricVerificationError(m))
     });
