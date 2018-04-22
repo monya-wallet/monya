@@ -22,6 +22,7 @@
       <option value="tmona">Monacoin(Testnet)</option>
       <option value="btg">Bitcoin Gold(Not well tested)</option>
       <option value="mona3prefix">Monacoin(3 old prefix,Not well tested)</option>
+      <option value="xp">ExperiencePoints</option>
     </select>
     <p>Copy below and import it to app</p>
     <textarea cols="30" id="imp" name="imp" rows="10"></textarea>
@@ -38,7 +39,7 @@
     },
     bip21: "neetcoin",
     defaultFeeSatPerByte: 50,
-    icon: "",
+    icon: "https://monya-wallet.github.io/monya/addcoins/coins/xp.png",
     apiEndpoints:[{url:"https://insight.neetcoin.jp/api",explorer:"https://insight.neetcoin.jp"}],
     network: {
       messagePrefix: '\x19NEETCOIN Signed Message:\n',
@@ -58,6 +59,33 @@
       jsonPath: '$[?(@.id=="NEET_BTC")].last',
       fiat: "btc"
     }
+  },"xp":{
+    coinScreenName: "Experience Points",
+    coinId: "xp",
+    unit: "XP",
+    unitEasy: "XP",
+    bip21: "experiencepoints",
+    defaultFeeSatPerByte: 50,
+    icon: "",
+    apiEndpoints:[{url:"https://insight.xpjp.online/api",explorer:"https://insight.xpjp.online"}],
+    network: {
+      messagePrefix: '\x19XP Signed Message:\n',
+      bip32: {
+        public: 0x0488b21e,
+        private: 0x0488ade4
+      },
+      pubKeyHash: 75, // X
+      scriptHash: 20, // 9
+      wif: 203
+    },
+    enableSegwit: false,
+    price: {
+      url: "https://insight.xpjp.online/api/ticker",
+      json: true,
+      jsonPath: '$[0].price_jpy',
+      fiat: "jpy"
+    },
+    confirmations:6
   }
       }
       var i = function(d){
