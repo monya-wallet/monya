@@ -5,7 +5,7 @@ require('babel-polyfill')
 if(!window.cordova){
   require('../res/cordova-plugin-qrscanner-lib.min.js')
 }
-const Vue = require("vue/dist/vue.runtime.min")
+const Vue = require("vue/dist/vue.runtime")
 const VueOnsen = require('vue-onsenui')
 const Vuex = require("vuex")
 const template = require("../lang/template.json")

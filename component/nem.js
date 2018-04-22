@@ -72,16 +72,28 @@ module.exports=require("../js/lang.js")({ja:require("./ja/nem.html"),en:require(
   methods:{
     decrypt(){
       this.loading=true
-      storage.get("keyPairs").then(c=>{
+      this._decrypt().catch(()=>{
+        this.loading=false
+        this.incorrect=true
+        setTimeout(()=>{
+          this.incorrect=false
+        },3000)
+      })
+    },
+    _decrypt(){
+      if(this.keyPair){
+        throw new Error("keypair is already decrypted")
+      }
+      return storage.get("keyPairs").then(c=>{
         let seed=
-        bip39.mnemonicToSeed(
-          bip39.entropyToMnemonic(
-            coinUtil.decrypt(c.entropy,this.password)
-          )
-        )
+            bip39.mnemonicToSeed(
+              bip39.entropyToMnemonic(
+                coinUtil.decrypt(c.entropy,this.password)
+              )
+            )
         const node = bcLib.HDNode.fromSeedBuffer(seed)
-                   .deriveHardened(44)
-                   .deriveHardened(NEM_COIN_TYPE)
+              .deriveHardened(44)
+              .deriveHardened(NEM_COIN_TYPE)
               .deriveHardened(DEFAULT_ACCOUNT)
         this.privateKey=node.keyPair.d.toBuffer().toString("hex")
         this.keyPair=nem.crypto.keyPair.create(this.privateKey)
@@ -90,12 +102,6 @@ module.exports=require("../js/lang.js")({ja:require("./ja/nem.html"),en:require(
         this.requirePassword=false
         this.getBalance()
         this.getQrCode()
-      }).catch(()=>{
-        this.loading=false
-        this.incorrect=true
-        setTimeout(()=>{
-          this.incorrect=false
-        },3000)
       })
     },
     getBalance(){
@@ -384,6 +390,9 @@ module.exports=require("../js/lang.js")({ja:require("./ja/nem.html"),en:require(
     },
     addressFormat(){
       this.getQrCode()
+    },
+    password(){
+      this._decrypt().catch(()=>true)
     }
   },
   mounted(){

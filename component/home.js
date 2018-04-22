@@ -8,7 +8,9 @@ module.exports=require("../js/lang.js")({ja:require("./ja/home.html"),en:require
       loading:false,
       state:"initial",
       error:false,
-      isSingleWallet:currencyList.isSingleWallet
+      isSingleWallet:currencyList.isSingleWallet,
+      lastUpdate:(Date.now()/1000)|0,
+      outdatedWatcher:0
     }
   },
   methods:{
@@ -52,6 +54,7 @@ module.exports=require("../js/lang.js")({ja:require("./ja/home.html"),en:require
       Promise.all(promises).then(data=>{
         this.curs=data
         this.loading=false
+        this.lastUpdate=(Date.now()/1000)|0
         typeof(done)==='function'&&done()
       })
     },
@@ -69,11 +72,20 @@ module.exports=require("../js/lang.js")({ja:require("./ja/home.html"),en:require
     },
     monaparty(){
       this.$emit("push",require("./monaparty.js"))
-    },
+    }
   },
   store:require("../js/store.js"),
   mounted(){
     this.load()
+
+    this.outdatedWatcher=setInterval(()=>{
+      if((Date.now()/1000)>this.lastUpdate+60*15){
+        this.load()
+      }
+    },1000*60*10)
+  },
+  beforeDestroy(){
+    clearInterval(this.outdatedWatcher)
   },
   computed:{
     fiat(){

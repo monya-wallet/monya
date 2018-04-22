@@ -117,7 +117,11 @@ module.exports=require("../js/lang.js")({ja:require("./ja/monaparty.html"),en:re
         this.titDlg=false
       })
         
-    }
+    },
+    showLabel(){
+      this.$store.commit("setLabelToShow",{coinId:this.titles[this.titleId]&&this.titles[this.titleId].cp.coinId,name:"Default",index:0,change:0})
+      this.$emit("push",require("./showLabel.js"))
+    },
   },
   computed:{
     titleId:{

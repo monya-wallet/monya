@@ -1,4 +1,5 @@
 const currencyList = require("../js/currencyList")
+const Title = require("../js/title")
 const bcLib = require('bitcoinjs-lib')
 module.exports=require("../js/lang.js")({ja:require("./ja/txDetail.html"),en:require("./en/txDetail.html")})({
   data(){
@@ -10,7 +11,8 @@ module.exports=require("../js/lang.js")({ja:require("./ja/txDetail.html"),en:req
       price:0,
       txId:this.$store.state.detail.txId,
       txLabel:"",
-      showScript:false
+      showScript:false,
+      decodedCPMessage:null
     }
   },
   mounted(){
@@ -59,6 +61,34 @@ module.exports=require("../js/lang.js")({ja:require("./ja/txDetail.html"),en:req
     },
     openTxExplorer(){
       currencyList.get(this.coinId).openExplorer({txId:this.res.txid})
+    },
+  },watch:{
+    showScript(){
+      if(this.decodedCPMessage){
+        return
+      }
+      const cur = currencyList.get(this.coinId)
+      if(!cur.counterpartyEndpoint){
+        return
+      }
+      const title = new Title({
+        titleId:"forTxDetail",
+        cpCoinId:this.coinId,
+        titleName:"forTxDetail"
+      })
+      title.callCPLib("getrawtransaction",{tx_hash:this.res.txid}).then(res=>{
+        return title.callCPLib("get_tx_info",{tx_hex:res})
+      }).then(res=>{
+        if(!res||!res[4]){
+          throw false
+        }
+        return title.callCPLib("unpack",{data_hex:res[4]})
+      }).then(res=>{
+        if(!res){throw false}
+        this.decodedCPMessage=JSON.stringify(res)
+      }).catch(res=>{
+        this.decodedCPMessage="{success:false}"
+      })
     }
   }
 })

@@ -146,6 +146,12 @@ ons-dialog .dialog{
       }
     }
   }
+  #lastUpdate{
+    font-size: small;
+    color: #888;
+    text-align: right;
+    
+  }
 }
 [data-page="manageCoin"]{
   .left{

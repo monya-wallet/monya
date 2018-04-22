@@ -129,7 +129,7 @@ this.icon=opt.icon
     const includeUnconfirmedFunds = opt.includeUnconfirmedFunds
     const password=opt.password
     const memo=opt.memo
-    const feePerByte = opt.feePerByte || this.defaultFeeSatPerByte
+    const feePerByte = opt.feePerByte || this.cp.defaultFeeSatPerByte
     const doNotSendTx = !!opt.doNotSendTx
     
     const cur = this.cp
@@ -176,7 +176,7 @@ this.icon=opt.icon
     const includeUnconfirmedFunds = opt.includeUnconfirmedFunds
     const password=opt.password
     const description=opt.description
-    const feePerByte = opt.feePerByte || this.defaultFeeSatPerByte
+    const feePerByte = opt.feePerByte || this.cp.defaultFeeSatPerByte
     const transferDest = opt.transferDest
     
     const cur = this.cp
@@ -215,7 +215,7 @@ this.icon=opt.icon
     const addressIndex = opt.addressIndex|0
     const includeUnconfirmedFunds = opt.includeUnconfirmedFunds
     const password=opt.password
-    const feePerByte = opt.feePerByte || this.defaultFeeSatPerByte
+    const feePerByte = opt.feePerByte || this.cp.defaultFeeSatPerByte
     const give_quantity=(opt.giveAmt)|0
     const give_asset=opt.giveToken
     const get_quantity=(opt.getAmt)|0
@@ -256,7 +256,7 @@ this.icon=opt.icon
     const addressIndex = opt.addressIndex|0
     const includeUnconfirmedFunds = opt.includeUnconfirmedFunds
     const password=opt.password
-    const feePerByte = opt.feePerByte || this.defaultFeeSatPerByte
+    const feePerByte = opt.feePerByte || this.cp.defaultFeeSatPerByte
     const offer_hash=opt.txid
     
     const cur = this.cp

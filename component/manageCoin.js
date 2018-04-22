@@ -47,19 +47,15 @@ module.exports=require("../js/lang.js")({ja:require("./ja/manageCoin.html"),en:r
         .then((data)=>storage.set("keyPairs",data))
         .then((cipher)=>{
           this.password=""
-          this.$emit("replace",require("./login.js"))
-
-          storage.get("settings").then(s=>{
-            if (!s.enabledExts) {
-              s.enabledExts=[]
-            }
-            this.extensions.forEach(v=>{
-              v.usable&&s.enabledExts.push(v.id)
-            })
-            storage.set("settings",s)
-            this.$store.commit("setSettings",s)
+          return storage.get("settings")        
+        }).then(s=>{ 
+          s.enabledExts=[]
+          this.extensions.forEach(v=>{
+            v.usable&&s.enabledExts.push(v.id)
           })
-        }).catch(()=>{
+          this.$store.commit("setSettings",s)
+          return storage.set("settings",s)
+        }).then(()=>this.$emit("replace",require("./login.js"))).catch(()=>{
           this.password=""
           this.requirePassword=true
           this.loading=false

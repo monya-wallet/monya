@@ -681,8 +681,16 @@ module.exports=class{
       this.socketEndpoint = a.socket
     }
   }
+  getAddrVersion(addr){
+    if(this.libName==="zec"){
+      return zecLib.address.fromBase58Check(addr).version
+    }else{
+      return bcLib.address.fromBase58Check(addr).version
+      
+    }
+  }
   isValidAddress(address){
-    const ver = coinUtil.getAddrVersion(address)
+    const ver = this.getAddrVersion(address)
     if(ver===this.network.pubKeyHash||ver===this.network.scriptHash){
       return true
     }

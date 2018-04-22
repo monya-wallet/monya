@@ -13,12 +13,16 @@
             <v-ons-input v-model="txLabel" placeholder="名称未設定" @change="saveTxLabel"></v-ons-input>
           </div>
         </v-ons-list-item>
-        <v-ons-list-item modifier="">
+        <v-ons-list-item v-show="!decodedCPMessage">
           <div class="center">メッセージ</div>
           <div class="right" v-if="message">{{message}}</div>
           <div class="right" v-if="!message">(メッセージ無し)</div>
         </v-ons-list-item>
-        <v-ons-list-item modifier="">
+        <v-ons-list-item v-show="decodedCPMessage">
+          <div class="center">Counterparty</div>
+          <textarea class="right textarea--transparent" :value="decodedCPMessage" readonly=""></textarea>
+        </v-ons-list-item>
+        <v-ons-list-item>
           <div class="center">その時の価格</div>
           <div class="right">
             <v-ons-input v-model="price" placeholder="各自でご入力下さい" @change="saveTxLabel"></v-ons-input>
