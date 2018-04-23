@@ -686,17 +686,20 @@ module.exports=class{
       return zecLib.address.fromBase58Check(addr).version
     }else{
       return bcLib.address.fromBase58Check(addr).version
-      
     }
   }
   isValidAddress(address){
-    const ver = this.getAddrVersion(address)
-    if(ver===this.network.pubKeyHash||ver===this.network.scriptHash){
-      return true
-    }
-    const b32 = this.network.bech32
-    if(b32&&address.substr(0,b32.length)===b32){
-      return true
+    try{
+      const ver = this.getAddrVersion(address)
+      if(ver===this.network.pubKeyHash||ver===this.network.scriptHash){
+        return true
+      }
+      const b32 = this.network.bech32
+      if(b32&&address.substr(0,b32.length)===b32){
+        return true
+      }
+    }catch(e){
+      return false
     }
     return false
   }
