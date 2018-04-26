@@ -1,26 +1,41 @@
 <v-ons-page data-page="api">
   <custom-bar title="API" menu="true"></custom-bar>
   <div>
-    <div v-if="qType==='yOrN'" id="yOrNAPI">
-      <v-ons-button modifier="large cta" @click="yes">はい</v-ons-button>
-      <v-ons-button modifier="large" @click="no">いいえ</v-ons-button>
-    </div>
-    <div v-if="qType==='password'" id="passwordAPI">
-      <div v-if="name==='signTx'">
-        署名します
+    <div v-show="!successful">
+      <div v-if="qType==='yOrN'" id="yOrNAPI">
+        <v-ons-button modifier="large cta" @click="yes">はい</v-ons-button>
+        <v-ons-button modifier="large" @click="no">いいえ</v-ons-button>
       </div>
-      
-      <input v-model="password" placeholder="パスワード" class="text-input text-input--underbar" type="text">
-      <v-ons-button modifier="large cta" @click="goWithPassword" :disabled="!password">次へ</v-ons-button>
-      <v-ons-button modifier="large" @click="no">やめる</v-ons-button>
-    </div>
-    <div v-if="qType==='direct'">
-      直接実行します
-    </div>
-    <div v-if="qType==='none'" id="noneAPI">
-      <div>
-        無効なメソッドが実行されました。
+      <div v-if="qType==='password'" id="passwordAPI">
+        <div v-if="name==='signTx'">
+          アプリケーションと連携します。信頼できるアプリケーションである場合のみ続行してください。
+          署名します
+        </div>
+        <div v-if="name==='signMsg'">
+          アプリケーションと連携します。信頼できるアプリケーションである場合のみ続行してください。
+          メッセージ署名します
+        </div>
+        <input v-model="password" placeholder="パスワード" class="text-input text-input--underbar" type="text">
+        <v-ons-button modifier="large cta" @click="goWithPassword" :disabled="!password">次へ</v-ons-button>
+        <v-ons-button modifier="large" @click="no">やめる</v-ons-button>
       </div>
+      <div v-if="qType==='direct'">
+        直接実行します
+      </div>
+      <div v-if="qType==='none'" id="noneAPI">
+        <div>
+          無効なメソッドが実行されました。
+        </div>
+      </div>
+    </div>
+    <div v-show="successful">
+      アプリケーションに戻ってください。
     </div>
   </div>
+  <v-ons-dialog cancelable
+                :visible.sync="dataDlg"
+                >
+    <p style="text-align: center">このデータをアプリケーションに渡してください。</p>
+    <textarea class="textarea" readonly="readonly" id="dataToPassApp">{{dataToPassApp}}</textarea>
+  </v-ons-dialog>
 </v-ons-page>

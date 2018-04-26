@@ -11,7 +11,10 @@ module.exports=require("../js/lang.js")({ja:require("./ja/api.html"),en:require(
 
       qType:"none",
 
-      password:""
+      password:"",
+      dataDlg:false,
+      dataToPassApp:"",
+      successful:false
     }
   },
   store:require("../js/store.js"),
@@ -41,18 +44,47 @@ module.exports=require("../js/lang.js")({ja:require("./ja/api.html"),en:require(
             this.password=""
             
             if(this.param.callbackURL){
-              return axios.post(this.param.callbackURL,{payload:this.param.payload,signature:signed})
+              axios.post(this.param.callbackURL,{
+                payload:this.param.payload,
+                signature:signed
+              }).then(()=>{
+                this.successful=true
+              })
+            }else if(this.param.callbackPage){
+              coinUtil.openUrl(this.param.callbackPage+`?payload=${this.param.payload}&signature=${signed}`)
+              this.successful=true
             }else{
-              return Promise.resolve(signed)
+              this.successful=true
+              this.dataToPassApp=signed
             }
-          }).then(r=>{
-            console.log(r) //処理が汚いケど許して
           }).catch(e=>{
             this.$store.commit("setError",e.message||"Unknown")
           })
           break;
-          
-          
+        case "signMsg":
+          storage.get("keyPairs").then((cipher)=>{
+            const cur =currencyList.get(this.param.coinId)
+            let signed =cur.signMessage(this.param.message,cipher.entropy,this.password,[0,this.param.addrIndex])
+            this.password=""
+            
+            if(this.param.callbackURL){
+              axios.post(this.param.callbackURL,{
+                payload:this.param.payload,
+                signature:signed
+              }).then(()=>{
+                this.successful=true
+              })
+            }else if(this.param.callbackPage){
+              coinUtil.openUrl(this.param.callbackPage+`?payload=${this.param.payload}&signature=${signed}`)
+              this.successful=true
+            }else{
+              this.dataDlg=true
+              this.dataToPassApp=signed
+            }
+          }).catch(e=>{
+            this.$store.commit("setError",e.message||"Unknown")
+          })
+          break;
       }
     },
     no(){
@@ -69,6 +101,7 @@ module.exports=require("../js/lang.js")({ja:require("./ja/api.html"),en:require(
         this.qType="yOrN"
         break;
       case "signTx":
+      case "signMsg":
         this.qType="password"
         break
       case "shareSwapData":
