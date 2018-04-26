@@ -530,7 +530,7 @@ module.exports=require("../js/lang.js")({ja:require("./ja/atomicswap.html"),en:r
     strToSend(){
       this.getPubKey()
       if(this.redeemAddressWithSecret||this.redeemAddressWOSecret){
-        
+        this.generateP2SH()
         return JSON.stringify({
           giveCoinId:this.giveCoinId,
           giveCoinIsCP:this.giveCoinIsCP,
@@ -548,7 +548,7 @@ module.exports=require("../js/lang.js")({ja:require("./ja/atomicswap.html"),en:r
         return ""
       }
 
-      this.generateP2SH()
+      
       
     }
   },

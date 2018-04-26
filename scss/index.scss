@@ -478,6 +478,10 @@ ons-popover .popover__content{
     width:100%;
     display:block;
   }
+  .cpCandidate .right{
+    font-size:small;
+    color:#aaa;
+  }
 }
 [data-page="confirm"]{
   .insufficientFund{

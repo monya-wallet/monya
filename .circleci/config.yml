@@ -36,6 +36,7 @@ jobs:
           rm -r dev/*
           cp -r docs/wallet/* dev
           cd dev
+          zip -r monya.zip ./
           git add .
           git commit -m "[ci skip] build on circle ci"
           git push origin master

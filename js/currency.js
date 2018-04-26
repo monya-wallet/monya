@@ -364,28 +364,28 @@ module.exports=class{
           )
         )
     const node = this.lib.HDNode.fromSeedBuffer(seed,this.network)
-
+    let accountNode
+    
+    if(this.bip44){
+      accountNode=node.deriveHardened(44)
+        .deriveHardened(this.bip44.coinType)
+        .deriveHardened(this.bip44.account)
+    }else if(this.bip49){
+      accountNode=node
+        .deriveHardened(49)
+        .deriveHardened(this.bip49.coinType)
+        .deriveHardened(this.bip49.account)
+    }
+    
     if(!txb){
       txb=coinUtil.buildBuilderfromPubKeyTx(this.lib.Transaction.fromHex(option.hash),this.network)
 
       for(let i=0;i<txb.inputs.length;i++){
-        if(this.bip44){
-          txb.sign(i,node
-                   .deriveHardened(44)
-                   .deriveHardened(this.bip44.coinType)
-                   .deriveHardened(this.bip44.account)
-                   .derive(path[0][0]|0)
-                   .derive(path[0][1]|0).keyPair
-                  )
-        }else if(this.bip49){
-          txb.sign(i,node
-                   .deriveHardened(49)
-                   .deriveHardened(this.bip49.coinType)
-                   .deriveHardened(this.bip49.account)
-                   .derive(path[0][0]|0)
-                   .derive(path[0][1]|0).keyPair
-                  )
-        }
+
+        txb.sign(i,accountNode
+                 .derive(path[0][0]|0)
+                 .derive(path[0][1]|0).keyPair
+                )
       }
       return txb.build()
     }
@@ -393,19 +393,11 @@ module.exports=class{
     for(let i=0;i<path.length;i++){
       
       let keyPair;
-      if(this.bip44){
-        keyPair=node.deriveHardened(44)
-            .deriveHardened(this.bip44.coinType)
-            .deriveHardened(this.bip44.account)
-            .derive(path[i][0]|0)
-          .derive(path[i][1]|0).keyPair
-      }else if(this.bip49){
-        keyPair=node.deriveHardened(49)
-            .deriveHardened(this.bip49.coinType)
-            .deriveHardened(this.bip49.account)
-            .derive(path[i][0]|0)
-          .derive(path[i][1]|0).keyPair
-      }
+
+      keyPair=accountNode
+        .derive(path[i][0]|0)
+        .derive(path[i][1]|0).keyPair
+      
       
       if(this.enableSegwit){
         const redeemScript = this.lib.script.witnessPubKeyHash.output.encode(this.lib.crypto.hash160(keyPair.getPublicKeyBuffer()))
@@ -439,25 +431,24 @@ module.exports=class{
     const node = this.lib.HDNode.fromSeedBuffer(seed,this.network)
 
     for(let i=0;i<txb.inputs.length;i++){
+      let accountNode
+      
       if(this.bip44){
-        txb.sign(i,node
-                 .deriveHardened(44)
-                 .deriveHardened(this.bip44.coinType)
-                 .deriveHardened(this.bip44.account)
-                 .derive(path[0]|0)
-                 .derive(path[1]|0).keyPair,
-                 mSig.redeemScript
-                )
+        accountNode=node.deriveHardened(44)
+          .deriveHardened(this.bip44.coinType)
+          .deriveHardened(this.bip44.account)
       }else if(this.bip49){
-        txb.sign(i,node
-                 .deriveHardened(49)
-                 .deriveHardened(this.bip49.coinType)
-                 .deriveHardened(this.bip49.account)
-                 .derive(path[0]|0)
-                 .derive(path[1]|0).keyPair,
-                 mSig.redeemScript
-                )
+        accountNode=node
+          .deriveHardened(49)
+          .deriveHardened(this.bip49.coinType)
+          .deriveHardened(this.bip49.account)
       }
+      txb.sign(i,accountNode
+               .derive(path[0]|0)
+               .derive(path[1]|0).keyPair,
+               mSig.redeemScript
+              )
+      
     }
     if(option.complete){
       return txb.build()
@@ -603,6 +594,9 @@ module.exports=class{
   }
 
   callCP(method,params){
+    if(!this.counterpartyEndpoint){
+      throw new errors.ParameterNotFoundError()
+    }
     return axios.post(this.counterpartyEndpoint,{
       params,
       id:0,
@@ -616,6 +610,9 @@ module.exports=class{
     })
   }
   callCPLib(method,params){
+    if(!this.counterpartyEndpoint){
+      throw new errors.ParameterNotFoundError()
+    }
     return axios.post(this.counterpartyEndpoint,{
       params:{
         method,

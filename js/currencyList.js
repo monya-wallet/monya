@@ -92,7 +92,7 @@ const defaultCoins=[
       fiat:"btc"
     },
     sound:require("../res/coins/paySound/zny.m4a"),
-    opReturnLength:83,
+    opReturnLength:40, //server seems currently not to support
     isAtomicSwapAvailable:false //enable after activates CLTV
   },{
     coinScreenName:j?"ビットコイン":"Bitcoin",
