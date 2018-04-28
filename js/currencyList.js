@@ -93,7 +93,7 @@ const defaultCoins=[
     },
     sound:require("../res/coins/paySound/zny.m4a"),
     opReturnLength:40, //server seems currently not to support
-    isAtomicSwapAvailable:false //enable after activates CLTV
+    isAtomicSwapAvailable:true
   },{
     coinScreenName:j?"ビットコイン":"Bitcoin",
     coinId:"btc",
@@ -402,7 +402,89 @@ const defaultCoins=[
 	  ],
     lib:"zec",
     opReturnLength:80,isAtomicSwapAvailable:true
-  },{
+  }/*,{
+    coinScreenName: j?"野獣コイン":"Yajucoin",
+    coinId: "yaju",
+    unit: "YAJU",
+    unitEasy: j?"野獣先輩":"Yaju Senpai",
+    bip44: {
+      coinType: 2005,
+      account: 0
+    },
+    bip21: "yajucoin",
+    defaultFeeSatPerByte: 50,
+    icon: require("../res/coins/yaju.png"),
+    apiEndpoints:[{url:"https://insight.neetcoin.jp/api",explorer:"https://insight.neetcoin.jp"}],
+    network: {
+      messagePrefix: '\x19YAJUCOIN Signed Message:\n',
+      bip32: {
+        public: 0x0488b21e,
+        private: 0x0488ade4
+      },
+      pubKeyHash: 78,
+      scriptHash: 85, // n
+      wif: 206
+    },
+    enableSegwit: false,
+    lib: "blk",
+    opReturnLength:0,isAtomicSwapAvailable:false
+  }*/,{
+    coinScreenName:j?"リンゴ":"Ringo",
+    coinId:"ringo",
+    unit:"RIN",
+    unitEasy:j?"リンゴ":"Ringo",
+    bip44:{
+      coinType:2003,
+      account:0
+    },
+    bip21:"ringo",
+    defaultFeeSatPerByte:200,//will implement dynamic fee
+    icon:require("../res/coins/rin.png"),
+    apiEndpoints:[{url:"http://namuyan.dip.jp/MultiLightBlockExplorer/apis.php?data=ringo/api"}],
+    network:{
+      messagePrefix: '\x16Ringo Signed Message:\n',
+      bip32: {
+        public: 0x0488b21e,
+        
+        private: 0x0488ade4
+      },
+      pubKeyHash: 60,
+      scriptHash: 85,
+      wif: 188
+    },
+    enableSegwit:false,
+    confirmations:6,
+    lib:"blk",
+    opReturnLength:0,isAtomicSwapAvailable:false
+  }/*,{
+    coinScreenName:j?"クマコイン":"Kumacoin",
+    coinId:"kuma",
+    unit:"KUMA",
+    unitEasy:j?"クマ":"Kuma",
+    bip44:{
+      coinType:2004,//not from slip44, if it is not in slip44, set from 2000
+      account:0
+    },
+    bip21:"kumacoin",
+    defaultFeeSatPerByte:200,//will implement dynamic fee
+    icon:require("../res/coins/kuma.png"),
+    apiEndpoints:[{url:"http://namuyan.dip.jp/MultiLightBlockExplorer/apis.php?data=kuma/api"}],
+    network:{
+      messagePrefix: '\x19Kumacoin Signed Message:\n',
+      bip32: {
+        public: 0x0488b21e,
+        
+        private: 0x0488ade4
+      },
+      pubKeyHash: 45,
+      scriptHash: 8,
+      wif: 173
+    },
+    enableSegwit:false,
+    confirmations:6,
+    lib:"blk",
+    opReturnLength:0,isAtomicSwapAvailable:false
+  }*/,{
     coinScreenName: j?"NEETCOIN":"NeetCoin",
     coinId: "neet",
     unit: "NEET",

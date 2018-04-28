@@ -530,7 +530,10 @@ module.exports=require("../js/lang.js")({ja:require("./ja/atomicswap.html"),en:r
     strToSend(){
       this.getPubKey()
       if(this.redeemAddressWithSecret||this.redeemAddressWOSecret){
-        this.generateP2SH()
+        if(!this.myP2SH&&!this.opponentP2SH){
+     
+          this.generateP2SH()
+        }
         return JSON.stringify({
           giveCoinId:this.giveCoinId,
           giveCoinIsCP:this.giveCoinIsCP,
@@ -547,9 +550,6 @@ module.exports=require("../js/lang.js")({ja:require("./ja/atomicswap.html"),en:r
       }else{
         return ""
       }
-
-      
-      
     }
   },
   created(){
@@ -568,7 +568,10 @@ module.exports=require("../js/lang.js")({ja:require("./ja/atomicswap.html"),en:r
       this.generateP2SH()
     },
     secret(){
-      this.generateHash()
+      if(this.myP2SH||this.opponentP2SH){
+        return
+      }
+      this.generateHash() 
     },
     isRefund(){
       if(!((this.getCoinIsCP&&!this.isRefund)||(this.giveCoinIsCP&&this.isRefund))){
