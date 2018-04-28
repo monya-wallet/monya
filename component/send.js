@@ -1,7 +1,7 @@
 const coinUtil=require("../js/coinUtil")
 const currencyList=require("../js/currencyList")
 
-const SEARCH_DELAY=300
+const SEARCH_DELAY=500
 
 module.exports=require("../js/lang.js")({ja:require("./ja/send.html"),en:require("./en/send.html")})({
   data(){
