@@ -1,9 +1,15 @@
 # もにゃ(Monya)
 
 <p style="text-align:center">
-[![Monya](res/monya_icon_round_512.png)](https://monya-wallet.github.io)
+
+
+<a href="https://monya-wallet.github.io"><img src="res/monya_icon_round_512.png" alt="Monya"></a>
+
+<br>
 
 Easy but secure Monacoin & Altcoins Wallet
+
+</p>
 
 [![GPL License](http://img.shields.io/badge/license-GPL-blue.svg?style=flat)](LICENSE)
 [![CircleCI](https://circleci.com/gh/monya-wallet/monya.svg?style=svg)](https://circleci.com/gh/monya-wallet/monya)
@@ -11,7 +17,6 @@ Easy but secure Monacoin & Altcoins Wallet
 [![モナコイン](https://img.shields.io/badge/DonateMe-monacoin-yellow.svg)](https://monya-wallet.github.io/a/?address=MStxnMRVMHH95YPzGeR9pdc3HLrvL6pjSo&scheme=monacoin&message=%E5%AF%84%E4%BB%98%E3%82%92%E3%81%82%E3%82%8A%E3%81%8C%E3%81%A8%E3%81%86%E3%81%94%E3%81%96%E3%81%84%E3%81%BE%E3%81%99&req-opreturn=%E5%AF%84%E4%BB%98%E3%81%A7%E3%81%99)
 [![ビットコイン](https://img.shields.io/badge/DonateMe-bitcoin-orange.svg)](https://monya-wallet.github.io/a/?address=1HohzLWyA7L1ifx6hr2Xr5N1sGZrR1ZbMt&scheme=bitcoin&message=%E5%AF%84%E4%BB%98%E3%82%92%E3%81%82%E3%82%8A%E3%81%8C%E3%81%A8%E3%81%86%E3%81%94%E3%81%96%E3%81%84%E3%81%BE%E3%81%99&req-opreturn=%E5%AF%84%E4%BB%98%E3%81%A7%E3%81%99)
 [![Tipmonaで投げる](https://img.shields.io/badge/TipMe-%40tipmona-ff69b4.svg)](https://twitter.com/share?text=%40tipmona%20tip%20%40monya_wallet%2039%20%E3%82%82%E3%81%AB%E3%82%83%E3%81%AE%E5%AF%84%E4%BB%98%E3%81%A7%E3%81%99)
-</p>
 
 ## Use Monya Now
 
