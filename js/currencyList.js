@@ -428,7 +428,7 @@ const defaultCoins=[
     enableSegwit: false,
     lib: "blk",
     opReturnLength:0,isAtomicSwapAvailable:false
-  }*/,{
+  },{
     coinScreenName:j?"リンゴ":"Ringo",
     coinId:"ringo",
     unit:"RIN",
@@ -456,7 +456,7 @@ const defaultCoins=[
     confirmations:6,
     lib:"blk",
     opReturnLength:0,isAtomicSwapAvailable:false
-  }/*,{
+  },{
     coinScreenName:j?"クマコイン":"Kumacoin",
     coinId:"kuma",
     unit:"KUMA",
