@@ -42,16 +42,18 @@ module.exports=require("../js/lang.js")({ja:require("./ja/api.html"),en:require(
               complete:this.param.complete
             }).toHex()
             this.password=""
-            
+
+            const address=cur.getAddress(0,this.param.addrIndex)
             if(this.param.callbackURL){
               axios.post(this.param.callbackURL,{
                 payload:this.param.payload,
-                signature:signed
+                signature:signed,
+                address
               }).then(()=>{
                 this.successful=true
               })
             }else if(this.param.callbackPage){
-              coinUtil.openUrl(this.param.callbackPage+`?payload=${this.param.payload}&signature=${signed}`)
+              coinUtil.openUrl(this.param.callbackPage+`?payload=${this.param.payload}&signature=${signed}&address=${address}`)
               this.successful=true
             }else{
               this.successful=true
@@ -66,16 +68,18 @@ module.exports=require("../js/lang.js")({ja:require("./ja/api.html"),en:require(
             const cur =currencyList.get(this.param.coinId)
             let signed =cur.signMessage(this.param.message,cipher.entropy,this.password,[0,this.param.addrIndex])
             this.password=""
-            
+            const address=cur.getAddress(0,this.param.addrIndex)
             if(this.param.callbackURL){
               axios.post(this.param.callbackURL,{
                 payload:this.param.payload,
-                signature:signed
+                signature:signed,
+                address,
+                message:this.param.message
               }).then(()=>{
                 this.successful=true
               })
             }else if(this.param.callbackPage){
-              coinUtil.openUrl(this.param.callbackPage+`?payload=${this.param.payload}&signature=${signed}`)
+              coinUtil.openUrl(this.param.callbackPage+`?payload=${this.param.payload}&signature=${signed}&address=${address}&message=${this.param.message}`)
               this.successful=true
             }else{
               this.dataDlg=true

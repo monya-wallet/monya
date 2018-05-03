@@ -71,7 +71,7 @@ module.exports=require("../js/lang.js")({ja:require("./ja/setPassword.html"),en:
           },
           enabledExts:exts
         })
-        
+        storage.set("question",this.answers)
 
         cipherPromise=coinUtil.makePairsAndEncrypt({
           entropy:this.$store.state.entropy,

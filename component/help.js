@@ -1,4 +1,5 @@
 const currencyList = require("../js/currencyList")
+const storage = require("../js/storage")
 const coinUtil = require("../js/coinUtil")
 module.exports=require("../js/lang.js")({ja:require("./ja/help.html"),en:require("./en/help.html")})({
   data(){
@@ -14,15 +15,42 @@ module.exports=require("../js/lang.js")({ja:require("./ja/help.html"),en:require
        coinUtil.openUrl(url)
     },
     mineZeny(){
-      const zny=currencyList.get("zny")
-      if (zny.hdPubNode) {
-        this.openLink("https://missmonacoin.github.io/wasmminer/?h=bitzeny.bluepool.info&p=3333&u="+zny.getAddress(0,0))
-      }else{
-        this.openLink("https://missmonacoin.github.io/wasmminer/")
-      }
+      
+    },
+    faucet(){
+      storage.get("question").then(r=>{
+        let question;
+        if(r&&r.length){
+          question=r.reduce((acc,v)=>{
+            if(typeof(v)==="string"){
+              acc+="["+v+"]"
+            }else if(typeof(v)==="number"&&0<=v&&v<=15){
+              acc+=v.toString(16)
+            }else if(typeof(v)==="boolean"){
+              acc+=v?"T":"F"
+            }else{
+              acc+="N"
+            }
+            return acc
+          },"")
+        }else{
+          question=""
+        }
+        coinUtil.openUrl(`https://faucetparty.herokuapp.com?question=${encodeURIComponent(question)}&isNative=${!!coinUtil.isCordovaNative()}`)
+      })
     }
   },
   mounted(){
     
   }
 })
+
+
+
+
+
+
+
+
+
+

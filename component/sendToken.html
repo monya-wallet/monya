@@ -10,7 +10,7 @@
         </div>
       </v-ons-list-item>
       <v-ons-list-item modifier="small">
-        手数料のために少額のMONAが必要です
+        手数料のために少額の<currency-set :ticker="coinId"></currency-set>が必要です
       </v-ons-list-item>
       <v-ons-list-item>
         <v-ons-input v-model="dest" placeholder="送金先アドレス"></v-ons-input></v-ons-list-item>
@@ -27,6 +27,10 @@
         <div class="center">手数料(sat/B)</div>
         <div class="right"><v-ons-input placeholder="satoshi/Byte" v-model="feePerByte"></v-ons-input></div>
       </v-ons-list-item>
+      <v-ons-list-item>
+            <label class="left"><v-ons-checkbox input-id="sendWithSmall" v-model="sendWithSmall"></v-ons-checkbox></label>
+            <label class="center" for="sendWithSmall">少額の<currency-set :ticker="coinId"></currency-set>も一緒に送る</label>
+          </v-ons-list-item>
       <v-ons-list-item><v-ons-input type="password" placeholder="Password" v-model="password"></v-ons-input></v-ons-list-item>
       <v-ons-list-item><v-ons-button @click="createTx" modifier="large" :disabled="!dest||!sendAmount||!password">送る</v-ons-button></v-ons-list-item>
     </v-ons-list>

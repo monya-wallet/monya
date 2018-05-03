@@ -17,7 +17,8 @@ module.exports=require("../js/lang.js")({ja:require("./ja/sendToken.html"),en:re
       sendMemo:"",
       password:"",
       feePerByte:200,
-      noFund:false
+      noFund:false,
+      sendWithSmall:false
     }
   },
   store:require("../js/store.js"),
@@ -34,7 +35,8 @@ module.exports=require("../js/lang.js")({ja:require("./ja/sendToken.html"),en:re
         includeUnconfirmedFunds:this.$store.state.includeUnconfirmedFunds,
         password:this.password,
         memo:this.sendMemo,
-        feePerByte:this.feePerByte
+        feePerByte:this.feePerByte,
+        useEnhancedSend:!this.sendWithSmall
       }).then(r=>{
         this.loading=false
         this.$ons.notification.alert("Successfully sent transaction.Transaction ID is: "+r)
