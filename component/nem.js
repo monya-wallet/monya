@@ -119,44 +119,12 @@ module.exports=require("../js/lang.js")({ja:require("./ja/nem.html"),en:require(
       nem.com.requests.account.mosaics.owned(endpoint,this.address).then(b=>{
         this.loading=false
         return Promise.all(b.data.map(mos=>{
-          if(mos.mosaicId.namespaceId==="nem"){
-            return Promise.resolve({
-              definitions:{
-                "creator": "3e82e1c1e4a75adaa3cba8c101c3cd31d9817a2eb966eb3b511fb2ed45b8e262",
-                "description": "reserved xem mosaic",
-                "id": {
-                  "namespaceId": "nem",
-                  "name": "xem"
-                },
-                "properties": [{
-                  "name": "divisibility",
-                  "value": "6"
-                }, {
-                  "name": "initialSupply",
-                  "value": "8999999999"
-                }, {
-                  "name": "supplyMutable",
-                  "value": "false"
-                }, {
-                  "name": "transferable",
-                  "value": "true"
-                }],
-                "levy": {}
-              },
-              quantity:mos.quantity,
-              mosaicId:mos.mosaicId,
-              divisibility:6,
-              normalizedQty:(new BigNumber(mos.quantity)).shift(-6).toNumber(),
-              icon:icons["nem:xem"]
-            })
-          }
-          
           let divisibility=6;
           let mData
-          return nem.com.requests.namespace.mosaicDefinitions(endpoint,mos.mosaicId.namespaceId).then(def=>{
+          return nem.com.requests.account.mosaics.allDefinitions(endpoint, this.address).then(def=>{
             
             for(let i=0;i<def.data.length;i++){
-              mData=def.data[i].mosaic
+              mData=def.data[i]
               if(mData.id.name!==mos.mosaicId.name){
                 continue
               }
