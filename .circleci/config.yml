@@ -38,7 +38,6 @@ jobs:
           mkdir dev/cwww
           cp -r cordovaProj/www/* dev/cwww
           cd dev
-          zip -r monya.zip ./
           git add .
           git commit -m "[ci skip] build on circle ci"
           git push origin master
