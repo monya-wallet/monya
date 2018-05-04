@@ -154,7 +154,7 @@ module.exports=require("../js/lang.js")({ja:require("./ja/nem.html"),en:require(
             supplyProms.push(nem.com.requests.mosaic.supply(endpoint,nem.utils.format.mosaicIdToName(token.mosaicId)))
           }
         }
-        return supplyProms
+        return Promise.all(supplyProms)
       }).then(supplies=>{
         for(let i=0;i<supplies.length;i++){
           ret[i].supply=supplies[i].supply
