@@ -26,9 +26,12 @@ const defaultCoins=[
       {
         url:"https://mona.insight.monaco-ex.org/insight-api-monacoin",
         explorer:"https://mona.insight.monaco-ex.org/insight"
+      },
+      {
+        url:"https://mona.insight.monacoin.ml/insight-api-monacoin",
+        explorer:"https://mona.insight.monacoin.ml/insight"
       }
-    ],
-    explorer:"https://mona.insight.monaco-ex.org/insight",
+	    ],
     network:{
       messagePrefix: '\x19Monacoin Signed Message:\n',
       bip32: {
@@ -402,11 +405,11 @@ const defaultCoins=[
 	  ],
     lib:"zec",
     opReturnLength:80,isAtomicSwapAvailable:true
-  }/*,{
+  },{
     coinScreenName: j?"野獣コイン":"Yajucoin",
     coinId: "yaju",
     unit: "YAJU",
-    unitEasy: j?"野獣先輩":"Yaju Senpai",
+    unitEasy: "￥",
     bip44: {
       coinType: 2005,
       account: 0
@@ -414,7 +417,7 @@ const defaultCoins=[
     bip21: "yajucoin",
     defaultFeeSatPerByte: 50,
     icon: require("../res/coins/yaju.png"),
-    apiEndpoints:[{url:"https://insight.neetcoin.jp/api",explorer:"https://insight.neetcoin.jp"}],
+    apiEndpoints:[{url:"https://yaju.insight.monacoin.ml/api",explorer:"https://yaju.insight.monacoin.ml"}],
     network: {
       messagePrefix: '\x19YAJUCOIN Signed Message:\n',
       bip32: {
@@ -428,7 +431,7 @@ const defaultCoins=[
     enableSegwit: false,
     lib: "blk",
     opReturnLength:0,isAtomicSwapAvailable:false
-  },{
+  }/*,{
     coinScreenName:j?"リンゴ":"Ringo",
     coinId:"ringo",
     unit:"RIN",
