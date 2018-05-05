@@ -294,6 +294,43 @@ this.icon=opt.icon
       return cur.callCP("broadcast_tx",{signed_tx_hex:signedTx.toHex()})
     })
   }
+  createBroadcast(opt){
+    const addressIndex = opt.addressIndex|0
+    const includeUnconfirmedFunds = opt.includeUnconfirmedFunds
+    const password=opt.password
+    const feePerByte = opt.feePerByte || this.cp.defaultFeeSatPerByte
+    const text=opt.text
+    const timestamp = parseInt(opt.timestamp)
+    const value=parseFloat(opt.value)
+    const fee_fraction =parseFloat(opt.feeFraction)
+    
+    const cur = this.cp
+    let hex=""
+
+    return this.createCommand("order",{
+      source:cur.getAddress(0,addressIndex),
+      text,
+      timestamp,
+      value,
+      fee_fraction
+    },{
+      addressIndex,
+      includeUnconfirmedFunds,
+      feePerByte,disableUtxoLocks:true,
+      extendedTxInfo:true
+    }).then(res=>{
+      hex=res.tx_hex
+      return storage.get("keyPairs")
+    }).then(cipher=>{
+      const signedTx=cur.signTx({
+        hash:hex,
+        password:password,
+        path:[[0,addressIndex]],
+        entropyCipher:cipher.entropy
+      })
+      return cur.callCP("broadcast_tx",{signed_tx_hex:signedTx.toHex()})
+    })
+  }
 }
 
 
