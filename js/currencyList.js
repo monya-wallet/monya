@@ -409,7 +409,7 @@ const defaultCoins=[
     coinScreenName: j?"野獣コイン":"Yajucoin",
     coinId: "yaju",
     unit: "YAJU",
-    unitEasy: "￥",
+    unitEasy: "¥",
     bip44: {
       coinType: 2005,
       account: 0
