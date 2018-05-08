@@ -23,7 +23,7 @@ addcoins/ へのPull Requestは許可してもOK。もともと自己責任で�
 ### 新規コイン追加は基本的にしない
 
 すでにかなり揉めているので、コイン追加はしません。
-addcoinsへのPull Requestはするのだから、問題はないはず
+addcoinsへのPull Requestはするなら問題はないはず
 
 ただし、Yajucoin、Ethereum、OpenAssetsなどのColoredCoins の全機能のテストをした上での追加は歓迎
 (そもそもNeetcoinはYajucoinの対応ができるというメリットがなければマージするつもりはなかった)

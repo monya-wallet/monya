@@ -69,10 +69,10 @@ module.exports=class{
     this.getReceiveAddr()
     this.getChangeAddr()
   }
-  getAddressProp(propName,address){
+  getAddressProp(propName,address,noTxList=false){
     if(this.dummy){return Promise.resolve()}
     return axios({
-      url:this.apiEndpoint+"/addr/"+address+(propName?"/"+propName:""),
+      url:this.apiEndpoint+"/addr/"+address+(propName?"/"+propName:(noTxList?"?noTxList=1":"")),
       json:true,
       method:"GET"}).then(res=>{
         return res.data
