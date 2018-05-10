@@ -15,7 +15,7 @@
           アプリケーションと連携します。信頼できるアプリケーションである場合のみ続行してください。
           メッセージ署名します
         </div>
-        <input v-model="password" placeholder="パスワード" class="text-input text-input--underbar" type="text">
+        <input v-model="password" type="password" placeholder="パスワード" class="text-input text-input--underbar">
         <v-ons-button modifier="large cta" @click="goWithPassword" :disabled="!password">次へ</v-ons-button>
         <v-ons-button modifier="large" @click="no">やめる</v-ons-button>
       </div>

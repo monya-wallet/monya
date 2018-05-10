@@ -56,7 +56,9 @@ module.exports=require("../js/lang.js")({ja:require("./ja/setPassword.html"),en:
         if(this.answers[9]){
           exts.push("zaifPay")
         }
-        storage.set("settings",{
+        
+
+        cipherPromise = storage.set("settings",{
           includeUnconfirmedFunds:false,
           useEasyUnit:!!this.answers[8],
           absoluteTime:false,
@@ -71,13 +73,12 @@ module.exports=require("../js/lang.js")({ja:require("./ja/setPassword.html"),en:
           },
           enabledExts:exts
         })
-        storage.set("question",this.answers)
-
-        cipherPromise=coinUtil.makePairsAndEncrypt({
-          entropy:this.$store.state.entropy,
-          password:this.password,
-          makeCur:[template["<!--t:primaryCoinId-->"]||"mona"]
-        })
+          .then(()=>storage.set("question",this.answers))
+          .then(()=>coinUtil.makePairsAndEncrypt({
+            entropy:this.$store.state.entropy,
+            password:this.password,
+            makeCur:[template["<!--t:primaryCoinId-->"]||"mona"]
+          }))
       }
       cipherPromise.then((data)=>storage.set("keyPairs",data))
         .then(()=>{

@@ -123,7 +123,7 @@
         <textarea class="textarea--transparent" :value="createdTx" placeholder="未署名トランザクション"></textarea>
       </v-ons-list-item>
       <v-ons-list-item>
-        <v-ons-button @click="unsigned=createdTx" modifier="large">「署名するトランザクション」に反映</v-ons-button>
+        <v-ons-button @click="unsigned=createdTx" modifier="large" :disabled="!createdTx">「署名するトランザクション」に反映</v-ons-button>
       </v-ons-list-item>
     </v-ons-list>
 

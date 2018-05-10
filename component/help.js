@@ -27,9 +27,9 @@ module.exports=require("../js/lang.js")({ja:require("./ja/help.html"),en:require
             }else if(typeof(v)==="number"&&0<=v&&v<=15){
               acc+=v.toString(16)
             }else if(typeof(v)==="boolean"){
-              acc+=v?"T":"F"
+              acc+=v?"Y":"N"
             }else{
-              acc+="N"
+              acc+="X"
             }
             return acc
           },"")

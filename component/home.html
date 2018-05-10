@@ -61,7 +61,7 @@
             </div>
           </div>
           <div class="w_right">
-            <div class="amount" :class='{unconfirmed:c.unconfirmed}'><currency-set :amount="c.balance" :ticker="c.coinId"></currency-set><span v-show="c.unconfirmed">+{{c.unconfirmed}}待機中</span></div>
+            <div class="amount" :class='{unconfirmed:c.unconfirmed}'><currency-set :amount="c.balance" :ticker="c.coinId"></currency-set><span v-show="c.unconfirmed">{{c.unconfirmed}}待機中</span></div>
             <div class="fiatConv"><currency-set :amount="c.balance*c.price" :ticker="fiat" :easy="isEasy"></currency-set></div>
           </div>
         </v-ons-list-item>

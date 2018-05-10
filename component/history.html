@@ -56,6 +56,14 @@
         </div>
       </v-ons-list-item>
       <v-ons-list-item v-show="hasMore" @click="loadMore">もっと見る</v-ons-list-item>
+      <v-ons-list-item modifier="small">
+        <div class="center">
+          <v-ons-input placeholder="TXIDを検索" v-model="searchTxId"></v-ons-input>
+        </div>
+        <div class="right">
+          <v-ons-button modifier="quiet" @click="txDetail(searchTxId);searchTxId=''"><v-ons-icon icon="fa-search"></v-ons-icon></v-ons-button>
+        </div>
+      </v-ons-list-item>
     </v-ons-list>
     <v-ons-alert-dialog modifier="rowfooter"
       :visible.sync="filterDlg" cancelable
@@ -71,7 +79,7 @@
       </v-ons-select>
       <br/>
       <v-ons-checkbox v-model="hideDustSend"></v-ons-checkbox>Monapartyっぽい出金を隠す
-      <v-ons-search-input placeholder="TXIDを検索" @change="txDetail(searchTxId)" v-model="searchTxId"></v-ons-search-input>
+      
       <template slot="footer">
         <div class="alert-dialog-button" @click="filterDlg=false">閉じる</div>
       </template>

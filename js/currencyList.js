@@ -499,7 +499,8 @@ const defaultCoins=[
     bip21: "neetcoin",
     defaultFeeSatPerByte: 50,
     icon: require("../res/coins/neet.png"),
-    apiEndpoints:[{url:"https://insight.neetcoin.jp/api",explorer:"https://insight.neetcoin.jp"}],
+    apiEndpoints:[{url:"https://insight.neetcoin.jp/api",explorer:"https://insight.neetcoin.jp"},
+                 {url:"https://neet.insight.monacoin.ml/api",explorer:"https://insight.neetcoin.jp"}],
     network: {
       messagePrefix: '\x19NEETCOIN Signed Message:\n',
       bip32: {

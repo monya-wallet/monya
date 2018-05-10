@@ -26,7 +26,7 @@ module.exports=require("../js/lang.js")({ja:require("./ja/txDetail.html"),en:req
       const txProm = cur.getTx(this.txId).then(v=>{
         this.res=v
         v.vout.forEach(o=>{
-          if(o.scriptPubKey.hex.substr(0,2)==="6a"){
+          if(o.scriptPubKey.hex&&o.scriptPubKey.hex.substr(0,2)==="6a"){
             this.message=bcLib.script.nullData.output.decode(new Buffer(o.scriptPubKey.hex,"hex")).toString('utf8')
           }
         })

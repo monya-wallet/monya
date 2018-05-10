@@ -507,11 +507,6 @@ ons-popover .popover__content{
     text-align:center;
   }
 }
-[data-page="setPassword"]{
-  ons-input{
-    width:100%
-  }
-}
 $passwordHeight:30px;
 [data-page="login"],[data-page="xrp"],[data-page="nem"]{
   .wrap{
@@ -545,9 +540,6 @@ $passwordHeight:30px;
         width:$homeCurIconSize;
         height:$homeCurIconSize;
       }
-    }
-    ons-input{
-      width:100%
     }
   }
   
@@ -725,11 +717,6 @@ $zaifPayLogoSize:200px;
     height:100px;
   }
 }
-[data-page="sweep"]{
-  ons-input{
-    width: 100%;
-  }
-}
 [data-page="tokenInfo"],[data-page="monaparty"],[data-page="listTokens"],[data-page="sendToken"],[data-page="makeToken"],[data-page="dexOrder"]{
   ons-toolbar{
     background:linear-gradient(to bottom, #9e3429 0%,#6b2f27 100%);
@@ -758,17 +745,11 @@ $zaifPayLogoSize:200px;
   ons-navigator.blue & .page__background{
     background-color:#123456;
   }
-  ons-input{
-    width:100%;
-  }
   ons-button{
     background:linear-gradient(to bottom, #9e3429 0%,#6b2f27 100%);
   }
 }
 [data-page="atomicswap"]{
-  ons-input{
-    width: 100%;
-  }
   ons-segment{
     width:100%;
   }
@@ -791,6 +772,11 @@ $zaifPayLogoSize:200px;
   width: 100%;
   min-height: 200px;
   min-width: 300px;
+}
+
+
+ons-input{
+    width: 100%;
 }
 
 @keyframes shake {

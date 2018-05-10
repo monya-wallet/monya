@@ -1,6 +1,8 @@
 const currencyList = require("../js/currencyList")
 const coinUtil = require("../js/coinUtil")
 const bcLib = require('bitcoinjs-lib')
+const BigNumber = require('bignumber.js')
+
 module.exports=require("../js/lang.js")({ja:require("./ja/history.html"),en:require("./en/history.html")})({
   data(){
     return {
@@ -43,9 +45,7 @@ module.exports=require("../js/lang.js")({ja:require("./ja/history.html"),en:requ
         for(let i=0;i<res.items.length;i++){
           const v=res.items[i]
           const txLbl=data[1][v.txid]
-          //isIn=I sent
-          //!isIn&&isOut=I received
-          //!isOut=Mystery
+
           let aIn=0
           let aOut=0
           let amount=0
@@ -54,13 +54,16 @@ module.exports=require("../js/lang.js")({ja:require("./ja/history.html"),en:requ
               message=""
           for(let j=0;j<v.vin.length;j++){
             if(cur.getIndexFromAddress(v.vin[j].addr)){
-              aIn+=parseFloat(v.vin[j].value)
+              aIn+=v.vin[j].valueSat
             }
           }
+
+          aIn=(new BigNumber(aIn)).dividedBy(100000000).toNumber()
+          
           for(let k=0;k<v.vout.length;k++){
             const vo=v.vout[k]
             const spk=vo.scriptPubKey
-            if(spk.hex.substr(0,2)==="6a"){
+            if(spk.hex&&spk.hex.substr(0,2)==="6a"){
               hasMessage=true
               message=bcLib.script.nullData.output.decode(new Buffer(spk.hex,"hex")).toString('utf8')
             }

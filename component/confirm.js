@@ -69,7 +69,7 @@ module.exports=require("../js/lang.js")({ja:require("./ja/confirm.html"),en:requ
         })
         this.hash=finalTx.toHex()
         if(this.signOnly){
-          throw "signOnly"
+          throw new errors.SignOnly()
         }
         return cur.pushTx(this.hash)
       }).then((res)=>{
@@ -86,12 +86,16 @@ module.exports=require("../js/lang.js")({ja:require("./ja/confirm.html"),en:requ
         this.loading=false
         if(e.request){
           this.$store.commit("setError",e.request.responseText||"Network Error.Please try again")
-        }else{
+        }else if(e instanceof errors.PasswordFailureError){
           this.incorrect=true
           this.ready=true
           setTimeout(()=>{
             this.incorrect=false
           },3000)
+        }else if(e instanceof errors.SignOnly){
+          this.ready=true
+        }else{
+          this.$store.commit("setError",e.message)
         }
       })
     },

@@ -102,7 +102,7 @@ module.exports=require("../js/lang.js")({ja:require("./ja/signTx.html"),en:requi
         return txb.buildIncomplete().toHex()
         
       }catch(e){
-        return e
+        return ""
       }
     }
   },
