@@ -53,6 +53,7 @@ jobs:
 
       - run: |
             /opt/sdk_install.sh "build-tools;19.1.0" "platforms;android-19"
+            sudo apt-get -y install zip
             git clone https://github.com/monya-wallet/monya.git monya
             npm i
             npm run build:cordova
