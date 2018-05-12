@@ -76,7 +76,7 @@ jobs:
       - store_artifacts:
           path: electron/dist
       - store_artifacts:
-          path: chrome_extension.tar.gz
+          path: chrome_extension.zip
 
 workflows:
   version: 2
