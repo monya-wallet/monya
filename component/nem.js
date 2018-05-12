@@ -137,9 +137,9 @@ module.exports=require("../js/lang.js")({ja:require("./ja/nem.html"),en:require(
             }
             let divisibility=6
             const prp=def.properties
-            for(let j=0;j<prp.length;j++){
-              if(prp[j].name==="divisibility"){
-                divisibility=parseInt(prp[j].value)
+            for(let k=0;k<prp.length;k++){
+              if(prp[k].name==="divisibility"){
+                divisibility=parseInt(prp[k].value)
               }
             }
             ret.push({

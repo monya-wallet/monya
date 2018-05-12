@@ -68,7 +68,7 @@ jobs:
             npm install
             npm run dist
             cd ..
-            tar -zcvf chrome_extension.tar.gz chrome_extension
+            zip chrome_extension.zip chrome_extension
             
       - store_artifacts:
           path: cordovaProj/platforms/android/build/outputs/apk/
