@@ -4,7 +4,6 @@ let cacheName = "cache-"+ver
 
 cacheData.push("/wallet/index.html")
 self.addEventListener('install', e => {
-  const timeStamp = Date.now();
   e.waitUntil(
     caches.open(cacheName).then(cache => {
       return cache.addAll(cacheData)

@@ -12,6 +12,12 @@ module.exports=require("../js/lang.js")({ja:require("./ja/about.html"),en:requir
     },
     openLink(url){
       coinUtil.openUrl(url)
+    },
+    forceUpdate(){
+      if ('serviceWorker' in navigator&&!window.cordova&&!coinUtil.isElectron()) {
+        navigator.serviceWorker.getRegistrations().then(r=>r.forEach(v=>v.update()))
+      }
+      
     }
   }
 })
