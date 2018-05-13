@@ -2,7 +2,6 @@ let ver= "<!--t:Timestamp-->"
 let cacheData = "<!--t:Caches-->".split(",").map(d=>"/wallet/dist/assets/"+d+"?t="+ver)
 let cacheName = "cache-"+ver
 
-cacheData.push("/wallet")
 cacheData.push("/wallet/index.html")
 self.addEventListener('install', e => {
   const timeStamp = Date.now();
