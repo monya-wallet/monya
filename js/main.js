@@ -58,7 +58,7 @@ exports.vm= new Vue({
   }
 })
 if ('serviceWorker' in navigator&&!window.cordova&&!coinUtil.isElectron()) {
-  navigator.serviceWorker.register('./dist/sw.js').then(()=>true).catch(()=>true);
+  navigator.serviceWorker.register('/sw.js').then(()=>true).catch(()=>true);
 }
 
 window.handleOpenURL=function(url) {
