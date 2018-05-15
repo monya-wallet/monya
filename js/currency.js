@@ -33,7 +33,7 @@ module.exports=class{
     this.sound=opt.sound||""
     this.counterpartyEndpoint=opt.counterpartyEndpoint
     this.enableSegwit=opt.enableSegwit
-    this.opReturnLength=opt.opReturnLength||40
+    this.opReturnLength=(opt.opReturnLength<0) ? 40 : opt.opReturnLength
     this.isAtomicSwapAvailable=!!opt.isAtomicSwapAvailable
     this.libName = opt.lib
     switch(opt.lib){
@@ -687,16 +687,18 @@ module.exports=class{
   }
   isValidAddress(address){
     try{
-      const ver = this.getAddrVersion(address)
+      const ver = this.getAddrVersion(address) //throws if not correct version
       if(ver===this.network.pubKeyHash||ver===this.network.scriptHash){
         return true
       }
-      const b32 = this.network.bech32
-      if(b32&&address.substr(0,b32.length)===b32){
-        return true
-      }
     }catch(e){
-      return false
+      try{
+        if(this.lib.address.fromBech32(address).prefix===this.network.bech32){
+          return true
+        }
+      }catch(e2){
+        return false;
+      }
     }
     return false
   }

@@ -153,7 +153,7 @@ module.exports=require("../js/lang.js")({ja:require("./ja/send.html"),en:require
       }else{return 0}
     },
     sendable(){
-      return this.address&&this.coinType&&!isNaN(this.amount*1)&&(this.amount*1)>0&&this.feePerByte>=0&&coinUtil.isValidAddress(this.address)&&this.remainingBytes>0
+      return this.address&&this.coinType&&!isNaN(this.amount*1)&&(this.amount*1)>0&&this.feePerByte>=0&&currencyList.get(this.coinType).isValidAddress(this.address)&&this.remainingBytes>0
     },
     
   },

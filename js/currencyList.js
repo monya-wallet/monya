@@ -125,6 +125,7 @@ const defaultCoins=[
       },
       pubKeyHash: 0,
       scriptHash: 5,
+      bech32:"bc",
       wif: 128
     },
     enableSegwit:false,
@@ -161,7 +162,7 @@ const defaultCoins=[
       pubKeyHash: 48,
       scriptHash: 5,
       wif: 176,
-      bech32:"lc"
+      bech32:"ltc"
     },
     enableSegwit:false,
     price:{
@@ -237,6 +238,7 @@ const defaultCoins=[
       },
       pubKeyHash: 0,// 1
       scriptHash: 5,// 3
+       bech32:"bc",
       wif: 128
     },
     enableSegwit:"legacy",
@@ -265,7 +267,8 @@ const defaultCoins=[
     apiEndpoints:[
       {url:"https://bch-bitcore1.trezor.io/api",explorer:"https://bch-bitcore1.trezor.io"},
       {url:"https://bch-bitcore3.trezor.io/api",explorer:"https://bch-bitcore3.trezor.io"},
-      {url:"https://bch-bitcore2.trezor.io/api",explorer:"https://bch-bitcore2.trezor.io"}
+      {url:"https://bch-bitcore2.trezor.io/api",explorer:"https://bch-bitcore2.trezor.io"},
+      {url:"https://bch-insight.bitpay.com/api",explorer:"https://bch-insight.bitpay.com"},
     ],
     network:{
       messagePrefix: '\x18Bitcoin Signed Message:\n',
@@ -518,7 +521,8 @@ const defaultCoins=[
       jsonPath: '$[?(@.id=="NEET_BTC")].last',
       fiat: "btc"
     },
-    opReturnLength:0,isAtomicSwapAvailable:false
+    opReturnLength:0,
+    isAtomicSwapAvailable:false
   }
 ]
 
