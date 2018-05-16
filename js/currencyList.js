@@ -114,6 +114,8 @@ const defaultCoins=[
       {url:"https://btc-bitcore4.trezor.io/api",explorer:"https://btc-bitcore4.trezor.io"},
       {url:"https://btc-bitcore5.trezor.io/api",explorer:"https://btc-bitcore5.trezor.io"},
       {url:"https://btc-bitcore2.trezor.io/api",explorer:"https://btc-bitcore2.trezor.io"},
+      {url:"https://btc-bitcore6.trezor.io/api",explorer:"https://btc-bitcore6.trezor.io"},
+      {url:"https://btc-bitcore3.trezor.io/api",explorer:"https://btc-bitcore3.trezor.io"},
       {explorer:"https://insight.bitpay.com",url:"https://insight.bitpay.com"}
     ],
     network:{
@@ -150,8 +152,10 @@ const defaultCoins=[
     bip21:"litecoin",
     defaultFeeSatPerByte:300,
     icon:require("../res/coins/ltc.png"),
-    apiEndpoints:[{url:"https://insight.litecore.io/api",
-    explorer:"https://insight.litecore.io"}],
+    apiEndpoints:[
+      {url:"https://insight.litecore.io/api", explorer:"https://insight.litecore.io"},
+      {url:"https://ltc-bitcore1.trezor.io/api", explorer:"https://ltc-bitcore1.trezor.io"}
+    ],
     network:{
       messagePrefix: '\x19Litecoin Signed Message:\n',
       bip32: {
@@ -227,7 +231,9 @@ const defaultCoins=[
       {url:"https://btc-bitcore1.trezor.io/api",explorer:"https://btc-bitcore1.trezor.io"},
       {url:"https://btc-bitcore4.trezor.io/api",explorer:"https://btc-bitcore4.trezor.io"},
       {url:"https://btc-bitcore5.trezor.io/api",explorer:"https://btc-bitcore5.trezor.io"},
-      {url:"https://btc-bitcore2.trezor.io/api",explorer:"https://btc-bitcore2.trezor.io"}
+      {url:"https://btc-bitcore2.trezor.io/api",explorer:"https://btc-bitcore2.trezor.io"},
+      {url:"https://btc-bitcore6.trezor.io/api",explorer:"https://btc-bitcore6.trezor.io"},
+      {url:"https://btc-bitcore3.trezor.io/api",explorer:"https://btc-bitcore3.trezor.io"},
     ],
     network:{
       messagePrefix: '\x18Bitcoin Signed Message:\n',
@@ -367,7 +373,8 @@ const defaultCoins=[
       {
 			  "url": "https://dash-bitcore3.trezor.io/api",
 			  "explorer": "https://dash-bitcore1.trezor.io"
-		  }
+		  },
+      {url:"https://insight.dash.org/insight-api-dash",explorer:"https://insight.dash.org/insight"},
 	  ],
     opReturnLength:83,isAtomicSwapAvailable:true
   },{
