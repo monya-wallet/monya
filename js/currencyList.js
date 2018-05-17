@@ -272,11 +272,12 @@ const defaultCoins=[
     defaultFeeSatPerByte:100,
     icon:require("../res/coins/bch.png"),
     apiEndpoints:[
+      {url:"https://bch-insight.bitpay.com/api",explorer:"https://bch-insight.bitpay.com"},
+      {url:"https://blockdozer.com/insight-api",explorer:"https://blockdozer.com"},
       {url:"https://bch-bitcore1.trezor.io/api",explorer:"https://bch-bitcore1.trezor.io"},
       {url:"https://bch-bitcore3.trezor.io/api",explorer:"https://bch-bitcore3.trezor.io"},
-      {url:"https://bch-bitcore2.trezor.io/api",explorer:"https://bch-bitcore2.trezor.io"},
-      {url:"https://bch-insight.bitpay.com/api",explorer:"https://bch-insight.bitpay.com"},
-      {url:"https://blockdozer.com/insight-api",explorer:"https://blockdozer.com"}
+      {url:"https://bch-bitcore2.trezor.io/api",explorer:"https://bch-bitcore2.trezor.io"}
+      
     ],
     network:{
       messagePrefix: '\x18Bitcoin Signed Message:\n',
