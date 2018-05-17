@@ -116,6 +116,7 @@ const defaultCoins=[
       {url:"https://btc-bitcore2.trezor.io/api",explorer:"https://btc-bitcore2.trezor.io"},
       {url:"https://btc-bitcore6.trezor.io/api",explorer:"https://btc-bitcore6.trezor.io"},
       {url:"https://btc-bitcore3.trezor.io/api",explorer:"https://btc-bitcore3.trezor.io"},
+      {url:"https://btc.blockdozer.com/insight-api",explorer:"https://btc.blockdozer.com"},
       {explorer:"https://insight.bitpay.com",url:"https://insight.bitpay.com"}
     ],
     network:{
@@ -275,6 +276,7 @@ const defaultCoins=[
       {url:"https://bch-bitcore3.trezor.io/api",explorer:"https://bch-bitcore3.trezor.io"},
       {url:"https://bch-bitcore2.trezor.io/api",explorer:"https://bch-bitcore2.trezor.io"},
       {url:"https://bch-insight.bitpay.com/api",explorer:"https://bch-insight.bitpay.com"},
+      {url:"https://blockdozer.com/insight-api",explorer:"https://blockdozer.com"}
     ],
     network:{
       messagePrefix: '\x18Bitcoin Signed Message:\n',
