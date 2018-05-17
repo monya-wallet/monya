@@ -53,7 +53,11 @@ module.exports=require("../js/lang.js")({ja:require("./ja/api.html"),en:require(
                 this.successful=true
               })
             }else if(this.param.callbackPage){
-              coinUtil.openUrl(this.param.callbackPage+`?payload=${this.param.payload}&signature=${signed}&address=${address}`)
+              const url = new URL(this.param.callbackPage)
+              url.searchParams.append("payload",this.param.payload)
+              url.searchParams.append("signature",signed)
+              url.searchParams.append("address",address)
+              coinUtil.openUrl(url.toString())
               this.successful=true
             }else{
               this.successful=true
@@ -79,7 +83,13 @@ module.exports=require("../js/lang.js")({ja:require("./ja/api.html"),en:require(
                 this.successful=true
               })
             }else if(this.param.callbackPage){
-              coinUtil.openUrl(this.param.callbackPage+`?payload=${this.param.payload}&signature=${signed}&address=${address}&message=${this.param.message}`)
+              const url = new URL(this.param.callbackPage)
+              url.searchParams.append("payload",this.param.payload)
+              url.searchParams.append("signature",signed)
+              url.searchParams.append("message",this.param.message)
+              url.searchParams.append("address",address)
+              coinUtil.openUrl(url.toString())
+              
               this.successful=true
             }else{
               this.dataDlg=true
