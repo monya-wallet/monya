@@ -114,8 +114,8 @@ module.exports=require("../js/lang.js")({ja:require("./ja/navigator.html"),en:re
             amount:res.amount,
             label:res.label
           })
-          this.$emit("pop")
-          this.$emit("push",res.extension.component)
+          this.pageStack.push(res.extension.component)
+          
         }else if(res.apiName){
           coinUtil.callAPI(res.apiName,res.apiParam)
         }
