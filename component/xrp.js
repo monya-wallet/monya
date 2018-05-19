@@ -204,7 +204,10 @@ module.exports=require("../js/lang.js")({ja:require("./ja/xrp.html"),en:require(
   },
   computed:{
     url(){
-      return `https://monya-wallet.github.io/monya/a/?amount=${parseFloat(this.invAmt)||0}&address=${this.address}&scheme=ripple`
+      return coinUtil.getBip21("ripple",this.address,{
+        amount:parseFloat(this.invAmt),
+        label:this.invMosaic
+      },this.addressFormat==="url")
     }
   },
   watch:{

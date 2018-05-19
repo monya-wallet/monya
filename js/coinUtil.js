@@ -198,7 +198,7 @@ exports.getBip21=(bip21Urn,address,query,addrUrl=false)=>{
         queryStr+=encodeURIComponent(v)+"="+encodeURIComponent(query[v])+"&"
       }
     }
-    return "https://monya-wallet.github.io/monya/a/"+queryStr
+    return "https://monya-wallet.github.io/a/"+queryStr
   }
   
   for(let v in query){

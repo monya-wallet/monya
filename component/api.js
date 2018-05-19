@@ -110,10 +110,7 @@ module.exports=require("../js/lang.js")({ja:require("./ja/api.html"),en:require(
   },
   mounted(){
     switch(this.name){
-      case "enableExtendedMode":
-      case "disableExtendedMode":
-        this.qType="yOrN"
-        break;
+      
       case "signTx":
       case "signMsg":
         this.qType="password"

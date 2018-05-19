@@ -62,3 +62,5 @@ Extended modeが無効な状態でMWvMbgon623A4Fp6QG9VirhkFezZ3vrajcに1MONA以�
       * shareSwapData
   * param
       * component/atomicswap.js strToRecvに準ずる
+  * 例
+  `https://monya-wallet.github.io/wallet/?url=monacoin%3Aapi_v1_shareSwapData%3Fparam%3D%257B%2522giveCoinId%2522%253A%2522zny%2522%252C%2522giveCoinIsCP%2522%253Afalse%252C%2522getCoinId%2522%253A%2522mona%2522%252C%2522getCoinIsCP%2522%253Afalse%252C%2522secretHash%2522%253A%2522c3388b0f3226db9e6b80dc14b9ac645ca23eebd2%2522%252C%2522secretSize%2522%253A2%252C%2522redeemAddressWithSecret%2522%253A%2522MNFuVHC5384FJnWPADTmdoUthmfsv5D2e1%2522%252C%2522refundAddressWithSecret%2522%253A%2522Zjpae83o4LGCQj1opQEYgyQN88XHCyrYAX%2522%252C%2522redeemAddressWOSecret%2522%253A%2522%2522%252C%2522refundAddressWOSecret%2522%253A%2522%2522%252C%2522lockTime%2522%253A1526830150%257D`

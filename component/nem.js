@@ -334,9 +334,12 @@ module.exports=require("../js/lang.js")({ja:require("./ja/nem.html"),en:require(
       this.invAmt=parseFloat(this.invAmt)||0
       switch(this.addressFormat){
         case "url":
-          return `https://monya-wallet.github.io/monya/a/?amount=${parseFloat(this.invAmt)||0}&address=${this.address}&label=${this.invMosaic}&scheme=nem`
         case "monya":
-          return `nem:${this.address}?amount=${this.invAmt}&label=${this.invMosaic}`
+          return coinUtil.getBip21("nem",this.address,{
+            amount:parseFloat(this.invAmt),
+            label:this.invMosaic
+          },this.addressFormat==="url")
+          break;
         case "nemWallet":
           return `{"v":2,"type":2,"data":{"addr":"${this.address}","amount":${this.invAmt*1e6}}}`
         default:
