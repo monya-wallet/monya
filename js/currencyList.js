@@ -336,6 +336,9 @@ const defaultCoins=[
 		  {
 			  "url": "https://insight.kotocoin.info/api",
 			  "explorer": "https://insight.kotocoin.info"
+		  ,{ 
+			  "url": "https://http://koto.harumaki-project.work/insight/api",
+			  "explorer": "http://koto.harumaki-project.work/insight/"
 		  }
 	  ],
     opReturnLength:80,
