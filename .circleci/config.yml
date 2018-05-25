@@ -33,9 +33,7 @@ jobs:
           git clone "git@github.com:monya-wallet/dev.git" dev
           git config --global user.name "circleci"
           git config --global user.email "circleci@chatbox-inc.com"
-          rm -r dev/*
           cp -r docs/wallet/* dev
-          mkdir dev/cwww
           cp -r cordovaProj/www/* dev/cwww
           cd dev
           git add .
