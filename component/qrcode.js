@@ -31,11 +31,9 @@ module.exports=require("../js/lang.js")({ja:require("./ja/qrcode.html"),en:requi
       coinUtil.parseUrl(content).then(res=>{
         if(res.isCoinAddress&&res.isPrefixOk&&res.isValidAddress){
           this.$store.commit("setSendUrl",res.url)
-          QRScanner.destroy((status)=>{
-            this.$emit("pop")
-            this.$store.commit("setTransparency",false)
-            this.$emit("push",require("./send.js"))
-          });
+          this.$emit("pop")
+          this.$emit("push",require("./send.js"))
+          
           
         }else if(res.extension){
           this.$store.commit("setExtensionSend",{
@@ -47,17 +45,35 @@ module.exports=require("../js/lang.js")({ja:require("./ja/qrcode.html"),en:requi
           this.$emit("pop")
           this.$emit("push",res.extension.component)
         }else if(res.apiName){
-            coinUtil.callAPI(res.apiName,res.apiParam)
-            return
-          }else if(res.protocol==="http"||res.protocol==="https"){
-          coinUtil.openUrl(res.url)
-          QRScanner.destroy((status)=>{
+          coinUtil.callAPI(res.apiName,res.apiParam)
+          this.$emit("pop")
+        }else if(res.protocol==="http"||res.protocol==="https"){
+
+          // address page handler
+          const paramAddr=res.raw.searchParams.get("address")
+          const paramScheme=res.raw.searchParams.get("scheme")
+          if(paramAddr&&paramScheme){
+            const paramAmount=res.raw.searchParams.get("amount")
+            const paramMessage=res.raw.searchParams.get("message")
+            const paramLabel=res.raw.searchParams.get("label")
+            return this.parse(coinUtil.getBip21(paramScheme,paramAddr,{
+              amount:paramAmount,
+              message:paramMessage,
+              label:paramLabel
+            }))
+            
+          }else{
+            
+            coinUtil.openUrl(res.url)
             this.$emit("pop")
-            this.$store.commit("setTransparency",false)
-          });
+          }
+          
+          
         }else{
           this.result=res.url
         }
+        
+        this.$store.commit("setTransparency",false)
       })
     },
     copyResult(){
