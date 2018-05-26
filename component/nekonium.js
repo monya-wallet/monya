@@ -9,7 +9,10 @@ const Web3 = require('web3')
 const Tx = require('ethereumjs-tx')
 const hdkey = require('ethereumjs-wallet/hdkey')
 
-const DEFAULT_SERVER="https://www.nekonium.site:8293"
+const NETWORK_NAME="Nekonium"
+const NETWORK_SCHEME="nekonium"
+const NETWORK_ICON=require("../res/coins/nekonium.png")
+const NETWORK_SYMBOL="NUKO"
 const HD_DERIVATION_PATH="m/44'/299'/0'/0"
 const ADDRESS_INDEX=0
 // HD_DERIVATION_PATH
@@ -25,9 +28,12 @@ const CHAIN_ID=1
 // Ethereum Rinkeby = 4
 // Ethereum Classic Mainnet = 61
 // Nekonium Mainnet = 1
+const RPC_SERVERS=[
+  "https://www.nekonium.site:8293/",
+  "https://ssl.nekonium.site:8293/"
+]
 
 let web3 = new Web3()
-web3.setProvider(new web3.providers.HttpProvider(DEFAULT_SERVER));
 
 module.exports=require("../js/lang.js")({ja:require("./ja/nekonium.html"),en:require("./en/nekonium.html")})({
   data(){
@@ -38,22 +44,30 @@ module.exports=require("../js/lang.js")({ja:require("./ja/nekonium.html"),en:req
       sendGasLimit:0,
       password:"",
       address:"",
+      qrDataAddress:"",
       qrDataUrl:"",
       shareable:coinUtil.shareable(),
       incorrect:false,
       requirePassword:true,
       loading:false,
-      wallet:null,
-      server:DEFAULT_SERVER,
       confirm:false,
       price:1,
       serverDlg:false,
       invAmt:"",
       addressFormat:"url",
+      sendMenu:false,
+      invoiceMenu:false,
       
-      icon:require("../res/coins/nekonium.png"),
+      rpcServer:null,
+      wallet:null,
       balanceWei:"",
-      signedTxData:null
+      signedTxData:null,
+      
+      networkName:NETWORK_NAME,
+      networkScheme:NETWORK_SCHEME,
+      networkSymbol:NETWORK_SYMBOL,
+      networkIcon:NETWORK_ICON,
+      rpcServers:RPC_SERVERS
     }
   },
   store:require("../js/store.js"),
@@ -85,6 +99,10 @@ module.exports=require("../js/lang.js")({ja:require("./ja/nekonium.html"),en:req
         this.requirePassword=false
         this.getBalance()
         this.getQrCode()
+        this.getQrCodeAddress()
+        if(this.sendAddress){
+          this.sendMenu=true
+        }
       })
     },
     getBalance(){
@@ -124,6 +142,7 @@ module.exports=require("../js/lang.js")({ja:require("./ja/nekonium.html"),en:req
       //  this.$store.commit("setError", "Insufficient funds")
       //}
       
+      this.sendMenu=false
       this.confirm=false
       this.loading=true
       let addrProm;
@@ -177,6 +196,9 @@ module.exports=require("../js/lang.js")({ja:require("./ja/nekonium.html"),en:req
     },
     connect(){
       this.serverDlg=false
+      
+      this.rpcServer = this.rpcServers[0]
+      web3.setProvider(new web3.providers.HttpProvider(this.rpcServer))
     },
     getPrice(){
       this.price=1
@@ -189,6 +211,14 @@ module.exports=require("../js/lang.js")({ja:require("./ja/nekonium.html"),en:req
         this.qrDataUrl=url
       })
     },
+    getQrCodeAddress(){
+      qrcode.toDataURL(this.address,{
+        errorCorrectionLevel: 'M',
+        type: 'image/png'
+      },(err,url)=>{
+        this.qrDataAddress=url
+      })
+    },
     openExplorer(txId){
       coinUtil.openUrl("http://nekonium.network/tx/"+txId)
     },
@@ -198,8 +228,8 @@ module.exports=require("../js/lang.js")({ja:require("./ja/nekonium.html"),en:req
     donateMe(){
       coinUtil.openUrl("https://missmonacoin.github.io")
     },
-    setServer(){
-      web3.setProvider(new web3.providers.HttpProvider(this.server));
+    setRpcServer(){
+      web3.setProvider(new web3.providers.HttpProvider(this.rpcServer))
     },
     onChangeAddress(){
       if(!web3.utils.isAddress(this.sendAddress)){
@@ -227,13 +257,10 @@ module.exports=require("../js/lang.js")({ja:require("./ja/nekonium.html"),en:req
       switch(this.addressFormat){
         case "url":
         case "monya":
-          return coinUtil.getBip21("nekonium",this.address,{
+          return coinUtil.getBip21(NETWORK_SCHEME,this.address,{
             amount:parseFloat(this.invAmt),
-            label:"NUKO"
+            label:NETWORK_SYMBOL
           },this.addressFormat==="url")
-          break;
-        case "nekonium":
-          return this.address
         default:
           return this.address
       }
@@ -242,7 +269,7 @@ module.exports=require("../js/lang.js")({ja:require("./ja/nekonium.html"),en:req
       return web3.utils.isAddress(this.sendAddress)
     },
     balance(){
-      return web3.utils.fromWei(this.balanceWei,"ether");
+      return web3.utils.fromWei(this.balanceWei,"ether")
     },
     totalGasPrice(){
       if(this.sendGasPrice > 0 && this.sendGasLimit > 0){
@@ -268,7 +295,7 @@ module.exports=require("../js/lang.js")({ja:require("./ja/nekonium.html"),en:req
     if(rSend.address){
       this.sendAddress=rSend.address
       if(sa){
-        this.sendAmount=sa
+        this.sendAmount=""+sa
       }
     }
     this.$store.commit("setExtensionSend",{})
