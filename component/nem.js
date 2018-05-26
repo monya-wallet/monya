@@ -65,7 +65,10 @@ module.exports=require("../js/lang.js")({ja:require("./ja/nem.html"),en:require(
       addressFormat:"url",
 
       common:null,
-      transactionEntity:{}
+      transactionEntity:{},
+
+      sendMenu:false,
+      invoiceMenu:false
     }
   },
   store:require("../js/store.js"),
@@ -102,6 +105,9 @@ module.exports=require("../js/lang.js")({ja:require("./ja/nem.html"),en:require(
         this.requirePassword=false
         this.getBalance()
         this.getQrCode()
+        if(this.sendAddress){
+          this.sendMenu=true
+        }
       })
     },
     getBalance(){
@@ -212,6 +218,7 @@ module.exports=require("../js/lang.js")({ja:require("./ja/nem.html"),en:require(
       })
     },
     send(){
+      this.sendMenu=false
       this.confirm=false
       this.loading=true
       let addrProm;
@@ -355,13 +362,6 @@ module.exports=require("../js/lang.js")({ja:require("./ja/nem.html"),en:require(
     }
   },
   watch:{
-    fiatConv(v){
-      if(v){this.sendAmount=parseFloat(v)/this.price}
-      else{this.sendAmount=0}
-    },
-    sendAmount(v){
-      this.fiatConv=parseFloat(v)*this.price
-    },
     invAmt(){
       this.getQrCode()
     },
@@ -382,6 +382,7 @@ module.exports=require("../js/lang.js")({ja:require("./ja/nem.html"),en:require(
     const rSend = this.$store.state.extensionSend||{}
     const sa = parseFloat(rSend.amount)||0
     if(rSend.address){
+      
       this.sendAddress=rSend.address
       this.sendMosaic=rSend.label||"nem:xem"
       if(sa){

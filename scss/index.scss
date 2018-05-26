@@ -773,7 +773,24 @@ $zaifPayLogoSize:200px;
   min-height: 200px;
   min-width: 300px;
 }
-
+#modalQr{
+  text-align:center;
+  width:350px;
+  img{
+    width:250px;
+    height:250px;
+  }
+  .url{
+    display: block;
+    user-select:text;
+    -webkit-user-select: text;
+    -moz-user-select: text;
+    -ms-user-select: text;
+    word-wrap: break-word;
+    word-break: break-all;
+    white-space: pre-wrap;
+  }
+}
 
 ons-input{
     width: 100%;
