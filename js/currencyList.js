@@ -73,6 +73,8 @@ const defaultCoins=[
        explorer:"https://zeny.insight.monaco-ex.org"},
       {url:"https://zenyinsight.tomotomo9696.xyz/api",
        explorer:"https://zenyinsight.tomotomo9696.xyz"
+      },{url:"https://zeny.fujishan.jp/api",
+       explorer:"https://zeny.fujishan.jp"
       },{url:"https://insight.bitzeny.jp/api",explorer:"https://insight.bitzeny.jp"},
       {url:"https://insight.bitzeny.cloud/api",explorer:"https://insight.bitzeny.cloud"}
     ],
