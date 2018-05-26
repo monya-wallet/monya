@@ -14,6 +14,13 @@ const extensions={
     icon:require("../res/coins/nem.png"),
     scheme:"nem"
   },
+  nekonium:{
+    id:"nekonium",
+    name:"Nekonium",
+    component:require("../component/nekonium.js"),
+    icon:require("../res/coins/nekonium.png"),
+    scheme:"nekonium"
+  },
   zaifPay:{
     id:"zaifPay",
     name:"Zaif Payment",

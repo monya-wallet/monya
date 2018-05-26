@@ -1,0 +1,136 @@
+<v-ons-page data-page="nekonium">
+  <custom-bar title="Nekonium" menu="true">
+    <v-ons-toolbar-button @click="getBalance" @click.right="serverDlg=true">
+      <v-ons-icon icon="ion-ios-loop-strong"></v-ons-icon>
+    </v-ons-toolbar-button>
+  </custom-bar>
+  <div>
+    <div v-show="requirePassword" class="wrap">
+      <p>パスワードを入力して下さい。</p>
+      <div :class="{shake:incorrect}" class="passwordBox">
+        <input :disabled="loading" type="password" v-model="password" @keydown.enter="decrypt"/>
+      </div>
+      <v-ons-button modifier="large" @click="decrypt" :disabled="loading">はじめる</v-ons-button>
+    </div>
+    <div v-show="address">
+      <div id="simple">
+        <div id="qrArea">
+          <div id="qrcode">
+            <img :src="qrDataUrl" alt="No Address" id="qrcodeImage"/>
+          </div>
+          <div class="address">{{address||"読み込み中"}}</div>
+        </div>
+        
+        <v-ons-button @click="copyAddress" modifier="quiet">
+          <v-ons-icon icon="fa-clipboard"></v-ons-icon>
+          アドレスコピー
+        </v-ons-button>
+        <v-ons-button @click="share" modifier="quiet" v-if="shareable">
+          <v-ons-icon icon="fa-share-square-o"></v-ons-icon>共有
+        </v-ons-button>
+        
+      </div>
+      <v-ons-list>
+        <v-ons-list-header>請求書</v-ons-list-header>
+        <v-ons-list-item>
+          <div class="center">QRコードの形式</div>
+          <div class="right">
+            <v-ons-select v-model="addressFormat">
+              <option value="url">URL形式</option>
+              <option value="monya">もにゃ互換</option>
+              <option value="nekonium">Nekonium互換</option>
+            </v-ons-select>
+          </div>
+        </v-ons-list-item>
+        <v-ons-list-item v-if="addressFormat != 'nekonium'">
+          <div class="center"><v-ons-input v-model="invAmt" placeholder="請求額" type="number"></v-ons-input></div>
+          <div class="right">NUKO</div>
+        </v-ons-list-item>
+        
+        <v-ons-list-header>残高</v-ons-list-header>
+        <v-ons-list-item>
+          <div class="left">
+            <img :src="icon"/>
+          </div>
+          <div class="center">{{balance}}</div>
+          <div class="right">NUKO</div>
+        </v-ons-list-item>
+        <v-ons-list-header>送る</v-ons-list-header>
+        <v-ons-list-item>
+          <v-ons-input placeholder="送金先アドレス" v-model="sendAddress" @change="onChangeAddress"></v-ons-input>
+        </v-ons-list-item>
+        <v-ons-list-item>
+          <div class="left">相手に送金する金額</div>
+          <div class="center">
+            <v-ons-input v-model="sendAmount"></v-ons-input>
+          </div>
+          <div class="right">NUKO</div>
+        </v-ons-list-item>
+        <v-ons-list-item>
+          <div class="left">ガスプライス</div>
+          <div class="center">
+            <v-ons-input v-model.number="sendGasPrice" @change="sendGasPrice = intValue(sendGasPrice)"></v-ons-input>
+          </div>
+          <div class="right">Gwei</div>
+        </v-ons-list-item>
+        <v-ons-list-item>
+          <div class="left">ガスリミット</div>
+          <div class="center">
+            <v-ons-input v-model.number="sendGasLimit" @change="sendGasLimit = intValue(sendGasLimit)"></v-ons-input>
+          </div>
+        </v-ons-list-item>
+        <v-ons-list-item v-if="true">
+          <div class="left">ガス合計</div>
+          <div class="center">
+            <v-ons-input :value="totalGasPrice" readonly></v-ons-input>
+          </div>
+          <div class="right">NUKO</div>
+        </v-ons-list-item>
+        <v-ons-list-item>
+          <v-ons-button @click="send" modifier="large" :disabled="!isValidAddress||!sendGasPrice||!sendGasLimit">送信</v-ons-button>
+        </v-ons-list-item>
+        <v-ons-list-header>履歴</v-ons-list-header>
+        <v-ons-list-item @click="openExplorerAccount">
+          Block Explorerで確認
+        </v-ons-list-item>
+        <v-ons-list-header>設定</v-ons-list-header>
+        <v-ons-list-item @click="serverDlg=true">
+          サーバー変更
+        </v-ons-list-item>
+      </v-ons-list>
+    </div>
+  </div>
+  <v-ons-modal :visible="loading">
+    <p style="text-align: center">
+      処理中
+      <br><br>
+      <div class="spinner"></div>
+      <br/>
+    </p>
+  </v-ons-modal>
+  <v-ons-alert-dialog
+    modifier="rowfooter"
+    :visible.sync="confirm"
+    >
+    <span slot="title">送金確認</span>
+    <p>{{sendAddress}}</p>
+    <p>{{sendAmount}} NUKO</p>
+    <p>Fee: {{totalGasPrice}} NUKO</p>
+    <template slot="footer">
+      <div class="alert-dialog-button" @click="broadcast">送金</div>
+      <div class="alert-dialog-button" @click="confirm=false">戻る</div>
+    </template>
+  </v-ons-alert-dialog>
+
+  <v-ons-alert-dialog
+    modifier="rowfooter"
+    :visible.sync="serverDlg"
+    >
+    <span slot="title">サーバー変更</span>
+    <p><v-ons-input v-model="server" placeholder="" @change="setServer"></v-ons-input></p>
+    
+    <template slot="footer">
+      <div class="alert-dialog-button" @click="serverDlg=false">閉じる</div>
+    </template>
+  </v-ons-alert-dialog>
+</v-ons-page>
