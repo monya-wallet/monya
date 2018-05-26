@@ -247,7 +247,7 @@ ons-popover .popover__content{
   text-align:center;
   min-height:20px;
 }
-[data-page="showLabel"],[data-page="invoice"],[data-page="receive"],[data-page="xrp"],[data-page="nem"],#zaifPayInvoice{
+[data-page="showLabel"],[data-page="invoice"],[data-page="receive"],[data-page="xrp"],[data-page="nem"],[data-page="nekonium"],#zaifPayInvoice{
   text-align:center;
   #simple{
     .label{
@@ -508,7 +508,7 @@ ons-popover .popover__content{
   }
 }
 $passwordHeight:30px;
-[data-page="login"],[data-page="xrp"],[data-page="nem"]{
+[data-page="login"],[data-page="xrp"],[data-page="nem"],[data-page="nekonium"]{
   .wrap{
     padding:35px;
     text-align:center;
@@ -533,7 +533,7 @@ $passwordHeight:30px;
     }
   }
 }
-[data-page="xrp"],[data-page="nem"]{
+[data-page="xrp"],[data-page="nem"],[data-page="nekonium"]{
   ons-list-item{
     .left{
       img{
