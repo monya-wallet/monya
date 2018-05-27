@@ -8,6 +8,8 @@ const bcLib = require('bitcoinjs-lib')
 const Web3 = require('web3')
 const Tx = require('ethereumjs-tx')
 const hdkey = require('ethereumjs-wallet/hdkey')
+const extension=require("../js/extension.js")
+const erc20ABI = require("../js/erc20ABI.js")
 
 const NETWORK_NAME="Nekonium"
 const NETWORK_SCHEME="nekonium"
@@ -34,6 +36,7 @@ const RPC_SERVERS=[
 ]
 
 let web3 = new Web3()
+let ext
 
 module.exports=require("../js/lang.js")({ja:require("./ja/nekonium.html"),en:require("./en/nekonium.html")})({
   data(){
@@ -57,6 +60,10 @@ module.exports=require("../js/lang.js")({ja:require("./ja/nekonium.html"),en:req
       addressFormat:"url",
       sendMenu:false,
       invoiceMenu:false,
+      removingToken:-1,
+      option:false,
+
+      sendingToken:false,
       
       rpcServer:null,
       wallet:null,
@@ -67,7 +74,25 @@ module.exports=require("../js/lang.js")({ja:require("./ja/nekonium.html"),en:req
       networkScheme:NETWORK_SCHEME,
       networkSymbol:NETWORK_SYMBOL,
       networkIcon:NETWORK_ICON,
-      rpcServers:RPC_SERVERS
+      rpcServers:RPC_SERVERS,
+
+      tokenReg:{
+        show:false,
+        contractAddress:"",
+        symbol:"",
+        decimal:0
+      },
+      runContract:{
+        show:false,
+        abiStr:"",
+        fn:"",
+        args:[],
+        result:"",
+        gasLimit:0,
+        gasPrice:0
+      },
+
+      tokens:[]
     }
   },
   store:require("../js/store.js"),
@@ -110,12 +135,28 @@ module.exports=require("../js/lang.js")({ja:require("./ja/nekonium.html"),en:req
         return
       }
       this.loading=true
+      this.tokens=[]
       web3.eth.getBalance(this.address).then(balanceWei=>{
         this.loading=false
         this.balanceWei=balanceWei
         return web3.eth.getGasPrice()
       }).then(gasPrice=>{
         this.sendGasPrice=web3.utils.fromWei(gasPrice,"gwei")
+        return ext.get("tokens")
+      }).then(tokens=>{
+        if(!tokens){return []}
+        
+        return Promise.all(tokens.map(t=>{
+          this.tokens.push(t)
+          return (new web3.eth.Contract(erc20ABI,t.contractAddress))
+            .methods.balanceOf(this.address)
+            .call()
+        }))
+        
+      }).then(balances=>{
+        for (let i = 0; i < balances.length; i++) {
+          this.$set(this.tokens[i],"balance",+(new BigNumber(balances[i])).shift(-this.tokens[i].decimal))
+        }
       }).catch(e=>{
         this.loading=false
         this.$store.commit("setError","Server Error: "+e.message)
@@ -135,12 +176,7 @@ module.exports=require("../js/lang.js")({ja:require("./ja/nekonium.html"),en:req
       })
     },
     send(){
-      let sendAmountWei = web3.utils.toWei(""+this.sendAmount, "ether")
-      let sendGasPriceWei = web3.utils.toWei(""+this.sendGasPrice, "gwei")
-      //let totalWei = new web3.utils.BN(sendGasPriceWei).mul(new web3.utils.BN(this.sendGasLimit)).add(new web3.utils.BN(sendAmountWei))
-      //if(totalWei.gt(new web3.utils.BN(this.balanceWei))){
-      //  this.$store.commit("setError", "Insufficient funds")
-      //}
+      const sendGasPriceWei = web3.utils.toWei(""+this.sendGasPrice, "gwei")
       
       this.sendMenu=false
       this.confirm=false
@@ -149,18 +185,39 @@ module.exports=require("../js/lang.js")({ja:require("./ja/nekonium.html"),en:req
       // NekoniumにENSはないので
       addrProm=Promise.resolve(this.sendAddress)
       addrProm.then(addr=>{
-        this.sendAddress=addr
         return web3.eth.getTransactionCount(this.address)
       }).then(nonce => {
-        let rawTx = {
-          nonce: web3.utils.numberToHex(nonce),
-          gasPrice: web3.utils.numberToHex(sendGasPriceWei),
-          gasLimit: web3.utils.numberToHex(this.sendGasLimit),
-          to: this.sendAddress,
-          value: web3.utils.numberToHex(sendAmountWei),
-          chainId: CHAIN_ID
+        let data;
+        let rawTx;
+        if(this.sendingToken){
+          const contract =new web3.eth.Contract(erc20ABI,this.sendingToken.contractAddress,{
+            from:this.address
+          })
+          rawTx = {
+            from:this.address,
+            nonce: web3.utils.numberToHex(nonce),
+            gasPrice: web3.utils.numberToHex(sendGasPriceWei),
+            gasLimit: web3.utils.numberToHex(this.sendGasLimit),
+            to: this.sendingToken.contractAddress,
+            value: "0x0",
+            chainId: CHAIN_ID,
+            data:contract.methods.transfer(
+              this.sendAddress,
+              +(new BigNumber(this.sendAmount)).shift(this.sendingToken.decimal)
+            ).encodeABI()
+          }
+        }else{
+          rawTx = {
+            from:this.address,
+            nonce: web3.utils.numberToHex(nonce),
+            gasPrice: web3.utils.numberToHex(sendGasPriceWei),
+            gasLimit: web3.utils.numberToHex(this.sendGasLimit),
+            to: this.sendAddress,
+            value: web3.utils.numberToHex(web3.utils.toWei(""+this.sendAmount, "ether")),
+            chainId: CHAIN_ID
+          }
         }
-        let tx = new Tx(rawTx)
+        const tx = new Tx(rawTx)
         tx.sign(this.wallet.getPrivateKey())
         this.signedTxData="0x"+tx.serialize().toString('hex')
         this.confirm=true
@@ -231,16 +288,23 @@ module.exports=require("../js/lang.js")({ja:require("./ja/nekonium.html"),en:req
     setRpcServer(){
       web3.setProvider(new web3.providers.HttpProvider(this.rpcServer))
     },
-    onChangeAddress(){
+    calcGasLimitFromAddress(){
       if(!web3.utils.isAddress(this.sendAddress)){
         return
       }
-      let param = {
-        from: this.address,
-        to: this.sendAddress,
-        //value: web3.utils.toWei(""+this.sendAmount, "ether")
+      let gasProm
+      if(this.sendingToken){
+        const contract =new web3.eth.Contract(erc20ABI,this.sendingToken.contractAddress,{
+          from:this.address
+        })
+        gasProm=contract.methods.transfer(this.sendAddress,1).estimateGas()
+      }else{
+        gasProm=web3.eth.estimateGas({
+          from: this.address,
+          to: this.sendAddress
+        })
       }
-      web3.eth.estimateGas(param).then(result => {
+      gasProm.then(result => {
         this.sendGasLimit=result
       }).catch(e=>{
         this.$store.commit("setError",e.message)
@@ -249,6 +313,110 @@ module.exports=require("../js/lang.js")({ja:require("./ja/nekonium.html"),en:req
     intValue(v){
       let iv = parseInt(v)
       return iv <= 0 ? 0 : iv
+    },
+
+
+    registerToken(){
+      const contractAddress=this.tokenReg.contractAddress
+      const symbol=this.tokenReg.symbol
+      const decimal=parseFloat(this.tokenReg.decimal)
+
+      if(!web3.utils.isAddress(contractAddress)||decimal<0||(decimal|0)!==decimal){
+        return this.$store.commit("setError","Invalid Parameter")
+      }
+      
+      ext.get("tokens").then(tokens=>{
+        if(!tokens){
+          tokens=[]
+        }
+        tokens.push({
+          contractAddress,
+          symbol,
+          decimal
+        })
+        return ext.set("tokens",tokens)
+      }).then(()=>{
+        this.tokenReg.show=false
+        this.getBalance()
+      })
+    },
+    removeToken(i){
+      ext.get("tokens").then(tokens=>{
+        if(!tokens){
+          tokens=[]
+        }
+        tokens.splice(i,1)
+        return ext.set("tokens",tokens)
+      }).then(()=>{
+        this.tokenReg.show=false
+        this.getBalance()
+      })
+    },
+
+    cast(val,type){
+      switch(type){
+        case "bool":
+          return !!val
+        case "uint":
+        case "uint8":
+        case "uint16":
+        case "uint32":
+        case "uint64":
+        case "uint128":
+        case "uint256":
+        case "int":
+        case "int8":
+        case "int16":
+        case "int32":
+        case "int64":
+        case "int128":
+        case "int256":
+          return parseInt(val)
+        case "address":
+          return web3.utils.isAddress(val)?val:""
+        case "string":
+          return ""+val
+
+        default:
+          return val
+      }
+    },
+    runMethod(){
+
+      const method=(new web3.eth.Contract(erc20ABI,this.runContract.contractAddress,{from:this.address}))
+            .methods[this.runContract.fn](...this.runContract.args)
+      if(this.selectedAbiFn.constant){
+        method.call().then(result=>{
+          this.runContract.result=result
+        }).catch(e=>{
+          this.loading=false
+          this.$store.commit("setError",e.message)
+        })
+      }else{
+        this.loading=true
+        const sendGasPriceWei = web3.utils.toWei(""+this.sendGasPrice, "gwei")
+        
+        web3.eth.getTransactionCount(this.address).then(nonce => {
+          const tx=new Tx({
+            from:this.address,
+            nonce: web3.utils.numberToHex(nonce),
+            gasPrice: web3.utils.numberToHex(sendGasPriceWei),
+            gasLimit: web3.utils.numberToHex(this.runContract.gasLimit),
+            to: this.runContract.contractAddress,
+            value: "0x0",
+            chainId: CHAIN_ID,
+            data:method.encodeABI()
+          })
+          tx.sign(this.wallet.getPrivateKey())
+          web3.eth.sendSignedTransaction("0x"+tx.serialize().toString('hex')).on('receipt', receipt=>{
+            this.runContract.result=JSON.stringify(receipt)
+            this.loading=false
+          })
+        }).catch(e=>{
+          this.loading=false
+          this.$store.commit("setError",e.message)
+        })
+      }
     }
   },
   computed:{
@@ -276,6 +444,23 @@ module.exports=require("../js/lang.js")({ja:require("./ja/nekonium.html"),en:req
           return web3.utils.fromWei(new web3.utils.BN(web3.utils.toWei(""+this.sendGasPrice, "gwei")).mul(new web3.utils.BN(this.sendGasLimit)), "ether")
       }
       return "";
+    },
+
+    abi(){
+      try{
+        return JSON.parse(this.runContract.abiStr)
+      }catch(e){
+        return null
+      }
+    },
+    selectedAbiFn(){
+      if(!this.abi){return {inputs:[]}}
+      for (let i = 0; i < this.abi.length; i++) {
+        if(this.abi[i].name===this.runContract.fn){
+          return this.abi[i]
+        }
+      }
+      return {inputs:[]}
     }
   },
   watch:{
@@ -298,6 +483,9 @@ module.exports=require("../js/lang.js")({ja:require("./ja/nekonium.html"),en:req
         this.sendAmount=""+sa
       }
     }
+
+    ext=extension.extStorage(NETWORK_SCHEME)
+    
     this.$store.commit("setExtensionSend",{})
     this.connect()
     this.getPrice()

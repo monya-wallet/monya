@@ -54,7 +54,7 @@
           <div class="left">
             <img :src="c.icon"/>
           </div>
-          <div >
+          <div>
             <div class="screenName">{{c.screenName||"取得失敗"}}</div>
             <div class="price">
               <currency-set :amount="c.price" :ticker="c.coinId" :fiatTicker="fiat"></currency-set>
@@ -63,6 +63,12 @@
           <div class="w_right">
             <div class="amount" :class='{unconfirmed:c.unconfirmed}'><currency-set :amount="c.balance" :ticker="c.coinId"></currency-set><span v-show="c.unconfirmed">{{c.unconfirmed}}待機中</span></div>
             <div class="fiatConv"><currency-set :amount="c.balance*c.price" :ticker="fiat" :easy="isEasy"></currency-set></div>
+          </div>
+        </v-ons-list-item>
+        <v-ons-list-item v-for="x in extensions" @click="openExt(x.id)" modifier="small">
+          <div class="left"><img :src="x.icon"/></div>
+          <div class="center">
+            <div class="screenName">{{x.name}}</div>
           </div>
         </v-ons-list-item>
         <v-ons-list-item @click="goToManageCoin" modifier="tappable chevron" v-if="!isSingleWallet">

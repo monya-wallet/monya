@@ -14,9 +14,7 @@ module.exports=require("../js/lang.js")({ja:require("./ja/editOrder.html"),en:re
   },
   methods:{
     save(){
-      storage.set("orders",this.orders).then(r=>{
-        console.log(this.orders)
-      })
+      storage.set("orders",this.orders)
     },
     add(){
       this.orders.push({

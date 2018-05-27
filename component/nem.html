@@ -1,6 +1,6 @@
 <v-ons-page data-page="nem">
   <custom-bar title="NEM" menu="true">
-    <v-ons-toolbar-button @click="getBalance" @click.right="serverDlg=true">
+    <v-ons-toolbar-button @click="getBalance" @click.right="serverDlg=true" v-show="address">
       <v-ons-icon icon="ion-ios-loop-strong"></v-ons-icon>
     </v-ons-toolbar-button>
   </custom-bar>

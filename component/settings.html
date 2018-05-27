@@ -82,16 +82,6 @@
           </v-ons-select>
         </div>
       </v-ons-list-item>
-      <v-ons-list-header>拡張機能</v-ons-list-header>
-      <v-ons-list-item v-for="x in extensions">
-        <div class="left"><img :src="x.icon"/></div>
-        <div class="center">
-          <div class="screenName">{{x.name}}</div>
-        </div>
-        <div class="right">
-          <v-ons-checkbox @change="save" v-model="x.usable"></v-ons-checkbox>
-        </div>
-      </v-ons-list-item>
     </v-ons-list>
   </div>
 </v-ons-page>

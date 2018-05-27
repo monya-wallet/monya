@@ -21,7 +21,7 @@
     "ethereumjs-wallet": "^0.6.0",
     "instascan": "^1.0.0",
     "nem-sdk": "^1.6.4",
-    "onsenui": "^2.9.2",
+    "onsenui": "^2.10.0",
     "pump": "^2.0.0",
     "qrcode": "^1.0.0",
     "qs": "^6.5.1",

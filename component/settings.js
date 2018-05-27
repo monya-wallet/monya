@@ -57,10 +57,6 @@ module.exports=lang({ja:require("./ja/settings.html"),en:require("./en/settings.
     },
     save(){
       this.$nextTick(()=>{
-        this.$set(this.d,"enabledExts",[])
-        this.extensions.forEach(v=>{
-          v.usable&&this.d.enabledExts.push(v.id)
-        })
         storage.set("settings",this.d)
         this.$store.commit("setSettings",this.d)
       })
@@ -86,14 +82,6 @@ module.exports=lang({ja:require("./ja/settings.html"),en:require("./en/settings.
     storage.get("settings").then(d=>{
       Object.assign(this.d,d)
       this.lang=lang.getLang()
-      ext.each(x=>{
-        this.extensions.push({
-          id:x.id,
-          name:x.name,
-          icon:x.icon,
-          usable:!!~this.d.enabledExts.indexOf(x.id)
-        })
-      })
     })
   }
 })
