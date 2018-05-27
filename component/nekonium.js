@@ -297,7 +297,11 @@ module.exports=require("../js/lang.js")({ja:require("./ja/nekonium.html"),en:req
         const contract =new web3.eth.Contract(erc20ABI,this.sendingToken.contractAddress,{
           from:this.address
         })
-        gasProm=contract.methods.transfer(this.sendAddress,1).estimateGas()
+        gasProm=gasProm=web3.eth.estimateGas({
+          from: this.address,
+          to: this.sendingToken.contractAddress,
+          data:contract.methods.transfer(this.sendAddress,1).encodeABI()
+        })
       }else{
         gasProm=web3.eth.estimateGas({
           from: this.address,
