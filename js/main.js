@@ -1,6 +1,5 @@
-require("../scss/index.scss")
-require('../res/onsenui/css/onsenui.min.css')
 require('onsenui/css/onsen-css-components.min.css')
+require("../scss/index.scss")
 require('babel-polyfill')
 if(!window.cordova){
   require('../res/cordova-plugin-qrscanner-lib.min.js')

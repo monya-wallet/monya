@@ -42,7 +42,7 @@ jobs:
 
   cordova:
     docker:
-      - image: registry.gitlab.com/2ndlesmi/spinningprojects/monya
+      - image: api-27-node8-alpha
 
     working_directory: ~/repo
 
@@ -50,27 +50,26 @@ jobs:
       - checkout
 
       - run: |
-            /opt/sdk_install.sh "build-tools;19.1.0" "platforms;android-19"
-
-            apt-get -y install zip
-            git clone https://github.com/monya-wallet/monya.git monya
-            npm i
-            npm run build:cordova
-            cd cordovaProj
-            npm i
-            gradle wrapper
-            cordova platform add android
-            cordova build android --release
-            cordova build android --debug
-            cd ../electron
-            npm install
-            npm run dist
-            cd ..
-            zip chrome_extension.zip chrome_extension
+          apt-get -y install unzip zip&& \
+          npm i -g cordova@7.1.0 electron-packager && \
+          apt-get -y install zip
+          git clone https://github.com/monya-wallet/monya.git monya
+          npm i
+          npm run build:cordova
+          cd cordovaProj
+          npm i
+          gradle wrapper
+          cordova platform add android
+          cordova build android --release
+          cordova build android --debug
+          cd ../electron
+          npm install
+          npm run dist
+          cd ..
+          zip chrome_extension.zip chrome_extension
             
       - store_artifacts:
           path: cordovaProj/platforms/android/build/outputs/apk/
-
       - store_artifacts:
           path: electron/dist
       - store_artifacts:

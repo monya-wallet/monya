@@ -1,0 +1,55 @@
+ons-toolbar-button.toolbar-button:not(.toolbar-button--material){
+  padding:4px 7px;
+  .ons-icon{
+    vertical-align:bottom;
+  }
+}
+ons-toolbar-button.toolbar-button:not(.toolbar-button--material){
+  padding:4px 7px;
+  .ons-icon{
+    vertical-align:bottom;
+  }
+}
+ons-back-button.back-button{
+  float:left;
+}
+
+ons-dialog .dialog{ // to enable scroll
+  max-height:100%;
+  max-width:100%;
+  overflow-y:scroll;
+  overflow-y:auto;
+  
+}
+
+ons-list-item{ // multiline layout
+  .w_right{
+    margin-left:auto;
+    text-align:right;
+  }
+}
+
+.list-item--small{ // thin list layout
+  .list-item--small__left,.list-item--small__center,.list-item--small__right{
+    min-height:0px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+  }
+}
+
+ons-popover .popover__content{ //pop over fix
+  text-align:center;
+  min-height:20px;
+}
+
+ons-input{ // most input box are 100% width
+  width: 100%;
+}
+
+
+.toolbar--material__left,.toolbar--material__right,.toolbar-button--material,.back-button--material{
+  color:#563e08;
+}
+.back-button--material__icon{
+  fill:#563e08;
+}

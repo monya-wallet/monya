@@ -221,6 +221,7 @@
         </v-ons-list-item>
         <v-ons-list-item modifier="small">
           <v-ons-select v-show="abi" v-model="runContract.fn" @change="runContract.args=[]">
+            <option :value="null">関数を選んでください。</option>
             <option :value="fn.name" v-for="fn in abi">{{fn.name}}</option>
           </v-ons-select>
         </v-ons-list-item>
@@ -230,7 +231,7 @@
             <v-ons-input :placeholder="input.type" @input="runContract.args[i]=cast($event.target.value,input.type)"></v-ons-input>
           </div>
         </v-ons-list-item>
-        <div v-show="!selectedAbiFn.constant||!abi">
+        <div v-show="!selectedAbiFn.constant&&abi">
           <v-ons-list-item modifier="small">
             <div class="left">ガスプライス</div>
             <div class="center">
@@ -274,7 +275,7 @@
   <v-ons-action-sheet :visible.sync="option" cancelable>
     <v-ons-action-sheet-button icon="fa-server" @click="option=false;serverDlg=true">サーバー変更</v-ons-action-sheet-button>
     <v-ons-action-sheet-button icon="fa-history" @click="openExplorerAccount">履歴を見る</v-ons-action-sheet-button>
-    <v-ons-action-sheet-button icon="" @click="option=false;tokenReg.show=true">ERC20トークンを登録</v-ons-action-sheet-button>
+    <v-ons-action-sheet-button icon="" @click="option=false;tokenReg.show=true">トークンを登録</v-ons-action-sheet-button>
     <v-ons-action-sheet-button icon="" @click="option=false;runContract.show=true">コントラクトを実行</v-ons-action-sheet-button>
     <v-ons-action-sheet-button icon="ion-close" @click="option=false">キャンセル</v-ons-action-sheet-button>
   </v-ons-action-sheet>

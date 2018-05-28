@@ -17,9 +17,56 @@ const extensions={
   nekonium:{
     id:"nekonium",
     name:"Nekonium",
-    component:require("../component/nekonium.js"),
+    component:require("../component/ethBase.js")({
+      networkName:"Nekonium",
+      networkScheme:"nekonium",
+      networkIcon:require("../res/coins/nekonium.png"),
+      networkSymbol:"NUKO",
+      bip44DerivationPath:"m/44'/299'/0'/0",
+      chainId:1,
+      rpcServers:[
+        "https://www.nekonium.site:8293/",
+        "https://ssl.nekonium.site:8293/"
+      ],
+      explorer:"http://nekonium.network/account/"
+    }),
     icon:require("../res/coins/nekonium.png"),
     scheme:"nekonium"
+  },
+  ethereum:{
+    id:"ethereum",
+    name:"Ethereum",
+    component:require("../component/ethBase.js")({
+      networkName:"Ethereum",
+      networkScheme:"ethereum",
+      networkIcon:require("../res/coins/nekonium.png"),
+      networkSymbol:"ETH",
+      bip44DerivationPath:"m/44'/60'/0'/0",
+      chainId:1,
+      rpcServers:[
+        "https://mainnet.infura.io/iRUhBHOZ7VZdrEq1yQZd"
+      ],
+      explorer:"https://etherscan.io/address/"
+    }),
+    icon:require("../res/coins/nekonium.png"),
+    scheme:"ethereum"
+  },etherClassic:{
+    id:"etherClassic",
+    name:"Ethereum Classic",
+    component:require("../component/ethBase.js")({
+      networkName:"Ethereum Classic",
+      networkScheme:"etherclassic",
+      networkIcon:require("../res/coins/nekonium.png"),
+      networkSymbol:"ETC",
+      bip44DerivationPath:"m/44'/61'/0'/0",
+      chainId:61,
+      rpcServers:[
+        "https://etc-geth.0xinfra.com"
+      ],
+      explorer:"http://gastracker.io/addr/"
+    }),
+    icon:require("../res/coins/nekonium.png"),
+    scheme:"etherclassic"
   },
   zaifPay:{
     id:"zaifPay",

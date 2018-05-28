@@ -1,5 +1,7 @@
 @import "./param.scss";
 @import "./cond.scss";
+@import "./onsenui.min.mod.css";
+@import "./onsenui-fix.scss";
 
 html, body{
   font-size:1em;
@@ -18,40 +20,7 @@ html, body{
   background-size:contain;
   display:inline-block;
 }
-.list-item--small{
-  .list-item--small__left,.list-item--small__center,.list-item--small__right{
-    min-height:0px;
-    padding-top: 4px;
-    padding-bottom: 4px;
-  }
-}
-ons-list-item{
-  .w_right{
-    margin-left:auto;
-    text-align:right;
-  }
-}
 
-ons-toolbar-button.toolbar-button:not(.toolbar-button--material){
-  padding:4px 7px;
-  .ons-icon{
-    vertical-align:bottom;
-  }
-}
-ons-toolbar-button.toolbar-button:not(.toolbar-button--material){
-  padding:4px 7px;
-  .ons-icon{
-    vertical-align:bottom;
-  }
-}
-
-ons-dialog .dialog{
-  max-height:100%;
-  max-width:100%;
-  overflow-y:scroll;
-  overflow-y:auto;
-  
-}
 .shake{
   animation: shake 0.72s cubic-bezier(.36,.07,.19,.97) both;
   transform: translate3d(0, 0, 0);
@@ -243,10 +212,7 @@ ons-dialog .dialog{
     }
   }
 }
-ons-popover .popover__content{
-  text-align:center;
-  min-height:20px;
-}
+
 [data-page="showLabel"],[data-page="invoice"],[data-page="receive"],[data-page="xrp"],[data-page="nem"],[data-page="nekonium"],#zaifPayInvoice{
   text-align:center;
   #simple{
@@ -790,10 +756,6 @@ $zaifPayLogoSize:200px;
     word-break: break-all;
     white-space: pre-wrap;
   }
-}
-
-ons-input{
-    width: 100%;
 }
 
 @keyframes shake {
