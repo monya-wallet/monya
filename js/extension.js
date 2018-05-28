@@ -20,7 +20,7 @@ const extensions={
     component:require("../component/ethBase.js")({
       networkName:"Nekonium",
       networkScheme:"nekonium",
-      networkIcon:require("../res/coins/nekonium.png"),
+      networkIcon:require("../res/coins/nuko.png"),
       networkSymbol:"NUKO",
       bip44DerivationPath:"m/44'/299'/0'/0",
       chainId:1,
@@ -30,7 +30,7 @@ const extensions={
       ],
       explorer:"http://nekonium.network/account/"
     }),
-    icon:require("../res/coins/nekonium.png"),
+    icon:require("../res/coins/nuko.png"),
     scheme:"nekonium"
   },
   ethereum:{
@@ -39,7 +39,7 @@ const extensions={
     component:require("../component/ethBase.js")({
       networkName:"Ethereum",
       networkScheme:"ethereum",
-      networkIcon:require("../res/coins/nekonium.png"),
+      networkIcon:require("../res/coins/eth.png"),
       networkSymbol:"ETH",
       bip44DerivationPath:"m/44'/60'/0'/0",
       chainId:1,
@@ -48,7 +48,7 @@ const extensions={
       ],
       explorer:"https://etherscan.io/address/"
     }),
-    icon:require("../res/coins/nekonium.png"),
+    icon:require("../res/coins/eth.png"),
     scheme:"ethereum"
   },etherClassic:{
     id:"etherClassic",
@@ -56,7 +56,7 @@ const extensions={
     component:require("../component/ethBase.js")({
       networkName:"Ethereum Classic",
       networkScheme:"etherclassic",
-      networkIcon:require("../res/coins/nekonium.png"),
+      networkIcon:require("../res/coins/etc.png"),
       networkSymbol:"ETC",
       bip44DerivationPath:"m/44'/61'/0'/0",
       chainId:61,
@@ -65,7 +65,7 @@ const extensions={
       ],
       explorer:"http://gastracker.io/addr/"
     }),
-    icon:require("../res/coins/nekonium.png"),
+    icon:require("../res/coins/etc.png"),
     scheme:"etherclassic"
   },
   zaifPay:{
