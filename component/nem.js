@@ -346,7 +346,6 @@ module.exports=require("../js/lang.js")({ja:require("./ja/nem.html"),en:require(
             amount:parseFloat(this.invAmt),
             label:this.invMosaic
           },this.addressFormat==="url")
-          break;
         case "nemWallet":
           return `{"v":2,"type":2,"data":{"addr":"${this.address}","amount":${this.invAmt*1e6}}}`
         default:

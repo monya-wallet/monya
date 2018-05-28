@@ -41,7 +41,7 @@ jobs:
           git push origin master
 
       - run: |
-          npm i -g cordova@7.1.0 electron-packager && \
+          sudo npm i -g cordova@7.1.0 electron-packager && \
           cd cordovaProj
           npm i
           cordova platform add android
