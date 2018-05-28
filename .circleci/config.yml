@@ -41,12 +41,9 @@ jobs:
           git push origin master
 
       - run: |
-          apt-get -y install unzip zip&& \
           npm i -g cordova@7.1.0 electron-packager && \
-          apt-get -y install zip
           cd cordovaProj
           npm i
-          gradle wrapper
           cordova platform add android
           cordova build android --release
           cordova build android --debug
