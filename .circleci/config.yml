@@ -42,7 +42,7 @@ jobs:
 
   cordova:
     docker:
-      - image: api-27-node8-alpha
+      - image: circleci/api-27-node8-alpha
 
     working_directory: ~/repo
 
