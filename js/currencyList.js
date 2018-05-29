@@ -264,11 +264,7 @@ const defaultCoins = [{
   },{
     url: "https://btc-bitcore6.trezor.io/api",
     explorer: "https://btc-bitcore6.trezor.io"
-  },{
-    url: "https://btc-bitcore3.trezor.io/api",
-    explorer: "https://btc-bitcore3.trezor.io"
-  },
-                ],
+  }],
   network: {
     messagePrefix: '\x18Bitcoin Signed Message:\n',
     bip32: {
@@ -407,16 +403,15 @@ const defaultCoins = [{
     "url": "https://dash-bitcore1.trezor.io/api",
     "explorer": "https://dash-bitcore1.trezor.io"
   },{
-                     "url": "https://dash-bitcore2.trezor.io/api",
-                     "explorer": "https://dash-bitcore1.trezor.io"
-                   },{
-                     "url": "https://dash-bitcore3.trezor.io/api",
-                     "explorer": "https://dash-bitcore1.trezor.io"
-                   },{
-                     url: "https://insight.dash.org/insight-api-dash",
-                     explorer: "https://insight.dash.org/insight"
-                   },
-                  ],
+    "url": "https://dash-bitcore2.trezor.io/api",
+    "explorer": "https://dash-bitcore1.trezor.io"
+  },{
+    "url": "https://dash-bitcore3.trezor.io/api",
+    "explorer": "https://dash-bitcore1.trezor.io"
+  },{
+    url: "https://insight.dash.org/insight-api-dash",
+    explorer: "https://insight.dash.org/insight"
+  }],
   opReturnLength: 83,
   isAtomicSwapAvailable: true
 }, {

@@ -63,7 +63,17 @@ jobs:
           path: electron/dist
       - store_artifacts:
           path: chrome_extension.zip
-  
+       - run: |
+          git checkout artifacts
+          mkdir -p dev/apk
+          mkdir -p dev/electron
+          cp -r cordovaProj/platforms/android/build/outputs/apk dev/apk
+          cp -r electron/dist dev/electron
+          cp chrome_extension.zip dev/
+          cd dev
+          git add .
+          git commit -m "[ci skip] build on circle ci"
+          git push origin artifacts
 
 workflows:
   version: 2
