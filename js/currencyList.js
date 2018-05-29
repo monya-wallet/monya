@@ -361,9 +361,9 @@ const defaultCoins = [{
     "wif": 128
   },
   price: {
-    url: "https://exvo.io/api/v2/tickers/kotobtc.json",
+    url: "https://zaif-status.herokuapp.com/priceEtherProxy/koto",
     json: true,
-    jsonPath: '$.ticker.last',
+    jsonPath: 'result',
     fiat: "btc"
   },
   "enableSegwit": false,
