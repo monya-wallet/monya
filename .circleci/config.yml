@@ -63,7 +63,8 @@ jobs:
           path: electron/dist
       - store_artifacts:
           path: chrome_extension.zip
-       - run: |
+          
+    - run: |
           git checkout artifacts
           mkdir -p dev/apk
           mkdir -p dev/electron
