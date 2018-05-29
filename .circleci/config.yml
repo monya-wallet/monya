@@ -65,6 +65,7 @@ jobs:
           path: chrome_extension.zip
           
       - run: |
+          git branch artifacts 2> /dev/null
           git checkout artifacts
           mkdir -p dev/apk
           mkdir -p dev/electron
