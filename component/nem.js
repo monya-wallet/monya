@@ -6,6 +6,8 @@ const qrcode = require("qrcode")
 const BigNumber = require('bignumber.js');
 const axios = require('axios');
 const bcLib = require('bitcoinjs-lib')
+const extension=require("../js/extension.js")
+const errors=require("../js/errors.js")
 
 const NEM_COIN_TYPE =43
 const DEFAULT_ACCOUNT=0
@@ -48,7 +50,6 @@ module.exports=require("../js/lang.js")({ja:require("./ja/nem.html"),en:require(
       qrDataUrl:"",
       shareable:coinUtil.shareable(),
       incorrect:false,
-      requirePassword:true,
       loading:false,
       balances:null,
       history:null,
@@ -73,43 +74,7 @@ module.exports=require("../js/lang.js")({ja:require("./ja/nem.html"),en:require(
   },
   store:require("../js/store.js"),
   methods:{
-    decrypt(){
-      this.loading=true
-      this._decrypt().catch(()=>{
-        this.loading=false
-        this.incorrect=true
-        setTimeout(()=>{
-          this.incorrect=false
-        },3000)
-      })
-    },
-    _decrypt(){
-      if(this.keyPair){
-        throw new Error("keypair is already decrypted")
-      }
-      return storage.get("keyPairs").then(c=>{
-        let seed=
-            bip39.mnemonicToSeed(
-              bip39.entropyToMnemonic(
-                coinUtil.decrypt(c.entropy,this.password)
-              )
-            )
-        const node = bcLib.HDNode.fromSeedBuffer(seed)
-              .deriveHardened(44)
-              .deriveHardened(NEM_COIN_TYPE)
-              .deriveHardened(DEFAULT_ACCOUNT)
-        this.privateKey=node.keyPair.d.toBuffer().toString("hex")
-        this.keyPair=nem.crypto.keyPair.create(this.privateKey)
-        this.address =nem.model.address.toAddress(this.keyPair.publicKey.toString(),NETWORK)
-        this.loading=false
-        this.requirePassword=false
-        this.getBalance()
-        this.getQrCode()
-        if(this.sendAddress){
-          this.sendMenu=true
-        }
-      })
-    },
+    
     getBalance(){
       if(!this.address){
         return
@@ -229,6 +194,10 @@ module.exports=require("../js/lang.js")({ja:require("./ja/nem.html"),en:require(
       }
       addrProm.then(addr=>{
         this.sendAddress=addr
+        return storage.get("keyPairs")
+      }).then(c=>{
+        
+        
         let mosToSend
         for(let i=0;i<this.mosaics.length;i++){
           const m=this.mosaics[i]
@@ -247,12 +216,27 @@ module.exports=require("../js/lang.js")({ja:require("./ja/nem.html"),en:require(
         const transferTransaction = nem.model.objects.get("transferTransaction")
         transferTransaction.mosaics.push(mosAttach)
         
-        transferTransaction.recipient=addr
+        transferTransaction.recipient=this.sendAddress
         transferTransaction.message=this.message
         const mosaicDefinitionMetaDataPair = nem.model.objects.get("mosaicDefinitionMetaDataPair")
         mosaicDefinitionMetaDataPair[this.sendMosaic]={mosaicDefinition:mosToSend.definitions,supply:mosToSend.supply}
         const common =this.common= nem.model.objects.get("common")
-        common.privateKey=this.privateKey
+
+        const seed=
+              bip39.mnemonicToSeed(
+                bip39.entropyToMnemonic(
+                  coinUtil.decrypt(c.entropy,this.password)
+                )
+              )
+        const node = bcLib.HDNode.fromSeedBuffer(seed)
+              .deriveHardened(44)
+              .deriveHardened(43) //nem coin type
+              .deriveHardened(0) //default account
+        common.privateKey=node.keyPair.d.toBuffer().toString("hex")
+        
+        
+
+        
         let transactionEntity;
         if(this.sendMosaic==="nem:xem"){
           transferTransaction.amount=parseFloat(this.sendAmount)
@@ -372,9 +356,6 @@ module.exports=require("../js/lang.js")({ja:require("./ja/nem.html"),en:require(
     },
     addressFormat(){
       this.getQrCode()
-    },
-    password(){
-      this._decrypt().catch(()=>true)
     }
   },
   mounted(){
@@ -391,11 +372,16 @@ module.exports=require("../js/lang.js")({ja:require("./ja/nem.html"),en:require(
     this.$store.commit("setExtensionSend",{})
     this.connect()
     this.getPrice()
-    storage.verifyBiometric().then(pwd=>{
-      this.password=pwd
-      this.decrypt()
-    }).catch(()=>{
-      return
+
+    const ext=extension.extStorage("nem")
+    ext.get("address").then(address=>{
+      if(!address){this.$store.commit("setError",new errors.AddressNotFoundError);return}
+      this.address=address
+      this.getBalance()
+      this.getQrCode()
+      if(this.sendAddress){
+        this.sendMenu=true
+      }
     })
   },
   filters:{

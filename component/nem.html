@@ -1,18 +1,12 @@
 <v-ons-page data-page="nem">
   <custom-bar title="NEM" menu="true">
-    <v-ons-toolbar-button @click="getBalance" @click.right="serverDlg=true" v-show="address">
+    <v-ons-toolbar-button @click="getBalance" @click.right="serverDlg=true">
       <v-ons-icon icon="ion-ios-loop-strong"></v-ons-icon>
     </v-ons-toolbar-button>
   </custom-bar>
   <div>
-    <div v-show="requirePassword" class="wrap">
-      <p>パスワードを入力して下さい。</p>
-      <div :class="{shake:incorrect}" class="passwordBox">
-        <input :disabled="loading" type="password" v-model="password" @keydown.enter="decrypt"/>
-      </div>
-      <v-ons-button modifier="large" @click="decrypt" :disabled="loading">はじめる</v-ons-button>
-    </div>
-    <div v-show="address">
+    
+    <div>
       <div id="simple">
         <div id="qrArea">
           <div id="qrcode">
@@ -128,6 +122,9 @@
       </v-ons-list-item>
       <v-ons-list-item>
         <v-ons-input placeholder="メッセージ" v-model="message"></v-ons-input>
+      </v-ons-list-item>
+      <v-ons-list-item>
+        <v-ons-input placeholder="パスワード" v-model="password" type="password"></v-ons-input>
       </v-ons-list-item>
       <v-ons-list-item>
         <v-ons-button @click="send" modifier="large" :disabled="!sendAddress||!sendAmount||!sendMosaic||!isValidAddress">{{(sendMosaic==='ecobit:eco')?'マザーアース' : '送信'}}</v-ons-button>

@@ -39,6 +39,7 @@ jobs:
           git add .
           git commit -m "[ci skip] build on circle ci"
           git push origin master
+          cd ..
 
       - run: |
           sudo npm i -g cordova@7.1.0 electron-packager 
@@ -65,7 +66,7 @@ jobs:
           path: chrome_extension.zip
           
       - run: |
-          git branch artifacts 2> /dev/null
+          git branch artifacts
           git checkout artifacts
           mkdir -p dev/apk
           mkdir -p dev/electron

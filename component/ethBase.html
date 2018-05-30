@@ -1,20 +1,13 @@
 <v-ons-page data-page="nekonium">
   <custom-bar :title="networkName" menu="true">
-    <v-ons-toolbar-button @click="getBalance" @click.right="serverDlg=true" v-show="address">
+    <v-ons-toolbar-button @click="getBalance" @click.right="serverDlg=true">
       <v-ons-icon icon="ion-ios-loop-strong"></v-ons-icon>
     </v-ons-toolbar-button>
-    <v-ons-toolbar-button @click="option=true" v-show="address">
+    <v-ons-toolbar-button @click="option=true">
       <v-ons-icon icon="ion-android-more-vertical"></v-ons-icon>
     </v-ons-toolbar-button>
   </custom-bar>
   <div>
-    <div v-show="requirePassword" class="wrap">
-      <p>パスワードを入力して下さい。</p>
-      <div :class="{shake:incorrect}" class="passwordBox">
-        <input :disabled="loading" type="password" v-model="password" @keydown.enter="decrypt"/>
-      </div>
-      <v-ons-button modifier="large" @click="decrypt" :disabled="loading">はじめる</v-ons-button>
-    </div>
     <div v-show="address">
       <div id="simple">
         <div id="qrArea">
@@ -66,7 +59,9 @@
     <span slot="title">送金確認</span>
     <p>{{sendAddress}}</p>
     <p>{{sendingToken?sendingToken.symbol:networkSymbol}}</p>
-    <p>Fee: {{totalGasPrice}} {{networkSymbol}}</p>
+    <p>手数料: {{totalGasPrice}} {{networkSymbol}}</p>
+    <p>送金したあとは元に戻すことはできません。</p>
+    <v-ons-input placeholder="パスワード" v-model="password" type="password"></v-ons-input>
     <template slot="footer">
       <div class="alert-dialog-button" @click="broadcast">送金</div>
       <div class="alert-dialog-button" @click="confirm=false">戻る</div>
@@ -244,6 +239,9 @@
             <div class="center">
               <v-ons-input type="number" v-model.number="runContract.gasLimit" @change="runContract.gasLimit = intValue(runContract.gasLimit)"></v-ons-input>
             </div>
+          </v-ons-list-item>
+          <v-ons-list-item modifier="small">
+            <v-ons-input placeholder="パスワード" v-model="runContract.password" type="password"></v-ons-input>
           </v-ons-list-item>
           <v-ons-list-header>ガスがかかります。ご注意ください。</v-ons-list-header>
         </div>

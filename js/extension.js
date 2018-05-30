@@ -1,18 +1,47 @@
 const storage = require("./storage.js")
+const hdkey = require('ethereumjs-wallet/hdkey')
+const bip39 = require("@missmonacoin/bip39-eng")
+const keypairs=require("ripple-keypairs")
+
+const nem = require("nem-sdk").default
+
+const bcLib = require('bitcoinjs-lib')
 const extensions={
   xrp:{
     id:"xrp",
     name:"Ripple",
     component:require("../component/xrp.js"),
     icon:require("../res/coins/xrp.png"),
-    scheme:"ripple"
+    scheme:"ripple",
+    onAdd:(entropy,extStorage)=>{
+      const seed = keypairs.generateSeed({
+        entropy:Buffer.from(entropy,"hex")
+        })
+      const keyPair=keypairs.deriveKeypair(seed)
+      const address=keypairs.deriveAddress(keyPair.publicKey)
+      return extStorage.set("address",address)
+    }
   },
   nem:{
     id:"nem",
     name:"NEM",
     component:require("../component/nem.js"),
     icon:require("../res/coins/nem.png"),
-    scheme:"nem"
+    scheme:"nem",
+    onAdd:(entropy,extStorage)=>{
+      const seed=
+            bip39.mnemonicToSeed(
+              bip39.entropyToMnemonic(
+                entropy
+              )
+            )
+      const node = bcLib.HDNode.fromSeedBuffer(seed)
+            .deriveHardened(44)
+            .deriveHardened(43) //nem coin type
+            .deriveHardened(0) //default account
+      const address=nem.model.address.toAddress(nem.crypto.keyPair.create(node.keyPair.d.toBuffer().toString("hex")).publicKey.toString(),nem.model.network.data.mainnet.id)
+      return extStorage.set("address",address)
+    }
   },
   nekonium:{
     id:"nekonium",
@@ -22,7 +51,7 @@ const extensions={
       networkScheme:"nekonium",
       networkIcon:require("../res/coins/nuko.png"),
       networkSymbol:"NUKO",
-      bip44DerivationPath:"m/44'/299'/0'/0",
+      bip44DerivationPath:"m/44'/299'/0'/0/0",
       chainId:1,
       rpcServers:[
         "https://www.nekonium.site:8293/",
@@ -31,8 +60,19 @@ const extensions={
       explorer:"http://nekonium.network/account/"
     }),
     icon:require("../res/coins/nuko.png"),
-    scheme:"nekonium"
-  },
+    scheme:"nekonium",
+    onAdd:(entropy,extStorage)=>{
+      const seed=
+          bip39.mnemonicToSeed(
+            bip39.entropyToMnemonic(
+              entropy
+            )
+          )
+      
+      const address=hdkey.fromMasterSeed(seed).derivePath("m/44'/299'/0'/0/0").getWallet().getChecksumAddressString()
+      return extStorage.set("address",address)
+    }
+  }/*,
   ethereum:{
     id:"ethereum",
     name:"Ethereum",
@@ -67,7 +107,7 @@ const extensions={
     }),
     icon:require("../res/coins/etc.png"),
     scheme:"etherclassic"
-  },
+  }*/,
   zaifPay:{
     id:"zaifPay",
     name:"Zaif Payment",

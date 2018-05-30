@@ -1,17 +1,10 @@
 <v-ons-page data-page="xrp">
   <custom-bar title="Ripple" menu="true">
-    <v-ons-toolbar-button @click="getBalance" @click.right="serverDlg=true" v-show="address">
+    <v-ons-toolbar-button @click="getBalance" @click.right="serverDlg=true">
       <v-ons-icon icon="ion-ios-loop-strong"></v-ons-icon>
     </v-ons-toolbar-button>
   </custom-bar>
   <div>
-    <div v-show="requirePassword" class="wrap">
-      <p>パスワードを入力して下さい。</p>
-      <div :class="{shake:incorrect}" class="passwordBox">
-        <input :disabled="loading" type="password" v-model="password"  @keydown.enter="decrypt"/>
-      </div>
-      <v-ons-button modifier="large" @click="decrypt" :disabled="loading">はじめる</v-ons-button>
-    </div>
     <div v-show="address">
       <div v-show="plzActivate" class="description">
         <h1>リップル</h1>

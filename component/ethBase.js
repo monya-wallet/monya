@@ -6,10 +6,11 @@ const BigNumber = require('bignumber.js');
 const axios = require('axios');
 const bcLib = require('bitcoinjs-lib')
 const Web3 = require('web3')
-const Tx = require('ethereumjs-tx')
 const hdkey = require('ethereumjs-wallet/hdkey')
 const extension=require("../js/extension.js")
 const erc20ABI = require("../js/erc20ABI.js")
+
+const errors=require("../js/errors.js")
 
 module.exports=function(option){
   const NETWORK_NAME=option.networkName
@@ -38,7 +39,6 @@ module.exports=function(option){
         qrDataUrl:"",
         shareable:coinUtil.shareable(),
         incorrect:false,
-        requirePassword:true,
         loading:false,
         confirm:false,
         price:1,
@@ -53,9 +53,8 @@ module.exports=function(option){
         sendingToken:false,
         
         rpcServer:null,
-        wallet:null,
         balanceWei:"",
-        signedTxData:null,
+        unsignedTx:null,
         
         networkName:NETWORK_NAME,
         networkScheme:NETWORK_SCHEME,
@@ -76,7 +75,8 @@ module.exports=function(option){
           args:[],
           result:"",
           gasLimit:0,
-          gasPrice:0
+          gasPrice:0,
+          password:""
         },
 
         tokens:[]
@@ -84,39 +84,7 @@ module.exports=function(option){
     },
     store:require("../js/store.js"),
     methods:{
-      decrypt(){
-        this.loading=true
-        this._decrypt().catch(()=>{
-          this.loading=false
-          this.incorrect=true
-          setTimeout(()=>{
-            this.incorrect=false
-          },3000)
-        })
-      },
-      _decrypt(){
-        if(this.wallet){
-          throw new Error("keypair is already decrypted")
-        }
-        return storage.get("keyPairs").then(c=>{
-          let seed=
-              bip39.mnemonicToSeed(
-                bip39.entropyToMnemonic(
-                  coinUtil.decrypt(c.entropy,this.password)
-                )
-              )
-          this.wallet=hdkey.fromMasterSeed(seed).derivePath(HD_DERIVATION_PATH).deriveChild(ADDRESS_INDEX).getWallet()
-          this.address=this.wallet.getChecksumAddressString()
-          this.loading=false
-          this.requirePassword=false
-          this.getBalance()
-          this.getQrCode()
-          this.getQrCodeAddress()
-          if(this.sendAddress){
-            this.sendMenu=true
-          }
-        })
-      },
+      
       getBalance(){
         if(!this.address){
           return
@@ -172,68 +140,72 @@ module.exports=function(option){
         // NekoniumにENSはないので
         addrProm=Promise.resolve(this.sendAddress)
         addrProm.then(addr=>{
-          return web3.eth.getTransactionCount(this.address)
-        }).then(nonce => {
-          let data;
-          let rawTx;
+          
+          const tx={
+            from:this.address,
+            gasPrice: web3.utils.numberToHex(sendGasPriceWei),
+            gas: web3.utils.numberToHex(this.sendGasLimit),
+            chainId: CHAIN_ID
+          }
+
+          
           if(this.sendingToken){
             const contract =new web3.eth.Contract(erc20ABI,this.sendingToken.contractAddress,{
               from:this.address
             })
-            rawTx = {
-              from:this.address,
-              nonce: web3.utils.numberToHex(nonce),
-              gasPrice: web3.utils.numberToHex(sendGasPriceWei),
-              gasLimit: web3.utils.numberToHex(this.sendGasLimit),
-              to: this.sendingToken.contractAddress,
-              value: "0x0",
-              chainId: CHAIN_ID,
-              data:contract.methods.transfer(
-                this.sendAddress,
-                +(new BigNumber(this.sendAmount)).shift(this.sendingToken.decimal)
-              ).encodeABI()
-            }
+
+            tx.to=this.sendingToken.contractAddress
+            tx.value="0x0"
+            tx.data=contract.methods.transfer(
+              this.sendAddress,
+              +(new BigNumber(this.sendAmount)).shift(this.sendingToken.decimal)
+            ).encodeABI()
+
           }else{
-            rawTx = {
-              from:this.address,
-              nonce: web3.utils.numberToHex(nonce),
-              gasPrice: web3.utils.numberToHex(sendGasPriceWei),
-              gasLimit: web3.utils.numberToHex(this.sendGasLimit),
-              to: this.sendAddress,
-              value: web3.utils.numberToHex(web3.utils.toWei(""+this.sendAmount, "ether")),
-              chainId: CHAIN_ID
-            }
+            tx.to=this.sendAddress
+            tx.value=web3.utils.numberToHex(web3.utils.toWei(""+this.sendAmount, "ether"))
           }
-          const tx = new Tx(rawTx)
-          tx.sign(this.wallet.getPrivateKey())
-          this.signedTxData="0x"+tx.serialize().toString('hex')
+          this.unsignedTx=tx
           this.confirm=true
           this.loading=false
+
+          storage.verifyBiometric().then(pwd=>{
+            this.password=pwd
+          }).catch(()=>{
+            return
+          })
         }).catch((e)=>{
           this.loading=false
           this.$store.commit("setError",e.message)
         })
       },
       broadcast(){
-        if(!this.signedTxData){
+        if(!this.unsignedTx){
           return
         }
         this.confirm=false
         this.loading=true
-        
-        web3.eth.sendSignedTransaction(this.signedTxData).on('transactionHash', txhash=>{
-          console.log('txhash', txhash)
-        }).on('receipt', receipt=>{
+        storage.get("keyPairs").then(c=>{
+          const seed=
+                bip39.mnemonicToSeed(
+                  bip39.entropyToMnemonic(
+                    coinUtil.decrypt(c.entropy,this.password)
+                  )
+                )
+          return web3.eth.accounts.privateKeyToAccount("0x"+hdkey.fromMasterSeed(seed).derivePath(HD_DERIVATION_PATH).getWallet().getPrivateKey().toString("hex")).signTransaction(this.unsignedTx)
+        }).then(signedTx=>{
+          return web3.eth.sendSignedTransaction(signedTx.rawTransaction)
+        }).then(receipt=>{
           this.sendAddress=""
           this.sendAmount=""
-          this.singedTxData=null
+          this.password=""
+          this.unsignedTx=null
           this.loading=false
           this.$store.commit("setFinishNextPage",{page:require("./home.js"),infoId:"sent",payload:{
             txId:""
           }})
           this.$emit("replace",require("./finished.js"))
         }).catch(e=>{
-          this.singedTxData=null
           this.loading=false
           this.$store.commit("setError",e.message)
         })
@@ -387,8 +359,15 @@ module.exports=function(option){
           this.loading=true
           const sendGasPriceWei = web3.utils.toWei(""+this.sendGasPrice, "gwei")
           
-          web3.eth.getTransactionCount(this.address).then(nonce => {
-            const tx=new Tx({
+          Promise.all([storage.get("keyPairs"),web3.eth.getTransactionCount(this.address)]).then(res => {
+            const seed=
+                  bip39.mnemonicToSeed(
+                    bip39.entropyToMnemonic(
+                      coinUtil.decrypt(res[0].entropy,this.runContract.password)
+                    )
+                  )
+            const nonce=res[1]
+            const tx={
               from:this.address,
               nonce: web3.utils.numberToHex(nonce),
               gasPrice: web3.utils.numberToHex(sendGasPriceWei),
@@ -397,12 +376,14 @@ module.exports=function(option){
               value: "0x0",
               chainId: CHAIN_ID,
               data:method.encodeABI()
-            })
-            tx.sign(this.wallet.getPrivateKey())
-            web3.eth.sendSignedTransaction("0x"+tx.serialize().toString('hex')).on('receipt', receipt=>{
-              this.runContract.result=JSON.stringify(receipt)
-              this.loading=false
-            })
+            }
+            return web3.eth.accounts.privateKeyToAccount("0x"+hdkey.fromMasterSeed(seed).derivePath(HD_DERIVATION_PATH).getWallet().getPrivateKey().toString("hex")).signTransaction(tx)
+          }).then(signedTx=>{
+            this.runContract.password=""
+            return web3.eth.sendSignedTransaction(signedTx.rawTransaction)
+          }).then(receipt=>{
+            this.runContract.result=JSON.stringify(receipt)
+            this.loading=false
           }).catch(e=>{
             this.loading=false
             this.$store.commit("setError",e.message)
@@ -460,9 +441,6 @@ module.exports=function(option){
       },
       addressFormat(){
         this.getQrCode()
-      },
-      password(){
-        this._decrypt().catch(()=>true)
       }
     },
     mounted(){
@@ -476,16 +454,20 @@ module.exports=function(option){
       }
 
       ext=extension.extStorage(NETWORK_SCHEME)
-      
+      ext.get("address").then(address=>{
+        if(!address){this.$store.commit("setError",new errors.AddressNotFoundError);return}
+        this.address=address
+        this.getBalance()
+        this.getQrCode()
+        this.getQrCodeAddress()
+        if(this.sendAddress){
+          this.sendMenu=true
+        }
+      })
       this.$store.commit("setExtensionSend",{})
       this.connect()
       this.getPrice()
-      storage.verifyBiometric().then(pwd=>{
-        this.password=pwd
-        this.decrypt()
-      }).catch(()=>{
-        return
-      })
+      
     }
   })
 };

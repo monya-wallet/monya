@@ -7,6 +7,8 @@ const {RippleAPI} = require("ripple-lib")
 const keypairs=require("ripple-keypairs")
 const BigNumber = require('bignumber.js');
 const axios = require('axios');
+const extension=require("../js/extension.js")
+const errors=require("../js/errors.js")
 
 module.exports=require("../js/lang.js")({ja:require("./ja/xrp.html"),en:require("./en/xrp.html")})({
   data(){
@@ -25,7 +27,6 @@ module.exports=require("../js/lang.js")({ja:require("./ja/xrp.html"),en:require(
       loading:false,plzActivate:false,
       balances:null,
       keyPair:null,
-      seed:"",
       sent:false,
       histError:false,
       history:null,
@@ -40,34 +41,7 @@ module.exports=require("../js/lang.js")({ja:require("./ja/xrp.html"),en:require(
   },
   store:require("../js/store.js"),
   methods:{
-    decrypt(){
-      this.loading=true
-      this._decrypt().catch(()=>{
-        this.loading=false
-        this.incorrect=true
-        setTimeout(()=>{
-          this.incorrect=false
-        },3000)
-      })
-    },
-    _decrypt(){
-      if(this.keyPair){
-        throw new Error("keypair is already decrypted")
-      }
-      return storage.get("keyPairs").then(c=>{
-        const seed = keypairs.generateSeed({
-          entropy: Buffer.from(coinUtil.decrypt(c.entropy,this.password),"hex")
-        })
-        this.seed = seed
-        const keyPair=keypairs.deriveKeypair(seed)
-        this.$set(this,"keyPair",keyPair)
-        this.address =keypairs.deriveAddress(keyPair.publicKey)
-        this.loading=false
-        this.requirePassword=false
-        this.getBalance()
-        this.getQrCode()
-      })
-    },
+    
     getBalance(){
       if(!this.address||!this.connected){
         return
@@ -142,8 +116,14 @@ module.exports=require("../js/lang.js")({ja:require("./ja/xrp.html"),en:require(
         },
         memos:[{data:this.memo}]
       };
-      this.api.preparePayment(this.address,payment,{maxLedgerVersionOffset: 5}).then(p=>{
-        const signedData = this.api.sign(p.txJSON,this.seed)
+      Promise.all([
+        this.api.preparePayment(this.address,payment,{maxLedgerVersionOffset: 5}),
+        storage.get("keyPairs")
+      ]).then(p=>{
+        const seed = keypairs.generateSeed({
+          entropy:coinUtil.decrypt(p[1],this.password)
+        })
+        const signedData = this.api.sign(p[0].txJSON,seed)
         return this.api.submit(signedData.signedTransaction)
       }).then(m=>{
         this.loading=false
@@ -170,6 +150,8 @@ module.exports=require("../js/lang.js")({ja:require("./ja/xrp.html"),en:require(
       this.api=new RippleAPI({server: this.server||'wss://s2.ripple.com:443'})
       this.api.connect().then(()=>{
         this.connected = true
+        this.getBalance()
+        this.loading=false
       }).catch(e=>{
         this.loading=false
         
@@ -234,11 +216,15 @@ module.exports=require("../js/lang.js")({ja:require("./ja/xrp.html"),en:require(
     this.$store.commit("setExtensionSend",{})
     this.connect()
     this.getPrice()
-    storage.verifyBiometric().then(pwd=>{
-      this.password=pwd
-      this.decrypt()
-    }).catch(()=>{
-      return
+    const ext=extension.extStorage("xrp")
+    ext.get("address").then(address=>{
+      if(!address){this.$store.commit("setError",new errors.AddressNotFoundError);return}
+      this.address=address
+      this.getBalance()
+      this.getQrCode()
+      if(this.sendAddress){
+        this.sendMenu=true
+      }
     })
   }
 })
