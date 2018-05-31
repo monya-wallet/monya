@@ -98,11 +98,11 @@ const extensions={
             )
           )
       
-      const address=hdkey.fromMasterSeed(seed).derivePath("m/44'/60'/0'/0").getWallet().getChecksumAddressString()
+      const address=hdkey.fromMasterSeed(seed).derivePath("m/44'/60'/0'/0/0").getWallet().getChecksumAddressString()
       return extStorage.set("address",address)
     }
   },etherClassic:{
-    id:"etherClassic",
+    id:"etherclassic",
     name:"Ethereum Classic",
     component:require("../component/ethBase.js")({
       networkName:"Ethereum Classic",
@@ -126,7 +126,7 @@ const extensions={
             )
           )
       
-      const address=hdkey.fromMasterSeed(seed).derivePath("m/44'/61'/0'/0").getWallet().getChecksumAddressString()
+      const address=hdkey.fromMasterSeed(seed).derivePath("m/44'/61'/0'/0/0").getWallet().getChecksumAddressString()
       return extStorage.set("address",address)
     }
   },
