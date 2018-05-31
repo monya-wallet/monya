@@ -218,7 +218,7 @@ module.exports=require("../js/lang.js")({ja:require("./ja/xrp.html"),en:require(
     this.getPrice()
     const ext=extension.extStorage("xrp")
     ext.get("address").then(address=>{
-      if(!address){this.$store.commit("setError",new errors.AddressNotFoundError);return}
+      if(!address){this.$store.commit("setError",(new errors.AddressNotFoundError).message);return}
       this.address=address
       this.getBalance()
       this.getQrCode()

@@ -375,7 +375,7 @@ module.exports=require("../js/lang.js")({ja:require("./ja/nem.html"),en:require(
 
     const ext=extension.extStorage("nem")
     ext.get("address").then(address=>{
-      if(!address){this.$store.commit("setError",new errors.AddressNotFoundError);return}
+      if(!address){this.$store.commit("setError",(new errors.AddressNotFoundError).message);return}
       this.address=address
       this.getBalance()
       this.getQrCode()

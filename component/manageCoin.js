@@ -58,7 +58,7 @@ module.exports=require("../js/lang.js")({ja:require("./ja/manageCoin.html"),en:r
             if(v.usable){
               s.enabledExts.push(v.id)
               const ex=ext.get(v.id)
-              if(ex){
+              if(ex&&ex.onAdd){
                 addProm=addProm.then(()=>ex.onAdd(entropy,ext.extStorage(v.id)))
               }
             }

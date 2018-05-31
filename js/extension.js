@@ -61,7 +61,7 @@ const extensions={
     }),
     icon:require("../res/coins/nuko.png"),
     scheme:"nekonium",
-    onAdd:(entropy,extStorage)=>{
+    onAdd(entropy,extStorage){
       const seed=
           bip39.mnemonicToSeed(
             bip39.entropyToMnemonic(
@@ -72,7 +72,7 @@ const extensions={
       const address=hdkey.fromMasterSeed(seed).derivePath("m/44'/299'/0'/0/0").getWallet().getChecksumAddressString()
       return extStorage.set("address",address)
     }
-  }/*,
+  },
   ethereum:{
     id:"ethereum",
     name:"Ethereum",
@@ -89,7 +89,18 @@ const extensions={
       explorer:"https://etherscan.io/address/"
     }),
     icon:require("../res/coins/eth.png"),
-    scheme:"ethereum"
+    scheme:"ethereum",
+    onAdd(entropy,extStorage){
+      const seed=
+          bip39.mnemonicToSeed(
+            bip39.entropyToMnemonic(
+              entropy
+            )
+          )
+      
+      const address=hdkey.fromMasterSeed(seed).derivePath("m/44'/60'/0'/0").getWallet().getChecksumAddressString()
+      return extStorage.set("address",address)
+    }
   },etherClassic:{
     id:"etherClassic",
     name:"Ethereum Classic",
@@ -106,8 +117,19 @@ const extensions={
       explorer:"http://gastracker.io/addr/"
     }),
     icon:require("../res/coins/etc.png"),
-    scheme:"etherclassic"
-  }*/,
+    scheme:"etherclassic",
+    onAdd(entropy,extStorage){
+      const seed=
+          bip39.mnemonicToSeed(
+            bip39.entropyToMnemonic(
+              entropy
+            )
+          )
+      
+      const address=hdkey.fromMasterSeed(seed).derivePath("m/44'/61'/0'/0").getWallet().getChecksumAddressString()
+      return extStorage.set("address",address)
+    }
+  },
   zaifPay:{
     id:"zaifPay",
     name:"Zaif Payment",

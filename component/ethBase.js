@@ -451,11 +451,12 @@ module.exports=function(option){
         if(sa){
           this.sendAmount=""+sa
         }
+        this.calcGasLimitFromAddress()
       }
 
       ext=extension.extStorage(NETWORK_SCHEME)
       ext.get("address").then(address=>{
-        if(!address){this.$store.commit("setError",new errors.AddressNotFoundError);return}
+        if(!address){this.$store.commit("setError",(new errors.AddressNotFoundError).message);return}
         this.address=address
         this.getBalance()
         this.getQrCode()
