@@ -87,7 +87,7 @@ const defaultCoins = [{
     },
     pubKeyHash: 81,
     scriptHash: 5,
-    wif: 128
+    wif: 128,bech32:"sz"
   },
   enableSegwit: false,
   price: {
