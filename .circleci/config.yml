@@ -4,10 +4,10 @@
 #
 version: 2
 jobs:
-  build:
+  publish:
     docker:
       # specify the version you desire here
-      - image: circleci/node:9.2
+      - image: circleci/android:api-27-node8-alpha
     working_directory: ~/repo
 
     steps:
@@ -20,71 +20,53 @@ jobs:
           # fallback to using the latest cache if no exact match is found
           - v1-dependencies-
 
-      - run: yarn install
+      - run: npm install
 
       - save_cache:
           paths:
             - node_modules
           key: v1-dependencies-{{ checksum "package.json" }}
         
-      - run: yarn run build
+      - run: npm run build
 
       - run: |
-          git clone "git@github.com:monya-wallet/dev.git" dev
+          git clone "git@github.com:monya-wallet/monya-wallet.github.io.git" release
           git config --global user.name "circleci"
           git config --global user.email "circleci@chatbox-inc.com"
-          rm -r dev/*
-          cp -r docs/wallet/* dev
-          mkdir dev/cwww
-          cp -r cordovaProj/www/* dev/cwww
-          cd dev
+          cp -r docs/wallet/* release/wallet
+          cd release
           git add .
           git commit -m "[ci skip] build on circle ci"
           git push origin master
-
-  cordova:
-    docker:
-      - image: registry.gitlab.com/2ndlesmi/spinningprojects/monya
-
-    working_directory: ~/repo
-
-    steps:
-      - checkout
+          cd ..
 
       - run: |
-            /opt/sdk_install.sh "build-tools;19.1.0" "platforms;android-19"
-
-            apt-get -y install zip
-            git clone https://github.com/monya-wallet/monya.git monya
-            npm i
-            npm run build:cordova
-            cd cordovaProj
-            npm i
-            gradle wrapper
-            cordova platform add android
-            cordova build android --release
-            cordova build android --debug
-            cd ../electron
-            npm install
-            npm run dist
-            cd ..
-            zip chrome_extension.zip chrome_extension
+          sudo npm i -g cordova@7.1.0 electron-packager 
+          wget https://services.gradle.org/distributions/gradle-4.1-bin.zip -qO gradle.zip
+          sudo unzip gradle.zip -d /opt
+          export PATH="$PATH:/opt/gradle-4.1/bin/"
+          sdkmanager tools "build-tools;26.0.2" "platform-tools" "platforms;android-26" "platforms;android-25"
+          cd cordovaProj
+          npm i
+          cordova platform add android
+          cordova build android --release
+          cd ../electron
+          npm install
+          npm run dist
+          cd ..
+          zip chrome_extension.zip chrome_extension
             
       - store_artifacts:
           path: cordovaProj/platforms/android/build/outputs/apk/
-
       - store_artifacts:
           path: electron/dist
       - store_artifacts:
           path: chrome_extension.zip
-
 workflows:
   version: 2
   build_and_cordova:
     jobs:
-      - build
-      - cordova:
+      - publish:
           filters:
             branches:
-              only: master
-      
+              only: release
