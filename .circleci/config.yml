@@ -50,8 +50,62 @@ jobs:
           cd cordovaProj
           npm i
           cordova platform add android
-          cordova build android --release
           cordova build android --debug
+          cd ../electron
+          npm install
+          npm run dist
+            
+      - store_artifacts:
+          path: cordovaProj/platforms/android/build/outputs/apk/
+      - store_artifacts:
+          path: electron/dist
+
+  publish:
+    docker:
+      # specify the version you desire here
+      - image: circleci/android:api-27-node8-alpha
+    working_directory: ~/repo
+
+    steps:
+      - checkout
+
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+          - v1-dependencies-{{ checksum "package.json" }}
+          # fallback to using the latest cache if no exact match is found
+          - v1-dependencies-
+
+      - run: npm install
+
+      - save_cache:
+          paths:
+            - node_modules
+          key: v1-dependencies-{{ checksum "package.json" }}
+        
+      - run: npm run build
+
+      - run: |
+          git clone "git@github.com:monya-wallet/monya-wallet.github.io.git" release
+          git config --global user.name "circleci"
+          git config --global user.email "circleci@chatbox-inc.com"
+          cp -r docs/wallet/* release/wallet
+          cd release
+          git add .
+          git commit -m "[ci skip] build on circle ci"
+          git push origin master
+          cd ..
+
+      - run: |
+          sudo npm i -g cordova@7.1.0 electron-packager 
+          wget https://services.gradle.org/distributions/gradle-4.1-bin.zip -qO gradle.zip
+          sudo unzip gradle.zip -d /opt
+          export PATH="$PATH:/opt/gradle-4.1/bin/"
+          sdkmanager tools "build-tools;26.0.2" "platform-tools" "platforms;android-26" "platforms;android-25"
+          cd cordovaProj
+          npm i
+          cordova platform add android
+          cordova build android --release
           cd ../electron
           npm install
           npm run dist
@@ -64,20 +118,6 @@ jobs:
           path: electron/dist
       - store_artifacts:
           path: chrome_extension.zip
-          
-      - run: |
-          git branch artifacts
-          git checkout artifacts
-          mkdir -p dev/apk
-          mkdir -p dev/electron
-          cp -r cordovaProj/platforms/android/build/outputs/apk dev/apk
-          cp -r electron/dist dev/electron
-          cp chrome_extension.zip dev/
-          cd dev
-          git add .
-          git commit -m "[ci skip] build on circle ci"
-          git push origin artifacts
-
 workflows:
   version: 2
   build_and_cordova:
@@ -86,4 +126,7 @@ workflows:
           filters:
             branches:
               only: master
-      
+      - publish:
+          filters:
+            branches:
+              only: release
