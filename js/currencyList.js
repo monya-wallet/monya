@@ -253,8 +253,8 @@ const defaultCoins = [{
     url: "https://btc.blockdozer.com/insight-api",
     explorer: "https://btc.blockdozer.com"
   },{
-    explorer: "https://insight.bitpay.com/api",
-    url: "https://insight.bitpay.com"
+    explorer: "https://insight.bitpay.com",
+    url: "https://insight.bitpay.com/api"
   }],
   network: {
     messagePrefix: '\x18Bitcoin Signed Message:\n',
