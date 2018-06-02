@@ -54,6 +54,8 @@ exports.vm= new Vue({
       }
       html.setAttribute('onsflag-iphonex-landscape', '');
     }
+
+    document.getElementById("cover").style.display="none"
   }
 })
 if ('serviceWorker' in navigator&&!window.cordova&&!coinUtil.isElectron()) {

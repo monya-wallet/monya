@@ -146,12 +146,14 @@ module.exports=require("../js/lang.js")({ja:require("./ja/xrp.html"),en:require(
       })
     },
     connect(){
+      this.loading=true
       this.serverDlg=false
       this.api=new RippleAPI({server: this.server||'wss://s2.ripple.com:443'})
       this.api.connect().then(()=>{
         this.connected = true
-        this.getBalance()
         this.loading=false
+        this.getBalance()
+        
       }).catch(e=>{
         this.loading=false
         
