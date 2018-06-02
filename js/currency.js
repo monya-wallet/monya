@@ -31,7 +31,7 @@ module.exports=class{
     this.defaultFeeSatPerByte = opt.defaultFeeSatPerByte;
     this.confirmations=opt.confirmations||6
     this.sound=opt.sound||""
-    this.counterpartyEndpoint=opt.counterpartyEndpoint
+    this.counterparty=opt.counterparty
     this.enableSegwit=opt.enableSegwit
     this.opReturnLength=(opt.opReturnLength<0) ? 40 : opt.opReturnLength
     this.isAtomicSwapAvailable=!!opt.isAtomicSwapAvailable
@@ -52,7 +52,9 @@ module.exports=class{
       default:
         this.lib=bcLib
     }
-    
+    if(opt.counterparty){
+      this.counterpartyEndpoint=opt.counterparty.endpoints[0]
+    }
     this.hdPubNode=null;
     this.lastPriceTime=0;
     this.priceCache=0;

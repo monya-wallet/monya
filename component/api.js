@@ -20,9 +20,15 @@ module.exports=require("../js/lang.js")({ja:require("./ja/api.html"),en:require(
   store:require("../js/store.js"),
   methods:{
     yes(){
+      const cur =currencyList.get(this.param.coinId)
       switch(this.name){
-
-          
+        case "getAddress":
+          this.returnResult({
+            address:cur.getAddress(0,this.param.addrIndex),
+            pubKey:cur.getPubKey(0,this.param.addrIndex),
+            addrIndex:this.param.addrIndex
+          })
+        
       }
     },
     goWithPassword(){
@@ -44,25 +50,11 @@ module.exports=require("../js/lang.js")({ja:require("./ja/api.html"),en:require(
             this.password=""
 
             const address=cur.getAddress(0,this.param.addrIndex)
-            if(this.param.callbackURL){
-              axios.post(this.param.callbackURL,{
-                payload:this.param.payload,
-                signature:signed,
-                address
-              }).then(()=>{
-                this.successful=true
-              })
-            }else if(this.param.callbackPage){
-              const url = new URL(this.param.callbackPage)
-              url.searchParams.append("payload",this.param.payload)
-              url.searchParams.append("signature",signed)
-              url.searchParams.append("address",address)
-              coinUtil.openUrl(url.toString())
-              this.successful=true
-            }else{
-              this.successful=true
-              this.dataToPassApp=signed
-            }
+            this.returnResult({
+              payload:this.param.payload,
+              signature:signed,
+              address
+            })
           }).catch(e=>{
             this.$store.commit("setError",e.message||"Unknown")
           })
@@ -73,28 +65,13 @@ module.exports=require("../js/lang.js")({ja:require("./ja/api.html"),en:require(
             let signed =cur.signMessage(this.param.message,cipher.entropy,this.password,[0,this.param.addrIndex])
             this.password=""
             const address=cur.getAddress(0,this.param.addrIndex)
-            if(this.param.callbackURL){
-              axios.post(this.param.callbackURL,{
-                payload:this.param.payload,
-                signature:signed,
-                address,
-                message:this.param.message
-              }).then(()=>{
-                this.successful=true
-              })
-            }else if(this.param.callbackPage){
-              const url = new URL(this.param.callbackPage)
-              url.searchParams.append("payload",this.param.payload)
-              url.searchParams.append("signature",signed)
-              url.searchParams.append("message",this.param.message)
-              url.searchParams.append("address",address)
-              coinUtil.openUrl(url.toString())
-              
-              this.successful=true
-            }else{
-              this.dataDlg=true
-              this.dataToPassApp=signed
-            }
+            this.returnResult({
+              payload:this.param.payload,
+              signature:signed,
+              address,
+              message:this.param.message
+            })
+            
           }).catch(e=>{
             this.$store.commit("setError",e.message||"Unknown")
           })
@@ -103,6 +80,24 @@ module.exports=require("../js/lang.js")({ja:require("./ja/api.html"),en:require(
     },
     no(){
       this.$emit("pop")
+    },
+    returnResult(data){
+      if(this.param.callbackURL){
+        axios.post(this.param.callbackURL,data).then(()=>{
+          this.successful=true
+        })
+      }else if(this.param.callbackPage){
+        const url = new URL(this.param.callbackPage)
+
+        for(let key in data){
+          url.searchParams.append(key,data[key])
+        }
+        coinUtil.openUrl(url.toString())
+        this.successful=true
+      }else{
+        this.successful=true
+        this.dataToPassApp=JSON.stringify(data)
+      }
     }
   },
   computed:{

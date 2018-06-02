@@ -9,6 +9,10 @@ const easyCurTable = {
   usd:{
     en:"ドル",
     ja:"Dollar"
+  },
+  nyaan:{
+    en:"Nyaan",
+    ja:"にゃーん"
   }
 }
 
@@ -28,6 +32,9 @@ module.exports=lang({ja:require("./ja/currencySet.html"),en:require("./en/curren
       }
       if(t==="usd"){
         return this.easy?easyCurTable.usd[lang.getLang()]:"USD"
+      }
+      if(t==="nyaan"){
+        return easyCurTable.nyaan[lang.getLang()]
       }
       if(t==="satByte"){
         return "sat/B"

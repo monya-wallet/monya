@@ -120,6 +120,10 @@ html, body{
         width:$homeExtIconSize;
         height:$homeExtIconSize;
       }
+      border-radius:3px;
+      &:active{
+        background-color:#ccc;
+      }
     }
   }
   #lastUpdate{

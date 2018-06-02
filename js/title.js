@@ -24,39 +24,40 @@ this.icon=opt.icon
     return this.cp.callCPLib(m,p)
   }
   getToken(token){
-    if(token==='XMP'){
-      return Promise.resolve({
+    let tokenProm,d={}
+    if(token===this.cp.counterparty.nativeSymbol){
+      tokenProm=Promise.resolve({
         asset:[{
-          asset:"XMP",
+          asset:token,
           supply:0,
           divisible:true,
-          issuer:"MMonapartyMMMMMMMMMMMMMMMMMMMUzGgh",
-          owner:"MMonapartyMMMMMMMMMMMMMMMMMMMUzGgh",
+          issuer:"",
+          owner:"",
           locked:true,
           description:""
         }],
         card:[]
       })
     }else{
-      let d ={}
-      return this.callCP("get_assets_info",{
+      
+      tokenProm=this.callCP("get_assets_info",{
           assetsList:[token]
-      }).then(a=>{
-        d.asset=a
-        if(a.length){
-          return this.getCardDetail(a[0].asset_longname||a[0].asset)
-        }else{
-          return []
-        }
-      }).then(b=>{
-        d.card = b
-        return d
       })
     }
-   
+    return tokenProm.then(a=>{
+      d.asset=a
+      if(a.length){
+        return this.getCardDetail(a[0].asset_longname||a[0].asset)
+      }else{
+        return []
+      }
+    }).then(b=>{
+      d.card = b
+      return d
+    })
   }
   getTokenHistory(token){
-    if(token==='XMP'){
+    if(token===this.cp.counterparty.nativeSymbol){
       return Promise.resolve([])
     }
     return this.callCP("get_asset_history",{

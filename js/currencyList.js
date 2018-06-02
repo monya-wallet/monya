@@ -47,7 +47,10 @@ const defaultCoins = [{
     fiat: "jpy"
   },
   confirmations: 6,
-  counterpartyEndpoint: "https://wallet.monaparty.me/_api",
+  counterparty:{
+    endpoints: ["https://wallet.monaparty.me/_api"],
+    nativeSymbol:"XMP"
+  },
   opReturnLength: 83,
   isAtomicSwapAvailable: true
 }, {
@@ -147,7 +150,7 @@ const defaultCoins = [{
     fiat: "jpy"
   },
   confirmations: 6,
-  counterpartyEndpoint: "https://wallet.counterwallet.io/_api",
+  counterparty:{endpoints: ["https://wallet.counterwallet.io/_api"],nativeSymbol:"XCP"},
   opReturnLength: 83,
   isAtomicSwapAvailable: true
 }, {
@@ -276,7 +279,7 @@ const defaultCoins = [{
     fiat: "jpy"
   },
   confirmations: 6,
-  counterpartyEndpoint: "https://wallet.counterwallet.io/_api",
+  counterparty:{endpoints: ["https://wallet.counterwallet.io/_api"],nativeSymbol:"XCP"},
   opReturnLength: 83,
   isAtomicSwapAvailable: false
 }, {

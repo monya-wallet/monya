@@ -82,6 +82,9 @@ module.exports=require("../js/lang.js")({ja:require("./ja/makeToken.html"),en:re
         this.$store.commit("setTitle",v)
         return v
       }
+    },
+    nativeSymbol(){
+      return titleList.get(this.titleId).cp.counterparty.nativeSymbol
     }
   },
   watch:{
