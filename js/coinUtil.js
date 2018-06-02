@@ -41,6 +41,8 @@ exports.getAddrVersion=(addr)=>{
 };
 exports.usdPrice = 0;
 exports.getPrice=(cryptoId,fiatId)=>{
+  // if user selected Nyaan, return 0 immediately
+  if(fiatId == "nyaan") return Promise.resolve(0)
   let currencyPath = []
   let prevId =cryptoId;//reverse seek is not implemented
   while(prevId!==fiatId){
