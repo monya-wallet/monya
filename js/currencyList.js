@@ -115,6 +115,21 @@ const defaultCoins = [{
   defaultFeeSatPerByte: 100,
   icon: require("../res/coins/btc.png"),
   apiEndpoints: [{
+    url: "https://btc.blockdozer.com/insight-api",
+    explorer: "https://btc.blockdozer.com"
+  },{
+    explorer: "https://insight.bitpay.com",
+    url: "https://insight.bitpay.com/api"
+  },{
+    url: "https://blockexplorer.com/api",
+    explorer: "https://blockexplorer.com"
+  },{
+    explorer: "https://www.localbitcoinschain.com",
+    url: "https://www.localbitcoinschain.com/api"
+  },{
+    explorer: "https://explorer.bitcoin.com/btc",
+    url: "https://explorer.bitcoin.com/api/btc"
+  },{
     url: "https://btc-bitcore4.trezor.io/api",
     explorer: "https://btc-bitcore4.trezor.io"
   },{
@@ -123,12 +138,6 @@ const defaultCoins = [{
   },{
     url: "https://btc-bitcore6.trezor.io/api",
     explorer: "https://btc-bitcore6.trezor.io"
-  },{
-    url: "https://btc.blockdozer.com/insight-api",
-    explorer: "https://btc.blockdozer.com"
-  },{
-    explorer: "https://insight.bitpay.com/api",
-    url: "https://insight.bitpay.com"
   }],
   network: {
     messagePrefix: '\x18Bitcoin Signed Message:\n',
@@ -244,6 +253,21 @@ const defaultCoins = [{
   defaultFeeSatPerByte: 100,
   icon: require("../res/coins/btcsw.png"),
   apiEndpoints: [{
+    url: "https://btc.blockdozer.com/insight-api",
+    explorer: "https://btc.blockdozer.com"
+  },{
+    explorer: "https://insight.bitpay.com",
+    url: "https://insight.bitpay.com/api"
+  },{
+    url: "https://blockexplorer.com/api",
+    explorer: "https://blockexplorer.com"
+  },{
+    explorer: "https://www.localbitcoinschain.com",
+    url: "https://www.localbitcoinschain.com/api"
+  },{
+    explorer: "https://explorer.bitcoin.com/btc",
+    url: "https://explorer.bitcoin.com/api/btc"
+  },{
     url: "https://btc-bitcore4.trezor.io/api",
     explorer: "https://btc-bitcore4.trezor.io"
   },{
@@ -252,12 +276,6 @@ const defaultCoins = [{
   },{
     url: "https://btc-bitcore6.trezor.io/api",
     explorer: "https://btc-bitcore6.trezor.io"
-  },{
-    url: "https://btc.blockdozer.com/insight-api",
-    explorer: "https://btc.blockdozer.com"
-  },{
-    explorer: "https://insight.bitpay.com/api",
-    url: "https://insight.bitpay.com"
   }],
   network: {
     messagePrefix: '\x18Bitcoin Signed Message:\n',
@@ -300,6 +318,12 @@ const defaultCoins = [{
   },{
     url: "https://blockdozer.com/insight-api",
     explorer: "https://blockdozer.com"
+  },{
+    explorer: "https://bitcoincash.blockexplorer.com",
+    url: "https://bitcoincash.blockexplorer.com/api"
+  },{
+    explorer: "https://explorer.bitcoin.com/bch",
+    url: "https://explorer.bitcoin.com/api/bch"
   }],
   network: {
     messagePrefix: '\x18Bitcoin Signed Message:\n',
@@ -355,6 +379,9 @@ const defaultCoins = [{
   "confirmations": 6,
   "lib": "zec",
   "apiEndpoints": [{
+    "url": "https://koto.insight.monacoin.ml/insight-api-koto",
+    "explorer": "https://koto.insight.monacoin.ml/insight"
+  },{
     "url": "https://insight.kotocoin.info/api",
     "explorer": "https://insight.kotocoin.info"
   }],
@@ -385,6 +412,12 @@ const defaultCoins = [{
   "enableSegwit": false,
   "confirmations": 6,
   "apiEndpoints": [{
+    url: "https://insight.dash.org/insight-api-dash",
+    explorer: "https://insight.dash.org/insight"
+  },{
+    url: "https://insight.dash.siampm.com/api",
+    explorer: "https://insight.dash.siampm.com"
+  },{
     "url": "https://dash-bitcore1.trezor.io/api",
     "explorer": "https://dash-bitcore1.trezor.io"
   },{
@@ -393,9 +426,6 @@ const defaultCoins = [{
   },{
     "url": "https://dash-bitcore3.trezor.io/api",
     "explorer": "https://dash-bitcore1.trezor.io"
-  },{
-    url: "https://insight.dash.org/insight-api-dash",
-    explorer: "https://insight.dash.org/insight"
   }],
   opReturnLength: 83,
   isAtomicSwapAvailable: true
@@ -422,6 +452,15 @@ const defaultCoins = [{
     "wif": 128
   },
   "apiEndpoints": [{
+    "url": "https://zcash.blockexplorer.com/api",
+    "explorer": "https://zcash.blockexplorer.com"
+  },{
+    url: "https://zcashnetwork.info/api",
+    explorer: "https://zcashnetwork.info"
+  },{
+    url: "https://explorer.zcashfr.io/api",
+    explorer: "https://explorer.zcashfr.io"
+  },{
     "url": "https://zec-bitcore1.trezor.io/api",
     "explorer": "https://zec-bitcore1.trezor.io"
   },{
