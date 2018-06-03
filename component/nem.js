@@ -305,9 +305,6 @@ module.exports=require("../js/lang.js")({ja:require("./ja/nem.html"),en:require(
     openExplorer(txId){
       coinUtil.openUrl("http:///explorer.nemchina.com/#/s_tx?hash="+txId)
     },
-    donateMe(){
-      coinUtil.openUrl("https://missmonacoin.github.io")
-    },
     setServer(){
       
       const spl=this.server.split(":")

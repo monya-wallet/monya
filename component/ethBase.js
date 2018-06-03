@@ -198,17 +198,17 @@ module.exports=function(option){
                 )
           return web3.eth.accounts.privateKeyToAccount("0x"+hdkey.fromMasterSeed(seed).derivePath(HD_DERIVATION_PATH).getWallet().getPrivateKey().toString("hex")).signTransaction(this.unsignedTx)
         }).then(signedTx=>{
-          return web3.eth.sendSignedTransaction(signedTx.rawTransaction)
-        }).then(receipt=>{
-          this.sendAddress=""
+          return web3.eth.sendSignedTransaction(signedTx.rawTransaction).on('transactionHash', txhash=>{
+            this.sendAddress=""
           this.sendAmount=""
           this.password=""
           this.unsignedTx=null
           this.loading=false
           this.$store.commit("setFinishNextPage",{page:require("./home.js"),infoId:"sent",payload:{
-            txId:""
+            txId:txhash
           }})
           this.$emit("replace",require("./finished.js"))
+          })
         }).catch(e=>{
           this.loading=false
           this.$store.commit("setError",e.message)
@@ -239,14 +239,8 @@ module.exports=function(option){
           this.qrDataAddress=url
         })
       },
-      openExplorer(txId){
-        coinUtil.openUrl("http://nekonium.network/tx/"+txId)
-      },
       openExplorerAccount(){
         coinUtil.openUrl(EXPLORER+this.address)
-      },
-      donateMe(){
-        coinUtil.openUrl("https://missmonacoin.github.io")
       },
       setRpcServer(){
         web3.setProvider(new web3.providers.HttpProvider(this.rpcServer))
@@ -281,8 +275,7 @@ module.exports=function(option){
         let iv = parseInt(v)
         return iv <= 0 ? 0 : iv
       },
-
-
+      
       registerToken(){
         const contractAddress=this.tokenReg.contractAddress
         const symbol=this.tokenReg.symbol
