@@ -66,7 +66,7 @@ module.exports=function(option){
           show:false,
           contractAddress:"",
           symbol:"",
-          decimal:0
+          decimals:0
         },
         runContract:{
           show:false,
@@ -110,7 +110,7 @@ module.exports=function(option){
           
         }).then(balances=>{
           for (let i = 0; i < balances.length; i++) {
-            this.$set(this.tokens[i],"balance",+(new BigNumber(balances[i])).shift(-this.tokens[i].decimal))
+            this.$set(this.tokens[i],"balance",+(new BigNumber(balances[i])).shift(-this.tokens[i].decimals))
           }
         }).catch(e=>{
           this.loading=false
@@ -140,8 +140,12 @@ module.exports=function(option){
         // NekoniumにENSはないので
         addrProm=Promise.resolve(this.sendAddress)
         addrProm.then(addr=>{
+         this.sendAddress=addr
+         return web3.eth.getTransactionCount(this.address)
+        }).then(nonce => {
           
           const tx={
+            nonce,
             from:this.address,
             gasPrice: web3.utils.numberToHex(sendGasPriceWei),
             gas: web3.utils.numberToHex(this.sendGasLimit),
@@ -158,7 +162,7 @@ module.exports=function(option){
             tx.value="0x0"
             tx.data=contract.methods.transfer(
               this.sendAddress,
-              +(new BigNumber(this.sendAmount)).shift(this.sendingToken.decimal)
+              +(new BigNumber(this.sendAmount)).shift(this.sendingToken.decimals)
             ).encodeABI()
 
           }else{
@@ -256,7 +260,7 @@ module.exports=function(option){
           const contract =new web3.eth.Contract(erc20ABI,this.sendingToken.contractAddress,{
             from:this.address
           })
-          gasProm=gasProm=web3.eth.estimateGas({
+          gasProm=web3.eth.estimateGas({
             from: this.address,
             to: this.sendingToken.contractAddress,
             data:contract.methods.transfer(this.sendAddress,1).encodeABI()
@@ -269,8 +273,8 @@ module.exports=function(option){
         }
         gasProm.then(result => {
           this.sendGasLimit=result
-        }).catch(e=>{
-          this.$store.commit("setError",e.message)
+        }).catch(()=>{
+          return false
         })
       },
       intValue(v){
@@ -282,9 +286,9 @@ module.exports=function(option){
       registerToken(){
         const contractAddress=this.tokenReg.contractAddress
         const symbol=this.tokenReg.symbol
-        const decimal=parseFloat(this.tokenReg.decimal)
+        const decimals=parseFloat(this.tokenReg.decimals)
 
-        if(!web3.utils.isAddress(contractAddress)||decimal<0||(decimal|0)!==decimal){
+        if(!web3.utils.isAddress(contractAddress)||decimals<0||(decimals|0)!==decimals){
           return this.$store.commit("setError","Invalid Parameter")
         }
         
@@ -295,7 +299,7 @@ module.exports=function(option){
           tokens.push({
             contractAddress,
             symbol,
-            decimal
+            decimals
           })
           return ext.set("tokens",tokens)
         }).then(()=>{
@@ -344,8 +348,37 @@ module.exports=function(option){
             return val
         }
       },
-      runMethod(){
+      getTokenInfo(){
+        if(!web3.utils.isAddress(this.tokenReg.contractAddress)){
+          return
+        }
+        const symbol=(new web3.eth.Contract(erc20ABI,this.tokenReg.contractAddress,{from:this.address}))
+              .methods["symbol"]()
+        
+        symbol.call().then(result=>{
+          if(result){
+            this.tokenReg.symbol=result
+          }
+        }).catch(e=>{
+          return false
+        })
 
+        const decimals=(new web3.eth.Contract(erc20ABI,this.tokenReg.contractAddress,{from:this.address}))
+              .methods["decimals"]()
+        
+        decimals.call().then(result=>{
+          if(result){
+            this.tokenReg.decimals=parseInt(result,10)
+          }
+        }).catch(e=>{
+          return false
+        })
+        
+      },
+      runMethod(){
+        if(!web3.utils.isAddress(this.runContract.contractAddress)){
+          return this.$store.commit("setError","Invalid Parameter")
+        }
         const method=(new web3.eth.Contract(this.abi,this.runContract.contractAddress,{from:this.address}))
               .methods[this.runContract.fn](...this.runContract.args)
         if(this.selectedAbiFn.constant){

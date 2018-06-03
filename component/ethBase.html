@@ -41,6 +41,10 @@
           <div class="center">{{t.balance}}</div>
           <div class="right">{{t.symbol}}</div>
         </v-ons-list-item>
+        <v-ons-list-item @click="tokenReg.show=true" modifier="tappable chevron">
+          <div class="left"><v-ons-icon icon="ion-plus"></v-ons-icon></div>
+          <div class="center">コインを追加</div>
+        </v-ons-list-item>
       </v-ons-list>
     </div>
   </div>
@@ -172,7 +176,7 @@
       <v-ons-list-item>
         <div class="center">コントラクトアドレス</div>
         <div class="right">
-          <v-ons-input placeholder="0x....." v-model="tokenReg.contractAddress"></v-ons-input>
+          <v-ons-input placeholder="0x....." v-model="tokenReg.contractAddress" @change="getTokenInfo"></v-ons-input>
         </div>
       </v-ons-list-item>
       <v-ons-list-item>
@@ -184,7 +188,7 @@
       <v-ons-list-item>
         <div class="center">小数桁数</div>
         <div class="right">
-          <v-ons-input placeholder="正の整数" type="number" v-model="tokenReg.decimal"></v-ons-input>
+          <v-ons-input placeholder="正の整数" type="number" v-model="tokenReg.decimals"></v-ons-input>
         </div>
       </v-ons-list-item>
       <v-ons-list-item>

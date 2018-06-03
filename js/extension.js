@@ -81,7 +81,7 @@ const extensions={
       networkScheme:"ethereum",
       networkIcon:require("../res/coins/eth.png"),
       networkSymbol:"ETH",
-      bip44DerivationPath:"m/44'/60'/0'/0",
+      bip44DerivationPath:"m/44'/60'/0'/0/0",
       chainId:1,
       rpcServers:[
         "https://mainnet.infura.io/iRUhBHOZ7VZdrEq1yQZd"
@@ -101,7 +101,7 @@ const extensions={
       const address=hdkey.fromMasterSeed(seed).derivePath("m/44'/60'/0'/0/0").getWallet().getChecksumAddressString()
       return extStorage.set("address",address)
     }
-  },etherClassic:{
+  },etherclassic:{
     id:"etherclassic",
     name:"Ethereum Classic",
     component:require("../component/ethBase.js")({
@@ -109,7 +109,7 @@ const extensions={
       networkScheme:"etherclassic",
       networkIcon:require("../res/coins/etc.png"),
       networkSymbol:"ETC",
-      bip44DerivationPath:"m/44'/61'/0'/0",
+      bip44DerivationPath:"m/44'/61'/0'/0/0",
       chainId:61,
       rpcServers:[
         "https://etc-geth.0xinfra.com"

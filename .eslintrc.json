@@ -8,6 +8,7 @@
     "Vue": true,
     "VueOnsen": true
   },
+  "extends": "eslint:recommended",
   "parser": null,
   "rules": {
     "no-void": 1,

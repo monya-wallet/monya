@@ -90,7 +90,9 @@ module.exports=require("../js/lang.js")({ja:require("./ja/api.html"),en:require(
         const url = new URL(this.param.callbackPage)
 
         for(let key in data){
-          url.searchParams.append(key,data[key])
+          if (data.hasOwnProperty(key)) {
+            url.searchParams.append(key,data[key])
+          }
         }
         coinUtil.openUrl(url.toString())
         this.successful=true
@@ -105,10 +107,15 @@ module.exports=require("../js/lang.js")({ja:require("./ja/api.html"),en:require(
   },
   mounted(){
     switch(this.name){
-      
+        
       case "signTx":
       case "signMsg":
         this.qType="password"
+        storage.verifyBiometric().then(pwd=>{
+          this.password=pwd
+        }).catch(()=>{
+          return true
+        })
         break
       case "shareSwapData":
         this.qType="direct"
