@@ -5,6 +5,8 @@ const storage = require("../js/storage.js")
 const errors=require("../js/errors")
 const template = require("../lang/template.json")
 
+const ext = require("../js/extension.js")
+
 const blacklist=["123456","114514","password","password2"]
 module.exports=require("../js/lang.js")({ja:require("./ja/setPassword.html"),en:require("./en/setPassword.html")})({
   data(){
@@ -47,16 +49,10 @@ module.exports=require("../js/lang.js")({ja:require("./ja/setPassword.html"),en:
       }else{
         currencyList.init([])
         const exts=[]
-        if(this.answers[5]==="xrp"){
-          exts.push("xrp")
-        }
-        if(this.answers[5]==="xem"){
-          exts.push("nem")
-        }
+
         if(this.answers[9]){
           exts.push("zaifPay")
-        }
-        
+        }        
 
         cipherPromise = storage.set("settings",{
           includeUnconfirmedFunds:false,

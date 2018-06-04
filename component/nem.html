@@ -107,7 +107,7 @@
       <v-ons-list-item>
         <div class="center">相手に送金する金額</div>
         <div class="right">
-          <v-ons-input type="number" v-model="sendAmount" @input="fiatConv=v*price"></v-ons-input>
+          <v-ons-input type="number" v-model="sendAmount" @input="fiatConv=$event.target.value*price"></v-ons-input>
         </div>
       </v-ons-list-item>
       <v-ons-list-item>
@@ -117,7 +117,7 @@
       <v-ons-list-item v-show="sendMosaic==='nem:xem'">
         <div class="center">法定通貨換算</div>
         <div class="right">
-          <v-ons-input type="number" v-model="fiatConv" @input="sendAmount=v/price"></v-ons-input>
+          <v-ons-input type="number" v-model="fiatConv" @input="sendAmount=$event.target.value/price"></v-ons-input>
         </div>
       </v-ons-list-item>
       <v-ons-list-item>

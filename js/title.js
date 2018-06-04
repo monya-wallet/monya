@@ -26,18 +26,15 @@ this.icon=opt.icon
   getToken(token){
     let tokenProm,d={}
     if(token===this.cp.counterparty.nativeSymbol){
-      tokenProm=Promise.resolve({
-        asset:[{
-          asset:token,
-          supply:0,
-          divisible:true,
-          issuer:"",
-          owner:"",
-          locked:true,
-          description:""
-        }],
-        card:[]
-      })
+      tokenProm=Promise.resolve([{
+        asset:token,
+        supply:0,
+        divisible:true,
+        issuer:"",
+        owner:"",
+        locked:true,
+        description:""
+      }])
     }else{
       
       tokenProm=this.callCP("get_assets_info",{

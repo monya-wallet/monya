@@ -65,10 +65,9 @@
             <div class="fiatConv"><currency-set :amount="c.balance*c.price" :ticker="fiat" :easy="isEasy"></currency-set></div>
           </div>
         </v-ons-list-item>
-        <v-ons-list-item v-show="extensions.length">
-          <v-ons-row>
-            <v-ons-col v-for="x in extensions" @click="openExt(x.id)" class="extension"><img :src="x.icon"></v-ons-col>
-          </v-ons-row>
+        <v-ons-list-item v-for="x in extensions" @click="openExt(x.id)" modifier="small">
+          <div class="left"><img :src="x.icon"></div>
+          <div class="center">{{x.name}}</div>
         </v-ons-list-item>
         <v-ons-list-item @click="goToManageCoin" modifier="tappable chevron" v-if="!isSingleWallet">
           <div class="left"><v-ons-icon icon="ion-plus"></v-ons-icon></div>

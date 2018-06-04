@@ -122,41 +122,16 @@ const qListJa=[
 		]
 	},
 	{
-		"text": "好きな暗号通貨は?",
+		"text": "次世代暗号通貨の取引に興味がありますか",
 		"answers": [
 			{
-				"label": "この中にない",
-				"value": "none",
-				"to": 8
+				"label": "あります",
+				"value": true,
+				"to": 13
 			},
 			{
-				"label": "モナコイン",
-				"value": "mona",
-				"to": 8
-			},
-			{
-				"label": "ビットコイン",
-				"value": "btc",
-				"to": 8
-			},
-			{
-				"label": "和風",
-				"value": "zny",
-				"to": 8
-			},
-			{
-				"label": "ワールドコンピュータの燃料",
-				"value": "eth",
-				"to": 8
-			},
-			{
-				"label": "Proof of Importanceで増えるやつ",
-				"value": "xem",
-				"to": 8
-			},
-			{
-				"label": "国際送金ネットワークの基軸通貨",
-				"value": "xrp",
+				"label": "ないです",
+				"value": false,
 				"to": 8
 			}
 		]
@@ -263,6 +238,15 @@ const qListJa=[
 				"label": "次へ",
 				"value": 0,
 				"to": -1
+			}
+		]
+	},{
+		"text": "次世代の暗号通貨取引「アトミックスワップ」できます！受け取り画面の左上から！",
+		"answers": [
+			{
+				"label": "わかった",
+				"value": 0,
+				"to": 8
 			}
 		]
 	}
@@ -390,41 +374,16 @@ const qListEn=[
 		]
 	},
 	{
-		"text": "What currency do you like the best?",
+		"text": "Are you interested in next generation crypto exchange?",
 		"answers": [
 			{
-				"label": "None of all",
-				"value": "none",
-				"to": 8
+				"label": "Yes!",
+				"value": true,
+				"to": 13
 			},
 			{
-				"label": "Monacoin",
-				"value": "mona",
-				"to": 8
-			},
-			{
-				"label": "Bitcoin",
-				"value": "btc",
-				"to": 8
-			},
-			{
-				"label": "Japanese-taste",
-				"value": "zny",
-				"to": 8
-			},
-			{
-				"label": "Fuel for world computer",
-				"value": "eth",
-				"to": 8
-			},
-			{
-				"label": "Multiplied by Proof of Importance",
-				"value": "xem",
-				"to": 8
-			},
-			{
-				"label": "Native currency of international bank remittance network",
-				"value": "xrp",
+				"label": "No",
+				"value": false,
 				"to": 8
 			}
 		]
@@ -531,6 +490,16 @@ const qListEn=[
 				"label": "Next",
 				"value": 0,
 				"to": -1
+			}
+		]
+	},
+	{
+		"text": "Next generation crypto currency exchange \"Atomic Swap\" is available! Let's do it at Receive menu.",
+		"answers": [
+			{
+				"label": "Next",
+				"value": 0,
+				"to": 8
 			}
 		]
 	}
