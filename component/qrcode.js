@@ -45,8 +45,8 @@ module.exports=require("../js/lang.js")({ja:require("./ja/qrcode.html"),en:requi
           this.$emit("pop")
           this.$emit("push",res.extension.component)
         }else if(res.apiName){
-          coinUtil.callAPI(res.apiName,res.apiParam)
           this.$emit("pop")
+          coinUtil.callAPI(res.apiName,res.apiParam)
         }else if(res.protocol==="http"||res.protocol==="https"){
 
           // address page handler
@@ -63,9 +63,8 @@ module.exports=require("../js/lang.js")({ja:require("./ja/qrcode.html"),en:requi
             }))
             
           }else{
-            
-            coinUtil.openUrl(res.url)
             this.$emit("pop")
+            coinUtil.openUrl(res.url)
           }
           
           
