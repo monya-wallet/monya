@@ -1,4 +1,5 @@
 require("../scss/index.scss")
+require('onsenui/css/onsenui-core.min.css')
 require('onsenui/css/onsen-css-components.min.css')
 require('babel-polyfill')
 if(!window.cordova){

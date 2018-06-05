@@ -1,7 +1,8 @@
 @import "./param.scss";
 @import "./cond.scss";
-@import "./onsenui.min.mod.css";
 @import "./onsenui-fix.scss";
+
+@import "./custom/styles.css";
 
 html, body{
   font-size:1em;

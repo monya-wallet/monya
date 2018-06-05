@@ -47,9 +47,10 @@ ons-input{ // most input box are 100% width
 }
 
 
-.toolbar--material__left,.toolbar--material__right,.toolbar-button--material,.back-button--material{
-  color:#563e08 !important;
+ons-toolbar-button.toolbar-button--material,
+.back-button.back-button--material{
+  color:#563e08;
 }
-.back-button--material__icon{
-  fill:#563e08 !important;
+.back-button__icon.back-button--material__icon{
+  fill:#563e08;
 }
