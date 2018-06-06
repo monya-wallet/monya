@@ -76,7 +76,8 @@ module.exports=function(option){
           result:"",
           gasLimit:0,
           gasPrice:0,
-          password:""
+          password:"",
+          value:0
         },
 
         tokens:[]
@@ -403,6 +404,11 @@ module.exports=function(option){
               chainId: CHAIN_ID,
               data:method.encodeABI()
             }
+
+            if(this.selectedAbiFn.payable){
+              tx.value=web3.utils.numberToHex(web3.utils.toWei(""+this.runContract.value, "ether"))
+            }
+            
             return web3.eth.accounts.privateKeyToAccount("0x"+hdkey.fromMasterSeed(seed).derivePath(HD_DERIVATION_PATH).getWallet().getPrivateKey().toString("hex")).signTransaction(tx)
           }).then(signedTx=>{
             this.runContract.password=""

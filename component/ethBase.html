@@ -3,7 +3,7 @@
     <v-ons-toolbar-button @click="getBalance" @click.right="serverDlg=true">
       <v-ons-icon icon="ion-ios-loop-strong"></v-ons-icon>
     </v-ons-toolbar-button>
-    <v-ons-toolbar-button @click="option=true">
+    <v-ons-toolbar-button @click="option=true" id="ethOption">
       <v-ons-icon icon="ion-android-more-vertical"></v-ons-icon>
     </v-ons-toolbar-button>
   </custom-bar>
@@ -88,7 +88,6 @@
     </template>
   </v-ons-alert-dialog>
   
-  </v-ons-alert-dialog>
   <v-ons-dialog :visible.sync="sendMenu" cancelable>
     <v-ons-list>
       <v-ons-list-item modifier="small" v-show="!sendingToken">
@@ -138,7 +137,7 @@
     </v-ons-list>
   </v-ons-dialog>
 
- 
+
 
   <v-ons-dialog :visible.sync="invoiceMenu" cancelable>
     <v-ons-list>
@@ -202,7 +201,6 @@
           <v-ons-button modifier="quiet" @click="removingToken=i"><v-ons-icon icon="ion-close-circled"></v-ons-icon></v-ons-button>
         </div>
       </v-ons-list-item>
-      </v-ons-list>
     </v-ons-list>
   </v-ons-dialog>
 
@@ -244,6 +242,12 @@
               <v-ons-input type="number" v-model.number="runContract.gasLimit" @change="runContract.gasLimit = intValue(runContract.gasLimit)"></v-ons-input>
             </div>
           </v-ons-list-item>
+          <v-ons-list-item modifier="small" v-show="selectedAbiFn.payable">
+            <div class="left">value</div>
+            <div class="center">
+              <v-ons-input type="number" v-model.number="runContract.value" @change="runContract.value = intValue(runContract.value)"></v-ons-input>
+            </div>
+          </v-ons-list-item>
           <v-ons-list-item modifier="small">
             <v-ons-input placeholder="パスワード" v-model="runContract.password" type="password"></v-ons-input>
           </v-ons-list-item>
@@ -258,27 +262,27 @@
       </v-ons-list>
     </v-ons-list>
     
-</v-ons-list>
-</v-ons-dialog>
+  </v-ons-dialog>
 
-<v-ons-alert-dialog
-  modifier="rowfooter"
-  :visible="removingToken!==-1"
+  <v-ons-alert-dialog
+    modifier="rowfooter"
+    :visible="removingToken!==-1"
     >
     <span slot="title">トークンを消去</span>
-    {{removingToken>=0?tokens[removingToken].contractAddress:""}}
+    {{removingToken>=0?tokens[removingToken].contractAddress: ""}}
     <p>コントラクトアドレスを再登録すると残高を復帰できます。トークンを消去しますか？</p>
     <template slot="footer">
       <div class="alert-dialog-button" @click="removingToken=-1">やめる</div>
       <div class="alert-dialog-button" @click="removeToken(removingToken);removingToken=-1;">続行</div>
     </template>
   </v-ons-alert-dialog>
-  
-  <v-ons-action-sheet :visible.sync="option" cancelable>
-    <v-ons-action-sheet-button icon="fa-server" @click="option=false;serverDlg=true">サーバー変更</v-ons-action-sheet-button>
-    <v-ons-action-sheet-button icon="fa-history" @click="openExplorerAccount">履歴を見る</v-ons-action-sheet-button>
-    <v-ons-action-sheet-button icon="" @click="option=false;tokenReg.show=true">トークンを登録</v-ons-action-sheet-button>
-    <v-ons-action-sheet-button icon="" @click="option=false;runContract.show=true">コントラクトを実行</v-ons-action-sheet-button>
-    <v-ons-action-sheet-button icon="ion-close" @click="option=false">キャンセル</v-ons-action-sheet-button>
-  </v-ons-action-sheet>
+
+  <v-ons-popover :visible.sync="option" cancelable target="#ethOption" cover-target="true" direction="down">
+    <v-ons-list>
+      <v-ons-list-item @click="option=false;serverDlg=true" modifier="tappable">サーバー変更</v-ons-list-item>
+      <v-ons-list-item @click="openExplorerAccount" modifier="tappable">履歴を見る</v-ons-list-item>
+      <v-ons-list-item @click="option=false;tokenReg.show=true" modifier="tappable">トークンを登録</v-ons-list-item>
+      <v-ons-list-item @click="option=false;runContract.show=true" modifier="tappable">コントラクトを実行</v-ons-list-item>
+    </v-ons-list>
+  </v-ons-popover>
 </v-ons-page>

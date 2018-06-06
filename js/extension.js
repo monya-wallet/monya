@@ -112,6 +112,8 @@ const extensions={
       bip44DerivationPath:"m/44'/61'/0'/0/0",
       chainId:61,
       rpcServers:[
+        "https://node.classicexplorer.org",
+        "https://mew.epool.io",
         "https://etc-geth.0xinfra.com"
       ],
       explorer:"http://gastracker.io/addr/"
