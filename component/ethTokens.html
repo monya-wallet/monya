@@ -1,0 +1,61 @@
+<v-ons-page data-page="ethTokens">
+  <custom-bar title="ERC20 トークン管理"></custom-bar>
+  
+  <div>
+    <v-ons-list>
+      <v-ons-list-header>自分で追加</v-ons-list-header>
+      <v-ons-list-item>
+        
+        <div class="center">コントラクトアドレス</div>
+        <div class="right">
+          <v-ons-input placeholder="0x....." v-model="tokenReg.contractAddress" @change="getTokenInfo"></v-ons-input>
+        </div>
+      </v-ons-list-item>
+      <v-ons-list-item>
+        <div class="center">通貨シンボル</div>
+        <div class="right">
+          <v-ons-input placeholder="OMG,AE,REP" v-model="tokenReg.symbol"></v-ons-input>
+        </div>
+      </v-ons-list-item>
+      <v-ons-list-item>
+        <div class="center">名前</div>
+        <div class="right">
+          <v-ons-input placeholder="トークン名" v-model="tokenReg.name"></v-ons-input>
+        </div>
+      </v-ons-list-item>
+      <v-ons-list-item>
+        <div class="center">小数桁数</div>
+        <div class="right">
+          <v-ons-input placeholder="正の整数" type="number" v-model="tokenReg.decimals"></v-ons-input>
+        </div>
+      </v-ons-list-item>
+      <v-ons-list-item>
+        <v-ons-button modifier="large" @click="registerToken(tokenReg.contractAddress,tokenReg.symbol,tokenReg.name,tokenReg.decimals)">追加</v-ons-button>
+      </v-ons-list-item>
+      <v-ons-list-header>追加済み</v-ons-list-header>
+      <v-ons-list-item v-for="(t,i) in added">
+        <div class="left">
+          <v-ons-button modifier="quiet" @click="removeToken(i)"><v-ons-icon icon="ion-close-circled"></v-ons-icon></v-ons-button>
+        </div>
+        <div class="center">{{t.name}}</div>
+        <div class="right">{{t.symbol}}</div>
+      </v-ons-list-item>
+      <v-ons-list-header>利用可能トークン</v-ons-list-header>
+      <v-ons-list-item v-for="t in tokens" @click="registerToken(t.contractAddress,t.symbol,t.name,t.decimals)">
+        <div class="center">{{t.name}}</div>
+        <div class="right">{{t.symbol}}</div>
+      </v-ons-list-item>
+    </v-ons-list>
+    
+  </div>
+  <v-ons-alert-dialog
+    modifier="rowfooter"
+    :visible="scam"
+    >
+    <span slot="title">スキャムブロッカー</span>
+    <p>このアドレスはブラックリストに登録されています！詐欺トークンなどの可能性があります！</p>
+    <template slot="footer">
+      <div class="alert-dialog-button" @click="scam=false">わかりました</div>
+    </template>
+  </v-ons-alert-dialog>
+</v-ons-page>
