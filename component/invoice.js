@@ -8,6 +8,7 @@ module.exports=require("../js/lang.js")({ja:require("./ja/invoice.html"),en:requ
   data(){
     return {
       address:"",
+
       qrDataUrl:"",
       shareable:coinUtil.shareable(),
       edit:false,
@@ -22,12 +23,17 @@ module.exports=require("../js/lang.js")({ja:require("./ja/invoice.html"),en:requ
       price:0,
       fiatTicker:this.$store.state.fiat,
       requestMonappy:false,
+
+
       monappyEnabled:false,
       monappyDestination:"",
       orderDlg:false,
+
+
       orders:[],
       onOrder:[],
       monappyNotExist:false,
+
       isAddrUrl:false
     }
   },
@@ -122,15 +128,18 @@ module.exports=require("../js/lang.js")({ja:require("./ja/invoice.html"),en:requ
         total+=parseFloat(this.orders[i].price)
       })
       return total
+    },
+    getLabels(){
+      currencyList.get(this.currency[this.currencyIndex].coinId).getLabels().then(res=>{
+          this.$set(this,"labels",res)
+      })
     }
   },
   watch:{
     currencyIndex(){
       this.generateQR()
       if(this.currencyIndex!==-1){
-        currencyList.get(this.currency[this.currencyIndex].coinId).getLabels().then(res=>{
-          this.$set(this,"labels",res)
-        })
+        this.getLabels()
       }
       this.getPrice()
       this.fiat=0
@@ -154,6 +163,7 @@ module.exports=require("../js/lang.js")({ja:require("./ja/invoice.html"),en:requ
     })
     this.generateQR()
     this.getPrice()
+    this.getLabels()
 
     storage.get("orders").then(r=>{
       this.orders=r||[]

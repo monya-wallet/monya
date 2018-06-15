@@ -160,6 +160,7 @@ module.exports=require("../js/lang.js")({ja:require("./ja/nem.html"),en:require(
           if(el.transaction.otherTrans){
             tr=el.transaction.otherTrans
           }else{
+            
             tr=el.transaction
           }
           return {

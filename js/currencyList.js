@@ -1,3 +1,4 @@
+
 const Currency = require("./currency")
 const coinUtil = require("./coinUtil")
 const j = require("./lang").getLang() === "ja"
@@ -313,9 +314,6 @@ const defaultCoins = [{
   defaultFeeSatPerByte: 100,
   icon: require("../res/coins/bch.png"),
   apiEndpoints: [{
-    url: "https://bch-insight.bitpay.com/api",
-    explorer: "https://bch-insight.bitpay.com"
-  },{
     url: "https://blockdozer.com/insight-api",
     explorer: "https://blockdozer.com"
   },{

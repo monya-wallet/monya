@@ -7,6 +7,14 @@
       <v-ons-icon icon="ion-android-more-vertical"></v-ons-icon>
     </v-ons-toolbar-button>
   </custom-bar>
+  <v-ons-pull-hook
+    :action="getBalance"
+    @changestate="state = $event.state"
+    >
+    <span v-show="state === 'initial'">引っ張って更新!</span>
+    <span v-show="state === 'preaction'">今だ！離せ！</span>
+    <span v-show="state === 'action'">Loading...</span>
+  </v-ons-pull-hook>
   <div>
     <div v-show="address">
       <div id="simple">
@@ -41,7 +49,7 @@
           <div class="center">{{t.balance}}</div>
           <div class="right">{{t.symbol}}</div>
         </v-ons-list-item>
-        <v-ons-list-item @click="tokenReg.show=true" modifier="tappable chevron">
+        <v-ons-list-item @click="goToAddTokens" modifier="tappable chevron">
           <div class="left"><v-ons-icon icon="ion-plus"></v-ons-icon></div>
           <div class="center">コインを追加</div>
         </v-ons-list-item>
@@ -170,39 +178,7 @@
     </v-ons-list>
   </v-ons-dialog>
 
-  <v-ons-dialog :visible.sync="tokenReg.show" cancelable>
-    <v-ons-list>
-      <v-ons-list-item>
-        <div class="center">コントラクトアドレス</div>
-        <div class="right">
-          <v-ons-input placeholder="0x....." v-model="tokenReg.contractAddress" @change="getTokenInfo"></v-ons-input>
-        </div>
-      </v-ons-list-item>
-      <v-ons-list-item>
-        <div class="center">通貨シンボル</div>
-        <div class="right">
-          <v-ons-input placeholder="OMG,AE,REP" v-model="tokenReg.symbol"></v-ons-input>
-        </div>
-      </v-ons-list-item>
-      <v-ons-list-item>
-        <div class="center">小数桁数</div>
-        <div class="right">
-          <v-ons-input placeholder="正の整数" type="number" v-model="tokenReg.decimals"></v-ons-input>
-        </div>
-      </v-ons-list-item>
-      <v-ons-list-item>
-        <v-ons-button @click="registerToken" modifier="large">登録</v-ons-button>
-      </v-ons-list-item>
-      <v-ons-list-header>登録済</v-ons-list-header>
-      <v-ons-list-item v-for="(t,i) in tokens">
-        <div class="left">{{i}}</div>
-        <div class="center">{{t.symbol}}</div>
-        <div class="right">
-          <v-ons-button modifier="quiet" @click="removingToken=i"><v-ons-icon icon="ion-close-circled"></v-ons-icon></v-ons-button>
-        </div>
-      </v-ons-list-item>
-    </v-ons-list>
-  </v-ons-dialog>
+  
 
   <v-ons-dialog :visible.sync="runContract.show" cancelable>
     <v-ons-list>
@@ -264,24 +240,11 @@
     
   </v-ons-dialog>
 
-  <v-ons-alert-dialog
-    modifier="rowfooter"
-    :visible="removingToken!==-1"
-    >
-    <span slot="title">トークンを消去</span>
-    {{removingToken>=0?tokens[removingToken].contractAddress: ""}}
-    <p>コントラクトアドレスを再登録すると残高を復帰できます。トークンを消去しますか？</p>
-    <template slot="footer">
-      <div class="alert-dialog-button" @click="removingToken=-1">やめる</div>
-      <div class="alert-dialog-button" @click="removeToken(removingToken);removingToken=-1;">続行</div>
-    </template>
-  </v-ons-alert-dialog>
-
   <v-ons-popover :visible.sync="option" cancelable target="#ethOption" cover-target="true" direction="down">
     <v-ons-list>
       <v-ons-list-item @click="option=false;serverDlg=true" modifier="tappable">サーバー変更</v-ons-list-item>
       <v-ons-list-item @click="openExplorerAccount" modifier="tappable">履歴を見る</v-ons-list-item>
-      <v-ons-list-item @click="option=false;tokenReg.show=true" modifier="tappable">トークンを登録</v-ons-list-item>
+      <v-ons-list-item @click="option=false;goToAddTokens()" modifier="tappable">トークンを登録</v-ons-list-item>
       <v-ons-list-item @click="option=false;runContract.show=true" modifier="tappable">コントラクトを実行</v-ons-list-item>
     </v-ons-list>
   </v-ons-popover>

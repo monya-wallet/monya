@@ -10,7 +10,7 @@ const extensions={
   xrp:{
     id:"xrp",
     name:"Ripple",
-    component:require("../component/xrp.js"),
+    component:()=>import("../component/xrp.js"),
     icon:require("../res/coins/xrp.png"),
     scheme:"ripple",
     onAdd:(entropy,extStorage)=>{
@@ -25,7 +25,7 @@ const extensions={
   nem:{
     id:"nem",
     name:"NEM",
-    component:require("../component/nem.js"),
+    component:()=>import("../component/nem.js"),
     icon:require("../res/coins/nem.png"),
     scheme:"nem",
     onAdd:(entropy,extStorage)=>{
@@ -46,7 +46,7 @@ const extensions={
   nekonium:{
     id:"nekonium",
     name:"Nekonium",
-    component:require("../component/ethBase.js")({
+    component:()=>import("../component/ethBase.js").then(c=>c.default({
       networkName:"Nekonium",
       networkScheme:"nekonium",
       networkIcon:require("../res/coins/nuko.png"),
@@ -58,7 +58,7 @@ const extensions={
         "https://ssl.nekonium.site:8293/"
       ],
       explorer:"http://nekonium.network/account/"
-    }),
+    })),
     icon:require("../res/coins/nuko.png"),
     scheme:"nekonium",
     onAdd(entropy,extStorage){
@@ -76,7 +76,7 @@ const extensions={
   ethereum:{
     id:"ethereum",
     name:"Ethereum",
-    component:require("../component/ethBase.js")({
+    component:()=>import("../component/ethBase.js").then(c=>c.default({
       networkName:"Ethereum",
       networkScheme:"ethereum",
       networkIcon:require("../res/coins/eth.png"),
@@ -87,7 +87,7 @@ const extensions={
         "https://mainnet.infura.io/iRUhBHOZ7VZdrEq1yQZd"
       ],
       explorer:"https://etherscan.io/address/"
-    }),
+    })),
     icon:require("../res/coins/eth.png"),
     scheme:"ethereum",
     onAdd(entropy,extStorage){
@@ -104,7 +104,7 @@ const extensions={
   },etherclassic:{
     id:"etherclassic",
     name:"Ethereum Classic",
-    component:require("../component/ethBase.js")({
+    component:()=>import("../component/ethBase.js").then(c=>c.default({
       networkName:"Ethereum Classic",
       networkScheme:"etherclassic",
       networkIcon:require("../res/coins/etc.png"),
@@ -117,7 +117,7 @@ const extensions={
         "https://etc-geth.0xinfra.com"
       ],
       explorer:"http://gastracker.io/addr/"
-    }),
+    })),
     icon:require("../res/coins/etc.png"),
     scheme:"etherclassic",
     onAdd(entropy,extStorage){
@@ -135,7 +135,7 @@ const extensions={
   zaifPay:{
     id:"zaifPay",
     name:"Zaif Payment",
-    component:require("../component/zaifPay.js"),
+    component:()=>import("../component/zaifPay.js"),
     icon:require("../res/zaifpay.png"),
     scheme:"zaifPay"
   }
