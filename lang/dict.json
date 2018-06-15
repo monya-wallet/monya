@@ -1,1 +1,2274 @@
-{"このアプリについて":"About Monya","もにゃ":"Monya","作った人":"Developer","開発チーム":"Developer Team","寄付をいただければ泣いて喜びます":"Donations are welcome!","バックエンドをお借りした方々(敬称略)":"Infrastructure supporters","オープンソース":"open source","ソースコード":"source code","ライセンス":"license","チェーン切り替え":"Chain Switcher","相手にあげる通貨を選んでください":"Please choose the coin to send","あげる通貨":"coin to send","失敗時の返金アドレス":"Refund address in case of failure","トークンを送ります":"Token : Allow transmission","受け取る通貨とそのアドレスを選んでください":"Please choose coin to receive and its address","受け取る通貨":"Coin to receive","受信アドレスのラベル":"Deposit address label","トークンを受け取ります":"Token: Allow reception","この通貨ペアでは返金はできなくなります。失敗しても知りませーん":"For this currency pair you will not be able to refund. Please trade with your own risk.","アドレス取得":"Get Address","切り替えを開始したばあい、シークレットを決めて下さい":"If you want to switch chain, you need to set the secret","長すぎます":"Too long!","シークレットを持っている方の引き出しアドレス":"Withdrawal address with the secret","シークレットを持っている方の返金アドレス":"Refund address with the secret","シークレットを持ってない方の引き出しアドレス":"Withdrawal address without the secret","シークレットを持ってない方の返金アドレス":"Refund address without the secret","を預ける":"Deposit address","相手は以下のアドレスに預けます":"The partner deposits the coin at the following address","資金の引き出し":"Withdraw funds","引き出し":"withdraw","返金":"refund","引き出しのみできます":"You can only withdraw","トークン名（正式名称）":"Token name (official name)","小数点で分割できるトークンですか？":"Can this token be divided by the decimal point?","数量":"amount","手数料":"fee","送る":"Send","送金先アドレスは":"Destination address ","使われた事があります":"has been used","初めて使用されます":"will be used for the first time","送金額":"Send Amount","送金手数料":"sending fee","取引の詳細":"Transaction details","メッセージ":"Message","あなたの送金後の残高":"Balance after sent","送金したあとは元に戻すことはできません。":"After sent, you cannot cancel.","パスワード":"Password","送金":"Send","署名済みデータがあります":"There is signed data","ごめんなさい嘘です":"Oops! mistake","トランザクションの生成に失敗しました。":"Failed to create the transaction","下記の作業をお試し下さい。":"Try the following tasks.","送金額を減らしてみる":"Reduce the amount of remittance","待機中(未承認)":"Check ","の残高がないかどうか確認する":"whether there is unconfirmed fund or not.","設定から「待機中の残高も使用する」をONにする":"Enable \"Use waiting balance\" from setting","トランザクションデータ作成中":"Creating transaction data","キャンセル":"Cancel","トークン練成":"Token DEX","いろいろなことに十分注意して使いましょう":"Please be careful when you do this.","トークンを持っているラベル":"Label with token","預ける量":"Amount to give","預けるトークン(正式名)":"Token to give (official name)","トークン":"Token","受け取りたい量":"Amount to get","受け取るトークン(正式名)":"Token to get (official name)","小数点ありのトークンはSatoshi単位で入力してください":"Please input token with a decimal point using Satoshi unit.","実行":"OK","詳細オプション":"Advanced options","有効期限ブロック":"Expiration block","単位はブロック":"The unit is the block","処理中":"processing","手数料が不足してます":"There is not enough fee.","手数料を不足しています。送金に失敗する可能性があります":"There is not enough fee.You may fail to send.","閉じる":"Close","補給する":"refill","請求一覧を編集":"Edit invoice list","品名":"Item name","金額(日本円)":"Amount (JPY)","追加":"Add","保存":"Save","ウォレットを作成しました！":"Congratulations! Wallet created!","ウォレットを消去しました":"Wallet deleted","送金しました！トランザクション":"Sent! Transaction","ホーム画面に追加する":"Add to the home screen","「ホーム画面に追加」アイコンがない場合は、「Safariで開く」を探してみてください":"If there is not [Add to the home screen], please look for [Open with Safari]","をご利用ください":"is recommended.","内ブラウザでのご使用は大変危険です。Safariでご覧ください":" browser is high risk. Please use Safari.","続行":"NEXT","秘密鍵を生成":"Creating the secret key","ここをスワイプしたりドラッグしたりしてセキュリティを高めましょう":"Swipe or drag here to improve security. ","または端末を振ってください。":"Or shake your device","計算中":"Calculating...","数分かかる場合があります。":"This operation may take a few minutes","ご確認ください":"Please confirm","秘密鍵を作成します。以下の注意事項をよく読んで、チェックをしてください":"It's creating the secret key.Please check the following important information.","秘密鍵は所有するモナコインにアクセスする権利そのものです。":"The secret key is the license to access the coins you own.","英単語のスクリーンショットを撮影・コピーしないでください。":"Please do not copy or take the screenshot of ENGLISH WORDS.","これを紛失すると、モナコインを使うことはできなくなります。":"If you lose the ENGLISH WORDS, you will not be able to use your coins.","他人に知れ渡ると、モナコインを盗まれる可能性があります。":"If your ENGLISH WORDS are found by others, your coins may be stolen.","管理が不十分だったことによる責任は利用者自身が負い、他の誰も負いません。":"MONYA will not be responsible for managements about secret key.","秘密鍵の重要性を理解しました。":"I understand the importance of secret key","画面を誰にも・どのソフトにも見られたり盗聴されていません。":"I understand the mobile screen is not seen by anyone,any software and others","秘密鍵の管理は自己責任であることを理解しました。":"I understand the management of private key is my responsibility","次へ":"NEXT","ヘルプ":"Help","使い方":"How to use Monya (Japanese)","暗号通貨解説リンク集":"cryptocurrency tutorial link collection(Japanese)","用語集":"Glossary(Japanese)","お困りですか？":"Need help?","お金が欲しいです":"Tip please (Japanese)","履歴":"History","引っ張って更新":"Swipe to update","今だ！離せ！":"OK! Please remove your finger!","エラーが発生しました。":"Error occurred","取引履歴がありません。もっと取引しましょう。":"There is no history. Let's trade more.","名称未設定":"No name","もっと見る":"Load more","絞り込み":"filtering","全て":"all","受け取り":"Receive","これ以下の取引を隠す":"Hide transactions below the input value.","Monapartyっぽい出金を隠す":"Hide Withdrawals that seems to be Monaparty","を検索":" Search","現在表示されている履歴のJSONファイルです。":"This is the JSON file of the history currently displayed","ホーム":"Home","あなたが今持っているのは":"Balance","エラーが発生したようです。<br>しばらくしてからもう一度お試しください。":"Error occurred.<br>please try again later.","受取":"Receive","カードで遊ぶ":"Card","取得失敗":"failed","待機中":"Waiting","コインを追加":"Add the coin","インポート/エクスポート":"Import / Export","全データ消去":"Clear all data","アドレスを再生成する":"Regenerate address","エクスポート":"Export","インポート":"Import","失敗するとデータが無くなります。よろしいですか？":"If it fails, data will be lost. Is it OK?","やめる":"Cancel","全データを消去します。パスフレーズがあれば残高を復旧できますが、ラベル、取引情報は失われます。":"Clear all data.If you have a passphrase you can recover your balance.Note that information about the coin label is lost.","理解しました":"OK","パスフレーズをバックアップしましたか？残高を取り戻せなくなります。よろしいですか？":"Have you backed up your passphrase? If you lose your passphrase you will not be able to regain your balance.Is it OK?","承知しました":"OK","計算中。計算能力により時間がかかりますが終了しないでください。":"Calculating. It will take a few minutes, please do not cancel.","請求する":"Make an invoice","このQRコードを読み取って":"Read this QR code ","にログインして、送金してください。指示がある場合は、「匿名で送る」チェックを外してください。":". Please login and send coin.If there is the instruction, please uncheck the send anonymously check.","アドレスコピー":"Copy address","共有":"Share","送金先":"send address","請求額":"invoice amount","金額":"price","法定通貨換算":"Legal currency conversion","換算":"conversion","相手に表示する文":"Message displayed to the recipient","ブロックに書き込んでもらうメッセージ(対応ウォレットのみ":"Message to write on the block (specific wallet only","送金URL形式":"Change to URL format","確定":"OK","アドレス検索":"Address search","所有者です":"You are the owner","パスワードを入力して下さい。":"Please enter the password.","はじめる":"Start","トークンをつくる":"Create the token","トークンの作成にはスパム対策手数料として少量のXMP/XCPが必要です。":"When creating a token,the small amount of XMP/XCP is needed as spam countermeasure fee.","作成するアドレスのラベル":"Label of created address.","トークン名":"Token name","サブトークンは正式名称":"Input the official name of sub-token","説明":"Description","トークンの所有権移動をしたい時のみ移転先アドレス":"Relocation destination address (only when you want to transfer the ownership of the token to another person)","小数点以下を許可":"Allow decimal point","トークンを作成":"Create the token","コインの管理":"Coin management","利用可能":"Enable","無効":"Disable","パスワードを入力してください。コインを削除すると、残高は失われませんが、ラベルなど、その他の情報は失われる可能性があります。":"Please enter your password. Note that when you delete the coin, information on the coin label may be lost though the balance will be still active.Note","コイン":"coin","単位":"unit","エンドポイント":" endpoint","ブロック":"block","アドレス,トークン名":"Address, Token name","トークンがありません":"Token not found","メニュー→受け取り→モナコインアイコン":"Menu → Receive → Monacoin icon","で受け取りアドレスを取得しましょう。":"Let’s access [Menu → Receive → Monacoin icon] to get the address for reception.","カードであそぶ":"Card","設定":"Settings","困ったな":"I got the problem.","申し訳ありません。問題が発生したようです。心当たりがある場合、原因を取り除き、どうしても解決できない、あるいは明らかなバグである場合、ヘルプからお問い合わせください。詳細は以下の通りです。":"It seems that a problem has occurred. Please remove the cause and try again. If you cannot solve using any method , or if it seems to be clearly bug, please contact us for help. Details are shown below.","戻る":"Back","ヘルプ/豆知識":"Help/note","読み取り結果":"Read result","コピー":"Copy","コピーしない":"Do not copy","とりあえず送ってもらう":"Coin Address","読み込み中":"Loading","ラベル付きアドレス":"Labelled address","ラベル追加":"add label","請求書":"Invoice","請求書のQRコードを作る":"Make invoice QR code","ラベルを追加":"add label","ラベルをつけて下さい。":"Please add the label. ","フォーマットを入力すると、アドレスを導出します":"format is inputed, then the address is derived.","ラベル":"label","ウォレットの復元":"Restore the wallet","単語を入力してください。候補を絞り込めた場合、確定します。絞り込めない場合、画面下に候補が表示されます。":"Please enter the ENGLISH WORD. If you narrow down the candidates, we will confirm. If you cannot, those candidates are displayed at the bottom of the screen.","単語をリセット":"Reset words","エラーが発生しました。単語の順番、スペルが間違っていないかを確認して、もう一度お試しください。":"An error occurred. Please check the word order and spelling. Then try again.","やり直す":"try again","署名の検証に失敗しました。":"Verification of signature failed","署名の検証に成功しました。":"Successfully verified the signature","送金先アドレス":"send address","コイン種類":"Coin type","まずは出金先アドレスを指定してください。":"Please input payment destination address first","相手に送金する金額":"amount to send","日本円":"Japanese YEN","確認画面へ":"CHECK","取引の説明(任意":"Description of the transaction (option","履歴で確認できます。":"You can check with the history.","少なすぎると危ないよ！":"Note that small fee will be risk.","相手に送るメッセージ(任意":"Send the following message (option","まで":" is upper limit","を手動指定":" manual setting","規定の形式、詳しくはソースコード":"Confirmed format, check source code for details","トークンを送る":"Send the token","トークンが入っているアドレスラベル":"Label of address containing the token.","手数料のために少額のMONAが必要です":"The small amount of MONA needs to be consumed as the fee.","送る量":"amount to send","メモ":"memo","パスワード設定":"Password setting","パスワードを設定します。":"Please set up your password","文字以上":" characters or more","秘密鍵を保護するために使用されます。":"The password is used to protect the secret key","他人に知れ渡ると、勝手にアプリケーションを利用される可能性があります。":"If your password is found by others, your coins may be stolen.","エラーが発生しました。再度お試し下さい。エラー内容":"Error occurred. Please try again.Error info:","現在のパスワード":"Current password","パスワードの種類":"Password type","半角英数字のパスワード":"Password should consist both alphabets and numbers.","指紋認証を使う":"Use fingerprint","コード":"code","署名と検証":"Sign and Verify","パスフレーズの表示":"Show passphrase","パスワードを変更":"Change the password","請求一覧の編集":"Edit invoice list","既存ウォレットからの吸出し":"Import from existing wallet","お金":"Asset ","待機中の残高も使用する(遅くなります":"Use waiting balance (processing may be delayed","法定通貨":"Legal currency","モナコイン":"MONA","米ドル":"USD","表示":"Display","簡単な単位の表示にする":"Display simple units","絶対時間で表示する":"Display timestamp of history by calendar","決済音を鳴らす":"Payment sound","言語":"Language","日本語":"Japanese","メニュー":" menu","あなたの":"Your ","背景":"wallpaper","リアルモナコインちゃん":"Real Monacoin-chan","単色:白":"White","単色:青":"Blue","手動導出アドレスのため、残高が反映されない可能性があります。送金する場合はご注意ください。":"Because it is a manually derived address, the balance may not be reflected. Please be careful when sending.","残高":"balance","公開鍵":"Public key","ラベルを編集":"edit label","ラベルを変更してください":"Please change the label","パスフレーズ":"Passphrase","英単語を正確に、紙に手書きしてください。":"Please write ENGLISH WORDS on the paper manually.","チェックボックスは確認のためにお使いください。":"Please use the checkboxes to check each word.","パスワードを入力してください":"Please enter your password.","ロック解除":"unlock","署名/検証するアドレス":"Sign / verify address","アドレス":"address","まずはアドレスを指定してください。":"Please input the address first","署名された文":"Signature","署名文":"Signature","署名用パスワード":"Signature password","署名":"Sign","検証":"Verify","検証結果":"verification result","署名が正しいことを検証できました。":"Successfully verified.","署名が不正です。":"Signature is invalid.","もどる":"Back","秘密鍵":"secret key","送信":"Send","たった今":"Now","分前":"minutes ago","時間前":" hours ago","日前":" days ago","か月前":"months ago","年前":"years ago","何もないみたいです":"Nothing","これを送る":"send this","カードの詳細":"card detail","カード名":"card name","作者名":"Creator's name","作者Twitterアカウント名":"Creator's twitter account","説明文":"Description","画像":"image","トークン情報":"Token information","トークン正式名称":"Token official name","流通総量":"total supply","オーナーアドレス":"owner address","発行者アドレス":"creator address","小数点分割":"Decimal point division","可能":"enable","不可能":"disable","ロック":"Lock","されている":"enable","されていない":"disable","が作成":"created","から":"to","へ所有者移転":"owner change","から説明文を変更":"change description","枚を追加発行":"card to add the total supply","ロックされた":"Locked","取引詳細":"Transaction details","ラベルを設定":"label setting","メッセージ無し":"no message","その時の価格":"The price of the relevant time","各自でご入力下さい":"Please input by yourself.","ブロックに取り込まれた時間":"Time included in block","承認された回数":"confirmation count","入力総量":"total input","出力総量":"total output","トランザクション":"transaction","チェーンエクスプローラーを見る":"View Chain Explorer","入力":"input","出力":"output","ヘルスメーター":"Health meter","に対する利用者の現在のイライラ度は":"user's currently stress level is ","数値が大きいほど危険。この数値はあくまで目安です。":"A large the number means a bad condition.","まずは、APIキー、シークレットキーを設定画面から入力しましょう。":"First let's input the API key and secret key in the setting.","注意":"Caution","のサーバーは混雑時、とても不安定です。決済する前に、ヘルスメーターを確認する癖をつけてください。":"server is very unstable when crowded. Please check the health meter before you settle.","請求を作成":"Create invoice","決済に使用する暗号通貨":"cryptocurrency used for settlement","決済完了とみなすスピード":"Speed regarded as settlement completion","遅いけど確実":"slow but firm","最低限の承認":"Minimum confirmation","すぐに終わるけどハイリスク":"Fast but high risk","決済金額（日本円）":"amount to be settled (JPY)","決済額":"amount to be settled","商品名":"Product name","請求リストに表示されます":"It will appear in the invoice list","オーダーIDなど":"Order ID","任意":"optional","参照番号など":"Reference number","請求発行":"issue the invoice","保存された請求":"Saved invoice","請求":"invoice","決済の進捗":"Progress of settlement","請求受付中":"Receiving invoice","送金されたようです":"It seems to be sent","確認されました。":"Confirmed","完了":"Done","期限切れ":"Expired","失敗":"Failed","キャンセルされました":"Cancelled","決済金額（暗号通貨）":"amount to be settled (cryptocurrency)","（日本円）":"(JPY)","請求作成日":"Invoice creation date","請求有効期限":"Invoice expiration date","約":"about","砂":"sand","もにゃ 開発チーム":"Monya Developer Team","バックエンドをお借りした方々":"Infrastructure supporters","敬称略":"honorific titles are omitted","未承認":"unconfirmed","設定から「待機中の残高も使用する」を":"Current [use the waiting balance setting] to","にする":"setting.","預けるトークン":"Deposit token","正式名":"official name","受け取るトークン":"Receive token","小数点ありのトークンは":"Please input token with decimal point using","単位で入力してください":"units.","「ホーム画面に追加」アイコンがない場合は、「":"If there is no [Add to home screen] icon, you should be looking for [","で開く」を探してみてください":"] open icon.","内ブラウザでのご使用は大変危険です。":"Using the built-in browser is highly risky.","でご覧ください":"is recommended","現在表示されている履歴の":"This is the ","ファイルです。":"file of the history currently displayed.","エラーが発生したようです。":"Error occurred","しばらくしてからもう一度お試しください。":"Please try again later.","この":"Read this ","コードを読み取って":"code.","ブロックに書き込んでもらうメッセージ":"Message to write on the block","対応ウォレットのみ":"specific wallet only","形式":"format","トークンの作成にはスパム対策手数料として少量の":"When creating a token,the small amount of","が必要です。":"is needed as spam countermeasure fee.","メニュー→受け取り→モナコインアイコン で受け取りアドレスを取得しましょう。":"Menu → Receive → Monacoin icon.Let's get the received address. ","豆知識":"Notes","請求書の":"Make invoice","コードを作る":"code","取引の説明":"Explanation of transaction","相手に送るメッセージ":"Send the message","手数料のために少額の":"The small amount of","が必要です":" need to be consumed as the fee.","待機中の残高も使用する":"Use waiting balance","遅くなります":"process may be delayed","単色":"Single color","白":"White","青":"Blue","検証するアドレス":"Verification address","作者":"Creator","アカウント名":"Account name","とは、":"is","まずは、":"First","キー、シークレットキーを設定画面から入力しましょう。":"Let's enter keys and secret keys from the setting screen.","オーダー":"order","など":" etc ","カードであそぶメニュー":"card menu","バージョン":"Version","作者に寄付する":"Donate me","スキップ":"Skip","次の画面で表示される英単語を正確に、紙に手書きしてください。":"Please correctly write these words on the paper manually in the next screen.","単語数":"Word count","単語":" word","コインパラメータをリセット":"Reset coin parameters","暗号化された秘密鍵が入っています。十分注意してください。":"It contains encrypted private key. Please be careful","パラメータをリセット":"Reset parameters","コインパラメータをリセットしますか？編集した内容は失われます":"Do you really reset coin parameters? Changed contents will be lost.","保有トークン":"Tokens","直近":"last","件の取引":" transaction","作成":"Issued","約定":"Order matched","注文":"Order","注文取消し":"Cancel order","取得件数":"Retrieve count","メニュー→受け取り→":"Receive→","アイコン で受け取りアドレスを取得しましょう。":" icon provides you receive address","カメラが不調です":"　Camera doesn't work.","が不調なため、":" malfunction ,","コードリーダを起動できません。":" scanner doesn't work.","に乗り換えると幸せになれます":" will help you.","設問を戻る":"Go back","もう一度入力":"Type again","取引所を通して、受け取り時に暗号通貨でなく、日本円で受け取ることができる決済サービスです。これにより、レート変動によるリスクから解放されます。":" the payment service by an exchange. You will receive Japanese yen, not crypto currency. This frees you from the risk by rate fluctuation.","翻訳協力":"Translation support","宛先タグ":"Destination Tag","アカウントがありません":"Account not found","を入金してアクティベートしてください。":" is required to activate this account.","送金成功":"Sent!","送金しました":"Successfully sent!","リップル":"Ripple","リップルとは、ビットコインにインスパイヤされた高速な国際送金を実現するために作られた分散型台帳システムです。現在では、その高速な着金のため":"Ripple is the distributed ledger system to send funds internationally, inspired by bitcoin. But by its fast money reception, it is also used as ","決済システム":"Payment System","としても利用されています。":". ","ビットコインと何が違うの":"What is the difference between bitcoin?","ビットコインは、ブロックチェーンを用いています。その書き込み権利はプルーフ・オブ・ワークによって決定されています。この欠点は、時間がかかること、大量のエネルギーを消費することです。それに対してリップルはリップルレジャーというブロックチェーンとは一味違う台帳に書き込んでいます。リップルは、書き込む権限を制限する代わりに、":"Bitcoin uses the blockchain. The right to write it is decided by Proof of Work. Shortcomings is that it consumes many time and energy. Whereas, transactions of Ripple is written in Ripple Ledger, which is different from blockchain. Instead of restricting write permission, Ripple can ","エネルギーを無駄にせず、数秒で取引を完了":"complete transactions in a moment without wasting energy","することができます。":". ","つまり、リップルは中央集権なの？":"In other words, is Ripple centralized solution?","はい、まさにその通りです。書き込む権限を持った人たちが裏切ったらネットワークは崩壊します。":"Yes. That's right. When writers betray, this network will break down.","パブリックチェーンなの？プライベートチェーンなの？":"Is it public chain, or private chain?","リップルはブロックチェーンを使っていません":"Ripple does not use blockchain. ","リップルを始めるには、下記のリップルアドレスに":"To begin Ripple, send ","を送金してアカウントを有効化してください。":" and activate this account.","送金確認":"Confirm","失敗しても手数料がかかるときがあるので注意":"Please pay attention because fee is collected even failure. ","ブロックチェーンじゃないのでどちらでもありません。大事なことなので二回言います。":"Neither is incorrect because Ripple isn't the blockchain. I say repeatedly. ","送金しました！":"Successfully Sent!","請求モザイク":"invoice mosaic","モザイク":"Mosaic","上から選んでください。":"Choose from above","メッセージなし":"(no message)","作者に寄付":"Donate Me","拡張機能":"Extension","サーバー変更":"Change Server","接続":"Connect","もにゃ互換":"Monya compatible","互換":" compatible","下から選んでください":"Choose from below","キー、シークレットキーを入力しましょう。":"Please enter a secret key","決済請求":"Payment request","作成時刻":"Created at","認証情報消去":"Erase credentials","キーとシークレットを消去します":" key and secret will be deleted.","ふじしゃん":"ふじしゃん","っぽい出金を隠す":"<手動で修正してあります>","コードの形式":" code type","モザイク名":"Mosaic Name","質問する":"Ask a question","エコビー":"Ecobit","マザーアース":"Mother Earth","を有効化します。":" will be enabled.","を無効化します。":" will be disabled.","アトミックスワップデータを共有します。":"Atomic swap data will be shared.","はい":"Yes","いいえ":"No","署名します":"Sign","直接実行します":"Running...","無効なメソッドが実行されました。":"Invalid method.","選んでね":"Please choose.","データの共有":"Share data","ここに相手から知らされた文字列を入力。":"Input sentence.","未承認の取引があります":"There is an unconfirmed transaction.","非対応のコマンド":"Unknown command","右の文字列を相手に伝えてください。":"Tell the sentence on the right to your company","コインパラメータをリセットしますか？編集した内容は失われます。":"Do you really reset coin parameter? Edited contents will be lost.","まだ保存されていません":"There is unsaved changes.","吸い出し先アドレス":"Sweep destination address","を指定":" select ","マルチシグ":"Multisignature","アドレス確認":"Check address","署名するアドレス":"Address to sign","公開鍵リスト":"Public keys","必要な署名数":"The number of needed signatures","マルチシグアドレス":"Multisign address","未署名トランザクション":"Unsigned Transaction","十分な署名数が集まっています":"I have gathered enough number of signatures","署名されたトランザクション":"Signed Transaction","省略可":"Optional","削除":"Remove","署名するトランザクション":"Transaction to sign","「署名するトランザクション」に反映":"Apply to 'Transaciton to sign'","タイトル":"Title","タイトルを追加":"Add title","タイトル追加":"Add title","名称":"Name","アイコン":"Icon","アプリ全体を暗号化する":"Encrypt the whole app","パスフレーズのバックアップ":"Backup passphrase","交換する者のどちらかがシークレットを決めて下さい":"Either person who want to exchange specifies a secret","以下のデータを共有してください":"Share data below","下記の文字列を相手に伝えてください。":"Tell the other below","詳細を確認":" See detail ","取得":"Get","シークレットが見つかりませんでした。相手が送金するまで待ちましょう。":"Secret not found.Please wait until your company sends","パスワードがわからない？":"Forgotten password?","パスフレーズを使って残高を復帰させることができます。":"You can recover your funds with passphrase","リセット＆リストア":"Reset & Restore","本当に削除しますか？":"Do you really want to delete?","全データを消去します。バックアップが用意されていることを必ず確認してください。":"Delete all data. Please make sure that you have a backup","アドレスゲット":"Get Address","署名のみ":" Sign only, not broadcasted","最終更新":"Last update","トークンを受け取る":"Receive tokens","アプリケーションと連携します。信頼できるアプリケーションである場合のみ続行してください。":"Connect to the other application. Continue only when you can trust this application.","メッセージ署名します":"Signing message.","アプリケーションに戻ってください。":"Please go back to the application.","このデータをアプリケーションに渡してください。":"Pass below to the application","モナコインが欲しいです":"Give me Monacoin","少額の":"Send with a little amount of ","も一緒に送る":".","このモザイクを請求する":"Make an invoice of this Mosaic","ガスプライス":"Gas Price","ガスリミット":"Gas Limit","ガス合計":"Total Gas","コントラクトアドレス":"Contract Address","通貨シンボル":"Ticker Symbol","小数桁数":"Decimals","正の整数":"Positive Integer","登録":"Register","登録済":"Registered","ガスがかかります。ご注意ください。":"This consumes gas. Please be careful.","実行中":"Executing...","実行する":"Execute","トークンを消去":"Remove a token","コントラクトアドレスを再登録すると残高を復帰できます。トークンを消去しますか？":"Your fund come back by reregistering contract address. Do you really want to remove this token?","履歴を見る":"Show history","トークンを登録":"Add a token","コントラクトを実行":"Execute a contract","関数を選んでください。":"Select a function","にゃーん":"Nyaan","基本操作マニュアル":"Basic operation manual","トークン管理":" Token Management","自分で追加":"Add yourself","名前":"Name","追加済み":"Added","利用可能トークン":"Available Token","スキャムブロッカー":"Scam Blocker","このアドレスはブラックリストに登録されています！詐欺トークンなどの可能性があります！":"This address is registered with blacklist! This can be a fraud.","わかりました":"OK"}
+{
+  "このアプリについて": {
+    "ja": "このアプリについて",
+    "en": "About Monya"
+  },
+  "もにゃ": {
+    "ja": "もにゃ",
+    "en": "Monya"
+  },
+  "作った人": {
+    "ja": "作った人",
+    "en": "Developer"
+  },
+  "開発チーム": {
+    "ja": "開発チーム",
+    "en": "Developer Team"
+  },
+  "寄付をいただければ泣いて喜びます": {
+    "ja": "寄付をいただければ泣いて喜びます",
+    "en": "Donations are welcome!"
+  },
+  "バックエンドをお借りした方々(敬称略)": {
+    "ja": "バックエンドをお借りした方々(敬称略)",
+    "en": "Infrastructure supporters"
+  },
+  "オープンソース": {
+    "ja": "オープンソース",
+    "en": "open source"
+  },
+  "ソースコード": {
+    "ja": "ソースコード",
+    "en": "source code"
+  },
+  "ライセンス": {
+    "ja": "ライセンス",
+    "en": "license"
+  },
+  "チェーン切り替え": {
+    "ja": "チェーン切り替え",
+    "en": "Chain Switcher"
+  },
+  "相手にあげる通貨を選んでください": {
+    "ja": "相手にあげる通貨を選んでください",
+    "en": "Please choose the coin to send"
+  },
+  "あげる通貨": {
+    "ja": "あげる通貨",
+    "en": "coin to send"
+  },
+  "失敗時の返金アドレス": {
+    "ja": "失敗時の返金アドレス",
+    "en": "Refund address in case of failure"
+  },
+  "トークンを送ります": {
+    "ja": "トークンを送ります",
+    "en": "Token : Allow transmission"
+  },
+  "受け取る通貨とそのアドレスを選んでください": {
+    "ja": "受け取る通貨とそのアドレスを選んでください",
+    "en": "Please choose coin to receive and its address"
+  },
+  "受け取る通貨": {
+    "ja": "受け取る通貨",
+    "en": "Coin to receive"
+  },
+  "受信アドレスのラベル": {
+    "ja": "受信アドレスのラベル",
+    "en": "Deposit address label"
+  },
+  "トークンを受け取ります": {
+    "ja": "トークンを受け取ります",
+    "en": "Token: Allow reception"
+  },
+  "この通貨ペアでは返金はできなくなります。失敗しても知りませーん": {
+    "ja": "この通貨ペアでは返金はできなくなります。失敗しても知りませーん",
+    "en": "For this currency pair you will not be able to refund. Please trade with your own risk."
+  },
+  "アドレス取得": {
+    "ja": "アドレス取得",
+    "en": "Get Address"
+  },
+  "切り替えを開始したばあい、シークレットを決めて下さい": {
+    "ja": "切り替えを開始したばあい、シークレットを決めて下さい",
+    "en": "If you want to switch chain, you need to set the secret"
+  },
+  "長すぎます": {
+    "ja": "長すぎます",
+    "en": "Too long!"
+  },
+  "シークレットを持っている方の引き出しアドレス": {
+    "ja": "シークレットを持っている方の引き出しアドレス",
+    "en": "Withdrawal address with the secret"
+  },
+  "シークレットを持っている方の返金アドレス": {
+    "ja": "シークレットを持っている方の返金アドレス",
+    "en": "Refund address with the secret"
+  },
+  "シークレットを持ってない方の引き出しアドレス": {
+    "ja": "シークレットを持ってない方の引き出しアドレス",
+    "en": "Withdrawal address without the secret"
+  },
+  "シークレットを持ってない方の返金アドレス": {
+    "ja": "シークレットを持ってない方の返金アドレス",
+    "en": "Refund address without the secret"
+  },
+  "を預ける": {
+    "ja": "を預ける",
+    "en": "Deposit address"
+  },
+  "相手は以下のアドレスに預けます": {
+    "ja": "相手は以下のアドレスに預けます",
+    "en": "The partner deposits the coin at the following address"
+  },
+  "資金の引き出し": {
+    "ja": "資金の引き出し",
+    "en": "Withdraw funds"
+  },
+  "引き出し": {
+    "ja": "引き出し",
+    "en": "withdraw"
+  },
+  "返金": {
+    "ja": "返金",
+    "en": "refund"
+  },
+  "引き出しのみできます": {
+    "ja": "引き出しのみできます",
+    "en": "You can only withdraw"
+  },
+  "トークン名（正式名称）": {
+    "ja": "トークン名（正式名称）",
+    "en": "Token name (official name)"
+  },
+  "小数点で分割できるトークンですか？": {
+    "ja": "小数点で分割できるトークンですか？",
+    "en": "Can this token be divided by the decimal point?"
+  },
+  "数量": {
+    "ja": "数量",
+    "en": "amount"
+  },
+  "手数料": {
+    "ja": "手数料",
+    "en": "fee"
+  },
+  "送る": {
+    "ja": "送る",
+    "en": "Send"
+  },
+  "送金先アドレスは": {
+    "ja": "送金先アドレスは",
+    "en": "Destination address "
+  },
+  "使われた事があります": {
+    "ja": "使われた事があります",
+    "en": "has been used"
+  },
+  "初めて使用されます": {
+    "ja": "初めて使用されます",
+    "en": "will be used for the first time"
+  },
+  "送金額": {
+    "ja": "送金額",
+    "en": "Send Amount"
+  },
+  "送金手数料": {
+    "ja": "送金手数料",
+    "en": "sending fee"
+  },
+  "取引の詳細": {
+    "ja": "取引の詳細",
+    "en": "Transaction details"
+  },
+  "メッセージ": {
+    "ja": "メッセージ",
+    "en": "Message"
+  },
+  "あなたの送金後の残高": {
+    "ja": "あなたの送金後の残高",
+    "en": "Balance after sent"
+  },
+  "送金したあとは元に戻すことはできません。": {
+    "ja": "送金したあとは元に戻すことはできません。",
+    "en": "After sent, you cannot cancel."
+  },
+  "パスワード": {
+    "ja": "パスワード",
+    "en": "Password"
+  },
+  "送金": {
+    "ja": "送金",
+    "en": "Send"
+  },
+  "署名済みデータがあります": {
+    "ja": "署名済みデータがあります",
+    "en": "There is signed data"
+  },
+  "ごめんなさい嘘です": {
+    "ja": "ごめんなさい嘘です",
+    "en": "Oops! mistake"
+  },
+  "トランザクションの生成に失敗しました。": {
+    "ja": "トランザクションの生成に失敗しました。",
+    "en": "Failed to create the transaction"
+  },
+  "下記の作業をお試し下さい。": {
+    "ja": "下記の作業をお試し下さい。",
+    "en": "Try the following tasks."
+  },
+  "送金額を減らしてみる": {
+    "ja": "送金額を減らしてみる",
+    "en": "Reduce the amount of remittance"
+  },
+  "待機中(未承認)": {
+    "ja": "待機中(未承認)",
+    "en": "Check "
+  },
+  "の残高がないかどうか確認する": {
+    "ja": "の残高がないかどうか確認する",
+    "en": "whether there is unconfirmed fund or not."
+  },
+  "設定から「待機中の残高も使用する」をONにする": {
+    "ja": "設定から「待機中の残高も使用する」をONにする",
+    "en": "Enable \"Use waiting balance\" from setting"
+  },
+  "トランザクションデータ作成中": {
+    "ja": "トランザクションデータ作成中",
+    "en": "Creating transaction data"
+  },
+  "キャンセル": {
+    "ja": "キャンセル",
+    "en": "Cancel"
+  },
+  "トークン練成": {
+    "ja": "トークン練成",
+    "en": "Token DEX"
+  },
+  "いろいろなことに十分注意して使いましょう": {
+    "ja": "いろいろなことに十分注意して使いましょう",
+    "en": "Please be careful when you do this."
+  },
+  "トークンを持っているラベル": {
+    "ja": "トークンを持っているラベル",
+    "en": "Label with token"
+  },
+  "預ける量": {
+    "ja": "預ける量",
+    "en": "Amount to give"
+  },
+  "預けるトークン(正式名)": {
+    "ja": "預けるトークン(正式名)",
+    "en": "Token to give (official name)"
+  },
+  "トークン": {
+    "ja": "トークン",
+    "en": "Token"
+  },
+  "受け取りたい量": {
+    "ja": "受け取りたい量",
+    "en": "Amount to get"
+  },
+  "受け取るトークン(正式名)": {
+    "ja": "受け取るトークン(正式名)",
+    "en": "Token to get (official name)"
+  },
+  "小数点ありのトークンはSatoshi単位で入力してください": {
+    "ja": "小数点ありのトークンはSatoshi単位で入力してください",
+    "en": "Please input token with a decimal point using Satoshi unit."
+  },
+  "実行": {
+    "ja": "実行",
+    "en": "OK"
+  },
+  "詳細オプション": {
+    "ja": "詳細オプション",
+    "en": "Advanced options"
+  },
+  "有効期限ブロック": {
+    "ja": "有効期限ブロック",
+    "en": "Expiration block"
+  },
+  "単位はブロック": {
+    "ja": "単位はブロック",
+    "en": "The unit is the block"
+  },
+  "処理中": {
+    "ja": "処理中",
+    "en": "processing"
+  },
+  "手数料が不足してます": {
+    "ja": "手数料が不足してます",
+    "en": "There is not enough fee."
+  },
+  "手数料を不足しています。送金に失敗する可能性があります": {
+    "ja": "手数料を不足しています。送金に失敗する可能性があります",
+    "en": "There is not enough fee.You may fail to send."
+  },
+  "閉じる": {
+    "ja": "閉じる",
+    "en": "Close"
+  },
+  "補給する": {
+    "ja": "補給する",
+    "en": "refill"
+  },
+  "請求一覧を編集": {
+    "ja": "請求一覧を編集",
+    "en": "Edit invoice list"
+  },
+  "品名": {
+    "ja": "品名",
+    "en": "Item name"
+  },
+  "金額(日本円)": {
+    "ja": "金額(日本円)",
+    "en": "Amount (JPY)"
+  },
+  "追加": {
+    "ja": "追加",
+    "en": "Add"
+  },
+  "保存": {
+    "ja": "保存",
+    "en": "Save"
+  },
+  "ウォレットを作成しました！": {
+    "ja": "ウォレットを作成しました！",
+    "en": "Congratulations! Wallet created!"
+  },
+  "ウォレットを消去しました": {
+    "ja": "ウォレットを消去しました",
+    "en": "Wallet deleted"
+  },
+  "送金しました！トランザクション": {
+    "ja": "送金しました！トランザクション",
+    "en": "Sent! Transaction"
+  },
+  "ホーム画面に追加する": {
+    "ja": "ホーム画面に追加する",
+    "en": "Add to the home screen"
+  },
+  "「ホーム画面に追加」アイコンがない場合は、「Safariで開く」を探してみてください": {
+    "ja": "「ホーム画面に追加」アイコンがない場合は、「Safariで開く」を探してみてください",
+    "en": "If there is not [Add to the home screen], please look for [Open with Safari]"
+  },
+  "をご利用ください": {
+    "ja": "をご利用ください",
+    "en": "is recommended."
+  },
+  "内ブラウザでのご使用は大変危険です。Safariでご覧ください": {
+    "ja": "内ブラウザでのご使用は大変危険です。Safariでご覧ください",
+    "en": " browser is high risk. Please use Safari."
+  },
+  "続行": {
+    "ja": "続行",
+    "en": "NEXT"
+  },
+  "秘密鍵を生成": {
+    "ja": "秘密鍵を生成",
+    "en": "Creating the secret key"
+  },
+  "ここをスワイプしたりドラッグしたりしてセキュリティを高めましょう": {
+    "ja": "ここをスワイプしたりドラッグしたりしてセキュリティを高めましょう",
+    "en": "Swipe or drag here to improve security. "
+  },
+  "または端末を振ってください。": {
+    "ja": "または端末を振ってください。",
+    "en": "Or shake your device"
+  },
+  "計算中": {
+    "ja": "計算中",
+    "en": "Calculating..."
+  },
+  "数分かかる場合があります。": {
+    "ja": "数分かかる場合があります。",
+    "en": "This operation may take a few minutes"
+  },
+  "ご確認ください": {
+    "ja": "ご確認ください",
+    "en": "Please confirm"
+  },
+  "秘密鍵を作成します。以下の注意事項をよく読んで、チェックをしてください": {
+    "ja": "秘密鍵を作成します。以下の注意事項をよく読んで、チェックをしてください",
+    "en": "It's creating the secret key.Please check the following important information."
+  },
+  "秘密鍵は所有するモナコインにアクセスする権利そのものです。": {
+    "ja": "秘密鍵は所有するモナコインにアクセスする権利そのものです。",
+    "en": "The secret key is the license to access the coins you own."
+  },
+  "英単語のスクリーンショットを撮影・コピーしないでください。": {
+    "ja": "英単語のスクリーンショットを撮影・コピーしないでください。",
+    "en": "Please do not copy or take the screenshot of ENGLISH WORDS."
+  },
+  "これを紛失すると、モナコインを使うことはできなくなります。": {
+    "ja": "これを紛失すると、モナコインを使うことはできなくなります。",
+    "en": "If you lose the ENGLISH WORDS, you will not be able to use your coins."
+  },
+  "他人に知れ渡ると、モナコインを盗まれる可能性があります。": {
+    "ja": "他人に知れ渡ると、モナコインを盗まれる可能性があります。",
+    "en": "If your ENGLISH WORDS are found by others, your coins may be stolen."
+  },
+  "管理が不十分だったことによる責任は利用者自身が負い、他の誰も負いません。": {
+    "ja": "管理が不十分だったことによる責任は利用者自身が負い、他の誰も負いません。",
+    "en": "MONYA will not be responsible for managements about secret key."
+  },
+  "秘密鍵の重要性を理解しました。": {
+    "ja": "秘密鍵の重要性を理解しました。",
+    "en": "I understand the importance of secret key"
+  },
+  "画面を誰にも・どのソフトにも見られたり盗聴されていません。": {
+    "ja": "画面を誰にも・どのソフトにも見られたり盗聴されていません。",
+    "en": "I understand the mobile screen is not seen by anyone,any software and others"
+  },
+  "秘密鍵の管理は自己責任であることを理解しました。": {
+    "ja": "秘密鍵の管理は自己責任であることを理解しました。",
+    "en": "I understand the management of private key is my responsibility"
+  },
+  "次へ": {
+    "ja": "次へ",
+    "en": "NEXT"
+  },
+  "ヘルプ": {
+    "ja": "ヘルプ",
+    "en": "Help"
+  },
+  "使い方": {
+    "ja": "使い方",
+    "en": "How to use Monya (Japanese)"
+  },
+  "暗号通貨解説リンク集": {
+    "ja": "暗号通貨解説リンク集",
+    "en": "cryptocurrency tutorial link collection(Japanese)"
+  },
+  "用語集": {
+    "ja": "用語集",
+    "en": "Glossary(Japanese)"
+  },
+  "お困りですか？": {
+    "ja": "お困りですか？",
+    "en": "Need help?"
+  },
+  "お金が欲しいです": {
+    "ja": "お金が欲しいです",
+    "en": "Tip please (Japanese)"
+  },
+  "履歴": {
+    "ja": "履歴",
+    "en": "History"
+  },
+  "引っ張って更新": {
+    "ja": "引っ張って更新",
+    "en": "Swipe to update"
+  },
+  "今だ！離せ！": {
+    "ja": "今だ！離せ！",
+    "en": "OK! Please remove your finger!"
+  },
+  "エラーが発生しました。": {
+    "ja": "エラーが発生しました。",
+    "en": "Error occurred"
+  },
+  "取引履歴がありません。もっと取引しましょう。": {
+    "ja": "取引履歴がありません。もっと取引しましょう。",
+    "en": "There is no history. Let's trade more."
+  },
+  "名称未設定": {
+    "ja": "名称未設定",
+    "en": "No name"
+  },
+  "もっと見る": {
+    "ja": "もっと見る",
+    "en": "Load more"
+  },
+  "絞り込み": {
+    "ja": "絞り込み",
+    "en": "filtering"
+  },
+  "全て": {
+    "ja": "全て",
+    "en": "all"
+  },
+  "受け取り": {
+    "ja": "受け取り",
+    "en": "Receive"
+  },
+  "これ以下の取引を隠す": {
+    "ja": "これ以下の取引を隠す",
+    "en": "Hide transactions below the input value."
+  },
+  "Monapartyっぽい出金を隠す": {
+    "ja": "Monapartyっぽい出金を隠す",
+    "en": "Hide Withdrawals that seems to be Monaparty"
+  },
+  "を検索": {
+    "ja": "を検索",
+    "en": " Search"
+  },
+  "現在表示されている履歴のJSONファイルです。": {
+    "ja": "現在表示されている履歴のJSONファイルです。",
+    "en": "This is the JSON file of the history currently displayed"
+  },
+  "ホーム": {
+    "ja": "ホーム",
+    "en": "Home"
+  },
+  "あなたが今持っているのは": {
+    "ja": "あなたが今持っているのは",
+    "en": "Balance"
+  },
+  "エラーが発生したようです。<br>しばらくしてからもう一度お試しください。": {
+    "ja": "エラーが発生したようです。<br>しばらくしてからもう一度お試しください。",
+    "en": "Error occurred.<br>please try again later."
+  },
+  "受取": {
+    "ja": "受取",
+    "en": "Receive"
+  },
+  "カードで遊ぶ": {
+    "ja": "カードで遊ぶ",
+    "en": "Card"
+  },
+  "取得失敗": {
+    "ja": "取得失敗",
+    "en": "failed"
+  },
+  "待機中": {
+    "ja": "待機中",
+    "en": "Waiting"
+  },
+  "コインを追加": {
+    "ja": "コインを追加",
+    "en": "Add the coin"
+  },
+  "インポート/エクスポート": {
+    "ja": "インポート/エクスポート",
+    "en": "Import / Export"
+  },
+  "全データ消去": {
+    "ja": "全データ消去",
+    "en": "Clear all data"
+  },
+  "アドレスを再生成する": {
+    "ja": "アドレスを再生成する",
+    "en": "Regenerate address"
+  },
+  "エクスポート": {
+    "ja": "エクスポート",
+    "en": "Export"
+  },
+  "インポート": {
+    "ja": "インポート",
+    "en": "Import"
+  },
+  "失敗するとデータが無くなります。よろしいですか？": {
+    "ja": "失敗するとデータが無くなります。よろしいですか？",
+    "en": "If it fails, data will be lost. Is it OK?"
+  },
+  "やめる": {
+    "ja": "やめる",
+    "en": "Cancel"
+  },
+  "全データを消去します。パスフレーズがあれば残高を復旧できますが、ラベル、取引情報は失われます。": {
+    "ja": "全データを消去します。パスフレーズがあれば残高を復旧できますが、ラベル、取引情報は失われます。",
+    "en": "Clear all data.If you have a passphrase you can recover your balance.Note that information about the coin label is lost."
+  },
+  "理解しました": {
+    "ja": "理解しました",
+    "en": "OK"
+  },
+  "パスフレーズをバックアップしましたか？残高を取り戻せなくなります。よろしいですか？": {
+    "ja": "パスフレーズをバックアップしましたか？残高を取り戻せなくなります。よろしいですか？",
+    "en": "Have you backed up your passphrase? If you lose your passphrase you will not be able to regain your balance.Is it OK?"
+  },
+  "承知しました": {
+    "ja": "承知しました",
+    "en": "OK"
+  },
+  "計算中。計算能力により時間がかかりますが終了しないでください。": {
+    "ja": "計算中。計算能力により時間がかかりますが終了しないでください。",
+    "en": "Calculating. It will take a few minutes, please do not cancel."
+  },
+  "請求する": {
+    "ja": "請求する",
+    "en": "Make an invoice"
+  },
+  "このQRコードを読み取って": {
+    "ja": "このQRコードを読み取って",
+    "en": "Read this QR code "
+  },
+  "にログインして、送金してください。指示がある場合は、「匿名で送る」チェックを外してください。": {
+    "ja": "にログインして、送金してください。指示がある場合は、「匿名で送る」チェックを外してください。",
+    "en": ". Please login and send coin.If there is the instruction, please uncheck the send anonymously check."
+  },
+  "アドレスコピー": {
+    "ja": "アドレスコピー",
+    "en": "Copy address"
+  },
+  "共有": {
+    "ja": "共有",
+    "en": "Share"
+  },
+  "送金先": {
+    "ja": "送金先",
+    "en": "send address"
+  },
+  "請求額": {
+    "ja": "請求額",
+    "en": "invoice amount"
+  },
+  "金額": {
+    "ja": "金額",
+    "en": "price"
+  },
+  "法定通貨換算": {
+    "ja": "法定通貨換算",
+    "en": "Legal currency conversion"
+  },
+  "換算": {
+    "ja": "換算",
+    "en": "conversion"
+  },
+  "相手に表示する文": {
+    "ja": "相手に表示する文",
+    "en": "Message displayed to the recipient"
+  },
+  "ブロックに書き込んでもらうメッセージ(対応ウォレットのみ": {
+    "ja": "ブロックに書き込んでもらうメッセージ(対応ウォレットのみ",
+    "en": "Message to write on the block (specific wallet only"
+  },
+  "送金URL形式": {
+    "ja": "送金URL形式",
+    "en": "Change to URL format"
+  },
+  "確定": {
+    "ja": "確定",
+    "en": "OK"
+  },
+  "アドレス検索": {
+    "ja": "アドレス検索",
+    "en": "Address search"
+  },
+  "所有者です": {
+    "ja": "所有者です",
+    "en": "You are the owner"
+  },
+  "パスワードを入力して下さい。": {
+    "ja": "パスワードを入力して下さい。",
+    "en": "Please enter the password."
+  },
+  "はじめる": {
+    "ja": "はじめる",
+    "en": "Start"
+  },
+  "トークンをつくる": {
+    "ja": "トークンをつくる",
+    "en": "Create the token"
+  },
+  "トークンの作成にはスパム対策手数料として少量のXMP/XCPが必要です。": {
+    "ja": "トークンの作成にはスパム対策手数料として少量のXMP/XCPが必要です。",
+    "en": "When creating a token,the small amount of XMP/XCP is needed as spam countermeasure fee."
+  },
+  "作成するアドレスのラベル": {
+    "ja": "作成するアドレスのラベル",
+    "en": "Label of created address."
+  },
+  "トークン名": {
+    "ja": "トークン名",
+    "en": "Token name"
+  },
+  "サブトークンは正式名称": {
+    "ja": "サブトークンは正式名称",
+    "en": "Input the official name of sub-token"
+  },
+  "説明": {
+    "ja": "説明",
+    "en": "Description"
+  },
+  "トークンの所有権移動をしたい時のみ移転先アドレス": {
+    "ja": "トークンの所有権移動をしたい時のみ移転先アドレス",
+    "en": "Relocation destination address (only when you want to transfer the ownership of the token to another person)"
+  },
+  "小数点以下を許可": {
+    "ja": "小数点以下を許可",
+    "en": "Allow decimal point"
+  },
+  "トークンを作成": {
+    "ja": "トークンを作成",
+    "en": "Create the token"
+  },
+  "コインの管理": {
+    "ja": "コインの管理",
+    "en": "Coin management"
+  },
+  "利用可能": {
+    "ja": "利用可能",
+    "en": "Enable"
+  },
+  "無効": {
+    "ja": "無効",
+    "en": "Disable"
+  },
+  "パスワードを入力してください。コインを削除すると、残高は失われませんが、ラベルなど、その他の情報は失われる可能性があります。": {
+    "ja": "パスワードを入力してください。コインを削除すると、残高は失われませんが、ラベルなど、その他の情報は失われる可能性があります。",
+    "en": "Please enter your password. Note that when you delete the coin, information on the coin label may be lost though the balance will be still active.Note"
+  },
+  "コイン": {
+    "ja": "コイン",
+    "en": "coin"
+  },
+  "単位": {
+    "ja": "単位",
+    "en": "unit"
+  },
+  "エンドポイント": {
+    "ja": "エンドポイント",
+    "en": " endpoint"
+  },
+  "ブロック": {
+    "ja": "ブロック",
+    "en": "block"
+  },
+  "アドレス,トークン名": {
+    "ja": "アドレス,トークン名",
+    "en": "Address, Token name"
+  },
+  "トークンがありません": {
+    "ja": "トークンがありません",
+    "en": "Token not found"
+  },
+  "メニュー→受け取り→モナコインアイコン": {
+    "ja": "メニュー→受け取り→モナコインアイコン",
+    "en": "Menu → Receive → Monacoin icon"
+  },
+  "で受け取りアドレスを取得しましょう。": {
+    "ja": "で受け取りアドレスを取得しましょう。",
+    "en": "Let’s access [Menu → Receive → Monacoin icon] to get the address for reception."
+  },
+  "カードであそぶ": {
+    "ja": "カードであそぶ",
+    "en": "Card"
+  },
+  "設定": {
+    "ja": "設定",
+    "en": "Settings"
+  },
+  "困ったな": {
+    "ja": "困ったな",
+    "en": "I got the problem."
+  },
+  "申し訳ありません。問題が発生したようです。心当たりがある場合、原因を取り除き、どうしても解決できない、あるいは明らかなバグである場合、ヘルプからお問い合わせください。詳細は以下の通りです。": {
+    "ja": "申し訳ありません。問題が発生したようです。心当たりがある場合、原因を取り除き、どうしても解決できない、あるいは明らかなバグである場合、ヘルプからお問い合わせください。詳細は以下の通りです。",
+    "en": "It seems that a problem has occurred. Please remove the cause and try again. If you cannot solve using any method , or if it seems to be clearly bug, please contact us for help. Details are shown below."
+  },
+  "戻る": {
+    "ja": "戻る",
+    "en": "Back"
+  },
+  "ヘルプ/豆知識": {
+    "ja": "ヘルプ/豆知識",
+    "en": "Help/note"
+  },
+  "読み取り結果": {
+    "ja": "読み取り結果",
+    "en": "Read result"
+  },
+  "コピー": {
+    "ja": "コピー",
+    "en": "Copy"
+  },
+  "コピーしない": {
+    "ja": "コピーしない",
+    "en": "Do not copy"
+  },
+  "とりあえず送ってもらう": {
+    "ja": "とりあえず送ってもらう",
+    "en": "Coin Address"
+  },
+  "読み込み中": {
+    "ja": "読み込み中",
+    "en": "Loading"
+  },
+  "ラベル付きアドレス": {
+    "ja": "ラベル付きアドレス",
+    "en": "Labelled address"
+  },
+  "ラベル追加": {
+    "ja": "ラベル追加",
+    "en": "add label"
+  },
+  "請求書": {
+    "ja": "請求書",
+    "en": "Invoice"
+  },
+  "請求書のQRコードを作る": {
+    "ja": "請求書のQRコードを作る",
+    "en": "Make invoice QR code"
+  },
+  "ラベルを追加": {
+    "ja": "ラベルを追加",
+    "en": "add label"
+  },
+  "ラベルをつけて下さい。": {
+    "ja": "ラベルをつけて下さい。",
+    "en": "Please add the label. "
+  },
+  "フォーマットを入力すると、アドレスを導出します": {
+    "ja": "フォーマットを入力すると、アドレスを導出します",
+    "en": "format is inputed, then the address is derived."
+  },
+  "ラベル": {
+    "ja": "ラベル",
+    "en": "label"
+  },
+  "ウォレットの復元": {
+    "ja": "ウォレットの復元",
+    "en": "Restore the wallet"
+  },
+  "単語を入力してください。候補を絞り込めた場合、確定します。絞り込めない場合、画面下に候補が表示されます。": {
+    "ja": "単語を入力してください。候補を絞り込めた場合、確定します。絞り込めない場合、画面下に候補が表示されます。",
+    "en": "Please enter the ENGLISH WORD. If you narrow down the candidates, we will confirm. If you cannot, those candidates are displayed at the bottom of the screen."
+  },
+  "単語をリセット": {
+    "ja": "単語をリセット",
+    "en": "Reset words"
+  },
+  "エラーが発生しました。単語の順番、スペルが間違っていないかを確認して、もう一度お試しください。": {
+    "ja": "エラーが発生しました。単語の順番、スペルが間違っていないかを確認して、もう一度お試しください。",
+    "en": "An error occurred. Please check the word order and spelling. Then try again."
+  },
+  "やり直す": {
+    "ja": "やり直す",
+    "en": "try again"
+  },
+  "署名の検証に失敗しました。": {
+    "ja": "署名の検証に失敗しました。",
+    "en": "Verification of signature failed"
+  },
+  "署名の検証に成功しました。": {
+    "ja": "署名の検証に成功しました。",
+    "en": "Successfully verified the signature"
+  },
+  "送金先アドレス": {
+    "ja": "送金先アドレス",
+    "en": "send address"
+  },
+  "コイン種類": {
+    "ja": "コイン種類",
+    "en": "Coin type"
+  },
+  "まずは出金先アドレスを指定してください。": {
+    "ja": "まずは出金先アドレスを指定してください。",
+    "en": "Please input payment destination address first"
+  },
+  "相手に送金する金額": {
+    "ja": "相手に送金する金額",
+    "en": "amount to send"
+  },
+  "日本円": {
+    "ja": "日本円",
+    "en": "Japanese YEN"
+  },
+  "確認画面へ": {
+    "ja": "確認画面へ",
+    "en": "CHECK"
+  },
+  "取引の説明(任意": {
+    "ja": "取引の説明(任意",
+    "en": "Description of the transaction (option"
+  },
+  "履歴で確認できます。": {
+    "ja": "履歴で確認できます。",
+    "en": "You can check with the history."
+  },
+  "少なすぎると危ないよ！": {
+    "ja": "少なすぎると危ないよ！",
+    "en": "Note that small fee will be risk."
+  },
+  "相手に送るメッセージ(任意": {
+    "ja": "相手に送るメッセージ(任意",
+    "en": "Send the following message (option"
+  },
+  "まで": {
+    "ja": "まで",
+    "en": " is upper limit"
+  },
+  "を手動指定": {
+    "ja": "を手動指定",
+    "en": " manual setting"
+  },
+  "規定の形式、詳しくはソースコード": {
+    "ja": "規定の形式、詳しくはソースコード",
+    "en": "Confirmed format, check source code for details"
+  },
+  "トークンを送る": {
+    "ja": "トークンを送る",
+    "en": "Send the token"
+  },
+  "トークンが入っているアドレスラベル": {
+    "ja": "トークンが入っているアドレスラベル",
+    "en": "Label of address containing the token."
+  },
+  "手数料のために少額のMONAが必要です": {
+    "ja": "手数料のために少額のMONAが必要です",
+    "en": "The small amount of MONA needs to be consumed as the fee."
+  },
+  "送る量": {
+    "ja": "送る量",
+    "en": "amount to send"
+  },
+  "メモ": {
+    "ja": "メモ",
+    "en": "memo"
+  },
+  "パスワード設定": {
+    "ja": "パスワード設定",
+    "en": "Password setting"
+  },
+  "パスワードを設定します。": {
+    "ja": "パスワードを設定します。",
+    "en": "Please set up your password"
+  },
+  "文字以上": {
+    "ja": "文字以上",
+    "en": " characters or more"
+  },
+  "秘密鍵を保護するために使用されます。": {
+    "ja": "秘密鍵を保護するために使用されます。",
+    "en": "The password is used to protect the secret key"
+  },
+  "他人に知れ渡ると、勝手にアプリケーションを利用される可能性があります。": {
+    "ja": "他人に知れ渡ると、勝手にアプリケーションを利用される可能性があります。",
+    "en": "If your password is found by others, your coins may be stolen."
+  },
+  "エラーが発生しました。再度お試し下さい。エラー内容": {
+    "ja": "エラーが発生しました。再度お試し下さい。エラー内容",
+    "en": "Error occurred. Please try again.Error info:"
+  },
+  "現在のパスワード": {
+    "ja": "現在のパスワード",
+    "en": "Current password"
+  },
+  "パスワードの種類": {
+    "ja": "パスワードの種類",
+    "en": "Password type"
+  },
+  "半角英数字のパスワード": {
+    "ja": "半角英数字のパスワード",
+    "en": "Password should consist both alphabets and numbers."
+  },
+  "指紋認証を使う": {
+    "ja": "指紋認証を使う",
+    "en": "Use fingerprint"
+  },
+  "コード": {
+    "ja": "コード",
+    "en": "code"
+  },
+  "署名と検証": {
+    "ja": "署名と検証",
+    "en": "Sign and Verify"
+  },
+  "パスフレーズの表示": {
+    "ja": "パスフレーズの表示",
+    "en": "Show passphrase"
+  },
+  "パスワードを変更": {
+    "ja": "パスワードを変更",
+    "en": "Change the password"
+  },
+  "請求一覧の編集": {
+    "ja": "請求一覧の編集",
+    "en": "Edit invoice list"
+  },
+  "既存ウォレットからの吸出し": {
+    "ja": "既存ウォレットからの吸出し",
+    "en": "Import from existing wallet"
+  },
+  "お金": {
+    "ja": "お金",
+    "en": "Asset "
+  },
+  "待機中の残高も使用する(遅くなります": {
+    "ja": "待機中の残高も使用する(遅くなります",
+    "en": "Use waiting balance (processing may be delayed"
+  },
+  "法定通貨": {
+    "ja": "法定通貨",
+    "en": "Legal currency"
+  },
+  "モナコイン": {
+    "ja": "モナコイン",
+    "en": "MONA"
+  },
+  "米ドル": {
+    "ja": "米ドル",
+    "en": "USD"
+  },
+  "表示": {
+    "ja": "表示",
+    "en": "Display"
+  },
+  "簡単な単位の表示にする": {
+    "ja": "簡単な単位の表示にする",
+    "en": "Display simple units"
+  },
+  "絶対時間で表示する": {
+    "ja": "絶対時間で表示する",
+    "en": "Display timestamp of history by calendar"
+  },
+  "決済音を鳴らす": {
+    "ja": "決済音を鳴らす",
+    "en": "Payment sound"
+  },
+  "言語": {
+    "ja": "言語",
+    "en": "Language"
+  },
+  "日本語": {
+    "ja": "日本語",
+    "en": "Japanese"
+  },
+  "メニュー": {
+    "ja": "メニュー",
+    "en": " menu"
+  },
+  "あなたの": {
+    "ja": "あなたの",
+    "en": "Your "
+  },
+  "背景": {
+    "ja": "背景",
+    "en": "wallpaper"
+  },
+  "リアルモナコインちゃん": {
+    "ja": "リアルモナコインちゃん",
+    "en": "Real Monacoin-chan"
+  },
+  "単色:白": {
+    "ja": "単色:白",
+    "en": "White"
+  },
+  "単色:青": {
+    "ja": "単色:青",
+    "en": "Blue"
+  },
+  "手動導出アドレスのため、残高が反映されない可能性があります。送金する場合はご注意ください。": {
+    "ja": "手動導出アドレスのため、残高が反映されない可能性があります。送金する場合はご注意ください。",
+    "en": "Because it is a manually derived address, the balance may not be reflected. Please be careful when sending."
+  },
+  "残高": {
+    "ja": "残高",
+    "en": "balance"
+  },
+  "公開鍵": {
+    "ja": "公開鍵",
+    "en": "Public key"
+  },
+  "ラベルを編集": {
+    "ja": "ラベルを編集",
+    "en": "edit label"
+  },
+  "ラベルを変更してください": {
+    "ja": "ラベルを変更してください",
+    "en": "Please change the label"
+  },
+  "パスフレーズ": {
+    "ja": "パスフレーズ",
+    "en": "Passphrase"
+  },
+  "英単語を正確に、紙に手書きしてください。": {
+    "ja": "英単語を正確に、紙に手書きしてください。",
+    "en": "Please write ENGLISH WORDS on the paper manually."
+  },
+  "チェックボックスは確認のためにお使いください。": {
+    "ja": "チェックボックスは確認のためにお使いください。",
+    "en": "Please use the checkboxes to check each word."
+  },
+  "パスワードを入力してください": {
+    "ja": "パスワードを入力してください",
+    "en": "Please enter your password."
+  },
+  "ロック解除": {
+    "ja": "ロック解除",
+    "en": "unlock"
+  },
+  "署名/検証するアドレス": {
+    "ja": "署名/検証するアドレス",
+    "en": "Sign / verify address"
+  },
+  "アドレス": {
+    "ja": "アドレス",
+    "en": "address"
+  },
+  "まずはアドレスを指定してください。": {
+    "ja": "まずはアドレスを指定してください。",
+    "en": "Please input the address first"
+  },
+  "署名された文": {
+    "ja": "署名された文",
+    "en": "Signature"
+  },
+  "署名文": {
+    "ja": "署名文",
+    "en": "Signature"
+  },
+  "署名用パスワード": {
+    "ja": "署名用パスワード",
+    "en": "Signature password"
+  },
+  "署名": {
+    "ja": "署名",
+    "en": "Sign"
+  },
+  "検証": {
+    "ja": "検証",
+    "en": "Verify"
+  },
+  "検証結果": {
+    "ja": "検証結果",
+    "en": "verification result"
+  },
+  "署名が正しいことを検証できました。": {
+    "ja": "署名が正しいことを検証できました。",
+    "en": "Successfully verified."
+  },
+  "署名が不正です。": {
+    "ja": "署名が不正です。",
+    "en": "Signature is invalid."
+  },
+  "もどる": {
+    "ja": "もどる",
+    "en": "Back"
+  },
+  "秘密鍵": {
+    "ja": "秘密鍵",
+    "en": "secret key"
+  },
+  "送信": {
+    "ja": "送信",
+    "en": "Send"
+  },
+  "たった今": {
+    "ja": "たった今",
+    "en": "Now"
+  },
+  "分前": {
+    "ja": "分前",
+    "en": "minutes ago"
+  },
+  "時間前": {
+    "ja": "時間前",
+    "en": " hours ago"
+  },
+  "日前": {
+    "ja": "日前",
+    "en": " days ago"
+  },
+  "か月前": {
+    "ja": "か月前",
+    "en": "months ago"
+  },
+  "年前": {
+    "ja": "年前",
+    "en": "years ago"
+  },
+  "何もないみたいです": {
+    "ja": "何もないみたいです",
+    "en": "Nothing"
+  },
+  "これを送る": {
+    "ja": "これを送る",
+    "en": "send this"
+  },
+  "カードの詳細": {
+    "ja": "カードの詳細",
+    "en": "card detail"
+  },
+  "カード名": {
+    "ja": "カード名",
+    "en": "card name"
+  },
+  "作者名": {
+    "ja": "作者名",
+    "en": "Creator's name"
+  },
+  "作者Twitterアカウント名": {
+    "ja": "作者Twitterアカウント名",
+    "en": "Creator's twitter account"
+  },
+  "説明文": {
+    "ja": "説明文",
+    "en": "Description"
+  },
+  "画像": {
+    "ja": "画像",
+    "en": "image"
+  },
+  "トークン情報": {
+    "ja": "トークン情報",
+    "en": "Token information"
+  },
+  "トークン正式名称": {
+    "ja": "トークン正式名称",
+    "en": "Token official name"
+  },
+  "流通総量": {
+    "ja": "流通総量",
+    "en": "total supply"
+  },
+  "オーナーアドレス": {
+    "ja": "オーナーアドレス",
+    "en": "owner address"
+  },
+  "発行者アドレス": {
+    "ja": "発行者アドレス",
+    "en": "creator address"
+  },
+  "小数点分割": {
+    "ja": "小数点分割",
+    "en": "Decimal point division"
+  },
+  "可能": {
+    "ja": "可能",
+    "en": "enable"
+  },
+  "不可能": {
+    "ja": "不可能",
+    "en": "disable"
+  },
+  "ロック": {
+    "ja": "ロック",
+    "en": "Lock"
+  },
+  "されている": {
+    "ja": "されている",
+    "en": "enable"
+  },
+  "されていない": {
+    "ja": "されていない",
+    "en": "disable"
+  },
+  "が作成": {
+    "ja": "が作成",
+    "en": "created"
+  },
+  "から": {
+    "ja": "から",
+    "en": "to"
+  },
+  "へ所有者移転": {
+    "ja": "へ所有者移転",
+    "en": "owner change"
+  },
+  "から説明文を変更": {
+    "ja": "から説明文を変更",
+    "en": "change description"
+  },
+  "枚を追加発行": {
+    "ja": "枚を追加発行",
+    "en": "card to add the total supply"
+  },
+  "ロックされた": {
+    "ja": "ロックされた",
+    "en": "Locked"
+  },
+  "取引詳細": {
+    "ja": "取引詳細",
+    "en": "Transaction details"
+  },
+  "ラベルを設定": {
+    "ja": "ラベルを設定",
+    "en": "label setting"
+  },
+  "メッセージ無し": {
+    "ja": "メッセージ無し",
+    "en": "no message"
+  },
+  "その時の価格": {
+    "ja": "その時の価格",
+    "en": "The price of the relevant time"
+  },
+  "各自でご入力下さい": {
+    "ja": "各自でご入力下さい",
+    "en": "Please input by yourself."
+  },
+  "ブロックに取り込まれた時間": {
+    "ja": "ブロックに取り込まれた時間",
+    "en": "Time included in block"
+  },
+  "承認された回数": {
+    "ja": "承認された回数",
+    "en": "confirmation count"
+  },
+  "入力総量": {
+    "ja": "入力総量",
+    "en": "total input"
+  },
+  "出力総量": {
+    "ja": "出力総量",
+    "en": "total output"
+  },
+  "トランザクション": {
+    "ja": "トランザクション",
+    "en": "transaction"
+  },
+  "チェーンエクスプローラーを見る": {
+    "ja": "チェーンエクスプローラーを見る",
+    "en": "View Chain Explorer"
+  },
+  "入力": {
+    "ja": "入力",
+    "en": "input"
+  },
+  "出力": {
+    "ja": "出力",
+    "en": "output"
+  },
+  "ヘルスメーター": {
+    "ja": "ヘルスメーター",
+    "en": "Health meter"
+  },
+  "に対する利用者の現在のイライラ度は": {
+    "ja": "に対する利用者の現在のイライラ度は",
+    "en": "user's currently stress level is "
+  },
+  "数値が大きいほど危険。この数値はあくまで目安です。": {
+    "ja": "数値が大きいほど危険。この数値はあくまで目安です。",
+    "en": "A large the number means a bad condition."
+  },
+  "まずは、APIキー、シークレットキーを設定画面から入力しましょう。": {
+    "ja": "まずは、APIキー、シークレットキーを設定画面から入力しましょう。",
+    "en": "First let's input the API key and secret key in the setting."
+  },
+  "注意": {
+    "ja": "注意",
+    "en": "Caution"
+  },
+  "のサーバーは混雑時、とても不安定です。決済する前に、ヘルスメーターを確認する癖をつけてください。": {
+    "ja": "のサーバーは混雑時、とても不安定です。決済する前に、ヘルスメーターを確認する癖をつけてください。",
+    "en": "server is very unstable when crowded. Please check the health meter before you settle."
+  },
+  "請求を作成": {
+    "ja": "請求を作成",
+    "en": "Create invoice"
+  },
+  "決済に使用する暗号通貨": {
+    "ja": "決済に使用する暗号通貨",
+    "en": "cryptocurrency used for settlement"
+  },
+  "決済完了とみなすスピード": {
+    "ja": "決済完了とみなすスピード",
+    "en": "Speed regarded as settlement completion"
+  },
+  "遅いけど確実": {
+    "ja": "遅いけど確実",
+    "en": "slow but firm"
+  },
+  "最低限の承認": {
+    "ja": "最低限の承認",
+    "en": "Minimum confirmation"
+  },
+  "すぐに終わるけどハイリスク": {
+    "ja": "すぐに終わるけどハイリスク",
+    "en": "Fast but high risk"
+  },
+  "決済金額（日本円）": {
+    "ja": "決済金額（日本円）",
+    "en": "amount to be settled (JPY)"
+  },
+  "決済額": {
+    "ja": "決済額",
+    "en": "amount to be settled"
+  },
+  "商品名": {
+    "ja": "商品名",
+    "en": "Product name"
+  },
+  "請求リストに表示されます": {
+    "ja": "請求リストに表示されます",
+    "en": "It will appear in the invoice list"
+  },
+  "オーダーIDなど": {
+    "ja": "オーダーIDなど",
+    "en": "Order ID"
+  },
+  "任意": {
+    "ja": "任意",
+    "en": "optional"
+  },
+  "参照番号など": {
+    "ja": "参照番号など",
+    "en": "Reference number"
+  },
+  "請求発行": {
+    "ja": "請求発行",
+    "en": "issue the invoice"
+  },
+  "保存された請求": {
+    "ja": "保存された請求",
+    "en": "Saved invoice"
+  },
+  "請求": {
+    "ja": "請求",
+    "en": "invoice"
+  },
+  "決済の進捗": {
+    "ja": "決済の進捗",
+    "en": "Progress of settlement"
+  },
+  "請求受付中": {
+    "ja": "請求受付中",
+    "en": "Receiving invoice"
+  },
+  "送金されたようです": {
+    "ja": "送金されたようです",
+    "en": "It seems to be sent"
+  },
+  "確認されました。": {
+    "ja": "確認されました。",
+    "en": "Confirmed"
+  },
+  "完了": {
+    "ja": "完了",
+    "en": "Done"
+  },
+  "期限切れ": {
+    "ja": "期限切れ",
+    "en": "Expired"
+  },
+  "失敗": {
+    "ja": "失敗",
+    "en": "Failed"
+  },
+  "キャンセルされました": {
+    "ja": "キャンセルされました",
+    "en": "Cancelled"
+  },
+  "決済金額（暗号通貨）": {
+    "ja": "決済金額（暗号通貨）",
+    "en": "amount to be settled (cryptocurrency)"
+  },
+  "（日本円）": {
+    "ja": "（日本円）",
+    "en": "(JPY)"
+  },
+  "請求作成日": {
+    "ja": "請求作成日",
+    "en": "Invoice creation date"
+  },
+  "請求有効期限": {
+    "ja": "請求有効期限",
+    "en": "Invoice expiration date"
+  },
+  "約": {
+    "ja": "約",
+    "en": "about"
+  },
+  "砂": {
+    "ja": "砂",
+    "en": "sand"
+  },
+  "もにゃ 開発チーム": {
+    "ja": "もにゃ 開発チーム",
+    "en": "Monya Developer Team"
+  },
+  "バックエンドをお借りした方々": {
+    "ja": "バックエンドをお借りした方々",
+    "en": "Infrastructure supporters"
+  },
+  "敬称略": {
+    "ja": "敬称略",
+    "en": "honorific titles are omitted"
+  },
+  "未承認": {
+    "ja": "未承認",
+    "en": "unconfirmed"
+  },
+  "設定から「待機中の残高も使用する」を": {
+    "ja": "設定から「待機中の残高も使用する」を",
+    "en": "Current [use the waiting balance setting] to"
+  },
+  "にする": {
+    "ja": "にする",
+    "en": "setting."
+  },
+  "預けるトークン": {
+    "ja": "預けるトークン",
+    "en": "Deposit token"
+  },
+  "正式名": {
+    "ja": "正式名",
+    "en": "official name"
+  },
+  "受け取るトークン": {
+    "ja": "受け取るトークン",
+    "en": "Receive token"
+  },
+  "小数点ありのトークンは": {
+    "ja": "小数点ありのトークンは",
+    "en": "Please input token with decimal point using"
+  },
+  "単位で入力してください": {
+    "ja": "単位で入力してください",
+    "en": "units."
+  },
+  "「ホーム画面に追加」アイコンがない場合は、「": {
+    "ja": "「ホーム画面に追加」アイコンがない場合は、「",
+    "en": "If there is no [Add to home screen] icon, you should be looking for ["
+  },
+  "で開く」を探してみてください": {
+    "ja": "で開く」を探してみてください",
+    "en": "] open icon."
+  },
+  "内ブラウザでのご使用は大変危険です。": {
+    "ja": "内ブラウザでのご使用は大変危険です。",
+    "en": "Using the built-in browser is highly risky."
+  },
+  "でご覧ください": {
+    "ja": "でご覧ください",
+    "en": "is recommended"
+  },
+  "現在表示されている履歴の": {
+    "ja": "現在表示されている履歴の",
+    "en": "This is the "
+  },
+  "ファイルです。": {
+    "ja": "ファイルです。",
+    "en": "file of the history currently displayed."
+  },
+  "エラーが発生したようです。": {
+    "ja": "エラーが発生したようです。",
+    "en": "Error occurred"
+  },
+  "しばらくしてからもう一度お試しください。": {
+    "ja": "しばらくしてからもう一度お試しください。",
+    "en": "Please try again later."
+  },
+  "この": {
+    "ja": "この",
+    "en": "Read this "
+  },
+  "コードを読み取って": {
+    "ja": "コードを読み取って",
+    "en": "code."
+  },
+  "ブロックに書き込んでもらうメッセージ": {
+    "ja": "ブロックに書き込んでもらうメッセージ",
+    "en": "Message to write on the block"
+  },
+  "対応ウォレットのみ": {
+    "ja": "対応ウォレットのみ",
+    "en": "specific wallet only"
+  },
+  "形式": {
+    "ja": "形式",
+    "en": "format"
+  },
+  "トークンの作成にはスパム対策手数料として少量の": {
+    "ja": "トークンの作成にはスパム対策手数料として少量の",
+    "en": "When creating a token,the small amount of"
+  },
+  "が必要です。": {
+    "ja": "が必要です。",
+    "en": "is needed as spam countermeasure fee."
+  },
+  "メニュー→受け取り→モナコインアイコン で受け取りアドレスを取得しましょう。": {
+    "ja": "メニュー→受け取り→モナコインアイコン で受け取りアドレスを取得しましょう。",
+    "en": "Menu → Receive → Monacoin icon.Let's get the received address. "
+  },
+  "豆知識": {
+    "ja": "豆知識",
+    "en": "Notes"
+  },
+  "請求書の": {
+    "ja": "請求書の",
+    "en": "Make invoice"
+  },
+  "コードを作る": {
+    "ja": "コードを作る",
+    "en": "code"
+  },
+  "取引の説明": {
+    "ja": "取引の説明",
+    "en": "Explanation of transaction"
+  },
+  "相手に送るメッセージ": {
+    "ja": "相手に送るメッセージ",
+    "en": "Send the message"
+  },
+  "手数料のために少額の": {
+    "ja": "手数料のために少額の",
+    "en": "The small amount of"
+  },
+  "が必要です": {
+    "ja": "が必要です",
+    "en": " need to be consumed as the fee."
+  },
+  "待機中の残高も使用する": {
+    "ja": "待機中の残高も使用する",
+    "en": "Use waiting balance"
+  },
+  "遅くなります": {
+    "ja": "遅くなります",
+    "en": "process may be delayed"
+  },
+  "単色": {
+    "ja": "単色",
+    "en": "Single color"
+  },
+  "白": {
+    "ja": "白",
+    "en": "White"
+  },
+  "青": {
+    "ja": "青",
+    "en": "Blue"
+  },
+  "検証するアドレス": {
+    "ja": "検証するアドレス",
+    "en": "Verification address"
+  },
+  "作者": {
+    "ja": "作者",
+    "en": "Creator"
+  },
+  "アカウント名": {
+    "ja": "アカウント名",
+    "en": "Account name"
+  },
+  "とは、": {
+    "ja": "とは、",
+    "en": "is"
+  },
+  "まずは、": {
+    "ja": "まずは、",
+    "en": "First"
+  },
+  "キー、シークレットキーを設定画面から入力しましょう。": {
+    "ja": "キー、シークレットキーを設定画面から入力しましょう。",
+    "en": "Let's enter keys and secret keys from the setting screen."
+  },
+  "オーダー": {
+    "ja": "オーダー",
+    "en": "order"
+  },
+  "など": {
+    "ja": "など",
+    "en": " etc "
+  },
+  "カードであそぶメニュー": {
+    "ja": "カードであそぶメニュー",
+    "en": "card menu"
+  },
+  "バージョン": {
+    "ja": "バージョン",
+    "en": "Version"
+  },
+  "作者に寄付する": {
+    "ja": "作者に寄付する",
+    "en": "Donate me"
+  },
+  "スキップ": {
+    "ja": "スキップ",
+    "en": "Skip"
+  },
+  "次の画面で表示される英単語を正確に、紙に手書きしてください。": {
+    "ja": "次の画面で表示される英単語を正確に、紙に手書きしてください。",
+    "en": "Please correctly write these words on the paper manually in the next screen."
+  },
+  "単語数": {
+    "ja": "単語数",
+    "en": "Word count"
+  },
+  "単語": {
+    "ja": "単語",
+    "en": " word"
+  },
+  "コインパラメータをリセット": {
+    "ja": "コインパラメータをリセット",
+    "en": "Reset coin parameters"
+  },
+  "暗号化された秘密鍵が入っています。十分注意してください。": {
+    "ja": "暗号化された秘密鍵が入っています。十分注意してください。",
+    "en": "It contains encrypted private key. Please be careful"
+  },
+  "パラメータをリセット": {
+    "ja": "パラメータをリセット",
+    "en": "Reset parameters"
+  },
+  "コインパラメータをリセットしますか？編集した内容は失われます": {
+    "ja": "コインパラメータをリセットしますか？編集した内容は失われます",
+    "en": "Do you really reset coin parameters? Changed contents will be lost."
+  },
+  "保有トークン": {
+    "ja": "保有トークン",
+    "en": "Tokens"
+  },
+  "直近": {
+    "ja": "直近",
+    "en": "last"
+  },
+  "件の取引": {
+    "ja": "件の取引",
+    "en": " transaction"
+  },
+  "作成": {
+    "ja": "作成",
+    "en": "Issued"
+  },
+  "約定": {
+    "ja": "約定",
+    "en": "Order matched"
+  },
+  "注文": {
+    "ja": "注文",
+    "en": "Order"
+  },
+  "注文取消し": {
+    "ja": "注文取消し",
+    "en": "Cancel order"
+  },
+  "取得件数": {
+    "ja": "取得件数",
+    "en": "Retrieve count"
+  },
+  "メニュー→受け取り→": {
+    "ja": "メニュー→受け取り→",
+    "en": "Receive→"
+  },
+  "アイコン で受け取りアドレスを取得しましょう。": {
+    "ja": "アイコン で受け取りアドレスを取得しましょう。",
+    "en": " icon provides you receive address"
+  },
+  "カメラが不調です": {
+    "ja": "カメラが不調です",
+    "en": "　Camera doesn't work."
+  },
+  "が不調なため、": {
+    "ja": "が不調なため、",
+    "en": " malfunction ,"
+  },
+  "コードリーダを起動できません。": {
+    "ja": "コードリーダを起動できません。",
+    "en": " scanner doesn't work."
+  },
+  "に乗り換えると幸せになれます": {
+    "ja": "に乗り換えると幸せになれます",
+    "en": " will help you."
+  },
+  "設問を戻る": {
+    "ja": "設問を戻る",
+    "en": "Go back"
+  },
+  "もう一度入力": {
+    "ja": "もう一度入力",
+    "en": "Type again"
+  },
+  "取引所を通して、受け取り時に暗号通貨でなく、日本円で受け取ることができる決済サービスです。これにより、レート変動によるリスクから解放されます。": {
+    "ja": "取引所を通して、受け取り時に暗号通貨でなく、日本円で受け取ることができる決済サービスです。これにより、レート変動によるリスクから解放されます。",
+    "en": " the payment service by an exchange. You will receive Japanese yen, not crypto currency. This frees you from the risk by rate fluctuation."
+  },
+  "翻訳協力": {
+    "ja": "翻訳協力",
+    "en": "Translation support"
+  },
+  "宛先タグ": {
+    "ja": "宛先タグ",
+    "en": "Destination Tag"
+  },
+  "アカウントがありません": {
+    "ja": "アカウントがありません",
+    "en": "Account not found"
+  },
+  "を入金してアクティベートしてください。": {
+    "ja": "を入金してアクティベートしてください。",
+    "en": " is required to activate this account."
+  },
+  "送金成功": {
+    "ja": "送金成功",
+    "en": "Sent!"
+  },
+  "送金しました": {
+    "ja": "送金しました",
+    "en": "Successfully sent!"
+  },
+  "リップル": {
+    "ja": "リップル",
+    "en": "Ripple"
+  },
+  "リップルとは、ビットコインにインスパイヤされた高速な国際送金を実現するために作られた分散型台帳システムです。現在では、その高速な着金のため": {
+    "ja": "リップルとは、ビットコインにインスパイヤされた高速な国際送金を実現するために作られた分散型台帳システムです。現在では、その高速な着金のため",
+    "en": "Ripple is the distributed ledger system to send funds internationally, inspired by bitcoin. But by its fast money reception, it is also used as "
+  },
+  "決済システム": {
+    "ja": "決済システム",
+    "en": "Payment System"
+  },
+  "としても利用されています。": {
+    "ja": "としても利用されています。",
+    "en": ". "
+  },
+  "ビットコインと何が違うの": {
+    "ja": "ビットコインと何が違うの",
+    "en": "What is the difference between bitcoin?"
+  },
+  "ビットコインは、ブロックチェーンを用いています。その書き込み権利はプルーフ・オブ・ワークによって決定されています。この欠点は、時間がかかること、大量のエネルギーを消費することです。それに対してリップルはリップルレジャーというブロックチェーンとは一味違う台帳に書き込んでいます。リップルは、書き込む権限を制限する代わりに、": {
+    "ja": "ビットコインは、ブロックチェーンを用いています。その書き込み権利はプルーフ・オブ・ワークによって決定されています。この欠点は、時間がかかること、大量のエネルギーを消費することです。それに対してリップルはリップルレジャーというブロックチェーンとは一味違う台帳に書き込んでいます。リップルは、書き込む権限を制限する代わりに、",
+    "en": "Bitcoin uses the blockchain. The right to write it is decided by Proof of Work. Shortcomings is that it consumes many time and energy. Whereas, transactions of Ripple is written in Ripple Ledger, which is different from blockchain. Instead of restricting write permission, Ripple can "
+  },
+  "エネルギーを無駄にせず、数秒で取引を完了": {
+    "ja": "エネルギーを無駄にせず、数秒で取引を完了",
+    "en": "complete transactions in a moment without wasting energy"
+  },
+  "することができます。": {
+    "ja": "することができます。",
+    "en": ". "
+  },
+  "つまり、リップルは中央集権なの？": {
+    "ja": "つまり、リップルは中央集権なの？",
+    "en": "In other words, is Ripple centralized solution?"
+  },
+  "はい、まさにその通りです。書き込む権限を持った人たちが裏切ったらネットワークは崩壊します。": {
+    "ja": "はい、まさにその通りです。書き込む権限を持った人たちが裏切ったらネットワークは崩壊します。",
+    "en": "Yes. That's right. When writers betray, this network will break down."
+  },
+  "パブリックチェーンなの？プライベートチェーンなの？": {
+    "ja": "パブリックチェーンなの？プライベートチェーンなの？",
+    "en": "Is it public chain, or private chain?"
+  },
+  "リップルはブロックチェーンを使っていません": {
+    "ja": "リップルはブロックチェーンを使っていません",
+    "en": "Ripple does not use blockchain. "
+  },
+  "リップルを始めるには、下記のリップルアドレスに": {
+    "ja": "リップルを始めるには、下記のリップルアドレスに",
+    "en": "To begin Ripple, send "
+  },
+  "を送金してアカウントを有効化してください。": {
+    "ja": "を送金してアカウントを有効化してください。",
+    "en": " and activate this account."
+  },
+  "送金確認": {
+    "ja": "送金確認",
+    "en": "Confirm"
+  },
+  "失敗しても手数料がかかるときがあるので注意": {
+    "ja": "失敗しても手数料がかかるときがあるので注意",
+    "en": "Please pay attention because fee is collected even failure. "
+  },
+  "ブロックチェーンじゃないのでどちらでもありません。大事なことなので二回言います。": {
+    "ja": "ブロックチェーンじゃないのでどちらでもありません。大事なことなので二回言います。",
+    "en": "Neither is incorrect because Ripple isn't the blockchain. I say repeatedly. "
+  },
+  "送金しました！": {
+    "ja": "送金しました！",
+    "en": "Successfully Sent!"
+  },
+  "請求モザイク": {
+    "ja": "請求モザイク",
+    "en": "invoice mosaic"
+  },
+  "モザイク": {
+    "ja": "モザイク",
+    "en": "Mosaic"
+  },
+  "上から選んでください。": {
+    "ja": "上から選んでください。",
+    "en": "Choose from above"
+  },
+  "メッセージなし": {
+    "ja": "メッセージなし",
+    "en": "(no message)"
+  },
+  "作者に寄付": {
+    "ja": "作者に寄付",
+    "en": "Donate Me"
+  },
+  "拡張機能": {
+    "ja": "拡張機能",
+    "en": "Extension"
+  },
+  "サーバー変更": {
+    "ja": "サーバー変更",
+    "en": "Change Server"
+  },
+  "接続": {
+    "ja": "接続",
+    "en": "Connect"
+  },
+  "もにゃ互換": {
+    "ja": "もにゃ互換",
+    "en": "Monya compatible"
+  },
+  "互換": {
+    "ja": "互換",
+    "en": " compatible"
+  },
+  "下から選んでください": {
+    "ja": "下から選んでください",
+    "en": "Choose from below"
+  },
+  "キー、シークレットキーを入力しましょう。": {
+    "ja": "キー、シークレットキーを入力しましょう。",
+    "en": "Please enter a secret key"
+  },
+  "決済請求": {
+    "ja": "決済請求",
+    "en": "Payment request"
+  },
+  "作成時刻": {
+    "ja": "作成時刻",
+    "en": "Created at"
+  },
+  "認証情報消去": {
+    "ja": "認証情報消去",
+    "en": "Erase credentials"
+  },
+  "キーとシークレットを消去します": {
+    "ja": "キーとシークレットを消去します",
+    "en": " key and secret will be deleted."
+  },
+  "ふじしゃん": {
+    "ja": "ふじしゃん",
+    "en": "ふじしゃん"
+  },
+  "っぽい出金を隠す": {
+    "ja": "っぽい出金を隠す",
+    "en": "<手動で修正してあります>"
+  },
+  "コードの形式": {
+    "ja": "コードの形式",
+    "en": " code type"
+  },
+  "モザイク名": {
+    "ja": "モザイク名",
+    "en": "Mosaic Name"
+  },
+  "質問する": {
+    "ja": "質問する",
+    "en": "Ask a question"
+  },
+  "エコビー": {
+    "ja": "エコビー",
+    "en": "Ecobit"
+  },
+  "マザーアース": {
+    "ja": "マザーアース",
+    "en": "Mother Earth"
+  },
+  "を有効化します。": {
+    "ja": "を有効化します。",
+    "en": " will be enabled."
+  },
+  "を無効化します。": {
+    "ja": "を無効化します。",
+    "en": " will be disabled."
+  },
+  "アトミックスワップデータを共有します。": {
+    "ja": "アトミックスワップデータを共有します。",
+    "en": "Atomic swap data will be shared."
+  },
+  "はい": {
+    "ja": "はい",
+    "en": "Yes"
+  },
+  "いいえ": {
+    "ja": "いいえ",
+    "en": "No"
+  },
+  "署名します": {
+    "ja": "署名します",
+    "en": "Sign"
+  },
+  "直接実行します": {
+    "ja": "直接実行します",
+    "en": "Running..."
+  },
+  "無効なメソッドが実行されました。": {
+    "ja": "無効なメソッドが実行されました。",
+    "en": "Invalid method."
+  },
+  "選んでね": {
+    "ja": "選んでね",
+    "en": "Please choose."
+  },
+  "データの共有": {
+    "ja": "データの共有",
+    "en": "Share data"
+  },
+  "ここに相手から知らされた文字列を入力。": {
+    "ja": "ここに相手から知らされた文字列を入力。",
+    "en": "Input sentence."
+  },
+  "未承認の取引があります": {
+    "ja": "未承認の取引があります",
+    "en": "There is an unconfirmed transaction."
+  },
+  "非対応のコマンド": {
+    "ja": "非対応のコマンド",
+    "en": "Unknown command"
+  },
+  "右の文字列を相手に伝えてください。": {
+    "ja": "右の文字列を相手に伝えてください。",
+    "en": "Tell the sentence on the right to your company"
+  },
+  "コインパラメータをリセットしますか？編集した内容は失われます。": {
+    "ja": "コインパラメータをリセットしますか？編集した内容は失われます。",
+    "en": "Do you really reset coin parameter? Edited contents will be lost."
+  },
+  "まだ保存されていません": {
+    "ja": "まだ保存されていません",
+    "en": "There is unsaved changes."
+  },
+  "吸い出し先アドレス": {
+    "ja": "吸い出し先アドレス",
+    "en": "Sweep destination address"
+  },
+  "を指定": {
+    "ja": "を指定",
+    "en": " select "
+  },
+  "マルチシグ": {
+    "ja": "マルチシグ",
+    "en": "Multisignature"
+  },
+  "アドレス確認": {
+    "ja": "アドレス確認",
+    "en": "Check address"
+  },
+  "署名するアドレス": {
+    "ja": "署名するアドレス",
+    "en": "Address to sign"
+  },
+  "公開鍵リスト": {
+    "ja": "公開鍵リスト",
+    "en": "Public keys"
+  },
+  "必要な署名数": {
+    "ja": "必要な署名数",
+    "en": "The number of needed signatures"
+  },
+  "マルチシグアドレス": {
+    "ja": "マルチシグアドレス",
+    "en": "Multisign address"
+  },
+  "未署名トランザクション": {
+    "ja": "未署名トランザクション",
+    "en": "Unsigned Transaction"
+  },
+  "十分な署名数が集まっています": {
+    "ja": "十分な署名数が集まっています",
+    "en": "I have gathered enough number of signatures"
+  },
+  "署名されたトランザクション": {
+    "ja": "署名されたトランザクション",
+    "en": "Signed Transaction"
+  },
+  "省略可": {
+    "ja": "省略可",
+    "en": "Optional"
+  },
+  "削除": {
+    "ja": "削除",
+    "en": "Remove"
+  },
+  "署名するトランザクション": {
+    "ja": "署名するトランザクション",
+    "en": "Transaction to sign"
+  },
+  "「署名するトランザクション」に反映": {
+    "ja": "「署名するトランザクション」に反映",
+    "en": "Apply to 'Transaciton to sign'"
+  },
+  "タイトル": {
+    "ja": "タイトル",
+    "en": "Title"
+  },
+  "タイトルを追加": {
+    "ja": "タイトルを追加",
+    "en": "Add title"
+  },
+  "タイトル追加": {
+    "ja": "タイトル追加",
+    "en": "Add title"
+  },
+  "名称": {
+    "ja": "名称",
+    "en": "Name"
+  },
+  "アイコン": {
+    "ja": "アイコン",
+    "en": "Icon"
+  },
+  "アプリ全体を暗号化する": {
+    "ja": "アプリ全体を暗号化する",
+    "en": "Encrypt the whole app"
+  },
+  "パスフレーズのバックアップ": {
+    "ja": "パスフレーズのバックアップ",
+    "en": "Backup passphrase"
+  },
+  "交換する者のどちらかがシークレットを決めて下さい": {
+    "ja": "交換する者のどちらかがシークレットを決めて下さい",
+    "en": "Either person who want to exchange specifies a secret"
+  },
+  "以下のデータを共有してください": {
+    "ja": "以下のデータを共有してください",
+    "en": "Share data below"
+  },
+  "下記の文字列を相手に伝えてください。": {
+    "ja": "下記の文字列を相手に伝えてください。",
+    "en": "Tell the other below"
+  },
+  "詳細を確認": {
+    "ja": "詳細を確認",
+    "en": " See detail "
+  },
+  "取得": {
+    "ja": "取得",
+    "en": "Get"
+  },
+  "シークレットが見つかりませんでした。相手が送金するまで待ちましょう。": {
+    "ja": "シークレットが見つかりませんでした。相手が送金するまで待ちましょう。",
+    "en": "Secret not found.Please wait until your company sends"
+  },
+  "パスワードがわからない？": {
+    "ja": "パスワードがわからない？",
+    "en": "Forgotten password?"
+  },
+  "パスフレーズを使って残高を復帰させることができます。": {
+    "ja": "パスフレーズを使って残高を復帰させることができます。",
+    "en": "You can recover your funds with passphrase"
+  },
+  "リセット＆リストア": {
+    "ja": "リセット＆リストア",
+    "en": "Reset & Restore"
+  },
+  "本当に削除しますか？": {
+    "ja": "本当に削除しますか？",
+    "en": "Do you really want to delete?"
+  },
+  "全データを消去します。バックアップが用意されていることを必ず確認してください。": {
+    "ja": "全データを消去します。バックアップが用意されていることを必ず確認してください。",
+    "en": "Delete all data. Please make sure that you have a backup"
+  },
+  "アドレスゲット": {
+    "ja": "アドレスゲット",
+    "en": "Get Address"
+  },
+  "署名のみ": {
+    "ja": "署名のみ",
+    "en": " Sign only, not broadcasted"
+  },
+  "最終更新": {
+    "ja": "最終更新",
+    "en": "Last update"
+  },
+  "トークンを受け取る": {
+    "ja": "トークンを受け取る",
+    "en": "Receive tokens"
+  },
+  "アプリケーションと連携します。信頼できるアプリケーションである場合のみ続行してください。": {
+    "ja": "アプリケーションと連携します。信頼できるアプリケーションである場合のみ続行してください。",
+    "en": "Connect to the other application. Continue only when you can trust this application."
+  },
+  "メッセージ署名します": {
+    "ja": "メッセージ署名します",
+    "en": "Signing message."
+  },
+  "アプリケーションに戻ってください。": {
+    "ja": "アプリケーションに戻ってください。",
+    "en": "Please go back to the application."
+  },
+  "このデータをアプリケーションに渡してください。": {
+    "ja": "このデータをアプリケーションに渡してください。",
+    "en": "Pass below to the application"
+  },
+  "モナコインが欲しいです": {
+    "ja": "モナコインが欲しいです",
+    "en": "Give me Monacoin"
+  },
+  "少額の": {
+    "ja": "少額の",
+    "en": "Send with a little amount of "
+  },
+  "も一緒に送る": {
+    "ja": "も一緒に送る",
+    "en": "."
+  },
+  "このモザイクを請求する": {
+    "ja": "このモザイクを請求する",
+    "en": "Make an invoice of this Mosaic"
+  },
+  "ガスプライス": {
+    "ja": "ガスプライス",
+    "en": "Gas Price"
+  },
+  "ガスリミット": {
+    "ja": "ガスリミット",
+    "en": "Gas Limit"
+  },
+  "ガス合計": {
+    "ja": "ガス合計",
+    "en": "Total Gas"
+  },
+  "コントラクトアドレス": {
+    "ja": "コントラクトアドレス",
+    "en": "Contract Address"
+  },
+  "通貨シンボル": {
+    "ja": "通貨シンボル",
+    "en": "Ticker Symbol"
+  },
+  "小数桁数": {
+    "ja": "小数桁数",
+    "en": "Decimals"
+  },
+  "正の整数": {
+    "ja": "正の整数",
+    "en": "Positive Integer"
+  },
+  "登録": {
+    "ja": "登録",
+    "en": "Register"
+  },
+  "登録済": {
+    "ja": "登録済",
+    "en": "Registered"
+  },
+  "ガスがかかります。ご注意ください。": {
+    "ja": "ガスがかかります。ご注意ください。",
+    "en": "This consumes gas. Please be careful."
+  },
+  "実行中": {
+    "ja": "実行中",
+    "en": "Executing..."
+  },
+  "実行する": {
+    "ja": "実行する",
+    "en": "Execute"
+  },
+  "トークンを消去": {
+    "ja": "トークンを消去",
+    "en": "Remove a token"
+  },
+  "コントラクトアドレスを再登録すると残高を復帰できます。トークンを消去しますか？": {
+    "ja": "コントラクトアドレスを再登録すると残高を復帰できます。トークンを消去しますか？",
+    "en": "Your fund come back by reregistering contract address. Do you really want to remove this token?"
+  },
+  "履歴を見る": {
+    "ja": "履歴を見る",
+    "en": "Show history"
+  },
+  "トークンを登録": {
+    "ja": "トークンを登録",
+    "en": "Add a token"
+  },
+  "コントラクトを実行": {
+    "ja": "コントラクトを実行",
+    "en": "Execute a contract"
+  },
+  "関数を選んでください。": {
+    "ja": "関数を選んでください。",
+    "en": "Select a function"
+  },
+  "にゃーん": {
+    "ja": "にゃーん",
+    "en": "Nyaan"
+  },
+  "基本操作マニュアル": {
+    "ja": "基本操作マニュアル",
+    "en": "Basic operation manual"
+  }
+}

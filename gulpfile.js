@@ -57,7 +57,7 @@ gulp.task('webpackCordova', function(){
 });
 gulp.task("watch", function() {
   gulp.watch("dist/dist.js", ["reload"]);
-  gulp.watch("component/*.html", ["copyJa"]);
+  gulp.watch("component/*.html", ["translate"]);
 });
 
 
@@ -87,17 +87,14 @@ gulp.task("compressImage", function() {
 
 gulp.task("default", function(cb) {
   return runSequence(
-    "copyJa",
-    "translateEn",
+    "translate",
     ['browserSync',"webpack","watch"],   
     cb
   );
 });
 gulp.task("prod", function(cb) {
   return runSequence(
-    "copyJa",
-    
-    "translateEn",
+    "translate",
     ["lint","webpackProd","webpackCordova"],
     "compressImage",
     "serviceWorker",
@@ -108,8 +105,7 @@ gulp.task("prod", function(cb) {
 gulp.task("cordova", function(cb) {
   console.log("cordova is deprecated")
   return runSequence(
-    "copyJa",
-    "translateEn",
+    "translate",
     "webpackCordova",
     "compressImage",
     cb
@@ -122,32 +118,45 @@ try{
   height=-1
 }
 console.log("Monacoin Block Height is ",height)
-gulp.task("copyJa", function(cb) {
+gulp.task("translateJa", function(cb) {
   return gulp.src("component/*.html").pipe(translator.translate({
-    dictFile:"../lang/template.json",
+    lang:"ja",
+    dictFile:["../lang/template.json","../lang/dict.json"],
     dict:{
       "<!--t:Timestamp-->":height
     }
   })).pipe(gulp.dest("./component/ja"))
 });
 gulp.task("addWord", function(cb) {
-  return gulp.src("component/ja/*").pipe(translator.addWord({
+  return gulp.src("component/*").pipe(translator.addWord({
     dictFile:"../lang/dict.json"
   }))
 });
 gulp.task("translateEn", function(cb) {
-  return gulp.src("component/ja/*.html").pipe(translator.translate({
-    dictFile:"../lang/dict.json"
+  return gulp.src("component/*.html").pipe(translator.translate({
+    lang:"en",
+    dictFile:["../lang/template.json","../lang/dict.json"],
+    dict:{
+      "<!--t:Timestamp-->":height
+    }
   })).pipe(gulp.dest("./component/en"))
 });
 gulp.task("serviceWorker", function(cb) {
   var files = fs.readdirSync("./dist/assets").filter(n=>n[0]!==".")
   return gulp.src("js/sw.js").pipe(translator.translate({
-    dictFile:"../lang/template.json",
+    dictFile:["../lang/template.json"],
     dict:{
       "<!--t:Timestamp-->":height,
       "<!--t:Caches-->":files.join(",")
     }
   })).pipe(minify({}))
     .pipe(gulp.dest("./dist"))
+});
+
+gulp.task("translate", function(cb) {
+  return runSequence(
+    "translateJa",
+    "translateEn",
+    cb
+  );
 });
