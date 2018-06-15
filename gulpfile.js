@@ -128,7 +128,7 @@ gulp.task("translateJa", function(cb) {
   })).pipe(gulp.dest("./component/ja"))
 });
 gulp.task("addWord", function(cb) {
-  return gulp.src("component/*").pipe(translator.addWord({
+  return gulp.src("component/*.html").pipe(translator.addWord({
     dictFile:"../lang/dict.json"
   }))
 });
