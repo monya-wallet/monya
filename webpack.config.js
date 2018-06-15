@@ -11,6 +11,7 @@ module.exports = {
   node: {
     fs: 'empty',net:"empty","tls":"empty"
   },
+  mode:"production",
   module: {
     rules: [
       {
@@ -19,7 +20,8 @@ module.exports = {
         use: {
           loader: 'babel-loader',
           options: {
-            presets: ['env']
+            presets: ['env',{modules: false}],
+            plugins:["syntax-dynamic-import"]
           }
         }
         },{
@@ -55,24 +57,5 @@ module.exports = {
         ]
       }
     ]
-  },
-  plugins: [
-    new Uglify({
-      uglifyOptions:{
-        mangle:{
-          safari10: true,
-          reserved:[
-            //bitcoinjs-lib
-            'BigInteger','ECPair','Point'
-            //ripple-lib
-            ,'_', 'RippleError', 'RippledError', 'UnexpectedError',
-            'LedgerVersionError', 'ConnectionError', 'NotConnectedError',
-            'DisconnectedError', 'TimeoutError', 'ResponseFormatError',
-            'ValidationError', 'NotFoundError', 'MissingLedgerHistoryError',
-            'PendingLedgerVersionError'
-          ]
-        }
-      }
-    })
-    ]
+  }
 };

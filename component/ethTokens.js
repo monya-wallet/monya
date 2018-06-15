@@ -30,7 +30,7 @@ module.exports=require("../js/lang.js")({ja:require("./ja/ethTokens.html"),en:re
 
       for(let i=0;i<this.blacklist.length;i++){
         const item=this.blacklist[i]
-        if(item.contractAddress===contractAddress){
+        if(item.contractAddress.toLowerCase()===contractAddress.toLowerCase()){
           this.scam=true
           return
         }
@@ -84,8 +84,7 @@ module.exports=require("../js/lang.js")({ja:require("./ja/ethTokens.html"),en:re
       this.tokens=res.data.tokens
       this.blacklist=res.data.blacklist
     }).catch(e=>{
-      this.loading=false
-      this.$store.commit("setError",e.message)
+      return true
     })
     ext=extension.extStorage(this.networkScheme)
 
