@@ -32,9 +32,7 @@
       アプリケーションに戻ってください。
     </div>
   </div>
-  <v-ons-dialog cancelable
-                :visible.sync="dataDlg"
-                >
+  <v-ons-dialog cancelable :visible.sync="dataDlg">
     <p style="text-align: center">このデータをアプリケーションに渡してください。</p>
     <textarea class="textarea" readonly="readonly" id="dataToPassApp">{{dataToPassApp}}</textarea>
   </v-ons-dialog>

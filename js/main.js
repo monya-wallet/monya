@@ -1,6 +1,6 @@
 require("../scss/index.scss")
-require('../res/onsenui/css/onsenui.min.css')
-require('../res/onsenui/css/onsen-css-components.min.css')
+require('onsenui/css/onsenui-core.min.css')
+require('onsenui/css/onsen-css-components.min.css')
 require('babel-polyfill')
 if(!window.cordova){
   require('../res/cordova-plugin-qrscanner-lib.min.js')
@@ -55,6 +55,8 @@ exports.vm= new Vue({
       }
       html.setAttribute('onsflag-iphonex-landscape', '');
     }
+
+    document.getElementById("cover").style.display="none"
   }
 })
 if ('serviceWorker' in navigator&&!window.cordova&&!coinUtil.isElectron()) {

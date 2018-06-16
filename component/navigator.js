@@ -14,7 +14,8 @@ const translationTable={
   "hdnodenotfounderror":"公開鍵が登録されていません。コインを追加してください。",
   "invalidindexerror":"アドレスを生成できませんでした",
   "monappyerror":"Monappyに関するエラー",
-  "labelnotfounderror":"該当するラベルがありません"
+  "labelnotfounderror":"該当するラベルがありません",
+  "addressnotfounderror":"アドレスがありません。コインを追加し直してください。"
 }
 const regexp = new RegExp(Object.keys(translationTable).join("|"),"gim")
 // Error message translation End

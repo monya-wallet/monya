@@ -1,5 +1,8 @@
 @import "./param.scss";
 @import "./cond.scss";
+@import "./onsenui-fix.scss";
+
+@import "./custom/styles.css";
 
 html, body{
   font-size:1em;
@@ -18,46 +21,17 @@ html, body{
   background-size:contain;
   display:inline-block;
 }
-.list-item--small{
-  .list-item--small__left,.list-item--small__center,.list-item--small__right{
-    min-height:0px;
-    padding-top: 4px;
-    padding-bottom: 4px;
-  }
-}
-ons-list-item{
-  .w_right{
-    margin-left:auto;
-    text-align:right;
-  }
-}
 
-ons-toolbar-button.toolbar-button:not(.toolbar-button--material){
-  padding:4px 7px;
-  .ons-icon{
-    vertical-align:bottom;
-  }
-}
-ons-toolbar-button.toolbar-button:not(.toolbar-button--material){
-  padding:4px 7px;
-  .ons-icon{
-    vertical-align:bottom;
-  }
-}
-
-ons-dialog .dialog{
-  max-height:100%;
-  max-width:100%;
-  overflow-y:scroll;
-  overflow-y:auto;
-  
-}
 .shake{
   animation: shake 0.72s cubic-bezier(.36,.07,.19,.97) both;
   transform: translate3d(0, 0, 0);
 }
 .transparent{
   background:transparent;
+}
+
+.currencySet{
+  white-space:nowrap;
 }
 
 [data-page="home"]{
@@ -243,11 +217,8 @@ ons-dialog .dialog{
     }
   }
 }
-ons-popover .popover__content{
-  text-align:center;
-  min-height:20px;
-}
-[data-page="showLabel"],[data-page="invoice"],[data-page="receive"],[data-page="xrp"],[data-page="nem"],#zaifPayInvoice{
+
+[data-page="showLabel"],[data-page="invoice"],[data-page="receive"],[data-page="xrp"],[data-page="nem"],[data-page="ethBase"],#zaifPayInvoice{
   text-align:center;
   #simple{
     .label{
@@ -508,7 +479,7 @@ ons-popover .popover__content{
   }
 }
 $passwordHeight:30px;
-[data-page="login"],[data-page="xrp"],[data-page="nem"]{
+[data-page="login"],[data-page="xrp"],[data-page="nem"],[data-page="ethBase"]{
   .wrap{
     padding:35px;
     text-align:center;
@@ -533,7 +504,7 @@ $passwordHeight:30px;
     }
   }
 }
-[data-page="xrp"],[data-page="nem"]{
+[data-page="xrp"],[data-page="nem"],[data-page="ethBase"]{
   ons-list-item{
     .left{
       img{
@@ -773,10 +744,23 @@ $zaifPayLogoSize:200px;
   min-height: 200px;
   min-width: 300px;
 }
-
-
-ons-input{
-    width: 100%;
+#modalQr{
+  text-align:center;
+  width:350px;
+  img{
+    width:250px;
+    height:250px;
+  }
+  .url{
+    display: block;
+    user-select:text;
+    -webkit-user-select: text;
+    -moz-user-select: text;
+    -ms-user-select: text;
+    word-wrap: break-word;
+    word-break: break-all;
+    white-space: pre-wrap;
+  }
 }
 
 @keyframes shake {

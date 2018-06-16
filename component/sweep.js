@@ -42,7 +42,7 @@ module.exports=require("../js/lang.js")({ja:require("./ja/sweep.html"),en:requir
   },
   
   created(){
-    currencyList.each(cur=>{
+    currencyList.eachWithPub(cur=>{
       this.currency.push({
         coinId:cur.coinId,
         icon:cur.icon,

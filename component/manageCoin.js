@@ -36,24 +36,36 @@ module.exports=require("../js/lang.js")({ja:require("./ja/manageCoin.html"),en:r
       this.requirePassword=false
       
 
-      
+      let entropy;
       coinUtil.shortWait()
         .then(()=>storage.get("keyPairs"))
-        .then((cipher)=>coinUtil.makePairsAndEncrypt({
-          entropy:coinUtil.decrypt(cipher.entropy,this.password),
-          password:this.password,
-          makeCur:curs
-        }))
+        .then((cipher)=>{
+          entropy=coinUtil.decrypt(cipher.entropy,this.password)
+          return coinUtil.makePairsAndEncrypt({
+            entropy,
+            password:this.password,
+            makeCur:curs
+          })
+        })
         .then((data)=>storage.set("keyPairs",data))
         .then((cipher)=>{
           this.password=""
           return storage.get("settings")        
-        }).then(s=>{ 
+        }).then(s=>{
           s.enabledExts=[]
+          let addProm=Promise.resolve()
           this.extensions.forEach(v=>{
-            v.usable&&s.enabledExts.push(v.id)
+            if(v.usable){
+              s.enabledExts.push(v.id)
+              const ex=ext.get(v.id)
+              if(ex&&ex.onAdd){
+                addProm=addProm.then(()=>ex.onAdd(entropy,ext.extStorage(v.id)))
+              }
+            }
           })
+          
           this.$store.commit("setSettings",s)
+          
           return storage.set("settings",s)
         }).then(()=>this.$emit("replace",require("./login.js"))).catch(()=>{
           this.password=""

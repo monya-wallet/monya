@@ -1,5 +1,7 @@
 const currencyList = require("../js/currencyList")
 const coinUtil = require("../js/coinUtil")
+const ext = require("../js/extension.js")
+
 module.exports=require("../js/lang.js")({ja:require("./ja/home.html"),en:require("./en/home.html")})({
   data(){
     return {
@@ -72,6 +74,9 @@ module.exports=require("../js/lang.js")({ja:require("./ja/home.html"),en:require
     },
     monaparty(){
       this.$emit("push",require("./monaparty.js"))
+    },
+    openExt(extId){
+      this.$emit("push",ext.get(extId).component)
     }
   },
   store:require("../js/store.js"),
@@ -90,6 +95,13 @@ module.exports=require("../js/lang.js")({ja:require("./ja/home.html"),en:require
   computed:{
     fiat(){
       return this.$store.state.fiat
+    },
+    extensions(){
+      const ret =[]
+      ext.each(x=>{
+        this.$store.state.enabledExts&&(~this.$store.state.enabledExts.indexOf(x.id))&&ret.push({id:x.id,name:x.name,icon:x.icon})
+      })
+      return ret
     }
   }
 })

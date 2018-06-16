@@ -171,7 +171,7 @@ module.exports=require("../js/lang.js")({ja:require("./ja/zaifPay.html"),en:requ
   },
   mounted(){
     ext=extension.extStorage("zaifPay")// because of circular referrence
-   ext.get("credentials").then((data)=>{
+    ext.get("credentials").then((data)=>{
       this.hasCredentials=data&&data.apiKey&&data.md5secret
       if(!this.hasCredentials){
         return this.migrate()

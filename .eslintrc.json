@@ -8,6 +8,7 @@
     "Vue": true,
     "VueOnsen": true
   },
+  "extends": "eslint:recommended",
   "parser": null,
   "rules": {
     "no-void": 1,
@@ -44,5 +45,10 @@
     "no-fallthrough": 1,
     "no-extend-native": 2,
     "arrow-spacing": 0
+  },
+  "parser": "babel-eslint",
+  "parserOptions": {
+    "sourceType": "module",
+    "allowImportExportEverywhere": true
   }
 }

@@ -6,11 +6,12 @@ module.exports = {
   entry: "./js/main.js",
   output: {
     path:__dirname,
-    filename:"./dist/dist.js",
+    filename:"./dist/dist.js"
   },
   node: {
     fs: 'empty',net:"empty","tls":"empty"
   },
+  mode:"production",
   module: {
     rules: [
       {
@@ -19,7 +20,8 @@ module.exports = {
         use: {
           loader: 'babel-loader',
           options: {
-            presets: ['es2015']
+            presets: ['env'],
+            plugins:["syntax-dynamic-import"]
           }
         }
         },{
@@ -56,23 +58,25 @@ module.exports = {
       }
     ]
   },
-  plugins: [
-    new Uglify({
-      uglifyOptions:{
-        mangle:{
-          safari10: true,
-          reserved:[
-            //bitcoinjs-lib
-            'BigInteger','ECPair','Point'
-            //ripple-lib
-            ,'_', 'RippleError', 'RippledError', 'UnexpectedError',
-            'LedgerVersionError', 'ConnectionError', 'NotConnectedError',
-            'DisconnectedError', 'TimeoutError', 'ResponseFormatError',
-            'ValidationError', 'NotFoundError', 'MissingLedgerHistoryError',
-            'PendingLedgerVersionError'
-          ]
+  optimization:{
+    minimizer: [
+      new Uglify({
+        uglifyOptions:{
+          mangle:{
+            safari10: true,
+            reserved:[
+              //bitcoinjs-lib
+              'BigInteger','ECPair','Point'
+              //ripple-lib
+              ,'_', 'RippleError', 'RippledError', 'UnexpectedError',
+              'LedgerVersionError', 'ConnectionError', 'NotConnectedError',
+              'DisconnectedError', 'TimeoutError', 'ResponseFormatError',
+              'ValidationError', 'NotFoundError', 'MissingLedgerHistoryError',
+              'PendingLedgerVersionError'
+            ]
+          }
         }
-      }
-    })
+      })
     ]
+  }
 };

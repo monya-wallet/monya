@@ -92,7 +92,7 @@ module.exports=require("../js/lang.js")({ja:require("./ja/login.html"),en:requir
       }else if(state===1){
         this.next()
       }else{
-        
+        return
       }
     })
   }
