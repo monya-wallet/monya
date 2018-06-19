@@ -181,6 +181,9 @@ const defaultCoins = [{
   },{
     url: "https://ltc-bitcore1.trezor.io/api",
     explorer: "https://ltc-bitcore1.trezor.io"
+  },{
+    url:"https://ltc.insight.monacoin.ml/insight-lite-api",
+    explorer:"https://ltc.insight.monacoin.ml/insight"
   }],
   network: {
     messagePrefix: '\x19Litecoin Signed Message:\n',
