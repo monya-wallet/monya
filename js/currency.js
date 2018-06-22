@@ -13,7 +13,7 @@ const bchLib = require("@missmonacoin/bitcoincashjs-lib")
 const blkLib = require("@missmonacoin/blackcoinjs-lib")
 const jp = require('jsonpath')
 const { decode }=require("cashaddrjs");
-const { toCashAddress, toLegacyAddress }=require("bchaddrjs");
+const { toCashAddress, toLegacyAddress, isCashAddress }=require("bchaddrjs");
 
 // workaround for slice bug; DO NOT REMOVE OR BCH DETECTON WOULD BREAK
 // You can move it, but you MUST NOT REMOVE
@@ -116,9 +116,24 @@ module.exports=class{
     return adrss
   }
   getIndexFromAddress(addr){
-    for(let p in this.addresses){
-      if(this.addresses[p]===addr){
-        return p.split(",")
+    if(this.coinId=="bch"){
+      for(let p in this.addresses){
+        let address=this.addresses[p]
+        if(isCashAddress(addr)){
+          address=toCashAddress(address)
+        }else{
+          address=toLegacyAddress(address).split(":")[1]
+        }
+        if(address===addr){
+          return p.split(",")
+        }
+      }
+    }else{
+      for(let p in this.addresses){
+        let address=this.addresses[p]
+        if(address===addr){
+          return p.split(",")
+        }
       }
     }
     return false
