@@ -11,6 +11,7 @@ module.exports = {
   node: {
     fs: 'empty',net:"empty","tls":"empty"
   },
+  mode:"production",
   module: {
     rules: [
       {
@@ -19,10 +20,11 @@ module.exports = {
         use: {
           loader: 'babel-loader',
           options: {
-            presets: ['es2015']
+            presets: ['env'],
+            plugins:["syntax-dynamic-import"]
           }
         }
-      },{
+        },{
         test: /\.scss$/,
         use:[{
           loader: "style-loader" // creates style nodes from JS strings
@@ -56,24 +58,29 @@ module.exports = {
       }
     ]
   },
-  plugins: [
-    new Uglify({
-      uglifyOptions:{
-        mangle:{
-          safari10: true,
-          reserved:[
-            //bitcoinjs-lib
-            'BigInteger','ECPair','Point'
-            //ripple-lib
-            ,'_', 'RippleError', 'RippledError', 'UnexpectedError',
-            'LedgerVersionError', 'ConnectionError', 'NotConnectedError',
-            'DisconnectedError', 'TimeoutError', 'ResponseFormatError',
-            'ValidationError', 'NotFoundError', 'MissingLedgerHistoryError',
-            'PendingLedgerVersionError'
-          ]
+  optimization:{
+    minimizer: [
+      new Uglify({
+        uglifyOptions:{
+          mangle:{
+            safari10: true,
+            reserved:[
+              //bitcoinjs-lib
+              'BigInteger','ECPair','Point'
+              //ripple-lib
+              ,'_', 'RippleError', 'RippledError', 'UnexpectedError',
+              'LedgerVersionError', 'ConnectionError', 'NotConnectedError',
+              'DisconnectedError', 'TimeoutError', 'ResponseFormatError',
+              'ValidationError', 'NotFoundError', 'MissingLedgerHistoryError',
+              'PendingLedgerVersionError'
+            ]
+          }
         }
-      }
-    }),
+      })
+    ]
+  },
+  plugins: [
     new webpack.IgnorePlugin(/cordova-plugin-qrscanner-lib/)
   ]
 };
+

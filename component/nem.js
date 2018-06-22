@@ -160,6 +160,7 @@ module.exports=require("../js/lang.js")({ja:require("./ja/nem.html"),en:require(
           if(el.transaction.otherTrans){
             tr=el.transaction.otherTrans
           }else{
+            
             tr=el.transaction
           }
           return {
@@ -372,7 +373,7 @@ module.exports=require("../js/lang.js")({ja:require("./ja/nem.html"),en:require(
 
     const ext=extension.extStorage("nem")
     ext.get("address").then(address=>{
-      if(!address){this.$store.commit("setError",(new errors.AddressNotFoundError).message);return}
+      if(!address){this.$emit("push",{extends:require("./manageCoin.js"),data(){return {requirePassword:true}}});return}
       this.address=address
       this.getBalance()
       this.getQrCode()

@@ -62,12 +62,8 @@ module.exports=function(option){
         networkIcon:NETWORK_ICON,
         rpcServers:RPC_SERVERS,
 
-        tokenReg:{
-          show:false,
-          contractAddress:"",
-          symbol:"",
-          decimals:0
-        },
+        state:"initial",
+        
         runContract:{
           show:false,
           abiStr:"",
@@ -86,7 +82,7 @@ module.exports=function(option){
     store:require("../js/store.js"),
     methods:{
       
-      getBalance(){
+      getBalance(done){
         if(!this.address){
           return
         }
@@ -113,6 +109,7 @@ module.exports=function(option){
           for (let i = 0; i < balances.length; i++) {
             this.$set(this.tokens[i],"balance",+(new BigNumber(balances[i])).shift(-this.tokens[i].decimals))
           }
+          done&&done()
         }).catch(e=>{
           this.loading=false
           this.$store.commit("setError","Server Error: "+e.message)
@@ -276,44 +273,6 @@ module.exports=function(option){
         let iv = parseInt(v)
         return iv <= 0 ? 0 : iv
       },
-      
-      registerToken(){
-        const contractAddress=this.tokenReg.contractAddress
-        const symbol=this.tokenReg.symbol
-        const decimals=parseFloat(this.tokenReg.decimals)
-
-        if(!web3.utils.isAddress(contractAddress)||decimals<0||(decimals|0)!==decimals){
-          return this.$store.commit("setError","Invalid Parameter")
-        }
-        
-        ext.get("tokens").then(tokens=>{
-          if(!tokens){
-            tokens=[]
-          }
-          tokens.push({
-            contractAddress,
-            symbol,
-            decimals
-          })
-          return ext.set("tokens",tokens)
-        }).then(()=>{
-          this.tokenReg.show=false
-          this.getBalance()
-        })
-      },
-      removeToken(i){
-        ext.get("tokens").then(tokens=>{
-          if(!tokens){
-            tokens=[]
-          }
-          tokens.splice(i,1)
-          return ext.set("tokens",tokens)
-        }).then(()=>{
-          this.tokenReg.show=false
-          this.getBalance()
-        })
-      },
-
       cast(val,type){
         switch(type){
           case "bool":
@@ -342,33 +301,7 @@ module.exports=function(option){
             return val
         }
       },
-      getTokenInfo(){
-        if(!web3.utils.isAddress(this.tokenReg.contractAddress)){
-          return
-        }
-        const symbol=(new web3.eth.Contract(erc20ABI,this.tokenReg.contractAddress,{from:this.address}))
-              .methods["symbol"]()
-        
-        symbol.call().then(result=>{
-          if(result){
-            this.tokenReg.symbol=result
-          }
-        }).catch(e=>{
-          return false
-        })
-
-        const decimals=(new web3.eth.Contract(erc20ABI,this.tokenReg.contractAddress,{from:this.address}))
-              .methods["decimals"]()
-        
-        decimals.call().then(result=>{
-          if(result){
-            this.tokenReg.decimals=parseInt(result,10)
-          }
-        }).catch(e=>{
-          return false
-        })
-        
-      },
+      
       runMethod(){
         if(!web3.utils.isAddress(this.runContract.contractAddress)){
           return this.$store.commit("setError","Invalid Parameter")
@@ -421,6 +354,9 @@ module.exports=function(option){
             this.$store.commit("setError",e.message)
           })
         }
+      },
+      goToAddTokens(){
+        this.$emit("push",{extends:require("./ethTokens.js"),data(){return {networkScheme:NETWORK_SCHEME}}})
       }
     },
     computed:{

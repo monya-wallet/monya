@@ -1,3 +1,4 @@
+
 const Currency = require("./currency")
 const coinUtil = require("./coinUtil")
 const j = require("./lang").getLang() === "ja"
@@ -180,6 +181,9 @@ const defaultCoins = [{
   },{
     url: "https://ltc-bitcore1.trezor.io/api",
     explorer: "https://ltc-bitcore1.trezor.io"
+  },{
+    url:"https://ltc.insight.monacoin.ml/insight-lite-api",
+    explorer:"https://ltc.insight.monacoin.ml/insight"
   }],
   network: {
     messagePrefix: '\x19Litecoin Signed Message:\n',
@@ -313,9 +317,6 @@ const defaultCoins = [{
   defaultFeeSatPerByte: 100,
   icon: require("../res/coins/bch.png"),
   apiEndpoints: [{
-    url: "https://bch-insight.bitpay.com/api",
-    explorer: "https://bch-insight.bitpay.com"
-  },{
     url: "https://blockdozer.com/insight-api",
     explorer: "https://blockdozer.com"
   },{

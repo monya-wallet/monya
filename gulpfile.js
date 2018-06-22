@@ -42,17 +42,17 @@ gulp.task("lint",function(){
 })
 gulp.task('webpack', function(){
   return gulp.src('js/main.js')
-    .pipe(webpack(require("./webpack.config.dev")))
+    .pipe(webpack(require("./webpack.config.dev"),require("webpack")))
     .pipe(gulp.dest('./'))
 });
 gulp.task('webpackProd', function(){
   return gulp.src('js/main.js')
-    .pipe(webpack(require("./webpack.config")))
+    .pipe(webpack(require("./webpack.config"),require("webpack")))
     .pipe(gulp.dest('./'))
 });
 gulp.task('webpackCordova', function(){
   return gulp.src('js/main.js')
-    .pipe(webpack(require("./webpack.config.cordova")))
+    .pipe(webpack(require("./webpack.config.cordova"),require("webpack")))
     .pipe(gulp.dest('./cordovaProj/www'))
 });
 gulp.task("watch", function() {
@@ -128,7 +128,7 @@ gulp.task("translateJa", function(cb) {
   })).pipe(gulp.dest("./component/ja"))
 });
 gulp.task("addWord", function(cb) {
-  return gulp.src("component/*").pipe(translator.addWord({
+  return gulp.src("component/*.html").pipe(translator.addWord({
     dictFile:"../lang/dict.json"
   }))
 });
