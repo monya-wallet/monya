@@ -117,9 +117,10 @@ module.exports=class{
   }
   getIndexFromAddress(addr){
     if(this.coinId=="bch"){
+      const wasCashAddrSpecified=isCashAddress(addr)
       for(let p in this.addresses){
         let address=this.addresses[p]
-        if(isCashAddress(addr)){
+        if(wasCashAddrSpecified){
           address=toCashAddress(address)
         }else{
           address=toLegacyAddress(address).split(":")[1]
