@@ -12,6 +12,20 @@ const zecLib = require("@missmonacoin/bitcoinjs-lib-zcash")
 const bchLib = require("@missmonacoin/bitcoincashjs-lib")
 const blkLib = require("@missmonacoin/blackcoinjs-lib")
 const jp = require('jsonpath')
+const { decode }=require("cashaddrjs");
+const { toCashAddress }=require("bchaddrjs");
+
+// workaround for slice bug; DO NOT REMOVE OR BCH DETECTON WOULD BREAK
+// You can move it, but you MUST NOT REMOVE
+Uint8Array.prototype.slice0=Uint8Array.prototype.slice
+Uint8Array.prototype.slice=function(start,end){
+  if(end<0){
+    return this.slice0(start,this.length+end)
+  }else{
+    return this.slice0(start,end)
+  }
+}
+
 module.exports=class{
   
   constructor(opt){
@@ -201,13 +215,21 @@ module.exports=class{
       throw new errors.InvalidIndexError()
     }
     const addrKey = (change|0).toString()+","+(index|0).toString()
+    let candidate
     if(this.addresses[addrKey]){
-      return this.addresses[addrKey]
+      candidate = this.addresses[addrKey]
     }else{
       if(this.enableSegwit==="legacy"){
-        return (this.addresses[addrKey]=this.getSegwitLegacyAddress(change,index))
+        candidate = (this.addresses[addrKey]=this.getSegwitLegacyAddress(change,index))
+      }else{
+        candidate = (this.addresses[addrKey]=this.hdPubNode.derive(change).derive(index).getAddress())
       }
-      return (this.addresses[addrKey]=this.hdPubNode.derive(change).derive(index).getAddress())
+    }
+    // for all cases, candidate is set
+    if(this.coinId=="bch"){
+      return toCashAddress(candidate).split(":")[1]
+    }else{
+      return candidate
     }
   }
   getPubKey(change,index){
@@ -688,6 +710,17 @@ module.exports=class{
     }
   }
   isValidAddress(address){
+    if(this.coinId=="bch"){
+      // if i am BCH, test for CashAddr
+      try{
+        // lets test
+        decode(address.startsWith("bitcoincash:")?address:("bitcoincash:"+address))
+        return true
+      }catch(e){
+        // not a CashAddr, but probably Legacy address (BTC-style)
+        // Bitpay-style? No support for now, PR us.
+      }
+    }
     try{
       const ver = this.getAddrVersion(address) //throws if not correct version
       if(ver===this.network.pubKeyHash||ver===this.network.scriptHash){
