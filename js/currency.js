@@ -13,7 +13,7 @@ const bchLib = require("@missmonacoin/bitcoincashjs-lib")
 const blkLib = require("@missmonacoin/blackcoinjs-lib")
 const jp = require('jsonpath')
 const { decode }=require("cashaddrjs");
-const { toCashAddress }=require("bchaddrjs");
+const { toCashAddress, toLegacyAddress }=require("bchaddrjs");
 
 // workaround for slice bug; DO NOT REMOVE OR BCH DETECTON WOULD BREAK
 // You can move it, but you MUST NOT REMOVE
@@ -50,6 +50,7 @@ module.exports=class{
     this.opReturnLength=(opt.opReturnLength<0) ? 40 : opt.opReturnLength
     this.isAtomicSwapAvailable=!!opt.isAtomicSwapAvailable
     this.libName = opt.lib
+    this.addressType = ""
     switch(opt.lib){
       case "zec":
         this.lib=zecLib
@@ -172,6 +173,11 @@ module.exports=class{
   }
   
   getUtxos(addressList,includeUnconfirmedFunds=false,fallback=true){
+    if(this.coinId=="bch"){
+      // ok, convert our address to appropriate format
+      const mapFunction=(this.addressType=="cashaddr")?toCashAddress:toLegacyAddress;
+      addressList=addressList.map(mapFunction)
+    }
     let promise
     if(typeof(addressList[0])==="string"){//address mode
       promise=this.fbGet("/addrs/"+addressList.join(",")+"/utxo",fallback)
@@ -365,6 +371,10 @@ module.exports=class{
         outputs.forEach(output => {
           if (!output.address) {
             output.address = this.getAddress(1,(this.changeIndex+1)%coinUtil.GAP_LIMIT_FOR_CHANGE)
+          }
+          if(this.coinId=="bch"){
+            // force convert to Legacy address; remove when lib supports
+            output.address = toLegacyAddress(output.address)
           }
 
           txb.addOutput(output.address, output.value)
@@ -697,6 +707,9 @@ module.exports=class{
     }
     if(a.explorer){
       this.explorer = a.explorer
+    }
+    if(a.addressType){
+      this.addressType = a.addressType
     }
     if(a.socket){
       this.socketEndpoint = a.socket
