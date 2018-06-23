@@ -246,8 +246,8 @@ module.exports=class{
       }else{
         candidate = this.hdPubNode.derive(change).derive(index).getAddress()
       }
+      this.addresses[addrKey]=candidate
     }
-    this.addresses[addrKey]=candidate
     // for all cases, candidate is set
     /*if(this.coinId=="bch"){
       return toCashAddress(candidate).split(":")[1]
