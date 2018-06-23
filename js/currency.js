@@ -242,17 +242,19 @@ module.exports=class{
       candidate = this.addresses[addrKey]
     }else{
       if(this.enableSegwit==="legacy"){
-        candidate = (this.addresses[addrKey]=this.getSegwitLegacyAddress(change,index))
+        candidate = this.getSegwitLegacyAddress(change,index)
       }else{
-        candidate = (this.addresses[addrKey]=this.hdPubNode.derive(change).derive(index).getAddress())
+        candidate = this.hdPubNode.derive(change).derive(index).getAddress()
       }
     }
+    this.addresses[addrKey]=candidate
     // for all cases, candidate is set
-    if(this.coinId=="bch"){
+    /*if(this.coinId=="bch"){
       return toCashAddress(candidate).split(":")[1]
     }else{
       return candidate
-    }
+    }*/
+    return candidate
   }
   getPubKey(change,index){
     if(this.dummy){return}
