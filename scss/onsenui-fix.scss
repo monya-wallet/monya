@@ -1,3 +1,20 @@
+/*
+    Monya - The easiest cryptocurrency wallet
+    Copyright (C) 2017-2018 MissMonacoin
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
 ons-toolbar-button.toolbar-button:not(.toolbar-button--material){
   padding:4px 7px;
   .ons-icon{
@@ -53,4 +70,8 @@ ons-toolbar-button.toolbar-button--material,
 }
 .back-button__icon.back-button--material__icon{
   fill:#563e08;
+}
+ons-toast .toast.toast--material { // until my pull request #2436 is included to upcoming Onsen UI 2.10.2 https://github.com/OnsenUI/OnsenUI/pull/2436
+  // Someone please remove this after Onsen UI 2.10.2 released
+  padding: 16px 24px;
 }
