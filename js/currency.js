@@ -685,6 +685,13 @@ module.exports=class{
       r.utxos.forEach((v,i)=>{
         txb.addInput(v.txId,v.vout)
       })
+      if(coin.coinId=="bch"){
+        // remove if lib supports
+        if(isCashAddress(addr)){
+          // convert CashAddr to Legacy
+          addr=toLegacyAddress(addr)
+        }
+      }
       txb.addOutput(addr,(new BigNumber(r.balance)).minus(fee).times(100000000).toNumber())
       r.utxos.forEach((v,i)=>{
         if(this.enableSegwit){
