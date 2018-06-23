@@ -46,8 +46,7 @@ const apis={
       coinId:"Coin ID",
       neededSig:"The number of needed Sigs",
       complete:"Is complete?",
-      pubs:"Public keys",
-      payload:"Payload"
+      pubs:"Public keys"
     },
     onAllowed(props,cipher,password){
       const cur =currencyList.get(props.coinId)
@@ -64,7 +63,6 @@ const apis={
       }).toHex()
       const address=cur.getAddress(0,props.addrIndex)
       return Promise.resolve({
-        payload:props.payload,
         signature:signed,
         address
       })
@@ -76,8 +74,7 @@ const apis={
     props:{
       addrIndex:"Address Index",
       coinId:"Coin ID",
-      message:"message",
-      payload:"Payload"
+      message:"message"
     },
     onAllowed(props,cipher,password){
       const cur =currencyList.get(props.coinId)
@@ -85,7 +82,6 @@ const apis={
       this.password=""
       const address=cur.getAddress(0,props.addrIndex)
       return Promise.resolve({
-        payload:props.payload,
         signature:signed,
         address,
         message:props.message
@@ -139,6 +135,7 @@ module.exports=require("../js/lang.js")({ja:require("./ja/api.html"),en:require(
       })
     },
     returnResult(data){
+      data.payload=this.param.payload
       if(this.param.callbackURL){
         axios.post(this.param.callbackURL,data).then(()=>{
           this.successful=true

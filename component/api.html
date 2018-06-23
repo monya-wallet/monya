@@ -21,6 +21,10 @@
             <td>Callback Page</td>
             <td>{{param.callbackPage}}</td>
           </tr>
+          <tr v-if="param.payload">
+            <td>Payload</td>
+            <td>{{param.payload}}</td>
+          </tr>
         </table>
       </div>
       <div v-if="qType==='normal'" id="yOrNAPI">
