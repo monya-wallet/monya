@@ -9,7 +9,6 @@ module.exports = {
     filename:"./dist/dist.js",
     chunkFilename: './dist/assets/[name].bundle.js'
   },
-  mode:"development",
   node: {
     fs: 'empty',net:"empty","tls":"empty"
   },

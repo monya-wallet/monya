@@ -12,17 +12,18 @@ const zecLib = require("@missmonacoin/bitcoinjs-lib-zcash")
 const bchLib = require("@missmonacoin/bitcoincashjs-lib")
 const blkLib = require("@missmonacoin/blackcoinjs-lib")
 const jp = require('jsonpath')
-const { decode }=require("cashaddrjs");
-const { toCashAddress, toLegacyAddress, isCashAddress }=require("bchaddrjs");
+const { toCashAddress, toLegacyAddress, isLegacyAddress, isCashAddress }=require("bchaddrjs");
 
-// workaround for slice bug; DO NOT REMOVE OR BCH DETECTON WOULD BREAK
-// You can move it, but you MUST NOT REMOVE
-Uint8Array.prototype.slice0=Uint8Array.prototype.slice
-Uint8Array.prototype.slice=function(start,end){
-  if(end<0){
-    return this.slice0(start,this.length+end)
-  }else{
-    return this.slice0(start,end)
+if("function"!==typeof Uint8Array.prototype.slice0){
+  // workaround for slice bug; DO NOT REMOVE OR BCH DETECTON WOULD BREAK
+  // You can move it, but you MUST NOT REMOVE
+  Uint8Array.prototype.slice0=Uint8Array.prototype.slice
+  Uint8Array.prototype.slice=function(start,end){
+    if(end<0){
+      return this.slice0(start,this.length+end)
+    }else{
+      return this.slice0(start,end)
+    }
   }
 }
 
@@ -689,7 +690,7 @@ module.exports=class{
       })
       if(coin.coinId=="bch"){
         // remove if lib supports
-        if(isCashAddress(addr)){
+        if(!isLegacyAddress(addr)){
           // convert CashAddr to Legacy
           addr=toLegacyAddress(addr)
         }
@@ -749,14 +750,13 @@ module.exports=class{
   }
   isValidAddress(address){
     if(this.coinId=="bch"){
-      // if i am BCH, test for CashAddr
+      // if i am BCH, test for CashAddr and Bitpay format
       try{
         // lets test
-        decode(address.startsWith("bitcoincash:")?address:("bitcoincash:"+address))
+        isCashAddress(address)
         return true
       }catch(e){
-        // not a CashAddr, but probably Legacy address (BTC-style)
-        // Bitpay-style? No support for now, PR us.
+        // not a CashAddr, and probably not Legacy address
       }
     }
     try{
