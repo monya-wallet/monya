@@ -133,9 +133,6 @@ const defaultCoins = [{
   defaultFeeSatPerByte: 100,
   icon: require("../res/coins/btc.png"),
   apiEndpoints: [{
-    url: "https://btc.blockdozer.com/insight-api",
-    explorer: "https://btc.blockdozer.com"
-  },{
     explorer: "https://insight.bitpay.com",
     url: "https://insight.bitpay.com/api"
   },{
@@ -151,11 +148,8 @@ const defaultCoins = [{
     url: "https://btc-bitcore4.trezor.io/api",
     explorer: "https://btc-bitcore4.trezor.io"
   },{
-    url: "https://btc-bitcore5.trezor.io/api",
-    explorer: "https://btc-bitcore5.trezor.io"
-  },{
-    url: "https://btc-bitcore6.trezor.io/api",
-    explorer: "https://btc-bitcore6.trezor.io"
+    url: "https://btc.blockdozer.com/insight-api",
+    explorer: "https://btc.blockdozer.com"
   }],
   network: {
     messagePrefix: '\x18Bitcoin Signed Message:\n',
