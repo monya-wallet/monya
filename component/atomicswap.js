@@ -609,7 +609,7 @@ module.exports=require("../js/lang.js")({ja:require("./ja/atomicswap.html"),en:r
   },
   mounted(){
     if(this.$store.state.apiName==="shareSwapData"){
-      this.strToRecv=JSON.stringify(this.$store.state.apiParam)
+      this.strToRecv=JSON.stringify(this.$store.state.apiParam.data)
     }else{
       this.restore()
     }

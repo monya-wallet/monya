@@ -48,6 +48,8 @@
         <splash density="land-xxhdpi" src="res/screens/android/splash-land-xxhdpi.png" />
         <splash density="land-xxxhdpi" src="res/screens/android/splash-land-xxxhdpi.png" />
         <hook src="manifestHook.js" type="after_prepare" />
+
+        <preference name="loadUrlTimeoutValue" value="700000" />
     </platform>
     <platform name="ios">
         <allow-intent href="itms:*" />

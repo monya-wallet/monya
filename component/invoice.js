@@ -110,6 +110,11 @@ module.exports=require("../js/lang.js")({ja:require("./ja/invoice.html"),en:requ
       }).catch(()=>{
         this.copyAddress()
       })
+    },
+    getLabels(){
+      currencyList.get(this.currency[this.currencyIndex].coinId).getLabels().then(res=>{
+          this.$set(this,"labels",res)
+      })
     }
   },
   computed:{
@@ -145,11 +150,6 @@ module.exports=require("../js/lang.js")({ja:require("./ja/invoice.html"),en:requ
         total+=parseFloat(this.orders[i].price)
       })
       return total
-    },
-    getLabels(){
-      currencyList.get(this.currency[this.currencyIndex].coinId).getLabels().then(res=>{
-          this.$set(this,"labels",res)
-      })
     }
   },
   watch:{
