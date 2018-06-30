@@ -339,8 +339,11 @@ const defaultCoins = [{
     explorer: "https://explorer.bitcoin.com/bch",
     url: "https://explorer.bitcoin.com/api/bch",
     addressType: "legacy"
-  },
-  {
+  },{
+    explorer: "https://cash.insight.publicnodejp.cf/insight",
+    url: "https://cash.insight.publicnodejp.cf/insight-api",
+    addressType: "legacy"
+  },{
     url: "https://bch-insight.bitpay.com/api",
     explorer: "https://bch-insight.bitpay.com",
     addressType: "cashaddr"
@@ -507,6 +510,9 @@ const defaultCoins = [{
   icon: require("../res/coins/yaju.png"),
   apiEndpoints: [{
     url: "https://yaju.insight.monacoin.ml/api",
+    explorer: "https://yaju.insight.monacoin.ml"
+  },{
+    url: "https://yaju.insight.publicnodejp.cf/api",
     explorer: "https://yaju.insight.monacoin.ml"
   }],
   network: {
