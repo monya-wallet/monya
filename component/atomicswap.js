@@ -23,7 +23,6 @@ const bip39 = require("@missmonacoin/bip39-eng")
 const BigNumber = require('bignumber.js');
 const coinUtil = require("../js/coinUtil")
 const qrcode = require("qrcode")
-const { isCashAddress, toLegacyAddress }=require("bchaddrjs");
 
 const getPriv = (coinId,change,index,password)=>storage.get("keyPairs").then((cipher)=>{
   const cur = currencyList.get(coinId)
@@ -348,8 +347,8 @@ module.exports=require("../js/lang.js")({ja:require("./ja/atomicswap.html"),en:r
       if (this.secret) {
         this.myP2SH=createContract(
           atomicSwapContract(
-            getHashFromAddress(giveCur,this.refundAddressWithSecret).hash,
-            getHashFromAddress(giveCur,this.redeemAddressWOSecret).hash,
+            giveCur.lib.address.fromBase58Check(this.refundAddressWithSecret).hash,
+            giveCur.lib.address.fromBase58Check(this.redeemAddressWOSecret).hash,
             this.lockTime,
             Buffer.from(this.secretHash,"hex"),
             this.contractType,
@@ -360,8 +359,8 @@ module.exports=require("../js/lang.js")({ja:require("./ja/atomicswap.html"),en:r
         );
         this.opponentP2SH = createContract(
           atomicSwapContract(
-            getHashFromAddress(getCur,this.refundAddressWOSecret).hash,
-            getHashFromAddress(getCur,this.redeemAddressWithSecret).hash,
+            getCur.lib.address.fromBase58Check(this.refundAddressWOSecret).hash,
+            getCur.lib.address.fromBase58Check(this.redeemAddressWithSecret).hash,
             this.lockTime,
             Buffer.from(this.secretHash,"hex"),
             this.contractType,
@@ -373,8 +372,8 @@ module.exports=require("../js/lang.js")({ja:require("./ja/atomicswap.html"),en:r
       }else{
         this.opponentP2SH=createContract(
           atomicSwapContract(
-            getHashFromAddress(getCur,this.refundAddressWithSecret).hash,
-            getHashFromAddress(getCur,this.redeemAddressWOSecret).hash,
+            getCur.lib.address.fromBase58Check(this.refundAddressWithSecret).hash,
+            getCur.lib.address.fromBase58Check(this.redeemAddressWOSecret).hash,
             this.lockTime,
             Buffer.from(this.secretHash,"hex"),
             this.contractType,
@@ -384,8 +383,8 @@ module.exports=require("../js/lang.js")({ja:require("./ja/atomicswap.html"),en:r
         );
         this.myP2SH =createContract(
           atomicSwapContract(
-            getHashFromAddress(giveCur,this.refundAddressWOSecret).hash,
-            getHashFromAddress(giveCur,this.redeemAddressWithSecret).hash,
+            giveCur.lib.address.fromBase58Check(this.refundAddressWOSecret).hash,
+            giveCur.lib.address.fromBase58Check(this.redeemAddressWithSecret).hash,
             this.lockTime,
             Buffer.from(this.secretHash,"hex"),
             this.contractType,
@@ -399,16 +398,7 @@ module.exports=require("../js/lang.js")({ja:require("./ja/atomicswap.html"),en:r
       this.isRefund=0 // to emit an event
       
     },
-    getHashFromAddress(coin,address){
-      if(coin.coinId=="bch"){
-        // remove if lib supports
-        if(isCashAddress(address)){
-          // convert CashAddr to Legacy
-          address=toLegacyAddress(address)
-        }
-      }
-      return coin.lib.address.fromBase58Check(address)
-    },
+
     buildNormalTransaction(inAddr,outAddr,coinId,isRefund){
       const cur =currencyList.get(coinId||this.getCoinId)
       return cur.getUtxos([inAddr],true).then(res=>{

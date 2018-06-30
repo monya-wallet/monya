@@ -137,7 +137,7 @@ module.exports=require("../js/lang.js")({ja:require("./ja/send.html"),en:require
             return
           }else{
             currencyList.eachWithPub((cur)=>{
-              //const ver = coinUtil.getAddrVersion(this.address)
+              const ver = coinUtil.getAddrVersion(this.address)
               if(cur.isValidAddress(this.address)){
                 this.possibility.push({
                   name:cur.coinScreenName,
