@@ -11,6 +11,7 @@
     "@missmonacoin/blackcoinjs-lib": "^1.0.0",
     "axios": "^0.17.1",
     "babel-polyfill": "^6.26.0",
+    "bchaddrjs": "^0.2.1",
     "bignumber.js": "^5.0.0",
     "bitcoinjs-lib": "^3.2.0",
     "bitcoinjs-message": "^2.0.0",

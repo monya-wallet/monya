@@ -327,15 +327,23 @@ const defaultCoins = [{
   bip21: "bitcoincash",
   defaultFeeSatPerByte: 100,
   icon: require("../res/coins/bch.png"),
-  apiEndpoints: [{
+  apiEndpoints: [/*{
     url: "https://blockdozer.com/insight-api",
-    explorer: "https://blockdozer.com"
-  },{
+    explorer: "https://blockdozer.com",
+    addressType: "legacy"
+  },*/{
     explorer: "https://bitcoincash.blockexplorer.com",
-    url: "https://bitcoincash.blockexplorer.com/api"
+    url: "https://bitcoincash.blockexplorer.com/api",
+    addressType: "cashaddr"
   },{
     explorer: "https://explorer.bitcoin.com/bch",
-    url: "https://explorer.bitcoin.com/api/bch"
+    url: "https://explorer.bitcoin.com/api/bch",
+    addressType: "legacy"
+  },
+  {
+    url: "https://bch-insight.bitpay.com/api",
+    explorer: "https://bch-insight.bitpay.com",
+    addressType: "cashaddr"
   }],
   network: {
     messagePrefix: '\x18Bitcoin Signed Message:\n',
