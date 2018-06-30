@@ -35,14 +35,14 @@ const defaultCoins = [{
   defaultFeeSatPerByte: 150,
   icon: require("../res/coins/mona.png"),
   apiEndpoints: [{
+    url: "https://mona.insight.monacoin.ml/insight-api-monacoin",
+    explorer: "https://mona.insight.monacoin.ml/insight"
+  },{
     url: "https://mona.monya.ga/insight-api-monacoin",
     explorer: "https://mona.monya.ga/insight"
   },{
     url: "https://mona.insight.monaco-ex.org/insight-api-monacoin",
     explorer: "https://mona.insight.monaco-ex.org/insight"
-  },{
-    url: "https://mona.insight.monacoin.ml/insight-api-monacoin",
-    explorer: "https://mona.insight.monacoin.ml/insight"
   }],
   network: {
     messagePrefix: '\x19Monacoin Signed Message:\n',
@@ -90,14 +90,14 @@ const defaultCoins = [{
     url: "https://zenyinsight.tomotomo9696.xyz/api",
     explorer: "https://zenyinsight.tomotomo9696.xyz"
   }, {
-    url: "https://zeny.fujishan.jp/api",
-    explorer: "https://zeny.fujishan.jp"
-  }, {
     url: "https://insight.bitzeny.jp/api",
     explorer: "https://insight.bitzeny.jp"
   },{
     url: "https://insight.bitzeny.cloud/api",
     explorer: "https://insight.bitzeny.cloud"
+  }, {
+    url: "https://zeny.fujishan.jp/api",
+    explorer: "https://zeny.fujishan.jp"
   }],
   network: {
     messagePrefix: '\x18BitZeny Signed Message:\n',
@@ -328,14 +328,14 @@ const defaultCoins = [{
   defaultFeeSatPerByte: 100,
   icon: require("../res/coins/bch.png"),
   apiEndpoints: [{
-    url: "https://blockdozer.com/insight-api",
-    explorer: "https://blockdozer.com"
-  },{
     explorer: "https://bitcoincash.blockexplorer.com",
     url: "https://bitcoincash.blockexplorer.com/api"
   },{
-    explorer: "https://explorer.bitcoin.com/bch",
+    explorer: "https://explorer.bitcoin.com/bch", 
     url: "https://explorer.bitcoin.com/api/bch"
+ },{
+    explorer: "https://cash.insight.publicnodejp.cf/insight",
+    url: "https://cash.insight.publicnodejp.cf/insight-api",
   }],
   network: {
     messagePrefix: '\x18Bitcoin Signed Message:\n',
@@ -500,6 +500,9 @@ const defaultCoins = [{
   apiEndpoints: [{
     url: "https://yaju.insight.monacoin.ml/api",
     explorer: "https://yaju.insight.monacoin.ml"
+  },{
+    url: "https://yaju.insight.publicnodejp.cf/api",
+    explorer: "https://yaju.insight.monacoin.ml"
   }],
   network: {
     messagePrefix: '\x19YAJUCOIN Signed Message:\n',
@@ -528,9 +531,6 @@ const defaultCoins = [{
   defaultFeeSatPerByte: 50,
   icon: require("../res/coins/neet.png"),
   apiEndpoints: [{
-    url: "https://neet.insight.monacoin.ml/api",
-    explorer: "https://insight.neetcoin.jp"
-  }, {
     url: "https://insight.neetcoin.jp/api",
     explorer: "https://insight.neetcoin.jp"
   }],
