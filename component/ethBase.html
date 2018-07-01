@@ -233,19 +233,58 @@
           <v-ons-button @click="runMethod" modifier="large">{{loading?"実行中":"実行する"}}</v-ons-button>
         </v-ons-list-item>
         <v-ons-list-item v-show="runContract.result">
-          <textarea class="textarea" style="width:100%" placeholder="JSON Interface" v-model="runContract.result"></textarea>
+          <textarea class="textarea" style="width:100%" placeholder="Result" v-model="runContract.result"></textarea>
         </v-ons-list-item>
       </v-ons-list>
     </v-ons-list>
     
   </v-ons-dialog>
 
+  <v-ons-dialog :visible.sync="deployment.show" cancelable>
+    <v-ons-list>
+      <v-ons-list>
+        
+        <v-ons-list-item modifier="small">
+          <textarea class="textarea" style="width:100%" placeholder="Hex Contract Data" v-model="deployment.data"></textarea>
+        </v-ons-list-item>
+        <div>
+          <v-ons-list-item modifier="small">
+            <div class="left">ガスプライス</div>
+            <div class="center">
+              <v-ons-input type="number" v-model.number="sendGasPrice" @change="sendGasPrice = intValue(sendGasPrice)"></v-ons-input>
+            </div>
+            <div class="right">Gwei</div>
+          </v-ons-list-item>
+          <v-ons-list-item modifier="small">
+            <div class="left">ガスリミット</div>
+            <div class="center">
+              <v-ons-input type="number" v-model.number="deployment.gasLimit" @change="runContract.gasLimit = intValue(deployment.gasLimit)"></v-ons-input>
+            </div>
+          </v-ons-list-item>
+          
+          <v-ons-list-item modifier="small">
+            <v-ons-input placeholder="パスワード" v-model="deployment.password" type="password"></v-ons-input>
+          </v-ons-list-item>
+          <v-ons-list-header>ガスがかかります。ご注意ください。</v-ons-list-header>
+        </div>
+        <v-ons-list-item>
+          <v-ons-button @click="deployContract" modifier="large">{{loading?"実行中":"デプロイ"}}</v-ons-button>
+        </v-ons-list-item>
+        <v-ons-list-item v-show="deployment.result">
+          <textarea class="textarea" style="width:100%" placeholder="Result" v-model="deployment.result"></textarea>
+        </v-ons-list-item>
+      </v-ons-list>
+    </v-ons-list>
+    
+  </v-ons-dialog>
+  
   <v-ons-popover :visible.sync="option" cancelable target="#ethOption" cover-target="true" direction="down">
     <v-ons-list>
       <v-ons-list-item @click="option=false;serverDlg=true" modifier="tappable">サーバー変更</v-ons-list-item>
       <v-ons-list-item @click="openExplorerAccount" modifier="tappable">履歴を見る</v-ons-list-item>
       <v-ons-list-item @click="option=false;goToAddTokens()" modifier="tappable">トークンを登録</v-ons-list-item>
       <v-ons-list-item @click="option=false;runContract.show=true" modifier="tappable">コントラクトを実行</v-ons-list-item>
+      <v-ons-list-item @click="option=false;deployment.show=true" modifier="tappable">コントラクトをデプロイ</v-ons-list-item>
     </v-ons-list>
   </v-ons-popover>
 </v-ons-page>

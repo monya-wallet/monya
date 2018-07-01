@@ -60,6 +60,35 @@ const extensions={
       return extStorage.set("address",address)
     }
   },
+  ethereum:{
+    id:"ethereum",
+    name:"Ethereum",
+    component:()=>import("../component/ethBase.js").then(c=>c.default({
+      networkName:"Ethereum",
+      networkScheme:"ethereum",
+      networkIcon:require("../res/coins/eth.png"),
+      networkSymbol:"ETH",
+      bip44DerivationPath:"m/44'/60'/0'/0/0",
+      chainId:1,
+      rpcServers:[
+        "https://mainnet.infura.io/iRUhBHOZ7VZdrEq1yQZd"
+      ],
+      explorer:"https://etherscan.io/address/"
+    })),
+    icon:require("../res/coins/eth.png"),
+    scheme:"ethereum",
+    onAdd(entropy,extStorage){
+      const seed=
+          bip39.mnemonicToSeed(
+            bip39.entropyToMnemonic(
+              entropy
+            )
+          )
+      
+      const address=hdkey.fromMasterSeed(seed).derivePath("m/44'/60'/0'/0/0").getWallet().getChecksumAddressString()
+      return extStorage.set("address",address)
+    }
+  },
   nekonium:{
     id:"nekonium",
     name:"Nekonium",
@@ -90,35 +119,7 @@ const extensions={
       return extStorage.set("address",address)
     }
   },
-  ethereum:{
-    id:"ethereum",
-    name:"Ethereum",
-    component:()=>import("../component/ethBase.js").then(c=>c.default({
-      networkName:"Ethereum",
-      networkScheme:"ethereum",
-      networkIcon:require("../res/coins/eth.png"),
-      networkSymbol:"ETH",
-      bip44DerivationPath:"m/44'/60'/0'/0/0",
-      chainId:1,
-      rpcServers:[
-        "https://mainnet.infura.io/iRUhBHOZ7VZdrEq1yQZd"
-      ],
-      explorer:"https://etherscan.io/address/"
-    })),
-    icon:require("../res/coins/eth.png"),
-    scheme:"ethereum",
-    onAdd(entropy,extStorage){
-      const seed=
-          bip39.mnemonicToSeed(
-            bip39.entropyToMnemonic(
-              entropy
-            )
-          )
-      
-      const address=hdkey.fromMasterSeed(seed).derivePath("m/44'/60'/0'/0/0").getWallet().getChecksumAddressString()
-      return extStorage.set("address",address)
-    }
-  },etherclassic:{
+  etherclassic:{
     id:"etherclassic",
     name:"Ethereum Classic",
     component:()=>import("../component/ethBase.js").then(c=>c.default({
