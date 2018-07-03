@@ -43,6 +43,9 @@ const defaultCoins = [{
   },{
     url: "https://mona.insight.monaco-ex.org/insight-api-monacoin",
     explorer: "https://mona.insight.monaco-ex.org/insight"
+  },{
+    url: "https://insight.electrum-mona.org/insight-api-monacoin",
+    explorer: "https://insight.electrum-mona.org/insight"
   }],
   network: {
     messagePrefix: '\x19Monacoin Signed Message:\n',
@@ -133,20 +136,23 @@ const defaultCoins = [{
   defaultFeeSatPerByte: 100,
   icon: require("../res/coins/btc.png"),
   apiEndpoints: [{
-    explorer: "https://insight.bitpay.com",
-    url: "https://insight.bitpay.com/api"
+    explorer: "https://www.localbitcoinschain.com",
+    url: "https://www.localbitcoinschain.com/api"
   },{
     url: "https://blockexplorer.com/api",
     explorer: "https://blockexplorer.com"
   },{
-    explorer: "https://www.localbitcoinschain.com",
-    url: "https://www.localbitcoinschain.com/api"
-  },{
     explorer: "https://explorer.bitcoin.com/btc",
     url: "https://explorer.bitcoin.com/api/btc"
   },{
+    explorer: "https://insight.bitpay.com",
+    url: "https://insight.bitpay.com/api"
+  },{
     url: "https://btc-bitcore4.trezor.io/api",
     explorer: "https://btc-bitcore4.trezor.io"
+  },{
+    url: "https://btc1.trezor.io/api",
+    explorer: "https://btc1.trezor.io"
   },{
     url: "https://btc.blockdozer.com/insight-api",
     explorer: "https://btc.blockdozer.com"
@@ -268,29 +274,26 @@ const defaultCoins = [{
   defaultFeeSatPerByte: 100,
   icon: require("../res/coins/btcsw.png"),
   apiEndpoints: [{
-    url: "https://btc.blockdozer.com/insight-api",
-    explorer: "https://btc.blockdozer.com"
-  },{
-    explorer: "https://insight.bitpay.com",
-    url: "https://insight.bitpay.com/api"
+    explorer: "https://www.localbitcoinschain.com",
+    url: "https://www.localbitcoinschain.com/api"
   },{
     url: "https://blockexplorer.com/api",
     explorer: "https://blockexplorer.com"
   },{
-    explorer: "https://www.localbitcoinschain.com",
-    url: "https://www.localbitcoinschain.com/api"
-  },{
     explorer: "https://explorer.bitcoin.com/btc",
     url: "https://explorer.bitcoin.com/api/btc"
+  },{
+    explorer: "https://insight.bitpay.com",
+    url: "https://insight.bitpay.com/api"
   },{
     url: "https://btc-bitcore4.trezor.io/api",
     explorer: "https://btc-bitcore4.trezor.io"
   },{
-    url: "https://btc-bitcore5.trezor.io/api",
-    explorer: "https://btc-bitcore5.trezor.io"
+    url: "https://btc1.trezor.io/api",
+    explorer: "https://btc1.trezor.io"
   },{
-    url: "https://btc-bitcore6.trezor.io/api",
-    explorer: "https://btc-bitcore6.trezor.io"
+    url: "https://btc.blockdozer.com/insight-api",
+    explorer: "https://btc.blockdozer.com"
   }],
   network: {
     messagePrefix: '\x18Bitcoin Signed Message:\n',
