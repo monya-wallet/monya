@@ -681,10 +681,10 @@ module.exports=class{
   }
   changeApiEndpoint(index){
     if (typeof(index)!=="number"){
-      index=(this.apiIndex+1)%this.apiEndpoints.length
+      index=(this.apiIndex+1)
     }
-    this.apiIndex = index
-    const a = this.apiEndpoints[index]
+    this.apiIndex = index%this.apiEndpoints.length
+    const a = this.apiEndpoints[this.apiIndex]
     if(a.proxy){
       this.apiEndpoint = coinUtil.proxyUrl(a.url)
     }else{

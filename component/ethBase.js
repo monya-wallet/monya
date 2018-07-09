@@ -107,7 +107,7 @@ module.exports=function(option){
     store:require("../js/store.js"),
     methods:{
       
-      getBalance(done){
+      getBalance(done=()=>{}){
         if(!this.address){
           return
         }
@@ -134,7 +134,7 @@ module.exports=function(option){
           for (let i = 0; i < balances.length; i++) {
             this.$set(this.tokens[i],"balance",+(new BigNumber(balances[i])).shift(-this.tokens[i].decimals))
           }
-          done&&done()
+          done()
         }).catch(e=>{
           this.loading=false
           this.$store.commit("setError","Server Error: "+e.message)

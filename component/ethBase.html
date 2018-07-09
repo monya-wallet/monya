@@ -71,7 +71,7 @@
     <span slot="title">送金確認</span>
     <p>{{sendAddress}}</p>
     <p>{{sendingToken?sendingToken.symbol:networkSymbol}}</p>
-    <p>手数料: {{totalGasPrice}} {{networkSymbol}}</p>
+    <p>最大手数料: {{totalGasPrice}} {{networkSymbol}}</p>
     <p>送金したあとは元に戻すことはできません。</p>
     <v-ons-input placeholder="パスワード" v-model="password" type="password"></v-ons-input>
     <template slot="footer">
@@ -169,12 +169,8 @@
       </v-ons-list-item>
       <v-ons-list-item>
         <div class="center">請求額</div>
-        <div class="right"><v-ons-input v-model="invAmt" placeholder="請求額" type="number"></v-ons-input></div>
+        <div class="right"><v-ons-input v-model="invAmt" placeholder="請求額" type="number"></v-ons-input>{{networkSymbol}}</div>
       </v-ons-list-item>
-      <v-ons-list-item>
-        <div class="right">{{networkSymbol}}</div>
-      </v-ons-list-item>
-      
     </v-ons-list>
   </v-ons-dialog>
 

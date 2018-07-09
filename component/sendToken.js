@@ -35,7 +35,8 @@ module.exports=require("../js/lang.js")({ja:require("./ja/sendToken.html"),en:re
       password:"",
       feePerByte:200,
       noFund:false,
-      sendWithSmall:false
+      sendWithSmall:false,
+      advanced:false
     }
   },
   store:require("../js/store.js"),

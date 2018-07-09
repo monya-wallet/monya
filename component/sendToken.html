@@ -21,18 +21,28 @@
       <v-ons-list-item>
         <div class="center">送る量</div>
         <div class="right"><v-ons-input placeholder="数量" type="number" v-model="sendAmount"></v-ons-input></div>
-      </v-ons-list-item><v-ons-list-item><v-ons-input placeholder="メモ" v-model="sendMemo"></v-ons-input>
-        </v-ons-list-item>
-      <v-ons-list-item>
-        <div class="center">手数料(sat/B)</div>
-        <div class="right"><v-ons-input placeholder="satoshi/Byte" v-model="feePerByte"></v-ons-input></div>
       </v-ons-list-item>
-      <v-ons-list-item>
-            <label class="left"><v-ons-checkbox input-id="sendWithSmall" v-model="sendWithSmall"></v-ons-checkbox></label>
-            <label class="center" for="sendWithSmall">少額の<currency-set :ticker="coinId"></currency-set>も一緒に送る</label>
-          </v-ons-list-item>
+      
       <v-ons-list-item><v-ons-input type="password" placeholder="Password" v-model="password"></v-ons-input></v-ons-list-item>
       <v-ons-list-item><v-ons-button @click="createTx" modifier="large" :disabled="!dest||!sendAmount||!password">送る</v-ons-button></v-ons-list-item>
+
+      <v-ons-list-item v-show="!advanced" @click="advanced=true">
+        <div class="left"><v-ons-icon icon="fa-caret-down"></v-ons-icon></div>
+        <div class="center">詳細オプション</div>
+      </v-ons-list-item>
+      <div v-show="advanced">
+        <v-ons-list-item v-show="!sendWithSmall">
+          <v-ons-input placeholder="メモ" v-model="sendMemo"></v-ons-input>
+        </v-ons-list-item>
+        <v-ons-list-item>
+          <div class="center">手数料(sat/B)</div>
+          <div class="right"><v-ons-input placeholder="satoshi/Byte" v-model="feePerByte"></v-ons-input></div>
+        </v-ons-list-item>
+        <v-ons-list-item>
+          <label class="left"><v-ons-checkbox input-id="sendWithSmall" v-model="sendWithSmall"></v-ons-checkbox></label>
+          <label class="center" for="sendWithSmall">少額の<currency-set :ticker="coinId"></currency-set>も一緒に送る</label>
+        </v-ons-list-item>
+      </div>
     </v-ons-list>
   </div>
   <v-ons-modal :visible="loading">
