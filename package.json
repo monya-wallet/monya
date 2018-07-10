@@ -73,7 +73,7 @@
     "lint": "eslint ./js/*.js",
     "build": "gulp prod",
     "build:cordova": "echo 'cordova command is deprecated';gulp prod",
-    "postinstall": "cd ./node_modules/nem-sdk;npm install ajv@6.3.0;cd node_modules/har-validator;npm install ajv@6.3.0;cd ../../../har-validator;npm install ajv@6.3.0;"
+    "postinstall": "cd ./node_modules/nem-sdk;npm install ajv@6.3.0;cd ../../node_modules/har-validator;npm install ajv@6.3.0"
   },
   "author": "monya-wallet",
   "license": "GPL-3.0-only"
