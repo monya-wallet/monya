@@ -122,7 +122,9 @@ module.exports=require("../js/lang.js")({ja:require("./ja/api.html"),en:require(
       const api=apis[this.name]
       const props={}
       for(let p in api.props){
-        props[p]=this.param[p]
+        if (Object.prototype.hasOwnProperty.call(api.props, p)){
+          props[p]=this.param[p]
+        }
       }
       let prom=Promise.resolve()
       if("password"===api.type){
