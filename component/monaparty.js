@@ -50,7 +50,7 @@ module.exports=require("../js/lang.js")({ja:require("./ja/monaparty.html"),en:re
       this.loading=true
       const title = titleList.get(this.titleId)
       title.callCP("get_normalized_balances",{
-        addresses:title.cp.getReceiveAddr()
+        addresses:title.cp.getReceiveAddr().concat(title.cp.getChangeAddr())
       }).then(res=>{
         this.assets=res
         this.loading=false
