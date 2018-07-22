@@ -73,6 +73,9 @@
         <v-ons-list-item>
           <v-ons-input placeholder="メモ" v-model="memo"></v-ons-input>
         </v-ons-list-item>
+        <v-ons-list-item>
+          <v-ons-input placeholder="パスワード" v-model="password"></v-ons-input>
+        </v-ons-list-item>
         <v-ons-list-item><v-ons-button @click="confirm=true" modifier="large" :disabled="!sendAddress||!sendAmount">送信</v-ons-button></v-ons-list-item>
         <v-ons-list-header>履歴</v-ons-list-header>
         <v-ons-list-item v-for="h in history">
