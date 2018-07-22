@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="org.missmonacoin.monya" version="3.0.0" android-versionCode="300000" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget id="org.missmonacoin.monya" version="3.3.0" android-versionCode="330000" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>もにゃ</name>
     <description>
     The easiest cryptocurrency wallet
@@ -48,6 +48,8 @@
         <splash density="land-xxhdpi" src="res/screens/android/splash-land-xxhdpi.png" />
         <splash density="land-xxxhdpi" src="res/screens/android/splash-land-xxxhdpi.png" />
         <hook src="manifestHook.js" type="after_prepare" />
+
+        <preference name="loadUrlTimeoutValue" value="700000" />
     </platform>
     <platform name="ios">
         <allow-intent href="itms:*" />

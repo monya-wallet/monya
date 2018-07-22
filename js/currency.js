@@ -1,3 +1,20 @@
+/*
+    Monya - The easiest cryptocurrency wallet
+    Copyright (C) 2017-2018 MissMonacoin
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
 const bcLib = require('bitcoinjs-lib')
 const axios = require('axios');
 const BigNumber = require('bignumber.js');
@@ -461,6 +478,8 @@ module.exports=class{
       }else if(this.libName==="btg"){
         txb.enableBitcoinGold(true)
         txb.sign(i,keyPair,null,this.lib.Transaction.SIGHASH_ALL | this.lib.Transaction.SIGHASH_BITCOINCASHBIP143,txb.inputs[i].value)
+      }else if(this.libName==="zec" && this.network.txversion===3){
+        txb.sign(i,keyPair,null,this.lib.Transaction.SIGHASH_ALL,txb.inputs[i].value,null,true)
       }else{
         txb.sign(i,keyPair)
       }
@@ -706,6 +725,8 @@ module.exports=class{
         }else if(this.libName==="btg"){
           txb.enableBitcoinGold(true)
           txb.sign(i,keyPair,null,this.lib.Transaction.SIGHASH_ALL | this.lib.Transaction.SIGHASH_BITCOINCASHBIP143,v.value)
+        }else if(this.libName==="zec" && this.network.txversion===3){
+          txb.sign(i,keyPair,null,this.lib.Transaction.SIGHASH_ALL,v.value,null,true)
         }else{
           txb.sign(i,keyPair)
         }
@@ -722,10 +743,10 @@ module.exports=class{
   }
   changeApiEndpoint(index){
     if (typeof(index)!=="number"){
-      index=(this.apiIndex+1)%this.apiEndpoints.length
+      index=(this.apiIndex+1)
     }
-    this.apiIndex = index
-    const a = this.apiEndpoints[index]
+    this.apiIndex = index%this.apiEndpoints.length
+    const a = this.apiEndpoints[this.apiIndex]
     if(a.proxy){
       this.apiEndpoint = coinUtil.proxyUrl(a.url)
     }else{

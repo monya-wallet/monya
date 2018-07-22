@@ -1,27 +1,41 @@
 <v-ons-page data-page="api">
   <custom-bar title="API" menu="true"></custom-bar>
   <div>
-    <div v-show="!successful">
-      <div v-if="qType==='yOrN'" id="yOrNAPI">
-        <v-ons-button modifier="large cta" @click="yes">はい</v-ons-button>
-        <v-ons-button modifier="large" @click="no">いいえ</v-ons-button>
+    <div v-schow="!successful">
+      <div>
+        アプリケーションと連携します。信頼できるアプリケーションである場合のみ続行してください。
+        <table>
+          <tr>
+            <td>内容</td>
+            <td>{{method}}</td>
+          </tr>
+          <tr v-for="(v,k) in props">
+            <td>{{v}}</td>
+            <td>{{param[k]}}</td>
+          </tr>
+          <tr v-if="param.callbackURL">
+            <td>Callback POST</td>
+            <td>{{param.callbackURL}}</td>
+          </tr>
+          <tr v-if="param.callbackPage">
+            <td>Callback Page</td>
+            <td>{{param.callbackPage}}</td>
+          </tr>
+          <tr v-if="param.payload">
+            <td>Payload</td>
+            <td>{{param.payload}}</td>
+          </tr>
+        </table>
+      </div>
+      <div v-if="qType==='normal'" id="yOrNAPI">
+        <v-ons-button modifier="large cta" @click="next">はい</v-ons-button>
       </div>
       <div v-if="qType==='password'" id="passwordAPI">
-        <div v-if="name==='signTx'">
-          アプリケーションと連携します。信頼できるアプリケーションである場合のみ続行してください。
-          署名します
-        </div>
-        <div v-if="name==='signMsg'">
-          アプリケーションと連携します。信頼できるアプリケーションである場合のみ続行してください。
-          メッセージ署名します
-        </div>
+        
         <input v-model="password" type="password" placeholder="パスワード" class="text-input text-input--underbar">
-        <v-ons-button modifier="large cta" @click="goWithPassword" :disabled="!password">次へ</v-ons-button>
-        <v-ons-button modifier="large" @click="no">やめる</v-ons-button>
+        <v-ons-button modifier="large cta" @click="next" :disabled="!password">次へ</v-ons-button>
       </div>
-      <div v-if="qType==='direct'">
-        直接実行します
-      </div>
+      
       <div v-if="qType==='none'" id="noneAPI">
         <div>
           無効なメソッドが実行されました。

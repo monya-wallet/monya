@@ -1,3 +1,20 @@
+/*
+    Monya - The easiest cryptocurrency wallet
+    Copyright (C) 2017-2018 MissMonacoin
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
 const titleList = require("../js/titleList")
 const BigNumber = require('bignumber.js');
 const storage = require("../js/storage")
@@ -33,7 +50,7 @@ module.exports=require("../js/lang.js")({ja:require("./ja/monaparty.html"),en:re
       this.loading=true
       const title = titleList.get(this.titleId)
       title.callCP("get_normalized_balances",{
-        addresses:title.cp.getReceiveAddr()
+        addresses:title.cp.getReceiveAddr().concat(title.cp.getChangeAddr())
       }).then(res=>{
         this.assets=res
         this.loading=false

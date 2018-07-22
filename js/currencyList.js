@@ -1,3 +1,20 @@
+/*
+    Monya - The easiest cryptocurrency wallet
+    Copyright (C) 2017-2018 MissMonacoin
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
 
 const Currency = require("./currency")
 const coinUtil = require("./coinUtil")
@@ -18,14 +35,17 @@ const defaultCoins = [{
   defaultFeeSatPerByte: 150,
   icon: require("../res/coins/mona.png"),
   apiEndpoints: [{
+    url: "https://mona.insight.monacoin.ml/insight-api-monacoin",
+    explorer: "https://mona.insight.monacoin.ml/insight"
+  },{
     url: "https://mona.monya.ga/insight-api-monacoin",
     explorer: "https://mona.monya.ga/insight"
   },{
     url: "https://mona.insight.monaco-ex.org/insight-api-monacoin",
     explorer: "https://mona.insight.monaco-ex.org/insight"
   },{
-    url: "https://mona.insight.monacoin.ml/insight-api-monacoin",
-    explorer: "https://mona.insight.monacoin.ml/insight"
+    url: "https://insight.electrum-mona.org/insight-api-monacoin",
+    explorer: "https://insight.electrum-mona.org/insight"
   }],
   network: {
     messagePrefix: '\x19Monacoin Signed Message:\n',
@@ -73,14 +93,14 @@ const defaultCoins = [{
     url: "https://zenyinsight.tomotomo9696.xyz/api",
     explorer: "https://zenyinsight.tomotomo9696.xyz"
   }, {
-    url: "https://zeny.fujishan.jp/api",
-    explorer: "https://zeny.fujishan.jp"
-  }, {
     url: "https://insight.bitzeny.jp/api",
     explorer: "https://insight.bitzeny.jp"
   },{
     url: "https://insight.bitzeny.cloud/api",
     explorer: "https://insight.bitzeny.cloud"
+  }, {
+    url: "https://zeny.fujishan.jp/api",
+    explorer: "https://zeny.fujishan.jp"
   }],
   network: {
     messagePrefix: '\x18BitZeny Signed Message:\n',
@@ -116,29 +136,26 @@ const defaultCoins = [{
   defaultFeeSatPerByte: 100,
   icon: require("../res/coins/btc.png"),
   apiEndpoints: [{
-    url: "https://btc.blockdozer.com/insight-api",
-    explorer: "https://btc.blockdozer.com"
-  },{
-    explorer: "https://insight.bitpay.com",
-    url: "https://insight.bitpay.com/api"
+    explorer: "https://www.localbitcoinschain.com",
+    url: "https://www.localbitcoinschain.com/api"
   },{
     url: "https://blockexplorer.com/api",
     explorer: "https://blockexplorer.com"
   },{
-    explorer: "https://www.localbitcoinschain.com",
-    url: "https://www.localbitcoinschain.com/api"
-  },{
     explorer: "https://explorer.bitcoin.com/btc",
     url: "https://explorer.bitcoin.com/api/btc"
+  },{
+    explorer: "https://insight.bitpay.com",
+    url: "https://insight.bitpay.com/api"
   },{
     url: "https://btc-bitcore4.trezor.io/api",
     explorer: "https://btc-bitcore4.trezor.io"
   },{
-    url: "https://btc-bitcore5.trezor.io/api",
-    explorer: "https://btc-bitcore5.trezor.io"
+    url: "https://btc1.trezor.io/api",
+    explorer: "https://btc1.trezor.io"
   },{
-    url: "https://btc-bitcore6.trezor.io/api",
-    explorer: "https://btc-bitcore6.trezor.io"
+    url: "https://btc.blockdozer.com/insight-api",
+    explorer: "https://btc.blockdozer.com"
   }],
   network: {
     messagePrefix: '\x18Bitcoin Signed Message:\n',
@@ -257,29 +274,26 @@ const defaultCoins = [{
   defaultFeeSatPerByte: 100,
   icon: require("../res/coins/btcsw.png"),
   apiEndpoints: [{
-    url: "https://btc.blockdozer.com/insight-api",
-    explorer: "https://btc.blockdozer.com"
-  },{
-    explorer: "https://insight.bitpay.com",
-    url: "https://insight.bitpay.com/api"
+    explorer: "https://www.localbitcoinschain.com",
+    url: "https://www.localbitcoinschain.com/api"
   },{
     url: "https://blockexplorer.com/api",
     explorer: "https://blockexplorer.com"
   },{
-    explorer: "https://www.localbitcoinschain.com",
-    url: "https://www.localbitcoinschain.com/api"
-  },{
     explorer: "https://explorer.bitcoin.com/btc",
     url: "https://explorer.bitcoin.com/api/btc"
+  },{
+    explorer: "https://insight.bitpay.com",
+    url: "https://insight.bitpay.com/api"
   },{
     url: "https://btc-bitcore4.trezor.io/api",
     explorer: "https://btc-bitcore4.trezor.io"
   },{
-    url: "https://btc-bitcore5.trezor.io/api",
-    explorer: "https://btc-bitcore5.trezor.io"
+    url: "https://btc1.trezor.io/api",
+    explorer: "https://btc1.trezor.io"
   },{
-    url: "https://btc-bitcore6.trezor.io/api",
-    explorer: "https://btc-bitcore6.trezor.io"
+    url: "https://btc.blockdozer.com/insight-api",
+    explorer: "https://btc.blockdozer.com"
   }],
   network: {
     messagePrefix: '\x18Bitcoin Signed Message:\n',
@@ -316,15 +330,20 @@ const defaultCoins = [{
   bip21: "bitcoincash",
   defaultFeeSatPerByte: 100,
   icon: require("../res/coins/bch.png"),
+<<<<<<< HEAD
   apiEndpoints: [/*{
     url: "https://blockdozer.com/insight-api",
     explorer: "https://blockdozer.com",
     addressType: "legacy"
   },*/{
+=======
+  apiEndpoints: [{
+>>>>>>> 161869874cdfcd2284f0a2890d4f427dd4c7a006
     explorer: "https://bitcoincash.blockexplorer.com",
     url: "https://bitcoincash.blockexplorer.com/api",
     addressType: "cashaddr"
   },{
+<<<<<<< HEAD
     explorer: "https://explorer.bitcoin.com/bch",
     url: "https://explorer.bitcoin.com/api/bch",
     addressType: "legacy"
@@ -333,6 +352,13 @@ const defaultCoins = [{
     url: "https://bch-insight.bitpay.com/api",
     explorer: "https://bch-insight.bitpay.com",
     addressType: "cashaddr"
+=======
+    explorer: "https://explorer.bitcoin.com/bch", 
+    url: "https://explorer.bitcoin.com/api/bch"
+ },{
+    explorer: "https://cash.insight.publicnodejp.cf/insight",
+    url: "https://cash.insight.publicnodejp.cf/insight-api",
+>>>>>>> 161869874cdfcd2284f0a2890d4f427dd4c7a006
   }],
   network: {
     messagePrefix: '\x18Bitcoin Signed Message:\n',
@@ -376,6 +402,8 @@ const defaultCoins = [{
     },
     "pubKeyHash": 6198,
     "scriptHash": 6203,
+    "txversion": 1,
+    "versionGroupId": 48748912,
     "wif": 128
   },
   price: {
@@ -458,6 +486,8 @@ const defaultCoins = [{
     },
     "pubKeyHash": 7352,
     "scriptHash": 7357,
+    "txversion": 3,
+    "versionGroupId": 63210096,
     "wif": 128
   },
   "apiEndpoints": [{
@@ -497,6 +527,9 @@ const defaultCoins = [{
   apiEndpoints: [{
     url: "https://yaju.insight.monacoin.ml/api",
     explorer: "https://yaju.insight.monacoin.ml"
+  },{
+    url: "https://yaju.insight.publicnodejp.cf/api",
+    explorer: "https://yaju.insight.monacoin.ml"
   }],
   network: {
     messagePrefix: '\x19YAJUCOIN Signed Message:\n',
@@ -525,9 +558,6 @@ const defaultCoins = [{
   defaultFeeSatPerByte: 50,
   icon: require("../res/coins/neet.png"),
   apiEndpoints: [{
-    url: "https://neet.insight.monacoin.ml/api",
-    explorer: "https://insight.neetcoin.jp"
-  }, {
     url: "https://insight.neetcoin.jp/api",
     explorer: "https://insight.neetcoin.jp"
   }],

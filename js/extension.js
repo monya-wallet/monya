@@ -1,3 +1,20 @@
+/*
+    Monya - The easiest cryptocurrency wallet
+    Copyright (C) 2017-2018 MissMonacoin
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
 const storage = require("./storage.js")
 const hdkey = require('ethereumjs-wallet/hdkey')
 const bip39 = require("@missmonacoin/bip39-eng")
@@ -43,6 +60,35 @@ const extensions={
       return extStorage.set("address",address)
     }
   },
+  ethereum:{
+    id:"ethereum",
+    name:"Ethereum",
+    component:()=>import("../component/ethBase.js").then(c=>c.default({
+      networkName:"Ethereum",
+      networkScheme:"ethereum",
+      networkIcon:require("../res/coins/eth.png"),
+      networkSymbol:"ETH",
+      bip44DerivationPath:"m/44'/60'/0'/0/0",
+      chainId:1,
+      rpcServers:[
+        "https://mainnet.infura.io/iRUhBHOZ7VZdrEq1yQZd"
+      ],
+      explorer:"https://etherscan.io/address/"
+    })),
+    icon:require("../res/coins/eth.png"),
+    scheme:"ethereum",
+    onAdd(entropy,extStorage){
+      const seed=
+          bip39.mnemonicToSeed(
+            bip39.entropyToMnemonic(
+              entropy
+            )
+          )
+      
+      const address=hdkey.fromMasterSeed(seed).derivePath("m/44'/60'/0'/0/0").getWallet().getChecksumAddressString()
+      return extStorage.set("address",address)
+    }
+  },
   nekonium:{
     id:"nekonium",
     name:"Nekonium",
@@ -73,35 +119,7 @@ const extensions={
       return extStorage.set("address",address)
     }
   },
-  ethereum:{
-    id:"ethereum",
-    name:"Ethereum",
-    component:()=>import("../component/ethBase.js").then(c=>c.default({
-      networkName:"Ethereum",
-      networkScheme:"ethereum",
-      networkIcon:require("../res/coins/eth.png"),
-      networkSymbol:"ETH",
-      bip44DerivationPath:"m/44'/60'/0'/0/0",
-      chainId:1,
-      rpcServers:[
-        "https://mainnet.infura.io/iRUhBHOZ7VZdrEq1yQZd"
-      ],
-      explorer:"https://etherscan.io/address/"
-    })),
-    icon:require("../res/coins/eth.png"),
-    scheme:"ethereum",
-    onAdd(entropy,extStorage){
-      const seed=
-          bip39.mnemonicToSeed(
-            bip39.entropyToMnemonic(
-              entropy
-            )
-          )
-      
-      const address=hdkey.fromMasterSeed(seed).derivePath("m/44'/60'/0'/0/0").getWallet().getChecksumAddressString()
-      return extStorage.set("address",address)
-    }
-  },etherclassic:{
+  etherclassic:{
     id:"etherclassic",
     name:"Ethereum Classic",
     component:()=>import("../component/ethBase.js").then(c=>c.default({

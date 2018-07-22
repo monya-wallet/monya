@@ -1,3 +1,20 @@
+/*
+    Monya - The easiest cryptocurrency wallet
+    Copyright (C) 2017-2018 MissMonacoin
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
 const bip39 = require("@missmonacoin/bip39-eng")
 const coinUtil = require("../js/coinUtil")
 const storage = require("../js/storage")
@@ -75,6 +92,14 @@ module.exports=function(option){
           password:"",
           value:0
         },
+        deployment:{
+          result:"",
+          gasLimit:0,
+          gasPrice:0,
+          password:"",
+          show:false,
+          data:""
+        },
 
         tokens:[]
       }
@@ -82,7 +107,7 @@ module.exports=function(option){
     store:require("../js/store.js"),
     methods:{
       
-      getBalance(done){
+      getBalance(done=()=>{}){
         if(!this.address){
           return
         }
@@ -109,7 +134,7 @@ module.exports=function(option){
           for (let i = 0; i < balances.length; i++) {
             this.$set(this.tokens[i],"balance",+(new BigNumber(balances[i])).shift(-this.tokens[i].decimals))
           }
-          done&&done()
+          done()
         }).catch(e=>{
           this.loading=false
           this.$store.commit("setError","Server Error: "+e.message)
@@ -310,7 +335,7 @@ module.exports=function(option){
               .methods[this.runContract.fn](...this.runContract.args)
         if(this.selectedAbiFn.constant){
           method.call().then(result=>{
-            this.runContract.result=result
+            this.runContract.result=JSON.stringify(result)
           }).catch(e=>{
             this.loading=false
             this.$store.commit("setError",e.message)
@@ -331,7 +356,7 @@ module.exports=function(option){
               from:this.address,
               nonce: web3.utils.numberToHex(nonce),
               gasPrice: web3.utils.numberToHex(sendGasPriceWei),
-              gasLimit: web3.utils.numberToHex(this.runContract.gasLimit),
+              gas: web3.utils.numberToHex(this.runContract.gasLimit),
               to: this.runContract.contractAddress,
               value: "0x0",
               chainId: CHAIN_ID,
@@ -355,6 +380,49 @@ module.exports=function(option){
           })
         }
       },
+
+      deployContract(){
+        
+        this.loading=true
+        const sendGasPriceWei = web3.utils.toWei(""+this.sendGasPrice, "gwei")
+
+        const deploying=(new web3.eth.Contract([])).deploy({
+          data:"0x"+this.deployment.data
+        })
+        
+        
+        Promise.all([storage.get("keyPairs"),web3.eth.getTransactionCount(this.address)]).then(res => {
+          const seed=
+                bip39.mnemonicToSeed(
+                  bip39.entropyToMnemonic(
+                    coinUtil.decrypt(res[0].entropy,this.deployment.password)
+                  )
+                )
+          const nonce=res[1]
+          const tx={
+            from:this.address,
+            nonce: web3.utils.numberToHex(nonce),
+            gasPrice: web3.utils.numberToHex(sendGasPriceWei),
+            gas: web3.utils.numberToHex(this.deployment.gasLimit),
+            value: "0x0",
+            chainId: CHAIN_ID,
+            data:deploying.encodeABI()
+          }
+          
+          return web3.eth.accounts.privateKeyToAccount("0x"+hdkey.fromMasterSeed(seed).derivePath(HD_DERIVATION_PATH).getWallet().getPrivateKey().toString("hex")).signTransaction(tx)
+        }).then(signedTx=>{
+          this.deployment.password=""
+          return web3.eth.sendSignedTransaction(signedTx.rawTransaction)
+        }).then(res=>{
+          this.deployment.result=(res.contractAddress)
+          this.loading=false
+        }).catch(e=>{
+          this.loading=false
+          this.$store.commit("setError",e.message)
+        })
+        
+      },
+      
       goToAddTokens(){
         this.$emit("push",{extends:require("./ethTokens.js"),data(){return {networkScheme:NETWORK_SCHEME}}})
       }
