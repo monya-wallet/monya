@@ -382,6 +382,8 @@ const defaultCoins = [{
     },
     "pubKeyHash": 6198,
     "scriptHash": 6203,
+    "txversion": 1,
+    "versionGroupId": 48748912,
     "wif": 128
   },
   price: {
@@ -464,6 +466,8 @@ const defaultCoins = [{
     },
     "pubKeyHash": 7352,
     "scriptHash": 7357,
+    "txversion": 3,
+    "versionGroupId": 63210096,
     "wif": 128
   },
   "apiEndpoints": [{
