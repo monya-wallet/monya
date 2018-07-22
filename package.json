@@ -10,7 +10,7 @@
   "dependencies": {
     "@missmonacoin/bip39-eng": "^2.5.0",
     "@missmonacoin/bitcoincashjs-lib": "^1.0.1",
-    "@missmonacoin/bitcoinjs-lib-zcash": "^1.0.0",
+    "@missmonacoin/bitcoinjs-lib-zcash": "^1.0.1",
     "@missmonacoin/blackcoinjs-lib": "^1.0.0",
     "ajv": "^6.3.0",
     "axios": "^0.17.1",
