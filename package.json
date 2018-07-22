@@ -33,15 +33,7 @@
     "vue": "^2.5.13",
     "vue-onsenui": "^2.5.0",
     "vuex": "^3.0.1",
-    "web3": "^1.0.0-beta.34",
-    "web3-bzz": "^1.0.0-beta.34",
-    "web3-core": "^1.0.0-beta.34",
-    "web3-eth": "^1.0.0-beta.34",
-    "web3-eth-personal": "^1.0.0-beta.34",
-    "web3-net": "^1.0.0-beta.34",
-    "web3-requestmanager": "^1.0.0-beta.14",
-    "web3-shh": "^1.0.0-beta.34",
-    "web3-utils": "^1.0.0-beta.34"
+    "web3": "^1.0.0-beta.34"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.0.0-beta.36",
