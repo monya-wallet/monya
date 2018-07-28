@@ -774,13 +774,13 @@ module.exports=class{
   }
   isValidAddress(address){
     if(this.coinId=="bch"){
-      // if i am BCH, test for CashAddr and Bitpay format
+      // if i am BCH, test for CashAddr format
       try{
         // lets test
-        isCashAddress(address)
+        toCashAddress(address)
         return true
       }catch(e){
-        // not a CashAddr, and probably not Legacy address
+        // not a CashAddr
       }
     }
     try{
