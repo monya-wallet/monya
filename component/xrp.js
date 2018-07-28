@@ -138,7 +138,7 @@ module.exports=require("../js/lang.js")({ja:require("./ja/xrp.html"),en:require(
         storage.get("keyPairs")
       ]).then(p=>{
         const seed = keypairs.generateSeed({
-          entropy:coinUtil.decrypt(p[1],this.password)
+          entropy:Buffer.from(coinUtil.decrypt(p[1].entropy,this.password),"hex")
         })
         const signedData = this.api.sign(p[0].txJSON,seed)
         return this.api.submit(signedData.signedTransaction)
@@ -220,9 +220,6 @@ module.exports=require("../js/lang.js")({ja:require("./ja/xrp.html"),en:require(
     },
     invAmt(){
       this.getQrCode()
-    },
-    password(){
-      this._decrypt().catch(()=>true)
     }
   },
   mounted(){
