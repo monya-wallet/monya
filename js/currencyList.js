@@ -332,13 +332,17 @@ const defaultCoins = [{
   icon: require("../res/coins/bch.png"),
   apiEndpoints: [{
     explorer: "https://bitcoincash.blockexplorer.com",
-    url: "https://bitcoincash.blockexplorer.com/api"
+    url: "https://bitcoincash.blockexplorer.com/api",
+    addressType: "cashaddr"
   },{
-    explorer: "https://explorer.bitcoin.com/bch", 
-    url: "https://explorer.bitcoin.com/api/bch"
- },{
-    explorer: "https://cash.insight.publicnodejp.cf/insight",
-    url: "https://cash.insight.publicnodejp.cf/insight-api",
+    explorer: "https://explorer.bitcoin.com/bch",
+    url: "https://explorer.bitcoin.com/api/bch",
+    addressType: "legacy"
+  },
+  {
+    url: "https://bch-insight.bitpay.com/api",
+    explorer: "https://bch-insight.bitpay.com",
+    addressType: "cashaddr"
   }],
   network: {
     messagePrefix: '\x18Bitcoin Signed Message:\n',
