@@ -274,9 +274,6 @@ const defaultCoins = [{
   defaultFeeSatPerByte: 100,
   icon: require("../res/coins/btcsw.png"),
   apiEndpoints: [{
-    explorer: "https://www.localbitcoinschain.com",
-    url: "https://www.localbitcoinschain.com/api"
-  },{
     url: "https://blockexplorer.com/api",
     explorer: "https://blockexplorer.com"
   },{
@@ -382,7 +379,7 @@ const defaultCoins = [{
     },
     "pubKeyHash": 6198,
     "scriptHash": 6203,
-    "txversion": 1,
+    "txversion": 3,
     "versionGroupId": 48748912,
     "wif": 128
   },
