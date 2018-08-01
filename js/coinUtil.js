@@ -23,6 +23,7 @@ const crypto = require('crypto');
 const errors=require("./errors")
 const axios=require("axios")
 const ext = require("./extension.js")
+const BigNumber = require("bignumber.js")
 
 const addressRegExp = /^\w+:(?:\/\/)?(\w{10,255})\??/
 
@@ -256,14 +257,13 @@ exports.parseUrl=async url=>{
   }
   let extraDataFromR=null
   // required for BitPay invoice
-  if(raw.searchParams.get(r)){
-    extraDataFromR=(await axios.get({
+  if(raw.searchParams.get("r")){
+    extraDataFromR=(await axios.get(raw.searchParams.get("r"),{
       responseType: 'json',
-      url: raw.searchParams.get(r),
       headers: {
         'Accept': 'application/payment-request'
       }
-    })).data
+    })).data.outputs[0]
   }
   ret.raw=raw
   ret.protocol=raw.protocol.slice(0,-1)
@@ -307,7 +307,10 @@ exports.parseUrl=async url=>{
   ret.signature=raw.searchParams.get("req-signature")
   ret.utxo=raw.searchParams.get("req-utxo")
   if(extraDataFromR){
-    ret.amount=extraDataFromR.amountBTC
+    ret.amount=new BigNumber(extraDataFromR.amount).shift(-8).toString()
+    // Flag isValidAddress true
+    ret.isCoinAddress=true
+    ret.isValidAddress=true
   }else{
     ret.amount=raw.searchParams.get("amount")
   }
