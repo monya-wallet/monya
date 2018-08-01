@@ -228,7 +228,7 @@ exports.getBip21=(bip21Urn,address,query,addrUrl=false)=>{
   return bip21Urn+":"+address+queryStr
 };
 
-exports.parseUrl=url=>new Promise((resolve,reject)=>{
+exports.parseUrl=async url=>{
   const ret = {
     url,
     raw:null,
@@ -252,7 +252,18 @@ exports.parseUrl=url=>new Promise((resolve,reject)=>{
   try{
     raw=new URL(url)
   }catch(e){
-    return resolve(ret)
+    return ret
+  }
+  let extraDataFromR=null
+  // required for BitPay invoice
+  if(raw.searchParams.get(r)){
+    extraDataFromR=(await axios.get({
+      responseType: 'json',
+      url: raw.searchParams.get(r),
+      headers: {
+        'Accept': 'application/payment-request'
+      }
+    })).data
   }
   ret.raw=raw
   ret.protocol=raw.protocol.slice(0,-1)
@@ -260,6 +271,8 @@ exports.parseUrl=url=>new Promise((resolve,reject)=>{
   const addrRes = addressRegExp.exec(url)
   if(addrRes){
     ret.address=addrRes[1]
+  }else if(extraDataFromR){
+    ret.address=extraDataFromR.address
   }
   if(ret.address.slice(0,API_PREFIX.length)===API_PREFIX){
     ret.apiName=ret.address.slice(API_PREFIX.length)
@@ -268,7 +281,7 @@ exports.parseUrl=url=>new Promise((resolve,reject)=>{
     }catch(e){
       ret.apiParam=null
     }
-    return resolve(ret)
+    return ret
   }
   ext.each(v=>{
     if(ret.protocol===v.scheme){
@@ -290,12 +303,16 @@ exports.parseUrl=url=>new Promise((resolve,reject)=>{
   
   ret.message=raw.searchParams.get("message")
   ret.label=raw.searchParams.get("label")
-  ret.amount=raw.searchParams.get("amount")
   ret.opReturn=raw.searchParams.get("req-opreturn")
   ret.signature=raw.searchParams.get("req-signature")
   ret.utxo=raw.searchParams.get("req-utxo")
-  resolve(ret)
-})
+  if(extraDataFromR){
+    ret.amount=extraDataFromR.amountBTC
+  }else{
+    ret.amount=raw.searchParams.get("amount")
+  }
+  return ret
+}
 let apiCb
 exports.callAPI=(name,param)=>{
   apiCb(name,param)
