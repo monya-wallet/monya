@@ -274,9 +274,6 @@ const defaultCoins = [{
   defaultFeeSatPerByte: 100,
   icon: require("../res/coins/btcsw.png"),
   apiEndpoints: [{
-    explorer: "https://www.localbitcoinschain.com",
-    url: "https://www.localbitcoinschain.com/api"
-  },{
     url: "https://blockexplorer.com/api",
     explorer: "https://blockexplorer.com"
   },{
@@ -294,6 +291,9 @@ const defaultCoins = [{
   },{
     url: "https://btc.blockdozer.com/insight-api",
     explorer: "https://btc.blockdozer.com"
+  },{
+    explorer: "https://www.localbitcoinschain.com",
+    url: "https://www.localbitcoinschain.com/api"
   }],
   network: {
     messagePrefix: '\x18Bitcoin Signed Message:\n',
