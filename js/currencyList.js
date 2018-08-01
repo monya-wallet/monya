@@ -386,7 +386,7 @@ const defaultCoins = [{
     },
     "pubKeyHash": 6198,
     "scriptHash": 6203,
-    "txversion": 1,
+    "txversion": 3,
     "versionGroupId": 48748912,
     "wif": 128
   },
