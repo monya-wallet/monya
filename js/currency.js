@@ -710,7 +710,7 @@ module.exports=class{
       r.utxos.forEach((v,i)=>{
         txb.addInput(v.txId,v.vout)
       })
-      if(coin.coinId=="bch"){
+      if(this.coin.coinId=="bch"){
         // remove if lib supports
         if(!isLegacyAddress(addr)){
           // convert CashAddr to Legacy
