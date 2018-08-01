@@ -16,7 +16,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 const storage = require("./storage.js")
-const hdkey = require('ethereumjs-wallet/dist/hdkey')
+const hdkey = require('ethereumjs-wallet/hdkey')
 const bip39 = require("@missmonacoin/bip39-eng")
 const keypairs=require("ripple-keypairs")
 
