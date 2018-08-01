@@ -23,7 +23,7 @@ const BigNumber = require('bignumber.js');
 const axios = require('axios');
 const bcLib = require('bitcoinjs-lib')
 const Web3 = require('web3')
-const hdkey = require('ethereumjs-wallet/hdkey')
+const hdkey = require('ethereumjs-wallet/dist/hdkey')
 const extension=require("../js/extension.js")
 const erc20ABI = require("../js/erc20ABI.js")
 
