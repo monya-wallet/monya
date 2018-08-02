@@ -5,7 +5,7 @@
   "description": "The easiest cryptocurrency wallet",
   "main": "index.js",
   "scripts": {
-    "android-init": "cordova platfom add android",
+    "android-init": "cordova platform add android",
     "android-build": "cordova build android"
   },
   "author": "Apache Cordova Team",
