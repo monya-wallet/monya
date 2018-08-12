@@ -29,21 +29,6 @@ const zecLib = require("@missmonacoin/bitcoinjs-lib-zcash")
 const bchLib = require("@missmonacoin/bitcoincashjs-lib")
 const blkLib = require("@missmonacoin/blackcoinjs-lib")
 const jp = require('jsonpath')
-const { toCashAddress, toLegacyAddress, isLegacyAddress, isCashAddress }=require("bchaddrjs");
-
-if("function"!==typeof Uint8Array.prototype.slice0){
-  // workaround for slice bug; DO NOT REMOVE OR BCH DETECTON WOULD BREAK
-  // You can move it, but you MUST NOT REMOVE
-  Uint8Array.prototype.slice0=Uint8Array.prototype.slice
-  Uint8Array.prototype.slice=function(start,end){
-    if(end<0){
-      return this.slice0(start,this.length+end)
-    }else{
-      return this.slice0(start,end)
-    }
-  }
-}
-
 module.exports=class{
   
   constructor(opt){
@@ -68,7 +53,6 @@ module.exports=class{
     this.opReturnLength=(opt.opReturnLength<0) ? 40 : opt.opReturnLength
     this.isAtomicSwapAvailable=!!opt.isAtomicSwapAvailable
     this.libName = opt.lib
-    this.addressType = ""
     switch(opt.lib){
       case "zec":
         this.lib=zecLib
@@ -134,28 +118,9 @@ module.exports=class{
     return adrss
   }
   getIndexFromAddress(addr){
-    if(this.coinId==="bch"){
-      const wasCashAddrSpecified=isCashAddress(addr)
-      if(wasCashAddrSpecified && addr.indexOf(":")>=0){
-        addr=addr.split(":")[1]
-      }
-      for(let p in this.addresses){
-        let address=this.addresses[p]
-        if(wasCashAddrSpecified){
-          address=toCashAddress(address).split(":")[1]
-        }else{
-          address=toLegacyAddress(address)
-        }
-        if(address===addr){
-          return p.split(",")
-        }
-      }
-    }else{
-      for(let p in this.addresses){
-        let address=this.addresses[p]
-        if(address===addr){
-          return p.split(",")
-        }
+    for(let p in this.addresses){
+      if(this.addresses[p]===addr){
+        return p.split(",")
       }
     }
     return false
@@ -210,11 +175,6 @@ module.exports=class{
   }
   
   getUtxos(addressList,includeUnconfirmedFunds=false,fallback=true){
-    if(this.coinId==="bch"){
-      // ok, convert our address to appropriate format
-      const mapFunction=(this.addressType==="cashaddr")?toCashAddress:toLegacyAddress;
-      addressList=addressList.map(mapFunction)
-    }
     let promise
     if(typeof(addressList[0])==="string"){//address mode
       promise=this.fbGet("/addrs/"+addressList.join(",")+"/utxo",fallback)
@@ -258,24 +218,14 @@ module.exports=class{
       throw new errors.InvalidIndexError()
     }
     const addrKey = (change|0).toString()+","+(index|0).toString()
-    let candidate
     if(this.addresses[addrKey]){
-      candidate = this.addresses[addrKey]
+      return this.addresses[addrKey]
     }else{
       if(this.enableSegwit==="legacy"){
-        candidate = this.getSegwitLegacyAddress(change,index)
-      }else{
-        candidate = this.hdPubNode.derive(change).derive(index).getAddress()
+        return (this.addresses[addrKey]=this.getSegwitLegacyAddress(change,index))
       }
-      this.addresses[addrKey]=candidate
+      return (this.addresses[addrKey]=this.hdPubNode.derive(change).derive(index).getAddress())
     }
-    // for all cases, candidate is set
-    /*if(this.coinId=="bch"){
-      return toCashAddress(candidate).split(":")[1]
-    }else{
-      return candidate
-    }*/
-    return candidate
   }
   getPubKey(change,index){
     if(this.dummy){return}
@@ -410,10 +360,6 @@ module.exports=class{
         outputs.forEach(output => {
           if (!output.address) {
             output.address = this.getAddress(1,(this.changeIndex+1)%coinUtil.GAP_LIMIT_FOR_CHANGE)
-          }
-          if(this.coinId==="bch"){
-            // force convert to Legacy address; remove when lib supports
-            output.address = toLegacyAddress(output.address)
           }
 
           txb.addOutput(output.address, output.value)
@@ -710,13 +656,6 @@ module.exports=class{
       r.utxos.forEach((v,i)=>{
         txb.addInput(v.txId,v.vout)
       })
-      if(this.coin.coinId==="bch"){
-        // remove if lib supports
-        if(!isLegacyAddress(addr)){
-          // convert CashAddr to Legacy
-          addr=toLegacyAddress(addr)
-        }
-      }
       txb.addOutput(addr,(new BigNumber(r.balance)).minus(fee).times(100000000).toNumber())
       r.utxos.forEach((v,i)=>{
         if(this.enableSegwit){
@@ -758,9 +697,6 @@ module.exports=class{
     if(a.explorer){
       this.explorer = a.explorer
     }
-    if(a.addressType){
-      this.addressType = a.addressType
-    }
     if(a.socket){
       this.socketEndpoint = a.socket
     }
@@ -773,16 +709,6 @@ module.exports=class{
     }
   }
   isValidAddress(address){
-    if(this.coinId==="bch"){
-      // if i am BCH, test for CashAddr format
-      try{
-        // lets test
-        toCashAddress(address)
-        return true
-      }catch(e){
-        // not a CashAddr
-      }
-    }
     try{
       const ver = this.getAddrVersion(address) //throws if not correct version
       if(ver===this.network.pubKeyHash||ver===this.network.scriptHash){
