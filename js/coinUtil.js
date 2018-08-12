@@ -261,7 +261,7 @@ exports.parseUrl=async url=>{
     extraDataFromR=(await axios.get(raw.searchParams.get("r"),{
       responseType: 'json',
       headers: {
-        'Accept': 'application/payment-request'
+        'Accept': 'application/payment-request, application/bitcoin-paymentrequest'
       }
     })).data.outputs[0]
   }
