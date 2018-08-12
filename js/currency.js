@@ -134,7 +134,7 @@ module.exports=class{
     return adrss
   }
   getIndexFromAddress(addr){
-    if(this.coinId=="bch"){
+    if(this.coinId==="bch"){
       const wasCashAddrSpecified=isCashAddress(addr)
       if(wasCashAddrSpecified && addr.indexOf(":")>=0){
         addr=addr.split(":")[1]
@@ -210,9 +210,9 @@ module.exports=class{
   }
   
   getUtxos(addressList,includeUnconfirmedFunds=false,fallback=true){
-    if(this.coinId=="bch"){
+    if(this.coinId==="bch"){
       // ok, convert our address to appropriate format
-      const mapFunction=(this.addressType=="cashaddr")?toCashAddress:toLegacyAddress;
+      const mapFunction=(this.addressType==="cashaddr")?toCashAddress:toLegacyAddress;
       addressList=addressList.map(mapFunction)
     }
     let promise
@@ -411,7 +411,7 @@ module.exports=class{
           if (!output.address) {
             output.address = this.getAddress(1,(this.changeIndex+1)%coinUtil.GAP_LIMIT_FOR_CHANGE)
           }
-          if(this.coinId=="bch"){
+          if(this.coinId==="bch"){
             // force convert to Legacy address; remove when lib supports
             output.address = toLegacyAddress(output.address)
           }
@@ -710,7 +710,7 @@ module.exports=class{
       r.utxos.forEach((v,i)=>{
         txb.addInput(v.txId,v.vout)
       })
-      if(coin.coinId=="bch"){
+      if(this.coin.coinId==="bch"){
         // remove if lib supports
         if(!isLegacyAddress(addr)){
           // convert CashAddr to Legacy
@@ -773,7 +773,7 @@ module.exports=class{
     }
   }
   isValidAddress(address){
-    if(this.coinId=="bch"){
+    if(this.coinId==="bch"){
       // if i am BCH, test for CashAddr format
       try{
         // lets test

@@ -348,8 +348,8 @@ module.exports=require("../js/lang.js")({ja:require("./ja/atomicswap.html"),en:r
       if (this.secret) {
         this.myP2SH=createContract(
           atomicSwapContract(
-            getHashFromAddress(giveCur,this.refundAddressWithSecret).hash,
-            getHashFromAddress(giveCur,this.redeemAddressWOSecret).hash,
+            this.getHashFromAddress(giveCur,this.refundAddressWithSecret).hash,
+            this.getHashFromAddress(giveCur,this.redeemAddressWOSecret).hash,
             this.lockTime,
             Buffer.from(this.secretHash,"hex"),
             this.contractType,
@@ -360,8 +360,8 @@ module.exports=require("../js/lang.js")({ja:require("./ja/atomicswap.html"),en:r
         );
         this.opponentP2SH = createContract(
           atomicSwapContract(
-            getHashFromAddress(getCur,this.refundAddressWOSecret).hash,
-            getHashFromAddress(getCur,this.redeemAddressWithSecret).hash,
+            this.getHashFromAddress(getCur,this.refundAddressWOSecret).hash,
+            this.getHashFromAddress(getCur,this.redeemAddressWithSecret).hash,
             this.lockTime,
             Buffer.from(this.secretHash,"hex"),
             this.contractType,
@@ -373,8 +373,8 @@ module.exports=require("../js/lang.js")({ja:require("./ja/atomicswap.html"),en:r
       }else{
         this.opponentP2SH=createContract(
           atomicSwapContract(
-            getHashFromAddress(getCur,this.refundAddressWithSecret).hash,
-            getHashFromAddress(getCur,this.redeemAddressWOSecret).hash,
+            this.getHashFromAddress(getCur,this.refundAddressWithSecret).hash,
+            this.getHashFromAddress(getCur,this.redeemAddressWOSecret).hash,
             this.lockTime,
             Buffer.from(this.secretHash,"hex"),
             this.contractType,
@@ -384,8 +384,8 @@ module.exports=require("../js/lang.js")({ja:require("./ja/atomicswap.html"),en:r
         );
         this.myP2SH =createContract(
           atomicSwapContract(
-            getHashFromAddress(giveCur,this.refundAddressWOSecret).hash,
-            getHashFromAddress(giveCur,this.redeemAddressWithSecret).hash,
+            this.getHashFromAddress(giveCur,this.refundAddressWOSecret).hash,
+            this.getHashFromAddress(giveCur,this.redeemAddressWithSecret).hash,
             this.lockTime,
             Buffer.from(this.secretHash,"hex"),
             this.contractType,
