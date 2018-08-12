@@ -113,32 +113,33 @@
           {{sendingToken?sendingToken.symbol:networkSymbol}}
         </div>
       </v-ons-list-item>
-      <v-ons-list-item expandable>
-        詳細オプション
-        <div class="expandable-content">
-          
-          <v-ons-list-item modifier="small">
-            <div class="left">ガスプライス</div>
-            <div class="center">
-              <v-ons-input type="number" v-model.number="sendGasPrice" @change="sendGasPrice = intValue(sendGasPrice)"></v-ons-input>
-            </div>
-            <div class="right">Gwei</div>
-          </v-ons-list-item>
-          <v-ons-list-item modifier="small">
-            <div class="left">ガスリミット</div>
-            <div class="center">
-              <v-ons-input type="number" v-model.number="sendGasLimit" @change="sendGasLimit = intValue(sendGasLimit)"></v-ons-input>
-            </div>
-          </v-ons-list-item>
-          <v-ons-list-item>
-            <div class="left">ガス合計</div>
-            <div class="center">
-              <v-ons-input :value="totalGasPrice" readonly></v-ons-input>
-            </div>
-            <div class="right">{{networkSymbol}}</div>
-          </v-ons-list-item>
-        </div>
+      <v-ons-list-item @click="advanced=true" v-show="!advanced">
+        <div class="left"><v-ons-icon icon="fa-caret-down"></v-ons-icon></div>
+        <div class="center">詳細オプション</div>
       </v-ons-list-item>
+      <div v-show="advanced">
+        
+        <v-ons-list-item modifier="small">
+          <div class="left">ガスプライス</div>
+          <div class="center">
+            <v-ons-input type="number" v-model.number="sendGasPrice" @change="sendGasPrice = intValue(sendGasPrice)"></v-ons-input>
+          </div>
+          <div class="right">Gwei</div>
+        </v-ons-list-item>
+        <v-ons-list-item modifier="small">
+          <div class="left">ガスリミット</div>
+          <div class="center">
+            <v-ons-input type="number" v-model.number="sendGasLimit" @change="sendGasLimit = intValue(sendGasLimit)"></v-ons-input>
+          </div>
+        </v-ons-list-item>
+        <v-ons-list-item>
+          <div class="left">ガス合計</div>
+          <div class="center">
+            <v-ons-input :value="totalGasPrice" readonly></v-ons-input>
+          </div>
+          <div class="right">{{networkSymbol}}</div>
+        </v-ons-list-item>
+      </div>
       <v-ons-list-item>
         <v-ons-button @click="send" modifier="large" :disabled="!isValidAddress||sendAmount===''||!sendGasPrice||!sendGasLimit">送信</v-ons-button>
       </v-ons-list-item>

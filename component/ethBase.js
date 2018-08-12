@@ -66,6 +66,7 @@ module.exports=function(option){
         invoiceMenu:false,
         removingToken:-1,
         option:false,
+        advanced:false,
 
         sendingToken:false,
         
