@@ -383,20 +383,20 @@
     "ja": "秘密鍵を作成します。以下の注意事項をよく読んで、チェックをしてください",
     "en": "It's creating the secret key.Please check the following important information."
   },
-  "秘密鍵は所有するモナコインにアクセスする権利そのものです。": {
-    "ja": "秘密鍵は所有するモナコインにアクセスする権利そのものです。",
+  "秘密鍵は所有するコインにアクセスする権利そのものです。": {
+    "ja": "秘密鍵は所有するコインにアクセスする権利そのものです。",
     "en": "The secret key is the license to access the coins you own."
   },
   "英単語のスクリーンショットを撮影・コピーしないでください。": {
     "ja": "英単語のスクリーンショットを撮影・コピーしないでください。",
     "en": "Please do not copy or take the screenshot of ENGLISH WORDS."
   },
-  "これを紛失すると、モナコインを使うことはできなくなります。": {
-    "ja": "これを紛失すると、モナコインを使うことはできなくなります。",
+  "これを紛失すると、コインを使うことはできなくなります。": {
+    "ja": "これを紛失すると、コインを使うことはできなくなります。",
     "en": "If you lose the ENGLISH WORDS, you will not be able to use your coins."
   },
-  "他人に知れ渡ると、モナコインを盗まれる可能性があります。": {
-    "ja": "他人に知れ渡ると、モナコインを盗まれる可能性があります。",
+  "他人に知れ渡ると、コインを盗まれる可能性があります。": {
+    "ja": "他人に知れ渡ると、コインを盗まれる可能性があります。",
     "en": "If your ENGLISH WORDS are found by others, your coins may be stolen."
   },
   "管理が不十分だったことによる責任は利用者自身が負い、他の誰も負いません。": {

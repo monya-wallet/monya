@@ -145,6 +145,9 @@ const defaultCoins = [{
     explorer: "https://explorer.bitcoin.com/btc",
     url: "https://explorer.bitcoin.com/api/btc"
   },{
+    url: "https://btc.blockdozer.com/insight-api",
+    explorer: "https://btc.blockdozer.com"
+  },{
     explorer: "https://insight.bitpay.com",
     url: "https://insight.bitpay.com/api"
   },{
@@ -154,8 +157,8 @@ const defaultCoins = [{
     url: "https://btc1.trezor.io/api",
     explorer: "https://btc1.trezor.io"
   },{
-    url: "https://btc.blockdozer.com/insight-api",
-    explorer: "https://btc.blockdozer.com"
+    url: "https://core.insight.publicnodejp.cf/insight-api",
+    explorer: "https://core.insight.publicnodejp.cf/insight"
   }],
   network: {
     messagePrefix: '\x18Bitcoin Signed Message:\n',
