@@ -69,12 +69,18 @@
           <div class="left"><img :src="x.icon"></div>
           <div class="center">{{x.name}}</div>
         </v-ons-list-item>
+        
         <v-ons-list-item @click="goToManageCoin" modifier="tappable chevron" v-if="!isSingleWallet">
           <div class="left"><v-ons-icon icon="ion-plus"></v-ons-icon></div>
           <div class="center">コインを追加</div>
         </v-ons-list-item>
+
+        <v-ons-list-item modifier="small" id="marquee" v-if="news.content" @click="openNews">
+          <div class="left">お知らせ</div>
+          <div class="center">{{news.content}}</div>
+        </v-ons-list-item>
       </v-ons-list>
     </div>
-    <div id="lastUpdate">最終更新: <timestamp :timestamp="lastUpdate"></timestamp></div>
+   
   </div>
 </v-ons-page>

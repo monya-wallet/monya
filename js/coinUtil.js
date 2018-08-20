@@ -396,3 +396,7 @@ exports.share = (option,pos)=> new Promise((resolve,reject)=>{
   window.plugins.socialsharing.setIPadPopupCoordinates(pos)
   window.plugins.socialsharing.shareWithOptions(option,resolve,reject)
 })
+
+exports.getNews=()=>{
+  return axios.get("https://monya-wallet.github.io/news.json").then(r=>r.data.news)
+}
