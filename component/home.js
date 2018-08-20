@@ -29,7 +29,8 @@ module.exports=require("../js/lang.js")({ja:require("./ja/home.html"),en:require
       error:false,
       isSingleWallet:currencyList.isSingleWallet,
       lastUpdate:(Date.now()/1000)|0,
-      outdatedWatcher:0
+      outdatedWatcher:0,
+      news:{}
     }
   },
   methods:{
@@ -77,6 +78,18 @@ module.exports=require("../js/lang.js")({ja:require("./ja/home.html"),en:require
         typeof(done)==='function'&&done()
       })
     },
+    loadNews(){
+      coinUtil.getNews().then(r=>{
+        this.news=r[0]||{}
+      }).catch(()=>{
+        this.news={}
+      })
+    },
+    openNews(){
+      if(this.news.url){
+        coinUtil.openUrl(this.news.url)
+      }
+    },
     goToManageCoin(){
       this.$emit("push",require("./manageCoin.js"))
     },
@@ -99,7 +112,7 @@ module.exports=require("../js/lang.js")({ja:require("./ja/home.html"),en:require
   store:require("../js/store.js"),
   mounted(){
     this.load()
-
+    this.loadNews()
     this.outdatedWatcher=setInterval(()=>{
       if((Date.now()/1000)>this.lastUpdate+60*15){
         this.load()
