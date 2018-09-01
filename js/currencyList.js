@@ -142,6 +142,9 @@ const defaultCoins = [{
     url: "https://blockexplorer.com/api",
     explorer: "https://blockexplorer.com"
   },{
+    explorer: "https://btc.coin.space",
+    url: "https://btc.coin.space/api"
+  },{
     explorer: "https://explorer.bitcoin.com/btc",
     url: "https://explorer.bitcoin.com/api/btc"
   },{
@@ -198,6 +201,9 @@ const defaultCoins = [{
   apiEndpoints: [{
     url: "https://insight.litecore.io/api",
     explorer: "https://insight.litecore.io"
+  },{
+    explorer: "https://ltc.coin.space",
+    url: "https://ltc.coin.space/api"
   },{
     url: "https://ltc-bitcore1.trezor.io/api",
     explorer: "https://ltc-bitcore1.trezor.io"
@@ -286,6 +292,9 @@ const defaultCoins = [{
     explorer: "https://insight.bitpay.com",
     url: "https://insight.bitpay.com/api"
   },{
+    explorer: "https://btc.coin.space",
+    url: "https://btc.coin.space/api"
+  },{
     url: "https://btc-bitcore4.trezor.io/api",
     explorer: "https://btc-bitcore4.trezor.io"
   },{
@@ -340,11 +349,14 @@ const defaultCoins = [{
     explorer: "https://bitcoincash.blockexplorer.com",
     url: "https://bitcoincash.blockexplorer.com/api"
   },{
+    explorer: "https://bch.coin.space",
+    url: "https://bch.coin.space/api"
+  },{
     explorer: "https://explorer.bitcoin.com/bch", 
     url: "https://explorer.bitcoin.com/api/bch"
  },{
     explorer: "https://cash.insight.publicnodejp.cf/insight",
-    url: "https://cash.insight.publicnodejp.cf/insight-api",
+    url: "https://cash.insight.publicnodejp.cf/insight-api"
   }],
   network: {
     messagePrefix: '\x18Bitcoin Signed Message:\n',

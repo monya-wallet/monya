@@ -60,6 +60,8 @@ module.exports=require("../js/lang.js")({ja:require("./ja/receive.html"),en:requ
     getLabels(){
       currencyList.get(this.currency[this.currencyIndex].coinId).getLabels().then(res=>{
         this.$set(this,"labels",res)
+      }).catch(e=>{
+        this.$store.commit("setError",e.message)
       })
     },
     qr(){
@@ -79,6 +81,8 @@ module.exports=require("../js/lang.js")({ja:require("./ja/receive.html"),en:requ
         currencyList.get(cId).createLabel(this.labelInput).then(()=>{
           this.labelInput=""
           this.getLabels()
+        }).catch(e=>{
+          this.$store.commit("setError",e.message)
         })
       }
     },
