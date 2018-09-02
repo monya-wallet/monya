@@ -35,8 +35,8 @@ const defaultCoins = [{
   defaultFeeSatPerByte: 150,
   icon: require("../res/coins/mona.png"),
   apiEndpoints: [{
-    url: "https://mona.insight.monacoin.ml/insight-api-monacoin",
-    explorer: "https://mona.insight.monacoin.ml/insight"
+    url: "https://mona.monacoin.ml/insight-api-monacoin",
+    explorer: "https://mona.monacoin.ml/insight"
   },{
     url: "https://mona.monya.ga/insight-api-monacoin",
     explorer: "https://mona.monya.ga/insight"
@@ -208,8 +208,8 @@ const defaultCoins = [{
     url: "https://ltc-bitcore1.trezor.io/api",
     explorer: "https://ltc-bitcore1.trezor.io"
   },{
-    url:"https://ltc.insight.monacoin.ml/insight-lite-api",
-    explorer:"https://ltc.insight.monacoin.ml/insight"
+    url:"https://ltc.insight.publicnodejp.cf/insight-lite-api",
+    explorer:"https://ltc.insight.publicnodejp.cf/insight"
   }],
   network: {
     messagePrefix: '\x19Litecoin Signed Message:\n',
@@ -414,8 +414,8 @@ const defaultCoins = [{
   "confirmations": 6,
   "lib": "zec",
   "apiEndpoints": [{
-    "url": "https://koto.insight.monacoin.ml/insight-api-koto",
-    "explorer": "https://koto.insight.monacoin.ml/insight"
+    "url": "https://koto.monacoin.ml/insight-api-koto",
+    "explorer": "https://koto.monacoin.ml/insight"
   },{
     "url": "https://insight.kotocoin.info/api",
     "explorer": "https://insight.kotocoin.info"
@@ -523,11 +523,11 @@ const defaultCoins = [{
   defaultFeeSatPerByte: 50,
   icon: require("../res/coins/yaju.png"),
   apiEndpoints: [{
-    url: "https://yaju.insight.monacoin.ml/api",
-    explorer: "https://yaju.insight.monacoin.ml"
+    url: "https://yaju.monacoin.ml/api",
+    explorer: "https://yaju.monacoin.ml"
   },{
     url: "https://yaju.insight.publicnodejp.cf/api",
-    explorer: "https://yaju.insight.monacoin.ml"
+    explorer: "https://yaju.monacoin.ml"
   }],
   network: {
     messagePrefix: '\x19YAJUCOIN Signed Message:\n',
