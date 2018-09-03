@@ -69,7 +69,7 @@ const defaultCoins = [{
   },
   confirmations: 6,
   counterparty:{
-    endpoints: ["https://wallet.monaparty.me/_api"],
+    endpoints: ["https://monaparty.tk/_api","https://wallet.monaparty.me/_api"],
     nativeSymbol:"XMP"
   },
   opReturnLength: 83,
