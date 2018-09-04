@@ -38,9 +38,6 @@ const defaultCoins = [{
     url: "https://mona.monacoin.ml/insight-api-monacoin",
     explorer: "https://mona.monacoin.ml/insight"
   },{
-    url: "https://mona.monya.ga/insight-api-monacoin",
-    explorer: "https://mona.monya.ga/insight"
-  },{
     url: "https://mona.insight.monaco-ex.org/insight-api-monacoin",
     explorer: "https://mona.insight.monaco-ex.org/insight"
   },{
