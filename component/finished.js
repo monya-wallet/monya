@@ -40,7 +40,7 @@ module.exports=require("../js/lang.js")({ja:require("./ja/finished.html"),en:req
   },
   computed:{
     infoId(){
-      return this.$store.state.finishNextPage.infoId
+      return this.$store.state.finishNextPage?this.$store.state.finishNextPage.infoId:""
     },
     payload(){
       return this.$store.state.finishNextPage.payload

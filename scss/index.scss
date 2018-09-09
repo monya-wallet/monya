@@ -478,6 +478,9 @@ html, body{
 }
 
 [data-page="finished"]{
+  .page__background{
+    background-color:#0bd461;
+  }
   .succeeded{
     
     height:300px;
@@ -493,6 +496,18 @@ html, body{
   .wrap{
     padding:40px;
     text-align:center;
+  }
+  .ok{
+    background:none;
+    border:2px solid white;
+    &:active{
+      background-color:rgba(0,0,0,0.2)
+    }
+  }
+  p{
+    color:white;
+    -webkit-user-select:text;
+    user-select:text;
   }
 }
 $passwordHeight:30px;
