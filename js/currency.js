@@ -29,6 +29,7 @@ const zecLib = require("@missmonacoin/bitcoinjs-lib-zcash")
 const bchLib = require("@missmonacoin/bitcoincashjs-lib")
 const blkLib = require("@missmonacoin/blackcoinjs-lib")
 const jp = require('jsonpath')
+const bs58check = require('bs58check')
 module.exports=class{
   
   constructor(opt){
@@ -649,14 +650,23 @@ module.exports=class{
       return r.data.result
     })
   }
-  sweep(priv,addr,fee){
+  sweep(priv,addr,fee,ignoreVersion=false){
+    if(ignoreVersion){
+      const orig=bs58check.decode(priv)
+      const hash=orig.slice(1)
+      const version=this.network.wif
+      const payload = Buffer.allocUnsafe(orig.length)
+      payload.writeUInt8(version, 0)
+      hash.copy(payload, 1)
+      priv = bs58check.encode(payload)
+    }
     const keyPair=this.lib.ECPair.fromWIF(priv,this.network)
     return this.getUtxos([keyPair.getAddress()]).then(r=>{
       const txb = new this.lib.TransactionBuilder(this.network)
       r.utxos.forEach((v,i)=>{
         txb.addInput(v.txId,v.vout)
       })
-      txb.addOutput(addr,(new BigNumber(r.balance)).minus(fee).times(100000000).toNumber())
+      txb.addOutput(addr,+(new BigNumber(r.balance)).minus(fee).times(100000000))
       r.utxos.forEach((v,i)=>{
         if(this.enableSegwit){
           const redeemScript = this.lib.script.witnessPubKeyHash.output.encode(this.lib.crypto.hash160(keyPair.getPublicKeyBuffer()))

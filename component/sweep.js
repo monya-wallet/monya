@@ -26,7 +26,8 @@ module.exports=require("../js/lang.js")({ja:require("./ja/sweep.html"),en:requir
       currencyIndex:0,
       private:"",
       address:"",
-      fee:0.0005
+      fee:0.0005,
+      loose:false
     }
   },
   store:require("../js/store.js"),
@@ -34,17 +35,21 @@ module.exports=require("../js/lang.js")({ja:require("./ja/sweep.html"),en:requir
     send(){
       if(this.private&&this.address&&this.fee){
         const cur = currencyList.get(this.currency[this.currencyIndex].coinId)
-        cur.sweep(this.private,this.address,this.fee).then((res)=>{
-          cur.saveTxLabel(res.txid,{label:this.txLabel,price:parseFloat(this.price)})
-          this.$store.commit("setFinishNextPage",{page:require("./home.js"),infoId:"sent",payload:{
-            txId:res.txid
-          }})
-          this.$emit("replace",require("./finished.js"))
+        try{
+          cur.sweep(this.private,this.address,this.fee,this.loose).then((res)=>{
+            cur.saveTxLabel(res.txid,{label:this.txLabel,price:parseFloat(this.price)})
+            this.$store.commit("setFinishNextPage",{page:require("./home.js"),infoId:"sent",payload:{
+              txId:res.txid
+            }})
+            this.$emit("replace",require("./finished.js"))
 
-          
-        }).catch(e=>{
-          this.$store.commit("setError",e)
-        })
+            
+          }).catch(e=>{
+            this.$store.commit("setError",e)
+          })
+        }catch(e){
+          this.$store.commit("setError","Invalid private key or address")
+        }
       }
     },
     getDefaultAddress(){
