@@ -142,6 +142,9 @@ const defaultCoins = [{
     explorer: "https://btc.coin.space",
     url: "https://btc.coin.space/api"
   },{
+    url: "https://core.monacoin.ml/insight-api",
+    explorer: "https://core.monacoin.ml/insight"
+  },{
     explorer: "https://explorer.bitcoin.com/btc",
     url: "https://explorer.bitcoin.com/api/btc"
   },{
@@ -156,9 +159,6 @@ const defaultCoins = [{
   },{
     url: "https://btc1.trezor.io/api",
     explorer: "https://btc1.trezor.io"
-  },{
-    url: "https://core.insight.publicnodejp.cf/insight-api",
-    explorer: "https://core.insight.publicnodejp.cf/insight"
   }],
   network: {
     messagePrefix: '\x18Bitcoin Signed Message:\n',
@@ -202,11 +202,8 @@ const defaultCoins = [{
     explorer: "https://ltc.coin.space",
     url: "https://ltc.coin.space/api"
   },{
-    url: "https://ltc-bitcore1.trezor.io/api",
-    explorer: "https://ltc-bitcore1.trezor.io"
-  },{
-    url:"https://ltc.insight.publicnodejp.cf/insight-lite-api",
-    explorer:"https://ltc.insight.publicnodejp.cf/insight"
+    url:"https://ltc.monacoin.ml/insight-lite-api",
+    explorer:"https://ltc.monacoin.ml/insight"
   }],
   network: {
     messagePrefix: '\x19Litecoin Signed Message:\n',
@@ -292,17 +289,14 @@ const defaultCoins = [{
     explorer: "https://btc.coin.space",
     url: "https://btc.coin.space/api"
   },{
-    url: "https://btc-bitcore4.trezor.io/api",
-    explorer: "https://btc-bitcore4.trezor.io"
-  },{
     url: "https://btc1.trezor.io/api",
     explorer: "https://btc1.trezor.io"
   },{
     url: "https://btc.blockdozer.com/insight-api",
     explorer: "https://btc.blockdozer.com"
   },{
-    url: "https://core.insight.publicnodejp.cf/insight-api",
-    explorer: "https://core.insight.publicnodejp.cf/insight"
+    url: "https://core.monacoin.ml/insight-api",
+    explorer: "https://core.monacoin.ml/insight"
   },{
     explorer: "https://www.localbitcoinschain.com",
     url: "https://www.localbitcoinschain.com/api"
@@ -352,8 +346,8 @@ const defaultCoins = [{
     explorer: "https://explorer.bitcoin.com/bch", 
     url: "https://explorer.bitcoin.com/api/bch"
  },{
-    explorer: "https://cash.insight.publicnodejp.cf/insight",
-    url: "https://cash.insight.publicnodejp.cf/insight-api"
+    explorer: "https://cash.monacoin.ml/insight",
+    url: "https://cash.monacoin.ml/insight-api"
   }],
   network: {
     messagePrefix: '\x18Bitcoin Signed Message:\n',
@@ -452,12 +446,6 @@ const defaultCoins = [{
   },{
     "url": "https://dash-bitcore1.trezor.io/api",
     "explorer": "https://dash-bitcore1.trezor.io"
-  },{
-    "url": "https://dash-bitcore2.trezor.io/api",
-    "explorer": "https://dash-bitcore1.trezor.io"
-  },{
-    "url": "https://dash-bitcore3.trezor.io/api",
-    "explorer": "https://dash-bitcore1.trezor.io"
   }],
   opReturnLength: 83,
   isAtomicSwapAvailable: true
@@ -494,15 +482,6 @@ const defaultCoins = [{
   },{
     url: "https://explorer.zcashfr.io/api",
     explorer: "https://explorer.zcashfr.io"
-  },{
-    "url": "https://zec-bitcore1.trezor.io/api",
-    "explorer": "https://zec-bitcore1.trezor.io"
-  },{
-    "url": "https://zec-bitcore3.trezor.io/api",
-    "explorer": "https://zec-bitcore1.trezor.io"
-  },{
-    "url": "https://zec-bitcore2.trezor.io/api",
-    "explorer": "https://zec-bitcore1.trezor.io"
   }],
   lib: "zec",
   opReturnLength: 80,
@@ -523,7 +502,7 @@ const defaultCoins = [{
     url: "https://yaju.monacoin.ml/api",
     explorer: "https://yaju.monacoin.ml"
   },{
-    url: "https://yaju.insight.publicnodejp.cf/api",
+    url: "https://yaju2.monacoin.ml/api",
     explorer: "https://yaju.monacoin.ml"
   }],
   network: {
