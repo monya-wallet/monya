@@ -57,7 +57,7 @@ module.exports=require("../js/lang.js")({ja:require("./ja/sendToken.html"),en:re
         useEnhancedSend:!this.sendWithSmall
       }).then(r=>{
         this.loading=false
-        this.$ons.notification.alert("Successfully sent transaction.Transaction ID is: "+r)
+        this.$ons.notification.alert("Sent.Transaction ID is: "+r)
       }).catch(e=>{
         this.loading=false
         this.$store.commit("setError",e.message)

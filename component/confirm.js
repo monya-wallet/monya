@@ -70,14 +70,14 @@ module.exports=require("../js/lang.js")({ja:require("./ja/confirm.html"),en:requ
     }
   },
   methods:{
-    next(){
-      this.loading=true
-      const cur=this.cur
-      if (cur.sound&&this.paySound) {
-        (new Audio(cur.sound)).play()
-      }
-      this.ready=false
-      storage.get("keyPairs").then((cipher)=>{
+    async next(){
+      try{
+        this.loading=true
+        const cur=this.cur
+        
+        this.ready=false
+        const cipher =await storage.get("keyPairs")
+        await coinUtil.shortWait()
         const finalTx=cur.signTx({
           entropyCipher:cipher.entropy,
           password:this.password,
@@ -88,18 +88,18 @@ module.exports=require("../js/lang.js")({ja:require("./ja/confirm.html"),en:requ
         if(this.signOnly){
           throw new errors.SignOnly()
         }
-        return cur.pushTx(this.hash)
-      }).then((res)=>{
+        const res = await cur.pushTx(this.hash)
         cur.saveTxLabel(res.txid,{label:this.txLabel,price:parseFloat(this.price)})
+        if (cur.sound&&this.paySound) {
+          (new Audio(cur.sound)).play()
+        }
         this.$store.commit("setFinishNextPage",{infoId:"sent",payload:{
           txId:res.txid
         }})
         this.$emit("pop")
         this.$emit("pop")
         this.$emit("push",require("./finished.js"))
-
-        
-      }).catch(e=>{
+      }catch(e){
         this.loading=false
         if(e.request){
           this.$store.commit("setError",e.request.responseText||"Network Error.Please try again")
@@ -114,7 +114,7 @@ module.exports=require("../js/lang.js")({ja:require("./ja/confirm.html"),en:requ
         }else{
           this.$store.commit("setError",e.message)
         }
-      })
+      }
     },
     requestBiometric(){
       storage.verifyBiometric().then(pwd=>{
