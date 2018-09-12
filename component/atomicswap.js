@@ -481,10 +481,10 @@ module.exports=require("../js/lang.js")({ja:require("./ja/atomicswap.html"),en:r
         this.signedTx = tx.toHex()
         return currencyList.get(this.getCoinId).pushTx(this.signedTx)
       }).then(t=>{
-        this.$ons.notification.alert("Successfully sent transaction.Transaction ID is: "+t.txid)
+        this.$ons.notification.alert("Sent. Transaction ID: "+t.txid)
       }).catch(e=>{
         if(e.request){
-          this.$store.commit("setError",e.request.responseText||"Network Error.Please try again")
+          this.$store.commit("setError",e.request.responseText||"Network Error.Try again")
           
         }else{
           this.$store.commit("setError",e.message)
@@ -504,7 +504,7 @@ module.exports=require("../js/lang.js")({ja:require("./ja/atomicswap.html"),en:r
         this.signedTx = tx.toHex()
         return currencyList.get(this.giveCoinId).pushTx(this.signedTx)
       }).then(t=>{
-        this.$ons.notification.alert("Successfully sent transaction.Transaction ID is: "+t.txid)
+        this.$ons.notification.alert("Sent. Transaction ID: "+t.txid)
       }).catch(e=>{
         this.$store.commit("setError",(e.response&&e.response.data)||e.message)
       })
