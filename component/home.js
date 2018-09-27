@@ -38,45 +38,72 @@ module.exports=require("../js/lang.js")({ja:require("./ja/home.html"),en:require
       
       this.$emit("push",require("./qrcode.js"))
     },
-    load(done){
+    async load(done){
       this.curs=[]
       this.fiatConv=0
       this.loading=true;
       this.error=false
       
       const promises=[]
-      currencyList.eachWithPub(cur=>{
-        let obj={
-          coinId:cur.coinId,
-          balance:0,
-          unconfirmed:0,
-          screenName:cur.coinScreenName,
-          price:0,
-          icon:cur.icon
+      currencyList.eachWithPub(cur=>{        
+        promises.push((async ()=>{
+          const data={
+            coinId:cur.coinId,
+            balance:0,
+            unconfirmed:0,
+            screenName: cur.coinScreenName,
+            price:0,
+            icon:cur.icon,
+            error:false
+          }
+          this.curs.push(data)
+          try{
+            const bal = await cur.getWholeBalanceOfThisAccount()
+            data.balance=bal.balance
+            data.unconfirmed=bal.unconfirmed
+            const price = await coinUtil.getPrice(cur.coinId,this.$store.state.fiat)
+            data.price=price
+            this.fiatConv += price*bal.balance
+          }catch(e){
+            this.error=data.error=true
+          }
+          return data
+        })())
+      })
+      
+      this.curs = await Promise.all(promises)
+      this.loading=false
+      this.lastUpdate=(Date.now()/1000)|0
+      typeof(done)==='function'&&done()
+      this.patchReload()
+    },
+    async patchReload(){
+      this.loading=true
+      for (let i = 0; i < this.curs.length; i++) {
+        const data = this.curs[i]
+        if(!data.error){
+          continue
         }
-        
-        promises.push(cur.getWholeBalanceOfThisAccount()
-          .then(res=>{
-            obj.balance=res.balance
-            obj.unconfirmed=res.unconfirmed
-            this.curs.push(obj)
-            return coinUtil.getPrice(cur.coinId,this.$store.state.fiat)
-          }).then(res=>{
-            this.fiatConv += res*obj.balance
-            obj.price=res
-            return obj
-          }).catch(()=>{
-            this.error=true
-            obj.screenName=""
-            return obj
-          }))
-      })
-      Promise.all(promises).then(data=>{
-        this.curs=data
-        this.loading=false
-        this.lastUpdate=(Date.now()/1000)|0
-        typeof(done)==='function'&&done()
-      })
+        try{
+          if(!data.balance){
+            const cur = currencyList.get(data.coinId)
+            const bal = await cur.getWholeBalanceOfThisAccount()
+            data.balance = bal.balance
+            data.unconfirmed = bal.unconfirmed
+          }
+          if(!data.price){
+            const price = await coinUtil.getPrice(data.coinId,this.$store.state.fiat)
+            data.price=price
+            this.fiatConv += price*data.balance
+          }
+          data.error=false
+          this.error=false
+        }catch(e){
+          this.error=true
+          data.error=true
+        }
+      }
+      this.loading=false
     },
     loadNews(){
       coinUtil.getNews().then(r=>{
