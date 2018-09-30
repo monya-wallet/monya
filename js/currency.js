@@ -81,6 +81,7 @@ module.exports=class{
     this.addresses={}
     this.apiIndex =0
   }
+  
   setPubSeedB58(seed){
     if(this.dummy){return}
     this.hdPubNode = this.lib.HDNode.fromBase58(seed,this.network)
@@ -616,10 +617,10 @@ module.exports=class{
   }
 
   callCP(method,params){
-    if(!this.counterpartyEndpoint){
+    if(!this.counterparty.endpoints){
       throw new errors.ParameterNotFoundError()
     }
-    return axios.post(this.counterpartyEndpoint,{
+    return axios.post(this.counterparty.endpoints[Math.floor(Math.random()*this.counterparty.endpoints.length)],{
       params,
       id:0,
       jsonrpc:"2.0",
@@ -632,10 +633,10 @@ module.exports=class{
     })
   }
   callCPLib(method,params){
-    if(!this.counterpartyEndpoint){
+    if(!this.counterparty.endpoints){
       throw new errors.ParameterNotFoundError()
     }
-    return axios.post(this.counterpartyEndpoint,{
+    return axios.post(this.counterparty.endpoints[Math.floor(Math.random()*this.counterparty.endpoints.length)],{
       params:{
         method,
         params
