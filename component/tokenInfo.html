@@ -75,6 +75,10 @@
           <div class="center">ロック</div>
           <div class="right">{{asset.locked?"されている":"されていない"}}</div>
         </v-ons-list-item>
+        <v-ons-list-item>
+          <div class="center">送金ロック</div>
+          <div class="right">{{asset.reassignable?"されていない":"されている"}}</div>
+        </v-ons-list-item>
       </div>
       <div v-if="history.length">
         <v-ons-list-header>履歴</v-ons-list-header>
