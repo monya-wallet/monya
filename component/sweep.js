@@ -67,17 +67,18 @@ module.exports=require("../js/lang.js")({ja:require("./ja/sweep.html"),en:requir
   computed:{
     wifAddr(){
       try{
+        const cur = currencyList.get(this.currency[this.currencyIndex].coinId)
         let priv=this.private
         if(this.loose){
           const orig=bs58check.decode(priv)
           const hash=orig.slice(1)
-          const version=this.network.wif
+          const version= cur.network.wif
           const payload = Buffer.allocUnsafe(orig.length)
           payload.writeUInt8(version, 0)
           hash.copy(payload, 1)
           priv = bs58check.encode(payload)
         }
-        const keyPair=currencyList.get(this.currency[this.currencyIndex].coinId).lib.ECPair.fromWIF(priv,this.network)
+        const keyPair=cur.lib.ECPair.fromWIF(priv,cur.network)
         return keyPair.getAddress()
       }catch(e){}
     }
