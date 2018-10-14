@@ -19,6 +19,8 @@ const currencyList = require("../js/currencyList")
 const storage = require("../js/storage")
 const coinUtil = require("../js/coinUtil")
 
+const bs58check = require('bs58check')
+
 module.exports=require("../js/lang.js")({ja:require("./ja/sweep.html"),en:require("./en/sweep.html")})({
   data(){
     return {
@@ -62,7 +64,24 @@ module.exports=require("../js/lang.js")({ja:require("./ja/sweep.html"),en:requir
       this.fee=currencyList.get(this.currency[this.currencyIndex].coinId).defaultFeeSatPerByte*226/100000000
     }
   },
-  
+  computed:{
+    wifAddr(){
+      try{
+        let priv=this.private
+        if(this.loose){
+          const orig=bs58check.decode(priv)
+          const hash=orig.slice(1)
+          const version=this.network.wif
+          const payload = Buffer.allocUnsafe(orig.length)
+          payload.writeUInt8(version, 0)
+          hash.copy(payload, 1)
+          priv = bs58check.encode(payload)
+        }
+        const keyPair=currencyList.get(this.currency[this.currencyIndex].coinId).lib.ECPair.fromWIF(priv,this.network)
+        return keyPair.getAddress()
+      }catch(e){}
+    }
+  },
   created(){
     currencyList.eachWithPub(cur=>{
       this.currency.push({
@@ -71,7 +90,5 @@ module.exports=require("../js/lang.js")({ja:require("./ja/sweep.html"),en:requir
         name:cur.coinScreenName
       })
     })
-    
-    
   }
 })
