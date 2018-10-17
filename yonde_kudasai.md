@@ -3,9 +3,10 @@
 
 
 <p style="text-align:center">
-[![Monya](res/monya_icon_round_512.png)](https://monya-wallet.github.io)
+<a href="https://monya-wallet.github.io"><img src="res/monya_icon_round_512.png" alt="Monya"></a>
 
-簡単だけど安全な モナコイン・アルトコインウォレット
+
+簡単だけど安全な 暗号通貨ウォレット
 
 </p>
 
@@ -115,7 +116,7 @@ $ cd dist && find assets|sed -e 's/assets\///'|grep -e '\(\.png\|\.jpg\)'|while 
 
 GPLv3
 
-Copyright (C) 2017 ゆき@モナコインJK
+Copyright (C) 2018 monya-wallet
 This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details You should have received a copy of the GNU General Public License along with this program.  If not, see <https://www.gnu.org/licenses/>.
