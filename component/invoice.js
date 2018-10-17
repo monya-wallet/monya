@@ -1,6 +1,6 @@
 /*
     Monya - The easiest cryptocurrency wallet
-    Copyright (C) 2017-2018 MissMonacoin
+    Copyright (C) 2017-2018 monya-wallet
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
