@@ -235,7 +235,7 @@ html, body{
   }
 }
 
-[data-page="showLabel"],[data-page="invoice"],[data-page="receive"],[data-page="xrp"],[data-page="nem"],[data-page="ethBase"],#zaifPayInvoice{
+[data-page="showLabel"],[data-page="invoice"],[data-page="receive"],[data-page="xrp"],[data-page="nem"],[data-page="ethBase"]{
   text-align:center;
   #simple{
     .label{
@@ -550,37 +550,6 @@ $passwordHeight:30px;
     text-align:left;
   }
 }
-$zaifPayLogoSize:200px;
-[data-page="zaifPay"]{
-  .hasNoCredentials{
-    text-align:center;
-    .logo{
-      display: inline-block;
-      width: $zaifPayLogoSize;
-      height: $zaifPayLogoSize;
-      background-image:url(../res/zaifpay.png);
-      background-repeat:no-repeat;
-      background-size:contain;
-      background-position:center center;
-    }
-  }
-}
-[data-page="zaifHealth"]{
-  text-align:center;
-  #score{
-    font-size:xx-large;
-  }
-  #zaifIcon{
-    display: inline-block;
-    width: $zaifPayLogoSize;
-    height: $zaifPayLogoSize;
-    background-repeat:no-repeat;
-    background-size:contain;
-    background-position:center center;
-    
-  }
-}
-
 
 [data-page="qrcode"]{
   .page__background{

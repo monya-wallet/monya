@@ -149,13 +149,6 @@ const extensions={
       const address=hdkey.fromMasterSeed(seed).derivePath("m/44'/61'/0'/0/0").getWallet().getChecksumAddressString()
       return extStorage.set("address",address)
     }
-  },
-  zaifPay:{
-    id:"zaifPay",
-    name:"Zaif Payment",
-    component:()=>import("../component/zaifPay.js"),
-    icon:require("../res/zaifpay.png"),
-    scheme:"zaifPay"
   }
 }
 exports.get=extId=>{

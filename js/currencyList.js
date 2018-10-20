@@ -156,9 +156,6 @@ const defaultCoins = [{
   },{
     url: "https://btc-bitcore4.trezor.io/api",
     explorer: "https://btc-bitcore4.trezor.io"
-  },{
-    url: "https://btc1.trezor.io/api",
-    explorer: "https://btc1.trezor.io"
   }],
   network: {
     messagePrefix: '\x18Bitcoin Signed Message:\n',
