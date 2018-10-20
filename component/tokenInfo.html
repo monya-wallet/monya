@@ -65,19 +65,19 @@
         </v-ons-list-item>
         <v-ons-list-item>
           <div class="center">小数点分割</div>
-          <div class="right">{{asset.divisible?"可能":"不可能"}}</div>
+          <div class="right">{{asset.divisible===true?"可能":"不可能"}}</div>
         </v-ons-list-item>
         <v-ons-list-item>
           <div class="center">上場</div>
-          <div class="right">{{asset.listed?"できる":"できない"}}</div>
+          <div class="right">{{asset.listed===false?"できない":"できる"}}</div>
         </v-ons-list-item>
         <v-ons-list-item>
           <div class="center">ロック</div>
-          <div class="right">{{asset.locked?"されている":"されていない"}}</div>
+          <div class="right">{{asset.locked===true?"されている":"されていない"}}</div>
         </v-ons-list-item>
         <v-ons-list-item>
           <div class="center">送金ロック</div>
-          <div class="right">{{asset.reassignable?"されていない":"されている"}}</div>
+          <div class="right">{{asset.reassignable===false?"されている":"されていない"}}</div>
         </v-ons-list-item>
       </div>
       <div v-if="history.length">
