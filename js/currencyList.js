@@ -84,20 +84,17 @@ const defaultCoins = [{
   defaultFeeSatPerByte: 150,
   icon: require("../res/coins/zny.png"),
   apiEndpoints: [{
-    url: "https://zeny.insight.monaco-ex.org/api",
-    explorer: "https://zeny.insight.monaco-ex.org"
-  },{
     url: "https://zenyinsight.tomotomo9696.xyz/api",
     explorer: "https://zenyinsight.tomotomo9696.xyz"
   }, {
     url: "https://insight.bitzeny.jp/api",
     explorer: "https://insight.bitzeny.jp"
-  },{
-    url: "https://insight.bitzeny.cloud/api",
-    explorer: "https://insight.bitzeny.cloud"
   }, {
     url: "https://zeny.fujishan.jp/api",
     explorer: "https://zeny.fujishan.jp"
+  },{
+    url: "https://insight.bitzeny.cloud/api",
+    explorer: "https://insight.bitzeny.cloud"
   }],
   network: {
     messagePrefix: '\x18BitZeny Signed Message:\n',
