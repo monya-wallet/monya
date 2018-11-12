@@ -113,6 +113,7 @@ Package will be output under `electron/dist`
 ## License
 
 ~~GPLv3~~ Changed
+
 MIT License
 
 Copyright (c) 2018 monya-wallet zenypota
