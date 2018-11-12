@@ -1,4 +1,7 @@
-/*
+const fs = require('fs')
+const path = require("path")
+
+const replaceText = `/*
  MIT License
 
  Copyright (c) 2018 monya-wallet zenypota
@@ -20,31 +23,17 @@
  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  SOFTWARE.
-*/
-let ver= "<!--t:Timestamp-->"
-let cacheData = "<!--t:Caches-->".split(",").map(d=>"/wallet/dist/assets/"+d+"?t="+ver)
-let cacheName = "cache-"+ver
+*/`
 
-cacheData.push("/wallet/index.html")
-self.addEventListener('install', e => {
-  e.waitUntil(
-    caches.open(cacheName).then(cache => {
-      return cache.addAll(cacheData)
-          .then(() => self.skipWaiting());
-    })
-  );
-});
+const regexp = (/^\/\*(.|[\n\r])*?Monya - The easiest cryptocurrency wallet(.|[\n\r])*?\*\//g)
 
-self.addEventListener('activate', event => {
-  event.waitUntil(self.clients.claim());
-});
+let res;
+let dir=fs.readdirSync(path.join(process.cwd(),process.argv[2])).filter((v)=>v.slice(-2)==="js")
+dir.forEach(v=>{
+  let read=fs.readFileSync(path.join(process.cwd(),process.argv[2],v),"utf8")
 
-self.addEventListener('fetch', event => {
-  event.respondWith(
-    caches.open(cacheName)
-      .then(cache => cache.match(event.request, {ignoreSearch: true}))
-      .then(response => {
-      return response || fetch(event.request);
-    })
-  );
-});
+  let writing = read.replace(regexp,replaceText)
+
+  fs.writeFileSync(path.join(process.cwd(),process.argv[2],v),writing,{encoding:"utf8"})
+})
+
