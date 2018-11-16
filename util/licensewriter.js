@@ -1,4 +1,7 @@
-/*
+const fs = require('fs')
+const path = require("path")
+
+const replaceText = `/*
  MIT License
 
  Copyright (c) 2018 monya-wallet zenypota
@@ -20,18 +23,17 @@
  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  SOFTWARE.
-*/
-module.exports=require("../js/lang.js")({ja:require("./ja/generateKeyWarn.html"),en:require("./en/generateKeyWarn.html")})({
-  data(){
-    return {
-      check1:false,check2:false,check3:false,
-      entropySize:16
-    }
-  },
-  methods:{
-    next(){
-      this.$store.commit("setEntropySize",this.entropySize)
-      this.$emit("push",require("./generateKey.js"))
-    }
-  }
+*/`
+
+const regexp = (/^\/\*(.|[\n\r])*?Monya - The easiest cryptocurrency wallet(.|[\n\r])*?\*\//g)
+
+let res;
+let dir=fs.readdirSync(path.join(process.cwd(),process.argv[2])).filter((v)=>v.slice(-2)==="js")
+dir.forEach(v=>{
+  let read=fs.readFileSync(path.join(process.cwd(),process.argv[2],v),"utf8")
+
+  let writing = read.replace(regexp,replaceText)
+
+  fs.writeFileSync(path.join(process.cwd(),process.argv[2],v),writing,{encoding:"utf8"})
 })
+
