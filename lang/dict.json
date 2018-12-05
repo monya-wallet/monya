@@ -35,10 +35,6 @@
     "ja": "ライセンス",
     "en": "license"
   },
-  "チェーン切り替え": {
-    "ja": "チェーン切り替え",
-    "en": "Chain Switcher"
-  },
   "相手にあげる通貨を選んでください": {
     "ja": "相手にあげる通貨を選んでください",
     "en": "Please choose the coin to send"
@@ -1075,8 +1071,8 @@
     "ja": "チェックボックスは確認のためにお使いください。",
     "en": "Please use the checkboxes to check each word."
   },
-  "パスワードを入力してください": {
-    "ja": "パスワードを入力してください",
+  "パスワードを入力してください。": {
+    "ja": "パスワードを入力してください。",
     "en": "Please enter your password."
   },
   "ロック解除": {
@@ -2346,5 +2342,17 @@
   "送金ロック": {
     "ja": "送金ロック",
     "en": "Remittance lock"
+  },
+  "アトミック・スワップ": {
+    "ja": "アトミック・スワップ",
+    "en": "Atomic Swap"
+  },
+  "マスター公開鍵": {
+    "ja": "マスター公開鍵",
+    "en": "Master Public Key"
+  },
+  "秘密鍵を表示": {
+    "ja": "秘密鍵を表示",
+    "en": "Show Private Key"
   }
 }
