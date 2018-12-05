@@ -37,7 +37,8 @@ module.exports=require("../js/lang.js")({ja:require("./ja/manageCoin.html"),en:r
       blocks:[],
       coinId:"",
       unit:"",
-      apiEndpoint:""
+      apiEndpoint:"",
+      masterPub:""
     },
     extensions:[],
     unsaved:false
@@ -107,7 +108,8 @@ module.exports=require("../js/lang.js")({ja:require("./ja/manageCoin.html"),en:r
         blocks:[],
         coinId:cur.coinId,
         unit:cur.unit,
-        apiEndpoint:cur.apiEndpoint
+        apiEndpoint:cur.apiEndpoint,
+        masterPub:cur.hdPubNode&&cur.hdPubNode.toBase58()
       })
       cur.getBlocks().then(r=>{
         this.info.blocks=r
