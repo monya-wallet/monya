@@ -68,13 +68,15 @@ module.exports=require("../js/lang.js")({ja:require("./ja/restorePassphrase.html
       const wd =this.words[this.words.length-1]
       const suggest = this.suggest(wd.word)
       if(suggest.length===1){
-        wd.word=suggest[0]
-        this.addWord()
+        if(suggest[0]===wd.word){
+          wd.word=suggest[0]
+          this.addWord()
+        }
         this.noMatch=false;
       }else if(suggest.length===0){
         this.noMatch=true;
       }else{
-        this.suggestion = suggest;//Is Reactive?
+        this.suggestion = suggest;
         this.noMatch=false;
       }
     },
