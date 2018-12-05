@@ -35,7 +35,11 @@ module.exports=require("../js/lang.js")({ja:require("./ja/showLabel.html"),en:re
       edit:false,
       balance:0,
       labelInput:"",
-      pubKey:""
+      pubKey:"",
+
+      password:"",
+      incorrect:false,
+      showPrivKeyDlg:false
     }
   },
   store:require("../js/store.js"),
@@ -66,6 +70,15 @@ module.exports=require("../js/lang.js")({ja:require("./ja/showLabel.html"),en:re
       }).catch(()=>{
         this.copyAddress()
       })
+    },
+    async showPrivKey(){
+      const p =this.$store.state.showLabelPayload
+      const cur=currencyList.get(p.coinId)
+      this.showPrivKeyDlg=false
+      const cipher=await storage.get("keyPairs")
+      this.privKey=cur._getKeyPair(cipher.entropy,this.password,p.change,p.index).toWIF()
+      this.password=""
+      
     }
   },
   mounted(){
