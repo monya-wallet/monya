@@ -36,6 +36,7 @@ const bchLib = require("@missmonacoin/bitcoincashjs-lib")
 const blkLib = require("@missmonacoin/blackcoinjs-lib")
 const jp = require('jsonpath')
 const bs58check = require('bs58check')
+const secp256k1 = require('secp256k1')
 module.exports=class{
   
   constructor(opt){
@@ -269,7 +270,7 @@ module.exports=class{
     const address = this.lib.address.fromOutputScript(scriptPubKey,this.network)
     return address
   }
-
+  
   getMultisig(pubKeyBufArr,neededSig){
     const redeemScript=this.lib.script.multisig.output.encode(neededSig|0, pubKeyBufArr)
     const scriptPubKey = this.lib.script.scriptHash.output.encode(this.lib.crypto.hash160(redeemScript))
@@ -313,6 +314,40 @@ module.exports=class{
       node = this.lib.HDNode.fromSeedBuffer(privSeed,this.network)
     }
     return node.toBase58()
+  }
+  _getKeyPair(entropyCipher,password,change,index){
+    if(!this.hdPubNode){throw new errors.HDNodeNotFoundError()}
+    let node;
+    if(arguments.length===3){
+      node=entropyCipher
+      index=change
+      change=password
+    }else{
+      node = this.lib.HDNode.fromSeedBuffer(bip39.mnemonicToSeed(
+        bip39.entropyToMnemonic(
+          coinUtil.decrypt(entropyCipher,password)
+        )
+      ),this.network)
+    }
+    if(arguments.length===2){
+      return node
+    }
+    if(this.bip44){
+      return node.deriveHardened(44)
+        .deriveHardened(this.bip44.coinType)
+        .deriveHardened(this.bip44.account)
+        .derive(change|0)
+        .derive(index|0).keyPair
+    }
+    if(this.bip49){
+      return node.deriveHardened(49)
+        .deriveHardened(this.bip49.coinType)
+        .deriveHardened(this.bip49.account)
+        .derive(change|0)
+        .derive(index|0).keyPair
+      
+    }
+    throw new errors.InvalidIndexError()
   }
   getPrice(){
     return new Promise((resolve, reject) => {
@@ -384,35 +419,13 @@ module.exports=class{
     let txb=option.txBuilder
     const path=option.path
     
-    let seed=
-        bip39.mnemonicToSeed(
-          bip39.entropyToMnemonic(
-            coinUtil.decrypt(entropyCipher,password)
-          )
-        )
-    const node = this.lib.HDNode.fromSeedBuffer(seed,this.network)
-    let accountNode
-    
-    if(this.bip44){
-      accountNode=node.deriveHardened(44)
-        .deriveHardened(this.bip44.coinType)
-        .deriveHardened(this.bip44.account)
-    }else if(this.bip49){
-      accountNode=node
-        .deriveHardened(49)
-        .deriveHardened(this.bip49.coinType)
-        .deriveHardened(this.bip49.account)
-    }
+    const node=this._getKeyPair(entropyCipher,password)
     
     if(!txb){
       txb=coinUtil.buildBuilderfromPubKeyTx(this.lib.Transaction.fromHex(option.hash),this.network)
 
       for(let i=0;i<txb.inputs.length;i++){
-
-        txb.sign(i,accountNode
-                 .derive(path[0][0]|0)
-                 .derive(path[0][1]|0).keyPair
-                )
+        txb.sign(i,this._getKeyPair(node,path[0][0],path[0][1]))
       }
       return txb.build()
     }
@@ -421,10 +434,7 @@ module.exports=class{
       
       let keyPair;
 
-      keyPair=accountNode
-        .derive(path[i][0]|0)
-        .derive(path[i][1]|0).keyPair
-      
+      keyPair=this._getKeyPair(node,path[i][0],path[i][1])
       
       if(this.enableSegwit){
         const redeemScript = this.lib.script.witnessPubKeyHash.output.encode(this.lib.crypto.hash160(keyPair.getPublicKeyBuffer()))
@@ -451,33 +461,12 @@ module.exports=class{
     let txb=option.txBuilder
     const path=option.path // this is not signTx() one. path=[0,0]
     const mSig=this.getMultisig(option.pubKeyBufArr,option.neededSig)
-    let seed=
-        bip39.mnemonicToSeed(
-          bip39.entropyToMnemonic(
-            coinUtil.decrypt(entropyCipher,password)
-          )
-        )
-    const node = this.lib.HDNode.fromSeedBuffer(seed,this.network)
+
+    const node = this._getKeyPair(entropyCipher,password)
 
     for(let i=0;i<txb.inputs.length;i++){
-      let accountNode
-      
-      if(this.bip44){
-        accountNode=node.deriveHardened(44)
-          .deriveHardened(this.bip44.coinType)
-          .deriveHardened(this.bip44.account)
-      }else if(this.bip49){
-        accountNode=node
-          .deriveHardened(49)
-          .deriveHardened(this.bip49.coinType)
-          .deriveHardened(this.bip49.account)
-      }
-      txb.sign(i,accountNode
-               .derive(path[0]|0)
-               .derive(path[1]|0).keyPair,
-               mSig.redeemScript
-              )
-      
+
+      txb.sign(i,this._getKeyPair(node,path[0],path[1]),mSig.redeemScript)
     }
     if(option.complete){
       return txb.build()
@@ -486,27 +475,17 @@ module.exports=class{
     }
   }
   signMessage(m,entropyCipher,password,path){
-    if(!this.hdPubNode){throw new errors.HDNodeNotFoundError()}
-    const node = this.lib.HDNode.fromSeedBuffer(bip39.mnemonicToSeed(
-      bip39.entropyToMnemonic(
-        coinUtil.decrypt(entropyCipher,password)
-      )
-    ),this.network)
-    let kp;
-    if(this.bip44){
-      kp=node.deriveHardened(44)
-        .deriveHardened(this.bip44.coinType)
-        .deriveHardened(this.bip44.account)
-        .derive(path[0]|0)
-        .derive(path[1]|0).keyPair
-    }else if(this.bip49){
-      kp=node.deriveHardened(49)
-        .deriveHardened(this.bip49.coinType)
-        .deriveHardened(this.bip49.account)
-        .derive(path[0]|0)
-        .derive(path[1]|0).keyPair
-    }
+    const kp = this._getKeyPair(entropyCipher,password,path[0],path[1])
     return bcMsg.sign(m,kp.d.toBuffer(32),kp.compressed,this.network.messagePrefix).toString("base64")
+  }
+  signHash(hash,entropyCipher,password,path){
+    const kp = this._getKeyPair(entropyCipher,password,path[0],path[1])
+    const sigObj=secp256k1.sign(hash,kp.d.toBuffer(32))
+    return {
+      signature:sigObj.signature,
+      recovery:sigObj.recovery,
+      compressed:kp.compressed
+    }
   }
   verifyMessage(m,a,s){
     return bcMsg.verify(m,a,s,this.network.messagePrefix)

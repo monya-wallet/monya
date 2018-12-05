@@ -94,6 +94,28 @@ const apis={
       })
     }
   },
+  signArbitraryData:{
+    type:"password",
+    name:j?"任意データの署名":"Sign Arbitrary Data",
+    props:{
+      addrIndex:"Address Index",
+      coinId:"Coin ID",
+      hash:"Hash"
+    },
+    onAllowed(props,cipher,password){
+      const cur =currencyList.get(props.coinId)
+      const signed =cur.signHash(props.hash,cipher.entropy,password,[0,props.addrIndex])
+      this.password=""
+      const address=cur.getAddress(0,props.addrIndex)
+      return Promise.resolve({
+        signature:signed.signature,
+        address,
+        recovery:signed.recovery,
+        compressed:signed.compressed,
+        hash:props.hash
+      })
+    }
+  },
   shareSwapData:{
     type:"direct",
     props:{

@@ -119,6 +119,7 @@ module.exports=require("../js/lang.js")({ja:require("./ja/send.html"),en:require
           },SEARCH_DELAY)
           return
         }
+        
         coinUtil.parseUrl(this.address).then(u=>{
           if(u.isCoinAddress&&u.isValidAddress){
             const cur=currencyList.get(u.coinId)
