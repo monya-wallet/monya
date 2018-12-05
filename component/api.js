@@ -103,15 +103,17 @@ const apis={
       hash:"Hash"
     },
     onAllowed(props,cipher,password){
+      let hash=props.hash
+      if(!Buffer.isBuffer(hash)){
+        hash=Buffer.from(hash,"hex")
+      }
       const cur =currencyList.get(props.coinId)
-      const signed =cur.signHash(props.hash,cipher.entropy,password,[0,props.addrIndex])
+      const signed =cur.signHash(hash,cipher.entropy,password,[0,props.addrIndex])
       this.password=""
       const address=cur.getAddress(0,props.addrIndex)
       return Promise.resolve({
-        signature:signed.signature,
+        signature:signed.signature.toString("hex"),
         address,
-        recovery:signed.recovery,
-        compressed:signed.compressed,
         hash:props.hash
       })
     }
