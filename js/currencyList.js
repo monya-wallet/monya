@@ -47,9 +47,6 @@ const defaultCoins = [{
     url: "https://insight.bitzeny.jp/api",
     explorer: "https://insight.bitzeny.jp"
   }, {
-    url: "https://zeny.fujishan.jp/api",
-    explorer: "https://zeny.fujishan.jp"
-  },{
     url: "https://insight.bitzeny.cloud/api",
     explorer: "https://insight.bitzeny.cloud"
   }],
@@ -391,8 +388,8 @@ const defaultCoins = [{
     },
     "pubKeyHash": 6198,
     "scriptHash": 6203,
-    "txversion": 3,
-    "versionGroupId": 48748912,
+    "txversion": 4,
+    "versionGroupId": 0x9023E50A,
     "wif": 128
   },
   price: {
@@ -405,9 +402,6 @@ const defaultCoins = [{
   "confirmations": 6,
   "lib": "zec",
   "apiEndpoints": [{
-    "url": "https://koto.monacoin.ml/insight-api-koto",
-    "explorer": "https://koto.monacoin.ml/insight"
-  },{
     "url": "https://insight.kotocoin.info/api",
     "explorer": "https://insight.kotocoin.info"
   }],
@@ -469,8 +463,8 @@ const defaultCoins = [{
     },
     "pubKeyHash": 7352,
     "scriptHash": 7357,
-    "txversion": 3,
-    "versionGroupId": 63210096,
+    "txversion": 4,
+    "versionGroupId": 0x892F2085,
     "wif": 128
   },
   "apiEndpoints": [{
