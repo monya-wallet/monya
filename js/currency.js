@@ -445,7 +445,7 @@ module.exports=class{
       }else if(this.libName==="btg"){
         txb.enableBitcoinGold(true)
         txb.sign(i,keyPair,null,this.lib.Transaction.SIGHASH_ALL | this.lib.Transaction.SIGHASH_BITCOINCASHBIP143,txb.inputs[i].value)
-      }else if(this.libName==="zec" && this.network.txversion===3){
+      }else if(this.libName==="zec" && this.network.txversion===4){
         txb.sign(i,keyPair,null,this.lib.Transaction.SIGHASH_ALL,txb.inputs[i].value,null,true)
       }else{
         txb.sign(i,keyPair)
