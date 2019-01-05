@@ -119,6 +119,7 @@ const apis={
       })
     }
   },
+*/
   shareSwapData:{
     type:"direct",
     props:{
@@ -206,4 +207,3 @@ module.exports=require("../js/lang.js")({ja:require("./ja/api.html"),en:require(
     this.method=apis[this.name].name
   }
 })
-*/
