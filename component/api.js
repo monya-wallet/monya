@@ -94,6 +94,7 @@ const apis={
       })
     }
   },
+/*
   signArbitraryData:{
     type:"password",
     name:j?"任意データの署名":"Sign Arbitrary Data",
@@ -205,3 +206,4 @@ module.exports=require("../js/lang.js")({ja:require("./ja/api.html"),en:require(
     this.method=apis[this.name].name
   }
 })
+*/
