@@ -1,19 +1,25 @@
 /*
-    Monya - The easiest cryptocurrency wallet
-    Copyright (C) 2017-2018 monya-wallet
+ MIT License
 
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+ Copyright (c) 2018 monya-wallet zenypota
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+ Permission is hereby granted, free of charge, to any person obtaining a copy
+ of this software and associated documentation files (the "Software"), to deal
+ in the Software without restriction, including without limitation the rights
+ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ copies of the Software, and to permit persons to whom the Software is
+ furnished to do so, subject to the following conditions:
 
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ The above copyright notice and this permission notice shall be included in all
+ copies or substantial portions of the Software.
+
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ SOFTWARE.
 */
 
 const Currency = require("./currency")
@@ -23,55 +29,6 @@ const j = require("./lang").getLang() === "ja"
 // Coin id should be lowercase ticker symbol. Add prefix if this coin is different coin like testnet. Add suffix if this coin is compatible with the original coin but different mode like SegWit, Monacoin-3-Prefix
 
 const defaultCoins = [{
-  coinScreenName: j ? "モナコイン" : "Monacoin",
-  coinId: "mona",
-  unit: "MONA",
-  unitEasy: j ? "モナ" : "Mona",
-  bip44: {
-    coinType: 22,
-    account: 0
-  },
-  bip21: "monacoin",
-  defaultFeeSatPerByte: 150,
-  icon: require("../res/coins/mona.png"),
-  apiEndpoints: [{
-    url: "https://mona.monacoin.ml/insight-api-monacoin",
-    explorer: "https://mona.monacoin.ml/insight"
-  },{
-    url: "https://mona.insight.monaco-ex.org/insight-api-monacoin",
-    explorer: "https://mona.insight.monaco-ex.org/insight"
-  },{
-    url: "https://insight.electrum-mona.org/insight-api-monacoin",
-    explorer: "https://insight.electrum-mona.org/insight"
-  }],
-  network: {
-    messagePrefix: '\x19Monacoin Signed Message:\n',
-    bip32: {
-      public: 0x0488b21e,
-
-      private: 0x0488ade4
-    },
-    pubKeyHash: 50,
-    scriptHash: 55,
-    wif: 178, //new wif
-    bech32: "mona"
-  },
-  sound: require("../res/coins/paySound/mona.m4a"),
-  enableSegwit: false,
-  price: {
-    url: "https://public.bitbank.cc/mona_jpy/ticker",
-    json: true,
-    jsonPath: '$.data.last',
-    fiat: "jpy"
-  },
-  confirmations: 6,
-  counterparty:{
-    endpoints: ["https://monaparty.tk/_api","https://wallet.monaparty.me/_api"],
-    nativeSymbol:"XMP"
-  },
-  opReturnLength: 83,
-  isAtomicSwapAvailable: true
-}, {
   coinScreenName: j ? "ビットゼニー" : "BitZeny",
   coinId: "zny",
   unit: "ZNY",
@@ -90,9 +47,6 @@ const defaultCoins = [{
     url: "https://insight.bitzeny.jp/api",
     explorer: "https://insight.bitzeny.jp"
   }, {
-    url: "https://zeny.fujishan.jp/api",
-    explorer: "https://zeny.fujishan.jp"
-  },{
     url: "https://insight.bitzeny.cloud/api",
     explorer: "https://insight.bitzeny.cloud"
   }],
@@ -177,7 +131,56 @@ const defaultCoins = [{
   counterparty:{endpoints: ["https://wallet.counterwallet.io/_api"],nativeSymbol:"XCP"},
   opReturnLength: 83,
   isAtomicSwapAvailable: true
-}, {
+},{
+  coinScreenName: j ? "モナコイン" : "Monacoin",
+  coinId: "mona",
+  unit: "MONA",
+  unitEasy: j ? "モナ" : "Mona",
+  bip44: {
+    coinType: 22,
+    account: 0
+  },
+  bip21: "monacoin",
+  defaultFeeSatPerByte: 150,
+  icon: require("../res/coins/mona.png"),
+  apiEndpoints: [{
+    url: "https://mona.monacoin.ml/insight-api-monacoin",
+    explorer: "https://mona.monacoin.ml/insight"
+  },{
+    url: "https://mona.insight.monaco-ex.org/insight-api-monacoin",
+    explorer: "https://mona.insight.monaco-ex.org/insight"
+  },{
+    url: "https://insight.electrum-mona.org/insight-api-monacoin",
+    explorer: "https://insight.electrum-mona.org/insight"
+  }],
+  network: {
+    messagePrefix: '\x19Monacoin Signed Message:\n',
+    bip32: {
+      public: 0x0488b21e,
+
+      private: 0x0488ade4
+    },
+    pubKeyHash: 50,
+    scriptHash: 55,
+    wif: 178, //new wif
+    bech32: "mona"
+  },
+  sound: require("../res/coins/paySound/mona.m4a"),
+  enableSegwit: false,
+  price: {
+    url: "https://public.bitbank.cc/mona_jpy/ticker",
+    json: true,
+    jsonPath: '$.data.last',
+    fiat: "jpy"
+  },
+  confirmations: 6,
+  counterparty:{
+    endpoints: ["https://monaparty.tk/_api","https://wallet.monaparty.me/_api"],
+    nativeSymbol:"XMP"
+  },
+  opReturnLength: 83,
+  isAtomicSwapAvailable: true
+},  {
   coinScreenName: j ? "ライトコイン" : "Litecoin",
   coinId: "ltc",
   unit: "LTC",
@@ -385,8 +388,8 @@ const defaultCoins = [{
     },
     "pubKeyHash": 6198,
     "scriptHash": 6203,
-    "txversion": 3,
-    "versionGroupId": 48748912,
+    "txversion": 4,
+    "versionGroupId": 0x9023E50A,
     "wif": 128
   },
   price: {
@@ -399,9 +402,6 @@ const defaultCoins = [{
   "confirmations": 6,
   "lib": "zec",
   "apiEndpoints": [{
-    "url": "https://koto.monacoin.ml/insight-api-koto",
-    "explorer": "https://koto.monacoin.ml/insight"
-  },{
     "url": "https://insight.kotocoin.info/api",
     "explorer": "https://insight.kotocoin.info"
   }],
@@ -463,8 +463,8 @@ const defaultCoins = [{
     },
     "pubKeyHash": 7352,
     "scriptHash": 7357,
-    "txversion": 3,
-    "versionGroupId": 63210096,
+    "txversion": 4,
+    "versionGroupId": 0x892F2085,
     "wif": 128
   },
   "apiEndpoints": [{

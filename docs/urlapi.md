@@ -12,8 +12,11 @@
 上記のURLをパーセントエンコードしてpercentEncodedUrlに代入
 `https://monya-wallet.github.io/wallet/?url=<percentEncodedUrl>`
 
-## 署名
+### 免責
 
+本APIは試験的な実装です。予告なく変更する可能性がございます。変更によって生じた損害は保証いたしかねます。
+
+## 署名
 
   * method
       * "signTx"

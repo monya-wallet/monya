@@ -1,19 +1,25 @@
 /*
-    Monya - The easiest cryptocurrency wallet
-    Copyright (C) 2017-2018 monya-wallet
+ MIT License
 
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+ Copyright (c) 2018 monya-wallet zenypota
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+ Permission is hereby granted, free of charge, to any person obtaining a copy
+ of this software and associated documentation files (the "Software"), to deal
+ in the Software without restriction, including without limitation the rights
+ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ copies of the Software, and to permit persons to whom the Software is
+ furnished to do so, subject to the following conditions:
 
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ The above copyright notice and this permission notice shall be included in all
+ copies or substantial portions of the Software.
+
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ SOFTWARE.
 */
 const bcLib = require('bitcoinjs-lib')
 const axios = require('axios');
@@ -30,6 +36,7 @@ const bchLib = require("@missmonacoin/bitcoincashjs-lib")
 const blkLib = require("@missmonacoin/blackcoinjs-lib")
 const jp = require('jsonpath')
 const bs58check = require('bs58check')
+const secp256k1 = require('secp256k1')
 module.exports=class{
   
   constructor(opt){
@@ -263,7 +270,7 @@ module.exports=class{
     const address = this.lib.address.fromOutputScript(scriptPubKey,this.network)
     return address
   }
-
+  
   getMultisig(pubKeyBufArr,neededSig){
     const redeemScript=this.lib.script.multisig.output.encode(neededSig|0, pubKeyBufArr)
     const scriptPubKey = this.lib.script.scriptHash.output.encode(this.lib.crypto.hash160(redeemScript))
@@ -307,6 +314,40 @@ module.exports=class{
       node = this.lib.HDNode.fromSeedBuffer(privSeed,this.network)
     }
     return node.toBase58()
+  }
+  _getKeyPair(entropyCipher,password,change,index){
+    if(!this.hdPubNode){throw new errors.HDNodeNotFoundError()}
+    let node;
+    if(arguments.length===3){
+      node=entropyCipher
+      index=change
+      change=password
+    }else{
+      node = this.lib.HDNode.fromSeedBuffer(bip39.mnemonicToSeed(
+        bip39.entropyToMnemonic(
+          coinUtil.decrypt(entropyCipher,password)
+        )
+      ),this.network)
+    }
+    if(arguments.length===2){
+      return node
+    }
+    if(this.bip44){
+      return node.deriveHardened(44)
+        .deriveHardened(this.bip44.coinType)
+        .deriveHardened(this.bip44.account)
+        .derive(change|0)
+        .derive(index|0).keyPair
+    }
+    if(this.bip49){
+      return node.deriveHardened(49)
+        .deriveHardened(this.bip49.coinType)
+        .deriveHardened(this.bip49.account)
+        .derive(change|0)
+        .derive(index|0).keyPair
+      
+    }
+    throw new errors.InvalidIndexError()
   }
   getPrice(){
     return new Promise((resolve, reject) => {
@@ -378,35 +419,13 @@ module.exports=class{
     let txb=option.txBuilder
     const path=option.path
     
-    let seed=
-        bip39.mnemonicToSeed(
-          bip39.entropyToMnemonic(
-            coinUtil.decrypt(entropyCipher,password)
-          )
-        )
-    const node = this.lib.HDNode.fromSeedBuffer(seed,this.network)
-    let accountNode
-    
-    if(this.bip44){
-      accountNode=node.deriveHardened(44)
-        .deriveHardened(this.bip44.coinType)
-        .deriveHardened(this.bip44.account)
-    }else if(this.bip49){
-      accountNode=node
-        .deriveHardened(49)
-        .deriveHardened(this.bip49.coinType)
-        .deriveHardened(this.bip49.account)
-    }
+    const node=this._getKeyPair(entropyCipher,password)
     
     if(!txb){
       txb=coinUtil.buildBuilderfromPubKeyTx(this.lib.Transaction.fromHex(option.hash),this.network)
 
       for(let i=0;i<txb.inputs.length;i++){
-
-        txb.sign(i,accountNode
-                 .derive(path[0][0]|0)
-                 .derive(path[0][1]|0).keyPair
-                )
+        txb.sign(i,this._getKeyPair(node,path[0][0],path[0][1]))
       }
       return txb.build()
     }
@@ -415,10 +434,7 @@ module.exports=class{
       
       let keyPair;
 
-      keyPair=accountNode
-        .derive(path[i][0]|0)
-        .derive(path[i][1]|0).keyPair
-      
+      keyPair=this._getKeyPair(node,path[i][0],path[i][1])
       
       if(this.enableSegwit){
         const redeemScript = this.lib.script.witnessPubKeyHash.output.encode(this.lib.crypto.hash160(keyPair.getPublicKeyBuffer()))
@@ -430,8 +446,10 @@ module.exports=class{
         txb.enableBitcoinGold(true)
         txb.sign(i,keyPair,null,this.lib.Transaction.SIGHASH_ALL | this.lib.Transaction.SIGHASH_BITCOINCASHBIP143,txb.inputs[i].value)
       }else if(this.libName==="zec" && this.network.txversion===3){
-        txb.sign(i,keyPair,null,this.lib.Transaction.SIGHASH_ALL,txb.inputs[i].value,null,true)
-      }else{
+        txb.sign(i,keyPair,null,this.lib.Transaction.SIGHASH_ALL,txb.inputs[i].value,null,3)
+      }else if(this.libName==="zec" && this.network.txversion===4){
+	    txb.sign(i,keyPair,null,this.lib.Transaction.SIGHASH_ALL,txb.inputs[i].value,null,4)
+	  }else{
         txb.sign(i,keyPair)
       }
     }
@@ -445,33 +463,12 @@ module.exports=class{
     let txb=option.txBuilder
     const path=option.path // this is not signTx() one. path=[0,0]
     const mSig=this.getMultisig(option.pubKeyBufArr,option.neededSig)
-    let seed=
-        bip39.mnemonicToSeed(
-          bip39.entropyToMnemonic(
-            coinUtil.decrypt(entropyCipher,password)
-          )
-        )
-    const node = this.lib.HDNode.fromSeedBuffer(seed,this.network)
+
+    const node = this._getKeyPair(entropyCipher,password)
 
     for(let i=0;i<txb.inputs.length;i++){
-      let accountNode
-      
-      if(this.bip44){
-        accountNode=node.deriveHardened(44)
-          .deriveHardened(this.bip44.coinType)
-          .deriveHardened(this.bip44.account)
-      }else if(this.bip49){
-        accountNode=node
-          .deriveHardened(49)
-          .deriveHardened(this.bip49.coinType)
-          .deriveHardened(this.bip49.account)
-      }
-      txb.sign(i,accountNode
-               .derive(path[0]|0)
-               .derive(path[1]|0).keyPair,
-               mSig.redeemScript
-              )
-      
+
+      txb.sign(i,this._getKeyPair(node,path[0],path[1]),mSig.redeemScript)
     }
     if(option.complete){
       return txb.build()
@@ -480,27 +477,17 @@ module.exports=class{
     }
   }
   signMessage(m,entropyCipher,password,path){
-    if(!this.hdPubNode){throw new errors.HDNodeNotFoundError()}
-    const node = this.lib.HDNode.fromSeedBuffer(bip39.mnemonicToSeed(
-      bip39.entropyToMnemonic(
-        coinUtil.decrypt(entropyCipher,password)
-      )
-    ),this.network)
-    let kp;
-    if(this.bip44){
-      kp=node.deriveHardened(44)
-        .deriveHardened(this.bip44.coinType)
-        .deriveHardened(this.bip44.account)
-        .derive(path[0]|0)
-        .derive(path[1]|0).keyPair
-    }else if(this.bip49){
-      kp=node.deriveHardened(49)
-        .deriveHardened(this.bip49.coinType)
-        .deriveHardened(this.bip49.account)
-        .derive(path[0]|0)
-        .derive(path[1]|0).keyPair
-    }
+    const kp = this._getKeyPair(entropyCipher,password,path[0],path[1])
     return bcMsg.sign(m,kp.d.toBuffer(32),kp.compressed,this.network.messagePrefix).toString("base64")
+  }
+  signHash(hash,entropyCipher,password,path){
+    const kp = this._getKeyPair(entropyCipher,password,path[0],path[1])
+    const sigObj=secp256k1.sign(hash,kp.d.toBuffer(32))
+    return {
+      signature:sigObj.signature,
+      recovery:sigObj.recovery,
+      compressed:kp.compressed
+    }
   }
   verifyMessage(m,a,s){
     return bcMsg.verify(m,a,s,this.network.messagePrefix)

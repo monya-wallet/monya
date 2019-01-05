@@ -49,15 +49,9 @@ jobs:
           npm i
           cordova platform add android
           cordova build android --debug
-          cd ../electron
-          npm install
-          npm run dist
             
       - store_artifacts:
           path: cordovaProj/platforms/android/build/outputs/apk/
-      - store_artifacts:
-          path: electron/dist
-
   publish:
     docker:
       # specify the version you desire here
@@ -102,16 +96,8 @@ jobs:
           npm i
           cordova platform add android
           cordova build android --release
-          cd ../electron
-          npm install
-          npm run dist
-          cd ..
-          zip chrome_extension.zip chrome_extension
-            
       - store_artifacts:
           path: cordovaProj/platforms/android/build/outputs/apk/
-      - store_artifacts:
-          path: electron/dist
       - store_artifacts:
           path: chrome_extension.zip
 workflows:
