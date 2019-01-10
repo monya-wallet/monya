@@ -393,10 +393,10 @@ const defaultCoins = [{
     "wif": 128
   },
   price: {
-    url: "https://zaif-status.herokuapp.com/priceEtherProxy/koto",
+    url: "https://api.coingecko.com/api/v3/simple/price?ids=koto&vs_currencies=jpy",
     json: true,
-    jsonPath: 'result',
-    fiat: "btc"
+    jsonPath: '$.koto.jpy',
+    fiat: "jpy"
   },
   "enableSegwit": false,
   "confirmations": 6,
