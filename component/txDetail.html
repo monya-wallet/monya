@@ -50,14 +50,20 @@
         </v-ons-list-item>
         <v-ons-list-item modifier="tappable chevron" @click="openTxExplorer">チェーンエクスプローラーを見る</v-ons-list-item>
       </v-ons-list>
-      <v-ons-list modifier="inset">
+      <v-ons-list modifier="inset" v-if="!res.isCoinBase">
         <v-ons-list-title>入力</v-ons-list-title>
         <v-ons-list-item v-for="v in res.vin">
           <div class="addr" :class="addressClass(v.addr)" v-show="!showScript">{{v.addr}}</div>
           <div class="w_right" @click="txDetail(v.txid)" v-show="!showScript">
             <currency-set :amount="v.value" :ticker="coinId"></currency-set>
           </div>
-          <div v-show="showScript">{{v.scriptSig.asm}}</div>
+          <div v-show="showScript">{{v.scriptSig?v.scriptSig.asm:v.coinbase}}</div>
+        </v-ons-list-item>
+      </v-ons-list>
+      <v-ons-list modifier="inset" v-else>
+        <v-ons-list-title>入力</v-ons-list-title>
+        <v-ons-list-item v-for="v in res.vin">
+          <div class="addr" :class="addressClass(v.addr)" v-show="!showScript">No inputs: This is coinbase transaction.</div>
         </v-ons-list-item>
       </v-ons-list>
       <v-ons-list modifier="inset">
