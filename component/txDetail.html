@@ -48,10 +48,6 @@
           <div class="center">トランザクションID</div>
           <div class="right"><v-ons-input :value="res.txid" readonly></v-ons-input></div>
         </v-ons-list-item>
-        <v-ons-list-item modifier="small">
-          <div class="center">Is Coinbase?</div>
-          <div class="right"><v-ons-input :value="res.isCoinBase?'Yes':'No'" readonly></v-ons-input></div>
-        </v-ons-list-item>
         <v-ons-list-item modifier="tappable chevron" @click="openTxExplorer">チェーンエクスプローラーを見る</v-ons-list-item>
       </v-ons-list>
       <v-ons-list modifier="inset" v-if="!res.isCoinBase">
