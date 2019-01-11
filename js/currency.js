@@ -37,7 +37,7 @@ const blkLib = require("@missmonacoin/blackcoinjs-lib")
 const jp = require('jsonpath')
 const bs58check = require('bs58check')
 const secp256k1 = require('secp256k1')
-const explorer=require('./explorer')
+const explorer=require('./explorers')
 
 module.exports=class{
   
