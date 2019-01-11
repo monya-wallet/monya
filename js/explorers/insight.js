@@ -55,18 +55,6 @@ module.exports = class InsightExplorer {
         }).then(res => res.data);
     }
 
-    getUtxosRep(addressList, fallback = true, cnt = 0) {
-        return this.getUtxos(addressList).catch((r) => {
-            if (!fallback) {
-                throw r
-            }
-            if (cnt > 3) {
-                throw r;
-            }
-            return this.getUtxosRep(url, true, ++cnt)
-        });
-    }
-
     getAddressProp(propName, address, noTxList) {
         return axios({
             url: this.apiEndpoint + "/addr/" + address + (propName ? "/" + propName : (noTxList ? "?noTxList=1" : "")),

@@ -170,9 +170,9 @@ module.exports=class{
         }
         this.changeApiEndpoint()
         if (cnt > 3) {
-            throw r;
+          throw r;
         }
-        return this.getUtxosRaw(url, true, ++cnt)
+        return this.getUtxosRaw(addressList, true, ++cnt)
     });
   }
   getUtxos(addressList,includeUnconfirmedFunds=false,fallback=true){
@@ -183,8 +183,7 @@ module.exports=class{
       promise=Promise.resolve({data:addressList})
     }
     
-    return promise.then(res=>{
-      const v=res.data
+    return promise.then(v=>{
       const utxos=[]
       let bal=new BigNumber(0);
       let unconfirmed=new BigNumber(0);
