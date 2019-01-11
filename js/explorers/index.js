@@ -1,6 +1,6 @@
 const expTypes = {
     insight: require('./insight'),
-    blockbook: undefined,
+    blockbook: require('./blockbook')
 }
 
 function getByType(type, url, explorer) {
