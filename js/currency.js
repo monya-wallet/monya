@@ -37,6 +37,8 @@ const blkLib = require("@missmonacoin/blackcoinjs-lib")
 const jp = require('jsonpath')
 const bs58check = require('bs58check')
 const secp256k1 = require('secp256k1')
+const explorer=require('./explorer')
+
 module.exports=class{
   
   constructor(opt){
@@ -99,12 +101,7 @@ module.exports=class{
   }
   getAddressProp(propName,address,noTxList=false){
     if(this.dummy){return Promise.resolve()}
-    return axios({
-      url:this.apiEndpoint+"/addr/"+address+(propName?"/"+propName:(noTxList?"?noTxList=1":"")),
-      json:true,
-      method:"GET"}).then(res=>{
-        return res.data
-      })
+    return this.apiHost.getAddressProp(propName,address,noTxList);
   }
   getReceiveAddr(limit){
     if(!limit){
@@ -165,28 +162,23 @@ module.exports=class{
       unconfirmed:(new BigNumber(vals[0].unconfirmed)).add(vals[1].unconfirmed).toNumber()
     }))
   }
-
-  fbGet(url,fallback=true,cnt=0){
-    return axios({
-      url:this.apiEndpoint + url,
-      json:true,
-      method:"GET"
-    }).catch((r)=>{
-      if(!fallback){
-        throw r
-      }
-      this.changeApiEndpoint()
-      if(cnt>3){
-        throw r;
-      }
-      return this.fbGet(url,true,++cnt)
-    })
-  }
   
+  getUtxosRaw(addressList, fallback = true, cnt = 0) {
+    return this.apiHost.getUtxos(addressList).catch((r) => {
+        if (!fallback) {
+            throw r
+        }
+        this.changeApiEndpoint()
+        if (cnt > 3) {
+            throw r;
+        }
+        return this.getUtxosRaw(url, true, ++cnt)
+    });
+  }
   getUtxos(addressList,includeUnconfirmedFunds=false,fallback=true){
     let promise
     if(typeof(addressList[0])==="string"){//address mode
-      promise=this.fbGet("/addrs/"+addressList.join(",")+"/utxo",fallback)
+      promise=this.getUtxosRaw(addressList,fallback);
     }else{// manual utxo mode
       promise=Promise.resolve({data:addressList})
     }
@@ -494,38 +486,17 @@ module.exports=class{
   }
   pushTx(hex){
     if(this.dummy){return Promise.resolve()}
-    return axios({
-      url:this.apiEndpoint+"/tx/send",
-      data:qs.stringify({rawtx:hex}),
-      method:"POST"}).then(res=>{
-        return res.data
-      })
+    return this.apiHost.pushTx(hex);
   }
 
   getTxs(from,to){
     if(this.dummy){return Promise.resolve()}
-    return axios({
-      url:this.apiEndpoint+"/addrs/txs",
-      data:qs.stringify({
-        noAsm:1,
-        noScriptSig:1,
-        noSpent:0,
-        from,to,
-        addrs:this.getReceiveAddr().concat(this.getChangeAddr()).join(",")
-      }),
-      method:"POST"}).then(res=>{
-        return res.data
-      })
+    return this.apiHost.getTxs(from,to,this.getReceiveAddr().concat(this.getChangeAddr()))
   }
   
   getTx(txId){
     if(this.dummy){return Promise.resolve()}
-    return axios({
-      url:this.apiEndpoint+"/tx/"+txId,
-      method:"GET"})
-      .then(res=>{
-        return res.data
-      })
+    return this.apiHost.getTx(txId);
   }
   getTxLabel(txId){
     return storage.get("txLabels").then(res=>{
@@ -676,10 +647,7 @@ module.exports=class{
     })
   }
   getBlocks(){
-    return axios({
-      url:this.apiEndpoint+"/blocks?limit=3",
-      json:true,
-      method:"GET"}).then(r=>r.data.blocks)
+    return this.apiHost.getBlocks()
   }
   changeApiEndpoint(index){
     if (typeof(index)!=="number"){
@@ -698,6 +666,7 @@ module.exports=class{
     if(a.socket){
       this.socketEndpoint = a.socket
     }
+    this.apiHost = explorer.getByType(a.type||"insight",this.apiEndpoint,a.explorer);
   }
   getAddrVersion(addr){
     if(this.libName==="zec"){
@@ -724,14 +693,9 @@ module.exports=class{
     return false
   }
   openExplorer(opt){
-    if(opt.txId){
-      coinUtil.openUrl(this.explorer+"/tx/"+opt.txId)
-    }
-    if(opt.address){
-      coinUtil.openUrl(this.explorer+"/address/"+opt.txId)
-    }
-    if(opt.blockHash){
-      coinUtil.openUrl(this.explorer+"/block/"+opt.blockHash)
+    const urls=this.apiHost.explorerUrls(opt);
+    for(let i in urls){
+      coinUtil.openUrl(urls[i]);
     }
   }
 }
