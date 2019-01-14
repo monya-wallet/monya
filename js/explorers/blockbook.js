@@ -11,9 +11,8 @@ module.exports = class BlockbookExplorer {
 
     pushTx(hex) {
         return axios({
-            url: this.apiEndpoint + "/sendtx",
-            data: hex,
-            method: "POST"
+            url: this.apiEndpoint + "/sendtx/" + hex,
+            method: "GET"
         }).then(res => ({
             txid: res.data.result
         }));
@@ -96,10 +95,13 @@ module.exports = class BlockbookExplorer {
                     url: this.apiEndpoint + "/utxo/" + addr,
                     method: "GET"
                 }).then(res => res.data).then(data => {
-                    // add address
-                    data.address = addr_;
-                    // have amount in float
-                    data.amount = +new BigNumber(data.amount).dividedBy(100000000);
+                    for (let out of data) {
+                        // add address
+                        out.address = addr_;
+                        // have amount in float
+                        out.amount = +new BigNumber(out.satoshis).dividedBy(100000000);
+                    }
+                    return data;
                 })
             );
         }
