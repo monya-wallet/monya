@@ -166,6 +166,10 @@ const defaultCoins = [{
     url: "https://insight.electrum-mona.org/insight-api-monacoin",
     explorer: "https://insight.electrum-mona.org/insight",
     type:"insight"
+  }, {
+    url: "https://blockbook.electrum-mona.org/api",
+    explorer: "https://blockbook.electrum-mona.org",
+    type:"blockbook"
   }],
   network: {
     messagePrefix: '\x19Monacoin Signed Message:\n',
