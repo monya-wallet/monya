@@ -29,50 +29,60 @@ const j = require("./lang").getLang() === "ja"
 // Coin id should be lowercase ticker symbol. Add prefix if this coin is different coin like testnet. Add suffix if this coin is compatible with the original coin but different mode like SegWit, Monacoin-3-Prefix
 
 const defaultCoins = [{
-  coinScreenName: j ? "ビットゼニー" : "BitZeny",
-  coinId: "zny",
-  unit: "ZNY",
-  unitEasy: j ? "ゼニー" : "Zeny",
+  coinScreenName: j ? "モナコイン" : "Monacoin",
+  coinId: "mona",
+  unit: "MONA",
+  unitEasy: j ? "モナ" : "Mona",
   bip44: {
-    coinType: 123,
+    coinType: 22,
     account: 0
   },
-  bip21: "bitzeny",
+  bip21: "monacoin",
   defaultFeeSatPerByte: 150,
-  icon: require("../res/coins/zny.png"),
+  icon: require("../res/coins/mona.png"),
   apiEndpoints: [{
-    url: "https://zenyinsight.tomotomo9696.xyz/api",
-    explorer: "https://zenyinsight.tomotomo9696.xyz",
-    type:"insight"
-  }, {
-    url: "https://insight.bitzeny.jp/api",
-    explorer: "https://insight.bitzeny.jp",
-    type:"insight"
-  }, {
-    url: "https://insight.bitzeny.cloud/api",
-    explorer: "https://insight.bitzeny.cloud",
-    type:"insight"
+    url: "https://mona.monacoin.ml/insight-api-monacoin",
+    explorer: "https://mona.monacoin.ml/insight",
+    type: "insight"
+  },{
+    url: "https://mona.insight.monaco-ex.org/insight-api-monacoin",
+    explorer: "https://mona.insight.monaco-ex.org/insight",
+    type: "insight"
+  },{
+    url: "https://insight.electrum-mona.org/insight-api-monacoin",
+    explorer: "https://insight.electrum-mona.org/insight",
+    type: "insight"
+  },{
+    url: "https://blockbook.electrum-mona.org/api",
+    explorer: "https://blockbook.electrum-mona.org",
+    type:"blockbook"
   }],
   network: {
-    messagePrefix: '\x18BitZeny Signed Message:\n',
+    messagePrefix: '\x19Monacoin Signed Message:\n',
     bip32: {
       public: 0x0488b21e,
 
       private: 0x0488ade4
     },
-    pubKeyHash: 81,
-    scriptHash: 5,
-    wif: 128,bech32:"sz"
+    pubKeyHash: 50,
+    scriptHash: 55,
+    wif: 178, //new wif
+    bech32: "mona"
   },
+  sound: require("../res/coins/paySound/mona.m4a"),
   enableSegwit: false,
   price: {
-    url: "https://api.crypto-bridge.org/api/v1/ticker",
+    url: "https://public.bitbank.cc/mona_jpy/ticker",
     json: true,
-    jsonPath: '$[?(@.id=="ZNY_BTC")].last',
-    fiat: "btc"
+    jsonPath: '$.data.last',
+    fiat: "jpy"
   },
-  sound: require("../res/coins/paySound/zny.m4a"),
-  opReturnLength: 40, //server seems currently not to support
+  confirmations: 6,
+  counterparty:{
+    endpoints: ["https://monaparty.tk/_api","https://wallet.monaparty.me/_api"],
+    nativeSymbol:"XMP"
+  },
+  opReturnLength: 83,
   isAtomicSwapAvailable: true
 }, {
   coinScreenName: j ? "ビットコイン" : "Bitcoin",
@@ -142,63 +152,53 @@ const defaultCoins = [{
   counterparty:{endpoints: ["https://wallet.counterwallet.io/_api"],nativeSymbol:"XCP"},
   opReturnLength: 83,
   isAtomicSwapAvailable: true
-},{
-  coinScreenName: j ? "モナコイン" : "Monacoin",
-  coinId: "mona",
-  unit: "MONA",
-  unitEasy: j ? "モナ" : "Mona",
+}, {
+  coinScreenName: j ? "ビットゼニー" : "BitZeny",
+  coinId: "zny",
+  unit: "ZNY",
+  unitEasy: j ? "ゼニー" : "Zeny",
   bip44: {
-    coinType: 22,
+    coinType: 123,
     account: 0
   },
-  bip21: "monacoin",
+  bip21: "bitzeny",
   defaultFeeSatPerByte: 150,
-  icon: require("../res/coins/mona.png"),
+  icon: require("../res/coins/zny.png"),
   apiEndpoints: [{
-    url: "https://mona.monacoin.ml/insight-api-monacoin",
-    explorer: "https://mona.monacoin.ml/insight",
-    type:"insight"
-  },{
-    url: "https://mona.insight.monaco-ex.org/insight-api-monacoin",
-    explorer: "https://mona.insight.monaco-ex.org/insight",
-    type:"insight"
-  },{
-    url: "https://insight.electrum-mona.org/insight-api-monacoin",
-    explorer: "https://insight.electrum-mona.org/insight",
-    type:"insight"
+    url: "https://zenyinsight.tomotomo9696.xyz/api",
+    explorer: "https://zenyinsight.tomotomo9696.xyz",
+    type: "insight"
   }, {
-    url: "https://blockbook.electrum-mona.org/api",
-    explorer: "https://blockbook.electrum-mona.org",
-    type:"blockbook"
+    url: "https://insight.bitzeny.jp/api",
+    explorer: "https://insight.bitzeny.jp",
+    type: "insight"
+  }, {
+    url: "https://insight.bitzeny.cloud/api",
+    explorer: "https://insight.bitzeny.cloud",
+    type: "insight"
   }],
   network: {
-    messagePrefix: '\x19Monacoin Signed Message:\n',
+    messagePrefix: '\x18BitZeny Signed Message:\n',
     bip32: {
       public: 0x0488b21e,
 
       private: 0x0488ade4
     },
-    pubKeyHash: 50,
-    scriptHash: 55,
-    wif: 178, //new wif
-    bech32: "mona"
+    pubKeyHash: 81,
+    scriptHash: 5,
+    wif: 128,bech32:"sz"
   },
-  sound: require("../res/coins/paySound/mona.m4a"),
   enableSegwit: false,
   price: {
-    url: "https://public.bitbank.cc/mona_jpy/ticker",
+    url: "https://api.crypto-bridge.org/api/v1/ticker",
     json: true,
-    jsonPath: '$.data.last',
-    fiat: "jpy"
+    jsonPath: '$[?(@.id=="ZNY_BTC")].last',
+    fiat: "btc"
   },
-  confirmations: 6,
-  counterparty:{
-    endpoints: ["https://monaparty.tk/_api","https://wallet.monaparty.me/_api"],
-    nativeSymbol:"XMP"
-  },
-  opReturnLength: 83,
+  sound: require("../res/coins/paySound/zny.m4a"),
+  opReturnLength: 40, //server seems currently not to support
   isAtomicSwapAvailable: true
-},  {
+}, {
   coinScreenName: j ? "ライトコイン" : "Litecoin",
   coinId: "ltc",
   unit: "LTC",
