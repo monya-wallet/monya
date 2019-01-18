@@ -19,7 +19,7 @@ module.exports = class BlockbookExplorer {
     }
 
     getTxs(from, to, addrs) {
-        throw new Error('Missing implementation: getTxs');
+        return Promise.reject(new Error('Missing implementation: getTxs'));
     }
 
     getTx(txId) {
@@ -56,7 +56,7 @@ module.exports = class BlockbookExplorer {
     }
 
     getBlocks() {
-        const blockAmount = 4;
+        const blockAmount = 3;
         return axios({
             url: this.apiEndpoint + "/",
             method: "GET"

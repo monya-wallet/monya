@@ -162,18 +162,21 @@ module.exports=class{
       unconfirmed:(new BigNumber(vals[0].unconfirmed)).add(vals[1].unconfirmed).toNumber()
     }))
   }
-  
-  getUtxosRaw(addressList, fallback = true, cnt = 0) {
-    return this.apiHost.getUtxos(addressList).catch((r) => {
-        if (!fallback) {
-            throw r
-        }
-        this.changeApiEndpoint()
-        if (cnt > 3) {
+
+  retryWithApiSwitch(func, fallback = true, cnt = 0) {
+    return func().catch((r) => {
+        if (!fallback || cnt > 3) {
           throw r;
         }
-        return this.getUtxosRaw(addressList, true, ++cnt)
+        this.changeApiEndpoint();
+        return this.retryWithApiSwitch(func, true, ++cnt);
     });
+  }
+  
+  getUtxosRaw(addressList, fallback = true, cnt = 0) {
+    return this.retryWithApiSwitch(()=>
+      this.apiHost.getUtxos(addressList),
+    fallback,cnt);
   }
   getUtxos(addressList,includeUnconfirmedFunds=false,fallback=true){
     let promise
@@ -485,17 +488,23 @@ module.exports=class{
   }
   pushTx(hex){
     if(this.dummy){return Promise.resolve()}
-    return this.apiHost.pushTx(hex);
+    return this.retryWithApiSwitch(()=>
+      this.apiHost.pushTx(hex)
+    );
   }
 
   getTxs(from,to){
     if(this.dummy){return Promise.resolve()}
-    return this.apiHost.getTxs(from,to,this.getReceiveAddr().concat(this.getChangeAddr()))
+    return this.retryWithApiSwitch(()=>
+      this.apiHost.getTxs(from,to,this.getReceiveAddr().concat(this.getChangeAddr()))
+    );
   }
   
   getTx(txId){
     if(this.dummy){return Promise.resolve()}
-    return this.apiHost.getTx(txId);
+    return this.retryWithApiSwitch(()=>
+      this.apiHost.getTx(txId)
+    );
   }
   getTxLabel(txId){
     return storage.get("txLabels").then(res=>{
