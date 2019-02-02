@@ -45,7 +45,7 @@ jobs:
           sudo unzip gradle.zip -d /opt
           export PATH="$PATH:/opt/gradle-4.1/bin/"
           sudo mkdir $ANDROID_HOME/licenses
-          sudo echo $ANDROID_SDK_LICENSE_VOLUMES > /licenses/android-sdk-license
+          sudo echo $ANDROID_SDK_LICENSE_VOLUMES > $ANDROID_HOME/licenses/android-sdk-license
           sdkmanager tools "build-tools;26.0.2" "platform-tools" "platforms;android-26" "platforms;android-25"
           cd cordovaProj
           npm i
