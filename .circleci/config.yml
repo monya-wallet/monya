@@ -45,6 +45,7 @@ jobs:
           sudo unzip gradle.zip -d /opt
           export PATH="$PATH:/opt/gradle-4.1/bin/"
           sdkmanager tools "build-tools;26.0.2" "platform-tools" "platforms;android-26" "platforms;android-25"
+          yes | sdkmanager --licenses
           cd cordovaProj
           npm i
           cordova platform add android
