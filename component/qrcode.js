@@ -143,10 +143,12 @@ module.exports=require("../js/lang.js")({ja:require("./ja/qrcode.html"),en:requi
             this.parse(t)
           })
         })
+        /*
         if(window.cordova&&window.cordova.platformId!=="browser"){ // ios Quirks
           QRScanner.show()
         }
-        
+        */
+        QRScanner.show()
       } else if (status.denied) {
         this.$ons.notification.alert("Please allow Camera")
       } else {
