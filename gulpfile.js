@@ -113,9 +113,9 @@ gulp.task("cordova", function(cb) {
 });
 var height
 try{
-  height = JSON.parse(request('GET', 'https://mona.insight.monaco-ex.org/insight-api-monacoin/sync').getBody('utf8')).height
+  height = JSON.parse(request('GET', 'https://mona.insight.monaco-ex.org/insight-api-monacoin/sync').getBody('utf8')).blockChainHeight
 }catch(e){
-  height=-1
+  height=null
 }
 console.log("Monacoin Block Height is ",height)
 gulp.task("translateJa", function(cb) {
