@@ -25,11 +25,6 @@
     display:none !important;
   }
 }
-@if $disableMonappy {
-  .condMonappy{
-    display:none !important;
-  }
-}
 @if $disableAtomicSwap{
   .condAtomicSwap{
     display:none !important;

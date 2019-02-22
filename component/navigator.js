@@ -36,7 +36,6 @@ const translationTable={
   "passwordfailureerror":"パスワードが間違っています",
   "hdnodenotfounderror":"公開鍵が登録されていません。コインを追加してください。",
   "invalidindexerror":"アドレスを生成できませんでした",
-  "monappyerror":"Monappyに関するエラー",
   "labelnotfounderror":"該当するラベルがありません",
   "addressnotfounderror":"アドレスがありません。コインを追加し直してください。"
 }

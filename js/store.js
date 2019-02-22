@@ -33,7 +33,6 @@ module.exports = new Vuex.Store({
     showLabelPayload:{},
     tsMode:"relative",
     detail:{},
-    monappyEnabled:false,
     monapartyEnabled:true,
     enabledExts:[],
     sendUrl:"",
@@ -75,7 +74,6 @@ module.exports = new Vuex.Store({
     },
     setSettings(state,d){
       //d can be incomplete,please be careful
-      state.monappyEnabled=d.monappy?d.monappy.enabled:false
       state.fiat=d.fiat||"jpy"
       state.easyUnit=d.useEasyUnit
       state.tsMode=d.absoluteTime?"absolute":"relative"

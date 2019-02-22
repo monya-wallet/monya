@@ -83,10 +83,6 @@ module.exports=require("../js/lang.js")({ja:require("./ja/setPassword.html"),en:
           absoluteTime:false,
           fiat:"jpy",
           paySound:false,
-          monappy:{
-            enabled:false,
-            myUserId:""
-          },
           monaparty:{
             bgClass:"sand"
           },
