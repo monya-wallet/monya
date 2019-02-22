@@ -85,6 +85,52 @@ const defaultCoins = [{
   opReturnLength: 83,
   isAtomicSwapAvailable: true
 }, {
+  coinScreenName: j ? "ビットゼニープラス" : "BitZenyPlus",
+  coinId: "zny",
+  unit: "ZNY",
+  unitEasy: j ? "ゼニー" : "Zeny",
+  bip44: {
+    coinType: 123,
+    account: 0
+  },
+  bip21: "bitzeny",
+  defaultFeeSatPerByte: 150,
+  icon: require("../res/coins/zny.png"),
+  apiEndpoints: [{
+    url: "https://zenyinsight.tomotomo9696.xyz/api",
+    explorer: "https://zenyinsight.tomotomo9696.xyz",
+    type: "insight"
+  }, {
+    url: "https://insight.bitzeny.jp/api",
+    explorer: "https://insight.bitzeny.jp",
+    type: "insight"
+  }, {
+    url: "https://insight.bitzeny.cloud/api",
+    explorer: "https://insight.bitzeny.cloud",
+    type: "insight"
+  }],
+  network: {
+    messagePrefix: '\x18BitZeny Signed Message:\n',
+    bip32: {
+      public: 0x0488b21e,
+
+      private: 0x0488ade4
+    },
+    pubKeyHash: 81,
+    scriptHash: 5,
+    wif: 128,bech32:"sz"
+  },
+  enableSegwit: false,
+  price: {
+    url: "https://api.coingecko.com/api/v3/simple/price?ids=bitzeny&vs_currencies=jpy",
+    json: true,
+    jsonPath: '$.bitzeny.jpy',
+    fiat: "jpy"
+  },
+  sound: require("../res/coins/paySound/zny.m4a"),
+  opReturnLength: 40, //server seems currently not to support
+  isAtomicSwapAvailable: true
+}, {
   coinScreenName: j ? "ビットコイン" : "Bitcoin",
   coinId: "btc",
   unit: "BTC",
@@ -151,52 +197,6 @@ const defaultCoins = [{
   confirmations: 6,
   counterparty:{endpoints: ["https://wallet.counterwallet.io/_api"],nativeSymbol:"XCP"},
   opReturnLength: 83,
-  isAtomicSwapAvailable: true
-}, {
-  coinScreenName: j ? "ビットゼニー" : "BitZeny",
-  coinId: "zny",
-  unit: "ZNY",
-  unitEasy: j ? "ゼニー" : "Zeny",
-  bip44: {
-    coinType: 123,
-    account: 0
-  },
-  bip21: "bitzeny",
-  defaultFeeSatPerByte: 150,
-  icon: require("../res/coins/zny.png"),
-  apiEndpoints: [{
-    url: "https://zenyinsight.tomotomo9696.xyz/api",
-    explorer: "https://zenyinsight.tomotomo9696.xyz",
-    type: "insight"
-  }, {
-    url: "https://insight.bitzeny.jp/api",
-    explorer: "https://insight.bitzeny.jp",
-    type: "insight"
-  }, {
-    url: "https://insight.bitzeny.cloud/api",
-    explorer: "https://insight.bitzeny.cloud",
-    type: "insight"
-  }],
-  network: {
-    messagePrefix: '\x18BitZeny Signed Message:\n',
-    bip32: {
-      public: 0x0488b21e,
-
-      private: 0x0488ade4
-    },
-    pubKeyHash: 81,
-    scriptHash: 5,
-    wif: 128,bech32:"sz"
-  },
-  enableSegwit: false,
-  price: {
-    url: "https://api.crypto-bridge.org/api/v1/ticker",
-    json: true,
-    jsonPath: '$[?(@.id=="ZNY_BTC")].last',
-    fiat: "btc"
-  },
-  sound: require("../res/coins/paySound/zny.m4a"),
-  opReturnLength: 40, //server seems currently not to support
   isAtomicSwapAvailable: true
 }, {
   coinScreenName: j ? "ライトコイン" : "Litecoin",

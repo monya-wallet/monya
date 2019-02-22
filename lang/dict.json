@@ -2358,5 +2358,69 @@
   "No inputs: This is coinbase transaction.": {
     "ja": "コイン生成トランザクションのため、入力はありません。",
     "en": "No inputs: This is coinbase transaction."
+  },
+  "フレーバーネーム": {
+    "ja": "フレーバーネーム",
+    "en": "FlavorName"
+  },
+  "ビルドブロック": {
+    "ja": "ビルドブロック",
+    "en": "BuildBlock"
+  },
+  "公式": {
+    "ja": "公式",
+    "en": "Official"
+  },
+  "開発・運営": {
+    "ja": "開発・運営",
+    "en": "Develop・Management"
+  },
+  "ゼニポタ": {
+    "ja": "ゼニポタ",
+    "en": "zenypota"
+  },
+  "バックエンド協力": {
+    "ja": "バックエンド協力",
+    "en": "Backend Support"
+  },
+  "テスト協力": {
+    "ja": "テスト協力",
+    "en": "Test Support"
+  },
+  "テスター": {
+    "ja": "テスター",
+    "en": "Tester"
+  },
+  "エロんぱん 様": {
+    "ja": "エロんぱん 様",
+    "en": "Love エロんぱん"
+  },
+  "BitZeny神社 様": {
+    "ja": "BitZeny神社 様",
+    "en": "Love BitZeny神社"
+  },
+  "侍日本代表 様": {
+    "ja": "侍日本代表 様",
+    "en": "Love 侍日本代表"
+  },
+  "tomotomo9696 様": {
+    "ja": "tomotomo9696 様",
+    "en": "Love tomotomo9696"
+  },
+  "Haiyan 様": {
+    "ja": "Haiyan 様",
+    "en": "Love Haiyan"
+  },
+  "hitobb 様": {
+    "ja": "hitobb 様",
+    "en": "Love hitobb"
+  },
+  "公式Twitterに掲載依頼をしていただければ追加させていただきます": {
+    "ja": "に掲載依頼をしていただければ追加させていただきます",
+    "en": "I will add it if you can request publication on official Twitter."
+  },
+  "秘密鍵を表示する": {
+    "ja": "秘密鍵を表示する",
+    "en": "Show PrivateKey"
   }
 }
