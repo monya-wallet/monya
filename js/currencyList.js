@@ -41,21 +41,25 @@ const defaultCoins = [{
   defaultFeeSatPerByte: 150,
   icon: require("../res/coins/mona.png"),
   apiEndpoints: [{
-    url: "https://mona.monacoin.ml/insight-api-monacoin",
-    explorer: "https://mona.monacoin.ml/insight",
-    type: "insight"
+    url: "https://blockbook.electrum-mona.org/api",
+    explorer: "https://blockbook.electrum-mona.org",
+    type:"blockbook"
   },{
-    url: "https://mona.insight.monaco-ex.org/insight-api-monacoin",
-    explorer: "https://mona.insight.monaco-ex.org/insight",
-    type: "insight"
+    url: "https://mona.blockbook.zenypota.net/api",
+    explorer: "https://mona.blockbook.zenypota.net",
+    type: "blockbook"
+  },{
+    url: "https://mona.blockbook.ovh/api",
+    explorer: "https://mona.blockbook.ovh",
+    type: "blockbook"
   },{
     url: "https://insight.electrum-mona.org/insight-api-monacoin",
     explorer: "https://insight.electrum-mona.org/insight",
     type: "insight"
   },{
-    url: "https://blockbook.electrum-mona.org/api",
-    explorer: "https://blockbook.electrum-mona.org",
-    type:"blockbook"
+    url: "https://mona.insight.monaco-ex.org/insight-api-monacoin",
+    explorer: "https://mona.insight.monaco-ex.org/insight",
+    type: "insight"
   }],
   network: {
     messagePrefix: '\x19Monacoin Signed Message:\n',
@@ -79,7 +83,9 @@ const defaultCoins = [{
   },
   confirmations: 6,
   counterparty:{
-    endpoints: ["https://monaparty.tk/_api","https://wallet.monaparty.me/_api"],
+    endpoints: [
+      "https://monapa.electrum-mona.org/_api",
+    ],
     nativeSymbol:"XMP"
   },
   opReturnLength: 83,
@@ -97,6 +103,14 @@ const defaultCoins = [{
   defaultFeeSatPerByte: 150,
   icon: require("../res/coins/zny.png"),
   apiEndpoints: [{
+    url: "https://zeny.blockbook.zenypota.net/api",
+    explorer: "https://zeny.blockbook.zenypota.net",
+    type: "blockbook"
+  },{
+    url: "https://zny.blockbook.ovh/api",
+    explorer: "https://zny.blockbook.ovh",
+    type: "blockbook"
+  },{
     url: "https://zenyinsight.tomotomo9696.xyz/api",
     explorer: "https://zenyinsight.tomotomo9696.xyz",
     type: "insight"
@@ -104,16 +118,11 @@ const defaultCoins = [{
     url: "https://insight.bitzeny.jp/api",
     explorer: "https://insight.bitzeny.jp",
     type: "insight"
-  }, {
-    url: "https://insight.bitzeny.cloud/api",
-    explorer: "https://insight.bitzeny.cloud",
-    type: "insight"
   }],
   network: {
     messagePrefix: '\x18BitZeny Signed Message:\n',
     bip32: {
       public: 0x0488b21e,
-
       private: 0x0488ade4
     },
     pubKeyHash: 81,
@@ -143,37 +152,21 @@ const defaultCoins = [{
   defaultFeeSatPerByte: 100,
   icon: require("../res/coins/btc.png"),
   apiEndpoints: [{
-    explorer: "https://www.localbitcoinschain.com",
-    url: "https://www.localbitcoinschain.com/api",
-    type:"insight"
+    url: "https://btc-bitcore4.trezor.io/api",
+    explorer: "https://btc-bitcore4.trezor.io",
+    type:"blockbook"
   },{
-    url: "https://blockexplorer.com/api",
-    explorer: "https://blockexplorer.com",
-    type:"insight"
-  },{
-    explorer: "https://btc.coin.space",
-    url: "https://btc.coin.space/api",
-    type:"insight"
-  },{
-    url: "https://core.monacoin.ml/insight-api",
-    explorer: "https://core.monacoin.ml/insight",
-    type:"insight"
+    url: "https://btc1.trezor.io/api",
+    explorer: "https://btc1.trezor.io",
+    type: "blockbook"
   },{
     explorer: "https://explorer.bitcoin.com/btc",
     url: "https://explorer.bitcoin.com/api/btc",
     type:"insight"
   },{
-    url: "https://btc.blockdozer.com/insight-api",
-    explorer: "https://btc.blockdozer.com",
-    type:"insight"
-  },{
     explorer: "https://insight.bitpay.com",
     url: "https://insight.bitpay.com/api",
     type:"insight"
-  },{
-    url: "https://btc-bitcore4.trezor.io/api",
-    explorer: "https://btc-bitcore4.trezor.io",
-    type:"blockbook"
   }],
   network: {
     messagePrefix: '\x18Bitcoin Signed Message:\n',
@@ -211,16 +204,20 @@ const defaultCoins = [{
   defaultFeeSatPerByte: 300,
   icon: require("../res/coins/ltc.png"),
   apiEndpoints: [{
+    url: "https://ltc1.trezor.io/api",
+    explorer: "https://ltc1.trezor.io",
+    type: "blockbook"
+  },{
+    url: "https://ltc2.trezor.io/api",
+    explorer: "https://ltc2.trezor.io",
+    type: "blockbook"
+  },{
     url: "https://insight.litecore.io/api",
     explorer: "https://insight.litecore.io",
     type:"insight"
   },{
     explorer: "https://ltc.coin.space",
     url: "https://ltc.coin.space/api",
-    type:"insight"
-  },{
-    url:"https://ltc.monacoin.ml/insight-lite-api",
-    explorer:"https://ltc.monacoin.ml/insight",
     type:"insight"
   }],
   network: {
@@ -260,8 +257,11 @@ const defaultCoins = [{
   apiEndpoints: [{
     url: "http://explorer.fujicoin.org/api",
     explorer: "http://explorer.fujicoin.org",
-    proxy: true,
-    type:"insight"
+    type:"blockbook"
+  },{
+    url: "https://fuji.blockbook.ovh/api",
+    explorer: "https://fuji.blockbook.ovh",
+    type: "blockbook"
   }],
   network: {
     messagePrefix: '\x19Fujicoin Signed Message:\n',
@@ -296,9 +296,13 @@ const defaultCoins = [{
   defaultFeeSatPerByte: 100,
   icon: require("../res/coins/btcsw.png"),
   apiEndpoints: [{
-    url: "https://blockexplorer.com/api",
-    explorer: "https://blockexplorer.com",
-    type:"insight"
+    url: "https://btc-bitcore4.trezor.io/api",
+    explorer: "https://btc-bitcore4.trezor.io",
+    type:"blockbook"
+  },{
+    url: "https://btc1.trezor.io/api",
+    explorer: "https://btc1.trezor.io",
+    type: "blockbook"
   },{
     explorer: "https://explorer.bitcoin.com/btc",
     url: "https://explorer.bitcoin.com/api/btc",
@@ -306,26 +310,6 @@ const defaultCoins = [{
   },{
     explorer: "https://insight.bitpay.com",
     url: "https://insight.bitpay.com/api",
-    type:"insight"
-  },{
-    explorer: "https://btc.coin.space",
-    url: "https://btc.coin.space/api",
-    type:"insight"
-  },{
-    url: "https://btc1.trezor.io/api",
-    explorer: "https://btc1.trezor.io",
-    type:"blockbook"
-  },{
-    url: "https://btc.blockdozer.com/insight-api",
-    explorer: "https://btc.blockdozer.com",
-    type:"insight"
-  },{
-    url: "https://core.monacoin.ml/insight-api",
-    explorer: "https://core.monacoin.ml/insight",
-    type:"insight"
-  },{
-    explorer: "https://www.localbitcoinschain.com",
-    url: "https://www.localbitcoinschain.com/api",
     type:"insight"
   }],
   network: {
@@ -364,13 +348,13 @@ const defaultCoins = [{
   defaultFeeSatPerByte: 100,
   icon: require("../res/coins/bch.png"),
   apiEndpoints: [{
-    explorer: "https://bitcoincash.blockexplorer.com",
-    url: "https://bitcoincash.blockexplorer.com/api",
-    type:"insight"
+    explorer: "https://bch1.trezor.io",
+    url: "https://bch1.trezor.io/api",
+    type: "blockbook"
   },{
-    explorer: "https://bch.coin.space",
-    url: "https://bch.coin.space/api",
-    type:"insight"
+    explorer: "https://bch2.trezor.io",
+    url: "https://bch2.trezor.io/api",
+    type: "blockbook"
   },{
     explorer: "https://explorer.bitcoin.com/bch", 
     url: "https://explorer.bitcoin.com/api/bch",
@@ -436,8 +420,16 @@ const defaultCoins = [{
   "confirmations": 6,
   "lib": "zec",
   "apiEndpoints": [{
-    "url": "https://insight.kotocoin.info/api",
-    "explorer": "https://insight.kotocoin.info",
+    url: "https://blockbook.kotocoin.info/api",
+    explorer: "https://blockbook.kotocoin.info",
+    type: "blockbook"
+  },{
+    url: "https://koto.blockbook.ovh/api",
+    explorer: "https://koto.blockbook.ovh",
+    type: "blockbook"
+  },{
+    url: "https://insight.kotocoin.info/api",
+    explorer: "https://insight.kotocoin.info",
     type:"insight"
   }],
   opReturnLength: 80,
@@ -467,6 +459,14 @@ const defaultCoins = [{
   "enableSegwit": false,
   "confirmations": 6,
   "apiEndpoints": [{
+    "url": "https://dash-bitcore1.trezor.io/api",
+    "explorer": "https://dash-bitcore1.trezor.io",
+    type:"blockbook"
+  },{
+    url: "https://dash1.trezor.io/api",
+    explorer: "https://dash1.trezor.io",
+    type: "blockbook"
+  },{
     url: "https://insight.dash.org/insight-api-dash",
     explorer: "https://insight.dash.org/insight",
     type:"insight"
@@ -474,10 +474,6 @@ const defaultCoins = [{
     url: "https://insight.dash.siampm.com/api",
     explorer: "https://insight.dash.siampm.com",
     type:"insight"
-  },{
-    "url": "https://dash-bitcore1.trezor.io/api",
-    "explorer": "https://dash-bitcore1.trezor.io",
-    type:"blockbook"
   }],
   opReturnLength: 83,
   isAtomicSwapAvailable: true
@@ -506,6 +502,14 @@ const defaultCoins = [{
     "wif": 128
   },
   "apiEndpoints": [{
+    url: "https://zec1.trezor.io/api",
+    explorer: "https://zec1.trezor.io",
+    type: "blockbook"
+  },{
+    url: "https://zec2.trezor.io/api",
+    explorer: "https://zec2.trezor.io",
+    type: "blockbook"
+  },{
     "url": "https://zcash.blockexplorer.com/api",
     "explorer": "https://zcash.blockexplorer.com",
     type:"insight"
