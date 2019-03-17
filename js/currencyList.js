@@ -85,7 +85,7 @@ const defaultCoins = [{
   opReturnLength: 83,
   isAtomicSwapAvailable: true
 }, {
-  coinScreenName: j ? "ビットゼニープラス" : "BitZenyPlus",
+  coinScreenName: j ? "ビットゼニー" : "BitZeny",
   coinId: "zny",
   unit: "ZNY",
   unitEasy: j ? "ゼニー" : "Zeny",
