@@ -152,12 +152,12 @@ const defaultCoins = [{
   defaultFeeSatPerByte: 100,
   icon: require("../res/coins/btc.png"),
   apiEndpoints: [{
-    url: "https://do00v6pih5.execute-api.us-east-2.amazonaws.com/dev?url=https://btc-bitcore4.trezor.io/api",
+    url: "https://btc-bitcore4.trezor.io/api",
     explorer: "https://btc-bitcore4.trezor.io",
     type:"blockbook",
     proxy: true
   },{
-    url: "https://do00v6pih5.execute-api.us-east-2.amazonaws.com/dev?url=https://btc1.trezor.io/api",
+    url: "https://btc1.trezor.io/api",
     explorer: "https://btc1.trezor.io",
     type: "blockbook",
     proxy: true
@@ -657,7 +657,6 @@ exports.eachWithPub = (fn) => {
  * @param {String} coinId.
  */
 exports.get = coinId => {
-
   if ((coins[coinId] instanceof Currency)) {
     return coins[coinId]
   }
