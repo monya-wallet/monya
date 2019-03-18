@@ -467,13 +467,13 @@ const defaultCoins = [{
   "enableSegwit": false,
   "confirmations": 6,
   "apiEndpoints": [{
-    "url": "https://dash-bitcore1.trezor.io/api",
-    "explorer": "https://dash-bitcore1.trezor.io",
-    type:"blockbook",
-    proxy: true
-  },{
     url: "https://dash1.trezor.io/api",
     explorer: "https://dash1.trezor.io",
+    type: "blockbook",
+    proxy: true
+  },{
+    url: "https://dash2.trezor.io/api",
+    explorer: "https://dash2.trezor.io",
     type: "blockbook",
     proxy: true
   },{
@@ -512,16 +512,6 @@ const defaultCoins = [{
     "wif": 128
   },
   "apiEndpoints": [{
-    url: "https://zec1.trezor.io/api",
-    explorer: "https://zec1.trezor.io",
-    type: "blockbook",
-    proxy: true
-  },{
-    url: "https://zec2.trezor.io/api",
-    explorer: "https://zec2.trezor.io",
-    type: "blockbook",
-    proxy: true
-  },{
     "url": "https://zcash.blockexplorer.com/api",
     "explorer": "https://zcash.blockexplorer.com",
     type:"insight"
