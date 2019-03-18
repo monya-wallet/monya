@@ -335,7 +335,8 @@ exports.proxyUrl=url=>{
   if(exports.isNative()){
     return url
   }else{
-    return 'https://zaif-status.herokuapp.com/proxy/?u='+encodeURIComponent(url)
+    url = 'https://do00v6pih5.execute-api.us-east-2.amazonaws.com/dev?url=' + encodeURIComponent(url)
+    return url
   }
 }
 exports.shortWait=()=>new Promise(r=>{

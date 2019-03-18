@@ -152,13 +152,15 @@ const defaultCoins = [{
   defaultFeeSatPerByte: 100,
   icon: require("../res/coins/btc.png"),
   apiEndpoints: [{
-    url: "https://btc-bitcore4.trezor.io/api",
+    url: "https://do00v6pih5.execute-api.us-east-2.amazonaws.com/dev?url=https://btc-bitcore4.trezor.io/api",
     explorer: "https://btc-bitcore4.trezor.io",
-    type:"blockbook"
+    type:"blockbook",
+    proxy: true
   },{
-    url: "https://btc1.trezor.io/api",
+    url: "https://do00v6pih5.execute-api.us-east-2.amazonaws.com/dev?url=https://btc1.trezor.io/api",
     explorer: "https://btc1.trezor.io",
-    type: "blockbook"
+    type: "blockbook",
+    proxy: true
   },{
     explorer: "https://explorer.bitcoin.com/btc",
     url: "https://explorer.bitcoin.com/api/btc",
@@ -206,11 +208,13 @@ const defaultCoins = [{
   apiEndpoints: [{
     url: "https://ltc1.trezor.io/api",
     explorer: "https://ltc1.trezor.io",
-    type: "blockbook"
+    type: "blockbook",
+    proxy: true
   },{
     url: "https://ltc2.trezor.io/api",
     explorer: "https://ltc2.trezor.io",
-    type: "blockbook"
+    type: "blockbook",
+    proxy: true
   },{
     url: "https://insight.litecore.io/api",
     explorer: "https://insight.litecore.io",
@@ -298,11 +302,13 @@ const defaultCoins = [{
   apiEndpoints: [{
     url: "https://btc-bitcore4.trezor.io/api",
     explorer: "https://btc-bitcore4.trezor.io",
-    type:"blockbook"
+    type:"blockbook",
+    proxy: true
   },{
     url: "https://btc1.trezor.io/api",
     explorer: "https://btc1.trezor.io",
-    type: "blockbook"
+    type: "blockbook",
+    proxy: true
   },{
     explorer: "https://explorer.bitcoin.com/btc",
     url: "https://explorer.bitcoin.com/api/btc",
@@ -350,11 +356,13 @@ const defaultCoins = [{
   apiEndpoints: [{
     explorer: "https://bch1.trezor.io",
     url: "https://bch1.trezor.io/api",
-    type: "blockbook"
+    type: "blockbook",
+    proxy: true
   },{
     explorer: "https://bch2.trezor.io",
     url: "https://bch2.trezor.io/api",
-    type: "blockbook"
+    type: "blockbook",
+    proxy: true
   },{
     explorer: "https://explorer.bitcoin.com/bch", 
     url: "https://explorer.bitcoin.com/api/bch",
@@ -461,11 +469,13 @@ const defaultCoins = [{
   "apiEndpoints": [{
     "url": "https://dash-bitcore1.trezor.io/api",
     "explorer": "https://dash-bitcore1.trezor.io",
-    type:"blockbook"
+    type:"blockbook",
+    proxy: true
   },{
     url: "https://dash1.trezor.io/api",
     explorer: "https://dash1.trezor.io",
-    type: "blockbook"
+    type: "blockbook",
+    proxy: true
   },{
     url: "https://insight.dash.org/insight-api-dash",
     explorer: "https://insight.dash.org/insight",
@@ -504,11 +514,13 @@ const defaultCoins = [{
   "apiEndpoints": [{
     url: "https://zec1.trezor.io/api",
     explorer: "https://zec1.trezor.io",
-    type: "blockbook"
+    type: "blockbook",
+    proxy: true
   },{
     url: "https://zec2.trezor.io/api",
     explorer: "https://zec2.trezor.io",
-    type: "blockbook"
+    type: "blockbook",
+    proxy: true
   },{
     "url": "https://zcash.blockexplorer.com/api",
     "explorer": "https://zcash.blockexplorer.com",
