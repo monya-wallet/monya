@@ -37,7 +37,6 @@ module.exports=require("../js/lang.js")({ja:require("./ja/qrcode.html"),en:requi
     canChangeCamera:false,
     currentCamera:0,
     result:"",
-    isIOSStandalone:navigator.standalone&&!window.cordova
   }),
   store:require("../js/store.js"),
   methods:{
@@ -144,10 +143,10 @@ module.exports=require("../js/lang.js")({ja:require("./ja/qrcode.html"),en:requi
             this.parse(t)
           })
         })
+
         if(window.cordova&&window.cordova.platformId!=="browser"){ // ios Quirks
           QRScanner.show()
         }
-        
       } else if (status.denied) {
         this.$ons.notification.alert("Please allow Camera")
       } else {

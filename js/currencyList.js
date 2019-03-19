@@ -41,14 +41,25 @@ const defaultCoins = [{
   defaultFeeSatPerByte: 150,
   icon: require("../res/coins/mona.png"),
   apiEndpoints: [{
-    url: "https://mona.monacoin.ml/insight-api-monacoin",
-    explorer: "https://mona.monacoin.ml/insight"
+    url: "https://blockbook.electrum-mona.org/api",
+    explorer: "https://blockbook.electrum-mona.org",
+    type:"blockbook"
   },{
-    url: "https://mona.insight.monaco-ex.org/insight-api-monacoin",
-    explorer: "https://mona.insight.monaco-ex.org/insight"
+    url: "https://mona.blockbook.zenypota.net/api",
+    explorer: "https://mona.blockbook.zenypota.net",
+    type: "blockbook"
+  },{
+    url: "https://mona.blockbook.ovh/api",
+    explorer: "https://mona.blockbook.ovh",
+    type: "blockbook"
   },{
     url: "https://insight.electrum-mona.org/insight-api-monacoin",
-    explorer: "https://insight.electrum-mona.org/insight"
+    explorer: "https://insight.electrum-mona.org/insight",
+    type: "insight"
+  },{
+    url: "https://mona.insight.monaco-ex.org/insight-api-monacoin",
+    explorer: "https://mona.insight.monaco-ex.org/insight",
+    type: "insight"
   }],
   network: {
     messagePrefix: '\x19Monacoin Signed Message:\n',
@@ -72,10 +83,61 @@ const defaultCoins = [{
   },
   confirmations: 6,
   counterparty:{
-    endpoints: ["https://monaparty.tk/_api","https://wallet.monaparty.me/_api"],
+    endpoints: [
+      "https://monapa.electrum-mona.org/_api",
+    ],
     nativeSymbol:"XMP"
   },
   opReturnLength: 83,
+  isAtomicSwapAvailable: true
+}, {
+  coinScreenName: j ? "ビットゼニー" : "BitZeny",
+  coinId: "zny",
+  unit: "ZNY",
+  unitEasy: j ? "ゼニー" : "Zeny",
+  bip44: {
+    coinType: 123,
+    account: 0
+  },
+  bip21: "bitzeny",
+  defaultFeeSatPerByte: 150,
+  icon: require("../res/coins/zny.png"),
+  apiEndpoints: [{
+    url: "https://zeny.blockbook.zenypota.net/api",
+    explorer: "https://zeny.blockbook.zenypota.net",
+    type: "blockbook"
+  },{
+    url: "https://zny.blockbook.ovh/api",
+    explorer: "https://zny.blockbook.ovh",
+    type: "blockbook"
+  },{
+    url: "https://zenyinsight.tomotomo9696.xyz/api",
+    explorer: "https://zenyinsight.tomotomo9696.xyz",
+    type: "insight"
+  }, {
+    url: "https://insight.bitzeny.jp/api",
+    explorer: "https://insight.bitzeny.jp",
+    type: "insight"
+  }],
+  network: {
+    messagePrefix: '\x18BitZeny Signed Message:\n',
+    bip32: {
+      public: 0x0488b21e,
+      private: 0x0488ade4
+    },
+    pubKeyHash: 81,
+    scriptHash: 5,
+    wif: 128,bech32:"sz"
+  },
+  enableSegwit: false,
+  price: {
+    url: "https://api.coingecko.com/api/v3/simple/price?ids=bitzeny&vs_currencies=jpy",
+    json: true,
+    jsonPath: '$.bitzeny.jpy',
+    fiat: "jpy"
+  },
+  sound: require("../res/coins/paySound/zny.m4a"),
+  opReturnLength: 40, //server seems currently not to support
   isAtomicSwapAvailable: true
 }, {
   coinScreenName: j ? "ビットコイン" : "Bitcoin",
@@ -90,29 +152,23 @@ const defaultCoins = [{
   defaultFeeSatPerByte: 100,
   icon: require("../res/coins/btc.png"),
   apiEndpoints: [{
-    explorer: "https://www.localbitcoinschain.com",
-    url: "https://www.localbitcoinschain.com/api"
+    url: "https://btc-bitcore4.trezor.io/api",
+    explorer: "https://btc-bitcore4.trezor.io",
+    type:"blockbook",
+    proxy: true
   },{
-    url: "https://blockexplorer.com/api",
-    explorer: "https://blockexplorer.com"
-  },{
-    explorer: "https://btc.coin.space",
-    url: "https://btc.coin.space/api"
-  },{
-    url: "https://core.monacoin.ml/insight-api",
-    explorer: "https://core.monacoin.ml/insight"
+    url: "https://btc1.trezor.io/api",
+    explorer: "https://btc1.trezor.io",
+    type: "blockbook",
+    proxy: true
   },{
     explorer: "https://explorer.bitcoin.com/btc",
-    url: "https://explorer.bitcoin.com/api/btc"
-  },{
-    url: "https://btc.blockdozer.com/insight-api",
-    explorer: "https://btc.blockdozer.com"
+    url: "https://explorer.bitcoin.com/api/btc",
+    type:"insight"
   },{
     explorer: "https://insight.bitpay.com",
-    url: "https://insight.bitpay.com/api"
-  },{
-    url: "https://btc-bitcore4.trezor.io/api",
-    explorer: "https://btc-bitcore4.trezor.io"
+    url: "https://insight.bitpay.com/api",
+    type:"insight"
   }],
   network: {
     messagePrefix: '\x18Bitcoin Signed Message:\n',
@@ -138,49 +194,6 @@ const defaultCoins = [{
   opReturnLength: 83,
   isAtomicSwapAvailable: true
 }, {
-  coinScreenName: j ? "ビットゼニー" : "BitZeny",
-  coinId: "zny",
-  unit: "ZNY",
-  unitEasy: j ? "ゼニー" : "Zeny",
-  bip44: {
-    coinType: 123,
-    account: 0
-  },
-  bip21: "bitzeny",
-  defaultFeeSatPerByte: 150,
-  icon: require("../res/coins/zny.png"),
-  apiEndpoints: [{
-    url: "https://zenyinsight.tomotomo9696.xyz/api",
-    explorer: "https://zenyinsight.tomotomo9696.xyz"
-  }, {
-    url: "https://insight.bitzeny.jp/api",
-    explorer: "https://insight.bitzeny.jp"
-  }, {
-    url: "https://insight.bitzeny.cloud/api",
-    explorer: "https://insight.bitzeny.cloud"
-  }],
-  network: {
-    messagePrefix: '\x18BitZeny Signed Message:\n',
-    bip32: {
-      public: 0x0488b21e,
-
-      private: 0x0488ade4
-    },
-    pubKeyHash: 81,
-    scriptHash: 5,
-    wif: 128,bech32:"sz"
-  },
-  enableSegwit: false,
-  price: {
-    url: "https://api.crypto-bridge.org/api/v1/ticker",
-    json: true,
-    jsonPath: '$[?(@.id=="ZNY_BTC")].last',
-    fiat: "btc"
-  },
-  sound: require("../res/coins/paySound/zny.m4a"),
-  opReturnLength: 40, //server seems currently not to support
-  isAtomicSwapAvailable: true
-}, {
   coinScreenName: j ? "ライトコイン" : "Litecoin",
   coinId: "ltc",
   unit: "LTC",
@@ -193,14 +206,23 @@ const defaultCoins = [{
   defaultFeeSatPerByte: 300,
   icon: require("../res/coins/ltc.png"),
   apiEndpoints: [{
+    url: "https://ltc1.trezor.io/api",
+    explorer: "https://ltc1.trezor.io",
+    type: "blockbook",
+    proxy: true
+  },{
+    url: "https://ltc2.trezor.io/api",
+    explorer: "https://ltc2.trezor.io",
+    type: "blockbook",
+    proxy: true
+  },{
     url: "https://insight.litecore.io/api",
-    explorer: "https://insight.litecore.io"
+    explorer: "https://insight.litecore.io",
+    type:"insight"
   },{
     explorer: "https://ltc.coin.space",
-    url: "https://ltc.coin.space/api"
-  },{
-    url:"https://ltc.monacoin.ml/insight-lite-api",
-    explorer:"https://ltc.monacoin.ml/insight"
+    url: "https://ltc.coin.space/api",
+    type:"insight"
   }],
   network: {
     messagePrefix: '\x19Litecoin Signed Message:\n',
@@ -239,7 +261,11 @@ const defaultCoins = [{
   apiEndpoints: [{
     url: "http://explorer.fujicoin.org/api",
     explorer: "http://explorer.fujicoin.org",
-    proxy: true
+    type:"blockbook"
+  },{
+    url: "https://fuji.blockbook.ovh/api",
+    explorer: "https://fuji.blockbook.ovh",
+    type: "blockbook"
   }],
   network: {
     messagePrefix: '\x19Fujicoin Signed Message:\n',
@@ -274,29 +300,23 @@ const defaultCoins = [{
   defaultFeeSatPerByte: 100,
   icon: require("../res/coins/btcsw.png"),
   apiEndpoints: [{
-    url: "https://blockexplorer.com/api",
-    explorer: "https://blockexplorer.com"
-  },{
-    explorer: "https://explorer.bitcoin.com/btc",
-    url: "https://explorer.bitcoin.com/api/btc"
-  },{
-    explorer: "https://insight.bitpay.com",
-    url: "https://insight.bitpay.com/api"
-  },{
-    explorer: "https://btc.coin.space",
-    url: "https://btc.coin.space/api"
+    url: "https://btc-bitcore4.trezor.io/api",
+    explorer: "https://btc-bitcore4.trezor.io",
+    type:"blockbook",
+    proxy: true
   },{
     url: "https://btc1.trezor.io/api",
-    explorer: "https://btc1.trezor.io"
+    explorer: "https://btc1.trezor.io",
+    type: "blockbook",
+    proxy: true
   },{
-    url: "https://btc.blockdozer.com/insight-api",
-    explorer: "https://btc.blockdozer.com"
+    explorer: "https://explorer.bitcoin.com/btc",
+    url: "https://explorer.bitcoin.com/api/btc",
+    type:"insight"
   },{
-    url: "https://core.monacoin.ml/insight-api",
-    explorer: "https://core.monacoin.ml/insight"
-  },{
-    explorer: "https://www.localbitcoinschain.com",
-    url: "https://www.localbitcoinschain.com/api"
+    explorer: "https://insight.bitpay.com",
+    url: "https://insight.bitpay.com/api",
+    type:"insight"
   }],
   network: {
     messagePrefix: '\x18Bitcoin Signed Message:\n',
@@ -334,17 +354,23 @@ const defaultCoins = [{
   defaultFeeSatPerByte: 100,
   icon: require("../res/coins/bch.png"),
   apiEndpoints: [{
-    explorer: "https://bitcoincash.blockexplorer.com",
-    url: "https://bitcoincash.blockexplorer.com/api"
+    explorer: "https://bch1.trezor.io",
+    url: "https://bch1.trezor.io/api",
+    type: "blockbook",
+    proxy: true
   },{
-    explorer: "https://bch.coin.space",
-    url: "https://bch.coin.space/api"
+    explorer: "https://bch2.trezor.io",
+    url: "https://bch2.trezor.io/api",
+    type: "blockbook",
+    proxy: true
   },{
     explorer: "https://explorer.bitcoin.com/bch", 
-    url: "https://explorer.bitcoin.com/api/bch"
+    url: "https://explorer.bitcoin.com/api/bch",
+    type:"insight"
  },{
     explorer: "https://cash.monacoin.ml/insight",
-    url: "https://cash.monacoin.ml/insight-api"
+    url: "https://cash.monacoin.ml/insight-api",
+    type:"insight"
   }],
   network: {
     messagePrefix: '\x18Bitcoin Signed Message:\n',
@@ -402,8 +428,17 @@ const defaultCoins = [{
   "confirmations": 6,
   "lib": "zec",
   "apiEndpoints": [{
-    "url": "https://insight.kotocoin.info/api",
-    "explorer": "https://insight.kotocoin.info"
+    url: "https://blockbook.kotocoin.info/api",
+    explorer: "https://blockbook.kotocoin.info",
+    type: "blockbook"
+  },{
+    url: "https://koto.blockbook.ovh/api",
+    explorer: "https://koto.blockbook.ovh",
+    type: "blockbook"
+  },{
+    url: "https://insight.kotocoin.info/api",
+    explorer: "https://insight.kotocoin.info",
+    type:"insight"
   }],
   opReturnLength: 80,
   isAtomicSwapAvailable: true
@@ -432,14 +467,23 @@ const defaultCoins = [{
   "enableSegwit": false,
   "confirmations": 6,
   "apiEndpoints": [{
+    url: "https://dash1.trezor.io/api",
+    explorer: "https://dash1.trezor.io",
+    type: "blockbook",
+    proxy: true
+  },{
+    url: "https://dash2.trezor.io/api",
+    explorer: "https://dash2.trezor.io",
+    type: "blockbook",
+    proxy: true
+  },{
     url: "https://insight.dash.org/insight-api-dash",
-    explorer: "https://insight.dash.org/insight"
+    explorer: "https://insight.dash.org/insight",
+    type:"insight"
   },{
     url: "https://insight.dash.siampm.com/api",
-    explorer: "https://insight.dash.siampm.com"
-  },{
-    "url": "https://dash-bitcore1.trezor.io/api",
-    "explorer": "https://dash-bitcore1.trezor.io"
+    explorer: "https://insight.dash.siampm.com",
+    type:"insight"
   }],
   opReturnLength: 83,
   isAtomicSwapAvailable: true
@@ -469,13 +513,16 @@ const defaultCoins = [{
   },
   "apiEndpoints": [{
     "url": "https://zcash.blockexplorer.com/api",
-    "explorer": "https://zcash.blockexplorer.com"
+    "explorer": "https://zcash.blockexplorer.com",
+    type:"insight"
   },{
     url: "https://zcashnetwork.info/api",
-    explorer: "https://zcashnetwork.info"
+    explorer: "https://zcashnetwork.info",
+    type:"insight"
   },{
     url: "https://explorer.zcashfr.io/api",
-    explorer: "https://explorer.zcashfr.io"
+    explorer: "https://explorer.zcashfr.io",
+    type:"insight"
   }],
   lib: "zec",
   opReturnLength: 80,
@@ -494,10 +541,12 @@ const defaultCoins = [{
   icon: require("../res/coins/yaju.png"),
   apiEndpoints: [{
     url: "https://yaju.monacoin.ml/api",
-    explorer: "https://yaju.monacoin.ml"
+    explorer: "https://yaju.monacoin.ml",
+    type:"insight"
   },{
     url: "https://yaju2.monacoin.ml/api",
-    explorer: "https://yaju.monacoin.ml"
+    explorer: "https://yaju.monacoin.ml",
+    type:"insight"
   }],
   network: {
     messagePrefix: '\x19YAJUCOIN Signed Message:\n',
@@ -527,7 +576,8 @@ const defaultCoins = [{
   icon: require("../res/coins/neet.png"),
   apiEndpoints: [{
     url: "https://insight.neetcoin.jp/api",
-    explorer: "https://insight.neetcoin.jp"
+    explorer: "https://insight.neetcoin.jp",
+    type:"insight"
   }],
   network: {
     messagePrefix: '\x19NEETCOIN Signed Message:\n',
@@ -597,7 +647,6 @@ exports.eachWithPub = (fn) => {
  * @param {String} coinId.
  */
 exports.get = coinId => {
-
   if ((coins[coinId] instanceof Currency)) {
     return coins[coinId]
   }

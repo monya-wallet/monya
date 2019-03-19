@@ -100,7 +100,8 @@ module.exports=require("../js/lang.js")({ja:require("./ja/confirm.html"),en:requ
           (new Audio(cur.sound)).play()
         }
         this.$store.commit("setFinishNextPage",{infoId:"sent",payload:{
-          txId:res.txid
+          txId: res.txid,
+          coinId: this.coinType
         }})
         this.$emit("pop")
         this.$emit("pop")

@@ -281,15 +281,6 @@ html, body{
     }
   }
 }
-[data-page="invoice"]{
-  .currencyIcon.monappy{
-    background-image:url(../res/monappy.png);
-  }
-  .monappyNotExist{
-    background-color:#fdc;
-  }
-}
-
 [data-page="first"]{
   .page__background{
     background-color:$baseColor;
@@ -503,6 +494,7 @@ html, body{
     &:active{
       background-color:rgba(0,0,0,0.2)
     }
+    margin-bottom: 10px;
   }
   p{
     color:white;
@@ -673,9 +665,6 @@ $passwordHeight:30px;
   }
 }
 [data-page="settings"]{
-  .monappyNotExist{
-    background-color:#fdc;
-  }
   .left{
     img{
       width:$homeCurIconSize;

@@ -22,6 +22,7 @@
  SOFTWARE.
 */
 const coinUtil = require("../js/coinUtil.js")
+const currencyList = require("../js/currencyList.js")
 module.exports=require("../js/lang.js")({ja:require("./ja/finished.html"),en:require("./en/finished.html")})({
   data(){
     return {
@@ -42,6 +43,10 @@ module.exports=require("../js/lang.js")({ja:require("./ja/finished.html"),en:req
         this.$store.commit("setFinishNextPage",{infoId:"",payload:{}})
       })
       
+    },
+
+    openExplorer(){
+      currencyList.get(this.payload.coinId).openExplorer({txId:this.payload.txId});
     }
   },
   computed:{

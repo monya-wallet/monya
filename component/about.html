@@ -1,36 +1,45 @@
 <v-ons-page data-page="about">
   <custom-bar title="このアプリについて" menu="true"></custom-bar>
   <div>
-    <h1><!--t:AppName--></h1>
+    <h1>&nbsp;<!--t:AppName--></h1>
     <v-ons-list>
       <v-ons-list-item @click="forceUpdate">
         <div class="center">バージョン</div>
-        <div class="right"><!--t:Version-->,<!--t:Timestamp-->,<!--t:FlavorName--></div>
+        <div class="right"><!--t:Version--></div>
       </v-ons-list-item>
-      <v-ons-list-item modifier="chevron tappable" @click="goToTwitter('monya_wallet')">
-        <div class="center">作った人</div>
-        <div class="right">もにゃ 開発チーム</div>
+      <v-ons-list-item>
+        <div class="center">フレーバーネーム</div>
+        <div class="right"><!--t:FlavorName--></div>
       </v-ons-list-item>
-      <v-ons-list-item modifier="chevron tappable" @click="openLink('https://missmonacoin.github.io')">作者に寄付する</v-ons-list-item>
-      
-      <v-ons-list-header>バックエンドをお借りした方々(敬称略)</v-ons-list-header>
-      <v-ons-list-item modifier="chevron tappable" @click="goToTwitter('fujiwaraizuho')">
-        <div class="center">BitZeny</div>
-        <div class="right">fujishan</div>
+      <v-ons-list-item>
+        <div class="center">ビルドブロック</div>  
+        <div class="right"><!--t:Timestamp--></div>
       </v-ons-list-item>
 
-      <v-ons-list-item modifier="chevron tappable" @click="goToTwitter('tomotomo__9696')">
-        <div class="center">BitZeny</div>
-        <div class="right">tomotomo9696</div>
+      <v-ons-list-item modifier="chevron tappable" @click="goToTwitter('monya_wallet')">
+        <div class="center">公式Twitter</div>
+        <div class="right">もにゃ</div>
       </v-ons-list-item>
-      
-      <v-ons-list-header>翻訳協力</v-ons-list-header>
+
+      <v-ons-list-item modifier="chevron tappable" @click="goToTwitter('sanyodensan')">
+        <div class="center">開発・運営</div>
+        <div class="right">三洋電産</div>
+      </v-ons-list-item>
+
+      <v-ons-list-header>テスト協力 (敬称略)</v-ons-list-header>
+      <v-ons-list-item modifier="chevron tappable" @click="goToTwitter('meronpan_umeee')">
+        <div class="center">エロんぱん 様</div>
+      </v-ons-list-item>
+      <v-ons-list-item modifier="chevron tappable" @click="goToTwitter('samurai_zeny')">
+          <div class="center">侍日本代表 様</div>
+      </v-ons-list-item>
+
+      <v-ons-list-header>翻訳協力 (敬称略)</v-ons-list-header>
       <v-ons-list-item modifier="chevron tappable" @click="goToTwitter('dianmuhaiyan')">
-        <div class="center">Haiyan</div>
+        <div class="center">Haiyan 様</div>
       </v-ons-list-item>
-      
-      <v-ons-list-item modifier="chevron tappable" @click="openLink('https://bitcointalk.org/index.php?action=profile;u=669983')">
-        <div class="center">hitobb</div>
+      <v-ons-list-item modifier="chevron tappable" @click="goToTwitter('askmona_2477')">
+        <div class="center">hitobb 様</div>
       </v-ons-list-item>
       
       </v-ons-list-item>
@@ -39,7 +48,6 @@
       <v-ons-list-item @click="openLink('https://github.com/monya-wallet/monya/blob/master/LICENSE')">
         <div class="center">ライセンス</div>
         <div class="right">MIT License</div>
-        
       </v-ons-list-item>
     </v-ons-list>
   </div>
