@@ -49,7 +49,7 @@ jobs:
           cd cordovaProj
           npm i
           cordova platform add android
-          cordova build android --debug
+          cordova build android --release
             
       - store_artifacts:
           path: cordovaProj/platforms/android/build/outputs/apk/
