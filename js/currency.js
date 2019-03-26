@@ -386,19 +386,35 @@ module.exports=class{
       
       this.getUtxos(param,option.includeUnconfirmedFunds).then(res=>{
         const path=[]
-        const { inputs, outputs, fee } = coinSelect(res.utxos, targets, feeRate)
+
+        let { inputs, outputs, fee } = coinSelect(res.utxos, targets, feeRate)
+
+        if (this.coinId === "kuma") {
+          inputs.forEach(input => {
+            Object.assign(input, {
+              value: input.value / 100
+            });
+          });
+
+          outputs.forEach(output => {
+            Object.assign(output, {
+              value: output.value / 100
+            });
+          });
+        }
+        
         if (!inputs || !outputs) throw new errors.NoSolutionError()
+
         inputs.forEach(input => {
           const vin = txb.addInput(input.txId, input.vout)
           txb.inputs[vin].value=input.value
           path.push(this.getIndexFromAddress(input.address))
-          
         })
+
         outputs.forEach(output => {
           if (!output.address) {
-            output.address = this.getAddress(1,(this.changeIndex+1)%coinUtil.GAP_LIMIT_FOR_CHANGE)
+            output.address = this.getAddress(1, (this.changeIndex+1) % coinUtil.GAP_LIMIT_FOR_CHANGE)
           }
-
           txb.addOutput(output.address, output.value)
         })
         

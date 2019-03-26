@@ -288,6 +288,44 @@ const defaultCoins = [{
   opReturnLength: 83,
   isAtomicSwapAvailable: true
 }, {
+  coinScreenName:"クマコイン",
+  coinId:"kuma",
+  unit:"KUMA",
+  unitEasy:"クマ",
+  bip44:{
+    coinType:2000, //not from slip44, if it is not in slip44, set from 2000
+    account:0
+  },
+  bip21:"kumacoin",
+  defaultFeeSatPerByte: 20000, //will implement dynamic fee
+  icon:require("../res/coins/kuma.png"),
+  apiEndpoints: [{
+    url: "https://namuyan.tk/MultiLightBlockExplorer/apis.php?data=kuma/api",
+    explorer: "https://namuyan.tk/MultiLightBlockExplorer/index.php?page=selectcoin&coin=kuma",
+    type: "insight"
+  }],
+  network:{
+    messagePrefix: '\x19Kumacoin Signed Message:\n',
+    bip32: {
+      public: 0x0488b21e,
+      private: 0x0488ade4
+    },
+    pubKeyHash: 45,
+    scriptHash: 8,
+    wif: 173
+  },
+  enableSegwit:false,
+  lib: "blk",
+  price: {
+    url: "https://api.coingecko.com/api/v3/simple/price?ids=kumacoin&vs_currencies=jpy",
+    json: true,
+    jsonPath: '$.kumacoin.jpy',
+    fiat: "jpy"
+  },
+  confirmations:6,
+  opReturnLength: 0,
+  isAtomicSwapAvailable: false
+}, {
   coinScreenName: j ? "ビットコイン(SegWit)" : "Bitcoin(SegWit)",
   coinId: "btcsw",
   unit: "BTC(SW)",
@@ -599,8 +637,7 @@ const defaultCoins = [{
   },
   opReturnLength: 0,
   isAtomicSwapAvailable: false
-}
-                     ]
+}]
 
 
 const coins = {}
