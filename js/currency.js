@@ -388,30 +388,28 @@ module.exports=class{
         const path=[]
 
         let { inputs, outputs, fee } = coinSelect(res.utxos, targets, feeRate)
-
-        if (this.coinId === "kuma") {
-          inputs.forEach(input => {
-            Object.assign(input, {
-              value: input.value / 100
-            });
-          });
-
-          outputs.forEach(output => {
-            Object.assign(output, {
-              value: output.value / 100
-            });
-          });
-        }
         
         if (!inputs || !outputs) throw new errors.NoSolutionError()
 
         inputs.forEach(input => {
+          if (this.coinId === "kuma") {
+              Object.assign(input, {
+                value: input.value / 100
+              });                
+          }
+
           const vin = txb.addInput(input.txId, input.vout)
           txb.inputs[vin].value=input.value
           path.push(this.getIndexFromAddress(input.address))
         })
 
         outputs.forEach(output => {
+          if (this.coinId === "kuma") {
+            Object.assign(output, {
+              value: output.value / 100
+            });
+          }
+
           if (!output.address) {
             output.address = this.getAddress(1, (this.changeIndex+1) % coinUtil.GAP_LIMIT_FOR_CHANGE)
           }
