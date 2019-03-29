@@ -25,6 +25,8 @@ const QRScanner = window.QRScanner
 const coinUtil=require("../js/coinUtil")
 const ext = require("../js/extension.js")
 
+window.QRScanner_SCAN_INTERVAL=300
+
 module.exports=require("../js/lang.js")({ja:require("./ja/qrcode.html"),en:require("./en/qrcode.html")})({
   data:()=>({
     cameras:[],
@@ -140,7 +142,7 @@ module.exports=require("../js/lang.js")({ja:require("./ja/qrcode.html"),en:requi
             return
           }
           QRScanner.destroy(()=>{
-            this.parse(t)
+            this.parse(t.result)
           })
         })
 
