@@ -355,9 +355,9 @@ const defaultCoins = [{
   },
   enableSegwit: false,
   price: {
-    url: "https://www.coinexchange.io/api/v1/getmarketsummary?market_id=812",
+    url: "https://api.crypto-bridge.org/api/v1/ticker",
     json: true,
-    jsonPath: '$.result.LastPrice',
+    jsonPath: '$[?(@.id=="VIPS_BTC")].last',
     fiat: "btc"
   },
   confirmations: 6,
