@@ -355,10 +355,10 @@ const defaultCoins = [{
   },
   enableSegwit: false,
   price: {
-    url: "https://api.coingecko.com/api/v3/simple/price?ids=vipstarcoin&vs_currencies=jpy",
+    url: "https://www.coinexchange.io/api/v1/getmarketsummary?market_id=812",
     json: true,
-    jsonPath: '$.vipstarcoin.jpy',
-    fiat: "jpy"
+    jsonPath: '$.result.LastPrice',
+    fiat: "btc"
   },
   confirmations: 6,
   opReturnLength: 83,
