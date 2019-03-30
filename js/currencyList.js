@@ -326,6 +326,44 @@ const defaultCoins = [{
   opReturnLength: 0,
   isAtomicSwapAvailable: false
 }, {
+  coinScreenName: j ? "ビップスターコイン" : "VIPSTARCOIN",
+  coinId: "vips",
+  unit: "VIPS",
+  unitEasy: j ? "ビップス" : "VIPS",
+  bip44: {
+    coinType: 1919,
+    account: 0
+  },
+  bip21: "vipstarcoin",
+  defaultFeeSatPerByte: 150,
+  icon: require("../res/coins/vips.png"),
+  apiEndpoints: [{
+    url: "https://insight.vipstarco.in/api",
+    explorer: "https://insight.vipstarco.in",
+    type: "insight"
+  }],
+  network: {
+    messagePrefix: '\x22VIPSTARCOIN Signed Message:\n',
+    bip32: {
+      public: 0x0488b21e,
+      private: 0x0488ade4
+    },
+    pubKeyHash: 70,
+    scriptHash: 50,
+    wif: 128,
+    bech32:"vips"
+  },
+  enableSegwit: false,
+  price: {
+    url: "https://api.coingecko.com/api/v3/simple/price?ids=vipstarcoin&vs_currencies=jpy",
+    json: true,
+    jsonPath: '$.vipstarcoin.jpy',
+    fiat: "jpy"
+  },
+  confirmations: 6,
+  opReturnLength: 83,
+  isAtomicSwapAvailable: true
+}, {
   coinScreenName: j ? "ビットコイン(SegWit)" : "Bitcoin(SegWit)",
   coinId: "btcsw",
   unit: "BTC(SW)",
