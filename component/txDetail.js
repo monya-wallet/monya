@@ -29,12 +29,14 @@ module.exports=require("../js/lang.js")({ja:require("./ja/txDetail.html"),en:req
     return {
       res:null,
       message:"",
+      hexMessage:"",
       fiat:this.$store.state.fiat,
       coinId:this.$store.state.detail.coinId,
       price:0,
       txId:this.$store.state.detail.txId,
       txLabel:"",
       showScript:false,
+      messageBinary:true,
       decodedCPMessage:null
     }
   },
@@ -49,8 +51,11 @@ module.exports=require("../js/lang.js")({ja:require("./ja/txDetail.html"),en:req
       const txProm = cur.getTx(this.txId).then(v=>{
         this.res=v
         v.vout.forEach(o=>{
-          if(o.scriptPubKey.hex&&o.scriptPubKey.hex.substr(0,2)==="6a"){
-            this.message=bcLib.script.nullData.output.decode(new Buffer(o.scriptPubKey.hex,"hex")).toString('utf8')
+          const hexScript=o.scriptPubKey.hex
+          if(hexScript&&hexScript.substr(0,2)==="6a"){
+            const decoded=bcLib.script.nullData.output.decode(new Buffer(hexScript,"hex"))
+            this.message=decoded.toString('utf8')
+            this.hexMessage=decoded.toString('hex')
           }
         })
       })
