@@ -190,7 +190,12 @@ const defaultCoins = [{
     fiat: "jpy"
   },
   confirmations: 6,
-  counterparty:{endpoints: ["https://wallet.counterwallet.io/_api"],nativeSymbol:"XCP"},
+  counterparty:{
+    endpoints: [
+      "https://wallet.counterwallet.io/_api"
+    ],
+    nativeSymbol:"XCP"
+  },
   opReturnLength: 83,
   isAtomicSwapAvailable: true
 }, {
@@ -300,6 +305,10 @@ const defaultCoins = [{
   defaultFeeSatPerByte: 20000, //will implement dynamic fee
   icon:require("../res/coins/kuma.png"),
   apiEndpoints: [{
+    url: "https://kumabook.electrum-mona.org/api",
+    explorer: "https://kumabook.electrum-mona.org",
+    type: "blockbook"
+  },{
     url: "https://namuyan.tk/MultiLightBlockExplorer/apis.php?data=kuma/api",
     explorer: "https://namuyan.tk/MultiLightBlockExplorer/index.php?page=selectcoin&coin=kuma",
     type: "insight"
@@ -433,28 +442,28 @@ const defaultCoins = [{
   opReturnLength: 83, // change after hard fork,
   isAtomicSwapAvailable: true
 }, {
-  "coinScreenName": j ? "コト" : "Koto",
-  "coinId": "koto",
-  "unit": "KOTO",
-  "unitEasy": j ? "コト" : "Koto",
-  "bip44": {
-    "coinType": 2001,
-    "account": 0
+  coinScreenName: j ? "コト" : "Koto",
+  coinId: "koto",
+  unit: "KOTO",
+  unitEasy: j ? "コト" : "Koto",
+  bip44: {
+    coinType: 2001,
+    account: 0
   },
-  "bip21": "koto",
-  "defaultFeeSatPerByte": 200,
-  "icon": require("../res/coins/koto.png"),
-  "network": {
-    "messagePrefix": "\u0015Koto Signed Message:\n",
-    "bip32": {
-      "public": 76067358,
-      "private": 76066276
+  bip21: "koto",
+  defaultFeeSatPerByte: 200,
+  icon: require("../res/coins/koto.png"),
+  network: {
+    messagePrefix: "\u0015Koto Signed Message:\n",
+    bip32: {
+      public: 76067358,
+      private: 76066276
     },
-    "pubKeyHash": 6198,
-    "scriptHash": 6203,
-    "txversion": 4,
-    "versionGroupId": 0x9023E50A,
-    "wif": 128
+    pubKeyHash: 6198,
+    scriptHash: 6203,
+    txversion: 4,
+    versionGroupId: 0x9023E50A,
+    wif: 128
   },
   price: {
     url: "https://api.coingecko.com/api/v3/simple/price?ids=koto&vs_currencies=jpy",
@@ -462,10 +471,10 @@ const defaultCoins = [{
     jsonPath: '$.koto.jpy',
     fiat: "jpy"
   },
-  "enableSegwit": false,
-  "confirmations": 6,
-  "lib": "zec",
-  "apiEndpoints": [{
+  enableSegwi: false,
+  confirmations: 6,
+  lib: "zec",
+  apiEndpoints: [{
     url: "https://blockbook.kotocoin.info/api",
     explorer: "https://blockbook.kotocoin.info",
     type: "blockbook"
@@ -481,30 +490,30 @@ const defaultCoins = [{
   opReturnLength: 80,
   isAtomicSwapAvailable: true
 }, {
-  "coinScreenName": j ? "ダッシュ" : "Dash",
-  "coinId": "dash",
-  "unit": "DASH",
-  "unitEasy": j ? "ダッシュ" : "Dash",
-  "bip44": {
-    "coinType": 5,
-    "account": 0
+  coinScreenName: j ? "ダッシュ" : "Dash",
+  coinId: "dash",
+  unit: "DASH",
+  unitEasy: j ? "ダッシュ" : "Dash",
+  bip44: {
+    coinType: 5,
+    account: 0
   },
-  "bip21": "dash",
-  "defaultFeeSatPerByte": 200,
-  "icon": require("../res/coins/dash.png"),
-  "network": {
-    "messagePrefix": "\u0019DarkCoin Signed Message:\n",
-    "bip32": {
-      "public": 76067358,
-      "private": 76066276
+  bip21: "dash",
+  defaultFeeSatPerByte: 200,
+  icon: require("../res/coins/dash.png"),
+  network: {
+    messagePrefix: "\u0019DarkCoin Signed Message:\n",
+    bip32: {
+      public: 76067358,
+      private: 76066276
     },
-    "pubKeyHash": 76,
-    "scriptHash": 16,
-    "wif": 204
+    pubKeyHash: 76,
+    scriptHash: 16,
+    wif: 204
   },
-  "enableSegwit": false,
-  "confirmations": 6,
-  "apiEndpoints": [{
+  enableSegwit: false,
+  confirmations: 6,
+  apiEndpoints: [{
     url: "https://dash1.trezor.io/api",
     explorer: "https://dash1.trezor.io",
     type: "blockbook",
@@ -526,32 +535,32 @@ const defaultCoins = [{
   opReturnLength: 83,
   isAtomicSwapAvailable: true
 }, {
-  "coinScreenName": j ? "ジーキャッシュ" : "Zcash",
-  "coinId": "zec",
-  "unit": "ZEC",
-  "unitEasy": "Zcash",
-  "bip44": {
-    "coinType": 133,
-    "account": 0
+  coinScreenName: j ? "ジーキャッシュ" : "Zcash",
+  coinId: "zec",
+  unit: "ZEC",
+  unitEasy: "Zcash",
+  bip44: {
+    coinType: 133,
+    account: 0
   },
-  "bip21": "zcash",
-  "defaultFeeSatPerByte": 200,
-  "icon": require("../res/coins/zec.png"),
-  "network": {
-    "messagePrefix": "\u0016Zcash Signed Message:\n",
-    "bip32": {
-      "public": 76067358,
-      "private": 76066276
+  bip21: "zcash",
+  defaultFeeSatPerByte: 200,
+  icon: require("../res/coins/zec.png"),
+  network: {
+    messagePrefix: "\u0016Zcash Signed Message:\n",
+    bip32: {
+      public: 76067358,
+      private: 76066276
     },
-    "pubKeyHash": 7352,
-    "scriptHash": 7357,
-    "txversion": 4,
-    "versionGroupId": 0x892F2085,
-    "wif": 128
+    pubKeyHash: 7352,
+    scriptHash: 7357,
+    txversion: 4,
+    versionGroupId: 0x892F2085,
+    wif: 128
   },
-  "apiEndpoints": [{
-    "url": "https://zcash.blockexplorer.com/api",
-    "explorer": "https://zcash.blockexplorer.com",
+  apiEndpoints: [{
+    url: "https://zcash.blockexplorer.com/api",
+    explorer: "https://zcash.blockexplorer.com",
     type:"insight"
   },{
     url: "https://zcashnetwork.info/api",
