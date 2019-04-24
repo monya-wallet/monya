@@ -350,6 +350,10 @@ const defaultCoins = [{
     url: "https://insight.vipstarco.in/api",
     explorer: "https://insight.vipstarco.in",
     type: "insight"
+  },{
+    url: "https://vips.blockbook.japanesecoin-pool.work/api",
+    explorer: "https://vips.blockbook.japanesecoin-pool.work",
+    type: "blockbook"
   }],
   network: {
     messagePrefix: '\x22VIPSTARCOIN Signed Message:\n',
