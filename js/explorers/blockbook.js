@@ -117,7 +117,11 @@ module.exports = class BlockbookExplorer {
             method: "GET"
         }).then(res => res.data).then(data => {
             if (propName) {
+              if (propName === "balance") {
+                return new BigNumber(data[propName]).times(100000000).toNumber();
+              } else {
                 return data[propName];
+              }
             } else {
                 if (noTxList) {
                     delete data.transactions;
