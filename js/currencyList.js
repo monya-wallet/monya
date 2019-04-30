@@ -140,6 +140,53 @@ const defaultCoins = [{
   opReturnLength: 40, //server seems currently not to support
   isAtomicSwapAvailable: true
 }, {
+  coinScreenName: j ? "ベルコイン" : "Bellcoin",
+  coinId: "bell",
+  unit: "BELL",
+  unitEasy: j ? "ベル" : "Bell",
+  bip44: {
+    coinType: 25252,
+    account: 0
+  },
+  bip21: "bell",
+  defaultFeeSatPerByte: 150,
+  icon: require("../res/coins/bell.png"),
+  apiEndpoints: [{
+    url: "https://bell.blockbook.ovh/api",
+    explorer: "https://bell.blockbook.ovh",
+    type: "blockbook"
+  },{
+    url: "https://bellcoin-blockbook.ilmango.work/api",
+    explorer: "https://bellcoin-blockbook.ilmango.work",
+    type: "blockbook"
+  },{
+    url: "https://bell.insight.japanesecoin-pool.work/api",
+    explorer: "https://bell.insight.japanesecoin-pool.work",
+    type: "insight"
+  }],
+  network: {
+    messagePrefix: '\x19Bellcoin Signed Message:\n',
+    bip32: {
+      public: 0x0488b21e,
+
+      private: 0x0488ade4
+    },
+    pubKeyHash: 25,
+    scriptHash: 85,
+    wif: 128,
+    bech32: "bm"
+  },
+  enableSegwit: false,
+  price: {
+    url: "https://bitebtc.com/api/v1/ticker?market=bell_btc",
+    json: true,
+    jsonPath: '$.result.price',
+    fiat: "btc"
+  },
+  confirmations: 6,
+  opReturnLength: 83,
+  isAtomicSwapAvailable: true
+}, {
   coinScreenName: j ? "ビットコイン" : "Bitcoin",
   coinId: "btc",
   unit: "BTC",
