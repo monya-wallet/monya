@@ -120,6 +120,9 @@ module.exports = new Vuex.Store({
       state.detail.coinId=d.coinId
       state.detail.txId=d.txId
     },
+    setUtxo(state,d){
+      state.detail.coinId=d.coinId
+    },
     setSendUrl(state,url){
       state.sendUrl=url||""
     },

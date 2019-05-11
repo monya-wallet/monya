@@ -1,0 +1,42 @@
+<v-ons-page data-page="utxo">
+  <custom-bar title="未使用残高詳細" menu="true">
+    <v-ons-toolbar-button @click="reset();load()">
+      <v-ons-icon icon="fa-refresh"></v-ons-icon>
+    </v-ons-toolbar-button>
+  </custom-bar>
+  <v-ons-pull-hook
+      :action="pullToLoad"
+      @changestate="state = $event.state"
+      :disabled="!enablePullHook"
+    >
+      <span v-show="state === 'initial'"> 引っ張って更新! </span>
+      <span v-show="state === 'preaction'"> 今だ！離せ！ </span>
+      <span v-show="state === 'action'"> <div class="spinner"></div> </span>
+    </v-ons-pull-hook>
+  <div>
+    
+    <div class="container">
+      <div class="spinner" v-show="!utxos.length&&!error&&!noData"></div>
+      <p v-show="error">エラーが発生しました。</p>
+      <p v-show="noData">未使用残高がありません。</p>
+    </div>
+    
+    <v-ons-list>
+      
+      <v-ons-list-item modifier="tappable" v-for="utxo in utxos" @click="txDetail(utxo.txId)">
+        <div>
+          <div class="label">{{utxo.txId}}</div>
+        </div>
+        <div class="w_right">
+          <span class="vout"><div class="label">vout: {{utxo.vout}}</div></span>
+          
+          <currency-set :amount="utxo.balance" :ticker="coinId"></currency-set>
+          <span class="symbols">
+            <v-ons-icon icon="fa-exclamation" class="inmatureConfirmation" v-show="utxo.inmatureConfirmation"></v-ons-icon>
+          </span>
+          
+        </div>
+      </v-ons-list-item>
+    </v-ons-list>
+  </div>
+</v-ons-page>
