@@ -84,6 +84,12 @@ module.exports=require("../js/lang.js")({ja:require("./ja/utxo.html"),en:require
         txId,coinId:this.coinId
       })
       this.$emit("push",require("./txDetail.js"))
+    },
+    addressClass(addr){
+      const addrTuple=currencyList.get(this.coinId).getIndexFromAddress(addr)
+      if(!addrTuple)return ""
+      if(parseInt(addrTuple[0],10)===0)return "receive"
+      if(parseInt(addrTuple[0],10)===1)return "change"
     }
   },
   mounted(){

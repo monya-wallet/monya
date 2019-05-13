@@ -210,8 +210,14 @@ html, body{
   }
   ons-list-item{
     
-    .destAddress{
+    .addr{
       font-size:0.8em;
+    }
+    .addr.receive{
+      color:#4a2;
+    }
+    .addr.change{
+      color:#29a;
     }
     .vout{
       font-size:0.85em;

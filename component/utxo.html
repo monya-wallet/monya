@@ -26,6 +26,7 @@
       <v-ons-list-item modifier="tappable" v-for="utxo in utxos" @click="txDetail(utxo.txId)">
         <div>
           <div class="label">{{utxo.txId}}</div>
+          <div class="addr" :class="addressClass(utxo.address)">{{utxo.address}}</div>
         </div>
         <div class="w_right">
           <span class="vout"><div class="label">vout: {{utxo.vout}}</div></span>
