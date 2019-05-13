@@ -79,7 +79,7 @@
     "postinstall": "cd ./node_modules/nem-sdk;npm install ajv@6.3.0;cd ../../node_modules/har-validator;npm install ajv@6.3.0"
   },
   "author": "monya-wallet",
-  "license": "GPL-3.0",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/monya-wallet/monya/issues"
   },
