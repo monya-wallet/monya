@@ -204,6 +204,32 @@ html, body{
     text-align:center;
   }
 }
+[data-page="utxo"]{
+  .toolbar__right {
+    width: 40%;
+  }
+  ons-list-item{
+    
+    .addr{
+      font-size:0.8em;
+    }
+    .addr.receive{
+      color:#4a2;
+    }
+    .addr.change{
+      color:#29a;
+    }
+    .vout{
+      font-size:0.85em;
+    }
+    .inmatureConfirmation{
+      color:#ff0000;
+    }
+  }
+  .container{
+    text-align:center;
+  }
+}
 #historyJson{
   width: 100%;
   min-height: 200px;

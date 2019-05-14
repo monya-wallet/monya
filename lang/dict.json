@@ -2422,5 +2422,13 @@
   "秘密鍵を表示する": {
     "ja": "秘密鍵を表示する",
     "en": "Show PrivateKey"
+  },
+  "未使用残高詳細": {
+    "ja": "未使用残高詳細",
+    "en": "UTXO details"
+  },
+  "未使用残高がありません。": {
+    "ja": "未使用残高がありません。",
+    "en": "There is no unspent balance in your wallet."
   }
 }

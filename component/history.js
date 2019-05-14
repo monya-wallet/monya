@@ -163,7 +163,13 @@ module.exports=require("../js/lang.js")({ja:require("./ja/history.html"),en:requ
       })
       this.$emit("push",require("./txDetail.js"))
     },
-    sub:(a,b)=>(a*100000000-Math.round(b*100000000))/100000000
+    sub:(a,b)=>(a*100000000-Math.round(b*100000000))/100000000,
+    openUtxo(){
+      this.$store.commit("setUtxo",{
+        coinId:this.coinId
+      })
+      this.$emit("push",require("./utxo.js"))
+    }
   },
   mounted(){
     currencyList.eachWithPub(cur=>{
