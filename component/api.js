@@ -57,7 +57,7 @@ const apis={
         const [coinId,addrIndex]=addrKey[i].split(":")
         const cur=currencyList.get(coinId)
         ret.push({
-          coinId: {
+          `${coinId}`: {
            address:cur.getAddress(0,parseInt(addrIndex,10)),
            pubKey:cur.getPubKey(0,parseInt(addrIndex,10)),
            addrIndex:addrIndex,
