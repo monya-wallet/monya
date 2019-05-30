@@ -56,13 +56,13 @@ const apis={
       for(let i=0;i<addrKey.length;i++){
         const [coinId,addrIndex]=addrKey[i].split(":")
         const cur=currencyList.get(coinId)
-        ret.push = {
+        ret.push({
           [coinId]: {
            address:cur.getAddress(0,parseInt(addrIndex,10)),
            pubKey:cur.getPubKey(0,parseInt(addrIndex,10)),
            addrIndex:addrIndex,           
-         }
-        }
+          }
+        })
       }
       return Promise.resolve({result:JSON.stringify(ret)})
     }
