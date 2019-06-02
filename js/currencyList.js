@@ -356,7 +356,7 @@ const defaultCoins = [{
     type: "blockbook"
   }],
   network: {
-    messagePrefix: '\x22VIPSTARCOIN Signed Message:\n',
+    messagePrefix: '\x1cVIPSTARCOIN Signed Message:\n',
     bip32: {
       public: 0x0488b21e,
       private: 0x0488ade4
