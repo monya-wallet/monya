@@ -267,10 +267,6 @@ const defaultCoins = [{
     url: "http://explorer.fujicoin.org/api",
     explorer: "http://explorer.fujicoin.org",
     type:"blockbook"
-  },{
-    url: "https://fuji.blockbook.ovh/api",
-    explorer: "https://fuji.blockbook.ovh",
-    type: "blockbook"
   }],
   network: {
     messagePrefix: '\x19Fujicoin Signed Message:\n',
