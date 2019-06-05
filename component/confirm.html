@@ -41,14 +41,14 @@
           <v-ons-input placeholder="パスワード" v-model="password" type="password"></v-ons-input>
         </v-ons-list-item>
         <v-ons-list-item>
-          <v-ons-button :class="{shake:incorrect}" modifier="large" @click="next" :disabled="!ready||!password">送金</v-ons-button>
+          <v-ons-button :class="{shake:incorrect}" modifier="large" @click="next" :disabled="!((ready||utxoStr)&&password)">送金</v-ons-button>
         </v-ons-list-item>
       </div>
       
       <div v-show="hash">
         <v-ons-list-header>署名済みデータがあります</v-ons-list-header>
         <v-ons-list-item>
-          <v-ons-input placeholder="ごめんなさい嘘です" :value="hash"></v-ons-input>
+          <textarea readonly="readonly" placeholder="ごめんなさい嘘です" :value="hash" class="textarea--transparent"></textarea>
         </v-ons-list-item>
       </div>
     </v-ons-list>
@@ -77,7 +77,6 @@
       <br><br>
       <div class="spinner"></div>
       <br/>
-      <v-ons-button modifier="quiet" @click="$emit('pop')">キャンセル</v-ons-button>
     </p>
   </v-ons-modal>
 </v-ons-page>

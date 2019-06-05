@@ -1,62 +1,122 @@
-# もにゃ
+# もにゃ(Monya)
 
-初心者でも簡単に使えるように
+<p style="text-align:center">
 
-* 技術的要素をできるだけ排除し
-* 難しい専門用語でなくわかりやすい言葉で
-* 暗号通貨を使う上での豆知識の教本として使え
-* 上級者でも満足できるように設定でき
-* 複数通貨に対応
-* Monapartyトークンも扱え
-* 業務用モナコイン決済ツールとしても使える
 
-~~ことを目標にした~~モナコイン・Monapartyウォレット(目標を達成しました!)
+<a href="https://monya-wallet.github.io"><img src="res/monya_icon_round_512.png" alt="Monya"></a>
 
-## プロダクト名
-金光碧氏がもにゃもにゃ仰っていたので
+<br>
+
+Easy but secure Cryptocurrency Wallet
+
+</p>
+
+[![MIT License](http://img.shields.io/badge/license-MIT-blue.svg?style=flat)](LICENSE)
+[![CircleCI](https://circleci.com/gh/monya-wallet/monya.svg?style=svg)](https://circleci.com/gh/monya-wallet/monya)
+
+## Use Monya Now
+
+[Official Website](https://monya-wallet.github.io)
+
+[Wallet (Stable)](https://monya-wallet.github.io/wallet)
+
+[Dev Version](https://monya-wallet.github.io/dev)
+
+## Feature
+
+  * Send & Receive many kinds of cryptocurrency
+  * Atomic Swap Trading
+  * Cross platform
+  * SegWit(P2SH-P2WPKH) Supported
+  * Multisig Transaction
+  * BIP44/49 HD Wallet
+  * BIP39 Compatible
+  * Powerful QR Code generation
+  * On-chain messaging
+  * Pop and easy design
+  * AES-256 Protection
+  * 2-Factor Encryption (On launch and before decrypting private key)
+  * QR code reader
+  * Digital Cards powered by Counterparty
+  * Can add coins you like by yourself
+  * Send to @name (powered by Counterparty)
+  * Highly Extendable
+
+## Origin of the name "Monya"
+Because Kanemitsu Midori, who is CFO of bitFlyer, said Monya
 [https://twitter.com/KanemitsuMidori/status/914803980856827904](https://twitter.com/KanemitsuMidori/status/914803980856827904)
 
-## アイコン
+## Icon 
 
-DMD様
+Icon was made by DMD.
 [https://monappy.jp/picture_places/view/20695](https://monappy.jp/picture_places/view/20695)
+This icon is licensed under Creative Commons Attribution 4.0 International License. (CC-BY)
+
+## How to Build
+
+### Prerequisites
+
+* Node.js (v8 or higher)
+* Xcode (for iOS Builds)
+* Android SDK (for Android Builds)
 
 
-## ビルド
+### Asset Build
 
-### 初期設定とアセットビルド
-
-1. `git clone https://github.com/MissMonacoin/monya`
+1. `git clone https://github.com/monya-wallet/monya`
 1. `npm install`
 1. `npm run build`
 
-`npm run start`で開発用になります。browser-syncあります
+`npm run start` to develop. (with browser-sync auto reload)
 
-### Cordovaビルド
+### Translation
 
-1. `npm install -g cordova@7.1.0` **注意: Cordovaのバージョンは7.1.0です。8.0以上ではありません。**
+- `gulp addWord`
+- edit `lang/dict.json`
+- `gulp translateEn`
+
+If error occurs, re-create lang/dict.json. Contents is `{}`
+
+### Cordova Build
+
+Please build assets `npm run build` in advance
+
+1. `npm install -g cordova@7.1.0` **Caution: Cordova version must be 7.1. 8.0 is not supported.**
 1. `cd cordovaProj`
-1. `cordova platform add <platformName>` platformNameは`ios`や`android`など
+1. `npm install`
+1. `cordova platform add <platformName>` platformName will be `ios`, `android`, etc.
 1. `cordova build <platformName> --release`
 
-### Chrome拡張機能ビルド
+### Chrome Extension Build
 
-1. `npm run build` で`chrome_extension`以下にChrome拡張機能用のディレクトリが生成されます。
-1. Google Chromeの拡張機能のページから「拡張機能をパッケージ化」というボタンをクリックし、上記のディレクトリを指定してください。また、既に一度パッケージ化を行っている場合には、前回生成された鍵をここで指定してください。そうでないと、ストアで署名が認識されません。
-1. パッケージ化が完了すると、拡張機能の実態である`.crx`ファイルと、初回のみ鍵がダウンロードされます。`.crx`ファイルはストアにアップロードする際に使用し、鍵は大事に保管しておいてください。
+1. `npm run build` to make chrome assets under `chrome_extension` 
+1. Click "Pack extension" and choose `chrome_extension` in Chrome Extension page. If you have already packaged, choose keys that is generated in the previous time. Otherwise, store can't recognize a signature.
+1. After finishing packaging, `.crx` and key will be generated. Please upload `.crx`. Store the key securely.
 
-## webp作成
+## webp conversion
 
-git cloneした先のディレクトリ（README.mdがあるディレクトリ）で以下を実行してください。
+run below shellscript on the directory which has README.md
 ```
 $ cd dist && find assets|sed -e 's/assets\///'|grep -e '\(\.png\|\.jpg\)'|while read a;do cwebp -q 90 -z 9 -mt -af -progress -v assets/$a -o ../chrome_extension/assets-webp/$(echo $a|sed -e 's/\(\.png\|\.jpg\)//').webp;done
 ```
 
+## Electron Build
+
+Please build assets `npm run build` in advance
+
+1. `cd electron`
+1. `npm install`
+1. `npm run dist`
+
+Package will be output under `electron/dist`
+
 ## License
 
-GPLv3
+~~GPLv3~~ Changed
 
-Copyright (C) 2017 ゆき@モナコインJK
-This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+MIT License
 
-This program is distributed in the hope that it will be useful,but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details You should have received a copy of the GNU General Public License along with this program.  If not, see <https://www.gnu.org/licenses/>.
+Copyright (c) 2018 monya-wallet zenypota
+
+Icons of coins are licensed under each license.
+Other assets like image, sound are licensed under CC-BY

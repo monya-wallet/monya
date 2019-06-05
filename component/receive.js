@@ -1,16 +1,39 @@
+/*
+ MIT License
+
+ Copyright (c) 2018 monya-wallet zenypota
+
+ Permission is hereby granted, free of charge, to any person obtaining a copy
+ of this software and associated documentation files (the "Software"), to deal
+ in the Software without restriction, including without limitation the rights
+ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ copies of the Software, and to permit persons to whom the Software is
+ furnished to do so, subject to the following conditions:
+
+ The above copyright notice and this permission notice shall be included in all
+ copies or substantial portions of the Software.
+
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ SOFTWARE.
+*/
 const qrcode = require("qrcode")
 const currencyList = require("../js/currencyList")
 const storage = require("../js/storage")
 const Currency = require("../js/currency")
 const coinUtil = require("../js/coinUtil")
 
-module.exports=require("./receive.html")({
+module.exports=require("../js/lang.js")({ja:require("./ja/receive.html"),en:require("./en/receive.html")})({
   data(){
     return {
       mainAddress:"",
       qrDataUrl:"",
       currentCurIcon:"",
-      isNative:false,
+      shareable:coinUtil.shareable(),
       currency:[],
       currencyIndex:0,
       labels:[coinUtil.DEFAULT_LABEL_NAME],
@@ -38,11 +61,13 @@ module.exports=require("./receive.html")({
       this.$emit("push",require("./atomicswap.js"))
     },
     copyAddress(){
-      coinUtil.copy(currencyList.get(this.currency[this.currencyIndex].coinId).bip21+":"+this.mainAddress)
+      coinUtil.copy(this.mainAddress)
     },
     getLabels(){
       currencyList.get(this.currency[this.currencyIndex].coinId).getLabels().then(res=>{
         this.$set(this,"labels",res)
+      }).catch(e=>{
+        this.$store.commit("setError",e.message)
       })
     },
     qr(){
@@ -62,6 +87,8 @@ module.exports=require("./receive.html")({
         currencyList.get(cId).createLabel(this.labelInput).then(()=>{
           this.labelInput=""
           this.getLabels()
+        }).catch(e=>{
+          this.$store.commit("setError",e.message)
         })
       }
     },
@@ -76,19 +103,11 @@ module.exports=require("./receive.html")({
       const targetRect = event.target.getBoundingClientRect(),
             targetBounds = targetRect.left + ',' + targetRect.top + ',' + targetRect.width + ',' + targetRect.height;
       coinUtil.share({
-        url:currencyList.get(this.currency[this.currencyIndex].coinId).bip21+":"+this.mainAddress
+        message:this.mainAddress
       },targetBounds).then(()=>{
-        this.$ons.notification.toast('Shared!', {timeout: 2000})
       }).catch(()=>{
-        this.$ons.notification.toast('Failed...', {timeout: 2000})
-      })
-    },
-    shareOrCopy(e){
-      if (this.isNative) {
-        this.share(e)
-      }else{
         this.copyAddress()
-      }
+      })
     }
   },
   watch:{
@@ -97,8 +116,7 @@ module.exports=require("./receive.html")({
       this.getLabels()
     }
   },
-  
-  mounted(){
+  created(){
     currencyList.eachWithPub(cur=>{
       this.currency.push({
         coinId:cur.coinId,
@@ -108,6 +126,5 @@ module.exports=require("./receive.html")({
     })
     this.getMainAddress()
     this.getLabels()
-    this.isNative = !!(window.plugins&&window.plugins.socialsharing)
   }
 })

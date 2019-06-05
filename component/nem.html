@@ -1,0 +1,167 @@
+<v-ons-page data-page="nem">
+  <custom-bar title="NEM" menu="true">
+    <v-ons-toolbar-button @click="getBalance" @click.right="serverDlg=true">
+      <v-ons-icon icon="ion-ios-loop-strong"></v-ons-icon>
+    </v-ons-toolbar-button>
+  </custom-bar>
+  <div>
+    
+    <div>
+      <div id="simple">
+        <div id="qrArea">
+          <div id="qrcode">
+            <img :src="qrDataUrl" alt="No Address" id="qrcodeImage"/>
+          </div>
+          <div class="address">{{address||"読み込み中"}}</div>
+        </div>
+        
+        <v-ons-button @click="copyAddress" modifier="quiet">
+          <v-ons-icon icon="fa-clipboard"></v-ons-icon>
+          アドレスコピー
+        </v-ons-button>
+        
+        <v-ons-button @click="invoiceMenu=true" modifier="quiet">
+          請求する
+        </v-ons-button>
+      </div>
+      <v-ons-list>
+        <v-ons-list-header v-show="unconfirmed&&unconfirmed.length">未承認の取引があります</v-ons-list-header>
+        <v-ons-list-item v-for="h in unconfirmed">
+          
+          <div class="left" v-if="h.recipient!==address">送金</div>
+          <div class="left" v-if="h.recipient===address">受け取り</div>
+          <div class="center" v-if="h.message">{{h.message}}</div>
+          <div class="center" v-if="!h.message">メッセージなし</div>
+          
+        </v-ons-list-item>
+        <v-ons-list-header>残高</v-ons-list-header>
+        <v-ons-list-item v-for="b in mosaics" @click="sendMosaic=b.mosaicId.namespaceId+':'+b.mosaicId.name;sendMenu=true">
+          <div class="left">
+            <img v-if="b.icon" :src="b.icon"/>
+          </div>
+          <div class="center">{{b.normalizedQty}}</div>
+          <div class="right">{{(b.mosaicId.namespaceId+':'+b.mosaicId.name) | friendlyName}}</div>
+        </v-ons-list-item>
+        
+        <v-ons-list-header>履歴</v-ons-list-header>
+        <v-ons-list-item v-for="h in history" @click="openExplorer(h.txHash)" modifier="chevron">
+          
+            <div class="left" v-if="h.recipient!==address">送金</div>
+            <div class="left" v-if="h.recipient===address">受け取り</div>
+            <div class="center" v-if="h.message">{{h.message}}</div>
+            <div class="center" v-if="!h.message">(メッセージなし)</div>
+            <div class="right">
+              <timestamp :timestamp="h.timeStamp"></timestamp>
+            </div>
+            
+        </v-ons-list-item>
+        <v-ons-list-item @click="serverDlg=true">
+          サーバー変更
+        </v-ons-list-item>
+      </v-ons-list>
+    </div>
+  </div>
+  <v-ons-modal :visible="loading">
+    <p style="text-align: center">
+      処理中
+      <br><br>
+      <div class="spinner"></div>
+      <br/>
+    </p>
+  </v-ons-modal>
+  <v-ons-alert-dialog
+    modifier="rowfooter"
+    :visible.sync="confirm"
+    >
+    <span slot="title">送金確認</span>
+    <p>{{sendAddress}}</p>
+    <p>{{sendAmount}}</p>
+    <p>Fee: {{transactionEntity.fee/1e6}}</p>
+    <template slot="footer">
+      <div class="alert-dialog-button" @click="broadcast">送金</div>
+      <div class="alert-dialog-button" @click="confirm=false">戻る</div>
+    </template>
+  </v-ons-alert-dialog>
+
+  <v-ons-alert-dialog
+    modifier="rowfooter"
+    :visible.sync="serverDlg"
+    >
+    <span slot="title">サーバー変更</span>
+    <p><v-ons-input v-model="server" placeholder="shibuya.supernode.me:7891" @change="setServer"></v-ons-input></p>
+    
+    <template slot="footer">
+      <div class="alert-dialog-button" @click="serverDlg=false">閉じる</div>
+    </template>
+  </v-ons-alert-dialog>
+  <v-ons-dialog :visible.sync="sendMenu" cancelable>
+    <v-ons-list>
+      <v-ons-list-item modifier="small">
+        <v-ons-button @click="invoiceMenu=true;sendMenu=false" modifier="quiet large">
+          このモザイクを請求する
+        </v-ons-button>
+      </v-ons-list-item>
+      <v-ons-list-item>
+        <v-ons-input placeholder="送金先アドレス" v-model="sendAddress"></v-ons-input>
+      </v-ons-list-item>
+      <v-ons-list-item>
+        <div class="center">相手に送金する金額</div>
+        <div class="right">
+          <v-ons-input type="number" v-model="sendAmount" @input="fiatConv=$event.target.value*price"></v-ons-input>
+        </div>
+      </v-ons-list-item>
+      <v-ons-list-item>
+        <div class="center">モザイク</div>
+        <div class="right">{{sendMosaic | friendlyName}}</div>
+      </v-ons-list-item>
+      <v-ons-list-item v-show="sendMosaic==='nem:xem'">
+        <div class="center">法定通貨換算</div>
+        <div class="right">
+          <v-ons-input type="number" v-model="fiatConv" @input="sendAmount=$event.target.value/price"></v-ons-input>
+        </div>
+      </v-ons-list-item>
+      <v-ons-list-item>
+        <v-ons-input placeholder="メッセージ" v-model="message"></v-ons-input>
+      </v-ons-list-item>
+      <v-ons-list-item>
+        <v-ons-input placeholder="パスワード" v-model="password" type="password"></v-ons-input>
+      </v-ons-list-item>
+      <v-ons-list-item>
+        <v-ons-button @click="send" modifier="large" :disabled="!sendAddress||!sendAmount||!sendMosaic||!isValidAddress">{{(sendMosaic==='ecobit:eco')?'マザーアース' : '送信'}}</v-ons-button>
+      </v-ons-list-item>
+    </v-ons-list>
+  </v-ons-dialog>
+
+  <v-ons-dialog :visible.sync="invoiceMenu" cancelable>
+    <v-ons-list>
+      <div id="modalQr">
+        <img :src="qrDataUrl" alt="No Address" id="qrcodeImage"/>
+        <div class="url">{{url}}</div>
+      </div>
+      <v-ons-list-item v-if="shareable" modifier="small">
+        <v-ons-button @click="share" modifier="large">
+          <v-ons-icon icon="fa-share-square-o"></v-ons-icon>共有
+        </v-ons-button>
+      </v-ons-list-item>
+      <v-ons-list-item>
+        <div class="center">QRコードの形式</div>
+        <div class="right">
+          <v-ons-select v-model="addressFormat">
+            <option value="url">URL形式</option>
+            <option value="monya">もにゃ互換</option>
+            <option value="nemWallet">NEM Wallet互換</option>
+          </v-ons-select>
+        </div>
+      </v-ons-list-item>
+      <v-ons-list-item>
+        <div class="center">請求額</div>
+        <div class="right"><v-ons-input v-model="invAmt" placeholder="請求額" type="number"></v-ons-input></div>
+      </v-ons-list-item>
+      <v-ons-list-item v-show="addressFormat!=='nemWallet'">
+        <div class="center">モザイク名</v-ons-input></div>
+        <div class="right"><v-ons-input v-model="invMosaic" placeholder="モザイク名"></v-ons-input></div>
+      </v-ons-list-item>
+      
+    </v-ons-list>
+  </v-ons-dialog>
+</v-ons-page>

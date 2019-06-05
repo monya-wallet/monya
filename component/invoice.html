@@ -4,10 +4,7 @@
   </custom-bar>
   <div>
     <div id="currencySelector">
-      <v-ons-carousel swipeable overscrollable direction="horizontal" item-height="50px" item-width="50px" :index="currencyIndex">
-        <v-ons-carousel-item class="currencyIcon monappy" @click="currencyIndex=-1" v-show="monappyEnabled">
-          <div class="checked" v-show="currencyIndex===-1"></div>
-        </v-ons-carousel-item>
+      <v-ons-carousel swipeable overscrollable centered direction="horizontal" item-height="50px" item-width="50px" :index="currencyIndex">
         
         <v-ons-carousel-item v-for="(crc,i) in currency" class="currencyIcon" :style="{'background-image':'url('+crc.icon+')'}" @click="currencyIndex=i">
           <div class="checked" v-show="currencyIndex===i"></div>
@@ -15,7 +12,6 @@
       </v-ons-carousel>
     </div>
     <div id="simple">
-      <div class="label" v-show="currencyIndex===-1">このQRコードを読み取ってMonappyにログインして、送金してください。指示がある場合は、「匿名で送る」チェックを外してください。</div>
       <div id="qrArea">
         <div id="qrcode">
           <img :src="qrDataUrl||''" alt="QR code" id="qrcodeImage"/>
@@ -27,43 +23,38 @@
         <v-ons-icon icon="fa-clipboard"></v-ons-icon>
         アドレスコピー
       </v-ons-button>
-      <v-ons-button @click="share" modifier="quiet" v-if="isNative">
+      <v-ons-button @click="share" modifier="quiet" v-if="shareable">
         <v-ons-icon icon="fa-share-square-o"></v-ons-icon>共有
       </v-ons-button>
+
       <v-ons-list>
-        
-        <v-ons-list-item v-show="currencyIndex===-1">
-          <div class="center">送金先Monappy ID</div>
-          <div class="right">
-            <span class="atmark">@</span><v-ons-input v-model="monappyDestination" placeholder="Monappy ID" @change="changeMonappy" @input="monappyNotExist=false;generateQR()" :class="{monappyNotExist:monappyNotExist}"></v-ons-input>
-          </div>
-        </v-ons-list-item>
         <v-ons-list-item v-show="currencyIndex!==-1">
           <div class="center">受信アドレスのラベル</div>
           <div class="right">
-            <v-ons-select v-model="addressIndex" @change="generateQR">
+            <v-ons-select v-model="addressIndex">
               <option v-for="(l,i) in labels" :value="i">{{l}}</option>
             </v-ons-select>
           </div>
         </v-ons-list-item>
         <v-ons-list-item>
           <div class="center">請求額</div>
-          <div class="right"><v-ons-input v-model="amount" placeholder="金額" @input="calcFiat"></v-ons-input><currency-set :ticker="coinType"></currency-set></div>
+          <div class="right"><v-ons-input v-model="amount" type="number" placeholder="金額" @input="calcFiat" modifier="underbar"></v-ons-input><currency-set :ticker="coinType"></currency-set></div>
         </v-ons-list-item>
         <v-ons-list-item>
           <div class="center">法定通貨換算</div>
-          <div class="right"><v-ons-input v-model="fiat" placeholder="換算" @input="calcCur"></v-ons-input><currency-set :ticker="fiatTicker"></currency-set></div>
+          <div class="right"><v-ons-input v-model="fiat" type="number" placeholder="換算" @input="calcCur" modifier="underbar"></v-ons-input><currency-set :ticker="fiatTicker"></currency-set></div>
         </v-ons-list-item>
         <v-ons-list-item>
           <div class="center">相手に表示する文</div>
-          <div class="right"><v-ons-input v-model="message" placeholder="メッセージ" @change="generateQR"></v-ons-input></div>
+          <div class="right"><v-ons-input v-model="message" placeholder="メッセージ"></v-ons-input></div>
         </v-ons-list-item>
         <v-ons-list-item v-show="currencyIndex!==-1">
           <div class="center">ブロックに書き込んでもらうメッセージ(対応ウォレットのみ)</div>
-          <div class="right"><v-ons-input v-model="messageOpRet" placeholder="OP_RETURN" @change="generateQR"></v-ons-input></div>
+          <div class="right"><v-ons-input v-model="messageOpRet" placeholder="OP_RETURN" modifier="underbar"></v-ons-input></div>
         </v-ons-list-item>
-        <v-ons-list-item>
-          <v-ons-button modifier="large" @click="generateQR">QRコードを生成</v-ons-button>
+        <v-ons-list-item v-show="currencyIndex!==-1">
+          <label class="left"><v-ons-checkbox input-id="isAddrUrl" v-model="isAddrUrl"></v-ons-checkbox></label>
+          <label class="center" for="isAddrUrl">送金URL形式</label>
         </v-ons-list-item>
       </v-ons-list>
     </div>
@@ -72,14 +63,12 @@
                 :visible.sync="orderDlg"
                 >
     <v-ons-list>
-      <v-ons-list-item v-for="(v,i) in orders">
-        <div class="left"><v-ons-checkbox
-            :value="i"
-            v-model="onOrder"
-          >
-          </v-ons-checkbox></div>
-        <div class="center">{{v.name}}</div>
-        <div class="right"><currency-set :amount="v.price" :ticker="ticker"></currency-set></div>
+      <v-ons-list-item v-for="(v,i) in orders" modifier="tappable">
+        <label class="left">
+          <v-ons-checkbox :input-id="'checkbox-' + i" :value="i" v-model="onOrder"></v-ons-checkbox>
+        </label>
+        <label class="center" :for="'checkbox-' + i">{{v.name}}</label>
+        <label class="right" :for="'checkbox-' + i"><currency-set :amount="v.price" ticker="jpy"></currency-set></label>
       </v-ons-list-item>
       <v-ons-list-header></v-ons-list-header>
       <v-ons-list-item>
@@ -90,9 +79,8 @@
   </v-ons-dialog>
   <v-ons-fab
       position="bottom right"
-      @click="shareOrCopy"
+      @click="share"
     >
-      <v-ons-icon icon="fa-clipboard" v-if="!isNative"></v-ons-icon>
-      <v-ons-icon icon="fa-share-square-o" v-if="isNative"></v-ons-icon>
+      <v-ons-icon icon="fa-share-square-o"></v-ons-icon>
     </v-ons-fab>
 </v-ons-page>

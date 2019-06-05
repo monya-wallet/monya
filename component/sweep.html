@@ -1,18 +1,32 @@
 <v-ons-page data-page="sweep">
-  <custom-bar title="吸出し">
+  <custom-bar title="既存ウォレットからの吸出し">
   </custom-bar>
   <div>
     <div id="currencySelector">
-      <v-ons-carousel swipeable overscrollable direction="horizontal" item-height="50px" item-width="50px" :index="currencyIndex">
+      <v-ons-carousel swipeable overscrollable centered direction="horizontal" item-height="50px" item-width="50px" :index="currencyIndex">
         <v-ons-carousel-item v-for="(crc,i) in currency" class="currencyIcon" :style="{'background-image':'url('+crc.icon+')'}" @click="currencyIndex=i">
           <div class="checked" v-show="currencyIndex==i"></div>
         </v-ons-carousel-item>
       </v-ons-carousel>
     </div>
     <v-ons-list>
-      <v-ons-list-item><v-ons-input placeholder="秘密鍵" v-model="private"></v-ons-input></v-ons-list-item>
-      <v-ons-list-item><v-ons-input placeholder="送金先アドレス" v-model="address"></v-ons-input></v-ons-list-item>
-      <v-ons-list-item><v-ons-input placeholder="手数料" v-model="fee"></v-ons-input></v-ons-list-item>
+      <v-ons-list-item>
+        <div class="center"><v-ons-input placeholder="秘密鍵 WIF" v-model="private"></v-ons-input></div>
+        <div class="right">Loose<v-ons-switch v-model="loose"></v-ons-switch></div>
+      </v-ons-list-item>
+      <v-ons-list-item modifier="small" v-show="wifAddr" style="font-size:0.7em;color:#aaa;text-select:text">{{wifAddr}}</v-ons-list-item>
+      <v-ons-list-item>
+        <div class="center">
+          <v-ons-input placeholder="吸い出し先アドレス" v-model="address"></v-ons-input>
+        </div>
+        <div class="right">
+          <v-ons-button modifier="quiet" @click="getDefaultAddress">Defaultを指定</v-ons-button>
+        </div>
+      </v-ons-list-item>
+      <v-ons-list-item>
+        <div class="center">手数料</div>
+        <div class="right"><v-ons-input placeholder="手数料" v-model="fee"></v-ons-input></div>
+      </v-ons-list-item>
       <v-ons-list-item><v-ons-button @click="send" modifier="large">送信</v-ons-button></v-ons-list-item>
     </v-ons-list>
   </div>

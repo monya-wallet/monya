@@ -6,20 +6,22 @@ module.exports = {
   entry: "./js/main.js",
   output: {
     path:__dirname,
-    filename:"./dist/dist.js",
+    filename:"./dist/dist.js"
   },
   node: {
-    fs: 'empty',
+    fs: 'empty',net:"empty","tls":"empty"
   },
+  mode:"production",
   module: {
     rules: [
       {
         test: /\.js$/,
-        exclude: /node_modules\/(?!(bech32))/,
+        exclude: /node_modules\/(?!(bech32|ripple-lib))/,
         use: {
           loader: 'babel-loader',
           options: {
-            presets: ['env']
+            presets: ['env'],
+            plugins:["syntax-dynamic-import"]
           }
         }
         },{
@@ -56,14 +58,25 @@ module.exports = {
       }
     ]
   },
-  plugins: [
-    new Uglify({
-      uglifyOptions:{
-        mangle:{
-          safari10: true,
-          reserved:['BigInteger','ECPair','Point']
+  optimization:{
+    minimizer: [
+      new Uglify({
+        uglifyOptions:{
+          mangle:{
+            safari10: true,
+            reserved:[
+              //bitcoinjs-lib
+              'BigInteger','ECPair','Point'
+              //ripple-lib
+              ,'_', 'RippleError', 'RippledError', 'UnexpectedError',
+              'LedgerVersionError', 'ConnectionError', 'NotConnectedError',
+              'DisconnectedError', 'TimeoutError', 'ResponseFormatError',
+              'ValidationError', 'NotFoundError', 'MissingLedgerHistoryError',
+              'PendingLedgerVersionError'
+            ]
+          }
         }
-      }
-    })
+      })
     ]
+  }
 };

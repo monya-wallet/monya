@@ -1,5 +1,28 @@
+/*
+ MIT License
+
+ Copyright (c) 2018 monya-wallet zenypota
+
+ Permission is hereby granted, free of charge, to any person obtaining a copy
+ of this software and associated documentation files (the "Software"), to deal
+ in the Software without restriction, including without limitation the rights
+ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ copies of the Software, and to permit persons to whom the Software is
+ furnished to do so, subject to the following conditions:
+
+ The above copyright notice and this permission notice shall be included in all
+ copies or substantial portions of the Software.
+
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ SOFTWARE.
+*/
 const coinUtil = require("../js/coinUtil")
-module.exports=require("./about.html")({
+module.exports=require("../js/lang.js")({ja:require("./ja/about.html"),en:require("./en/about.html")})({
   data(){
     return {
 
@@ -7,32 +30,17 @@ module.exports=require("./about.html")({
   },
   store:require("../js/store.js"),
   methods:{
-    donateMe(){
-      this.$store.commit("setSendUrl","monacoin:MStxnMRVMHH95YPzGeR9pdc3HLrvL6pjSo?message=%E5%AF%84%E4%BB%98%E3%82%92%E3%81%82%E3%82%8A%E3%81%8C%E3%81%A8%E3%81%86%E3%81%94%E3%81%96%E3%81%84%E3%81%BE%E3%81%99&req-opreturn=%E5%AF%84%E4%BB%98%E3%81%A7%E3%81%99")
-      this.$emit("push",require("./send.js"))
-    },
-    donateMeWithZNY(){
-      this.$store.commit("setSendUrl","bitzeny:ZwWbCCyfsFJbbZh3oeem4tBjvRzRdSRA3f?message=%E5%AF%84%E4%BB%98%E3%82%92%E3%81%82%E3%82%8A%E3%81%8C%E3%81%A8%E3%81%86%E3%81%94%E3%81%96%E3%81%84%E3%81%BE%E3%81%99&req-opreturn=%E5%AF%84%E4%BB%98%E3%81%A7%E3%81%99")
-      this.$emit("push",require("./send.js"))
-    },
-    donateMeWithBTC(){
-      this.$store.commit("setSendUrl","bitcoin:1HohzLWyA7L1ifx6hr2Xr5N1sGZrR1ZbMt?message=%E5%AF%84%E4%BB%98%E3%82%92%E3%81%82%E3%82%8A%E3%81%8C%E3%81%A8%E3%81%86%E3%81%94%E3%81%96%E3%81%84%E3%81%BE%E3%81%99&req-opreturn=%E5%AF%84%E4%BB%98%E3%81%A7%E3%81%99")
-      this.$emit("push",require("./send.js"))
-    },
-    donateMeWithMonappy(){
-      this.openLink("https://monappy.jp/users/send/@miss_monacoin?amount=39&message=%E3%82%82%E3%81%AB%E3%82%83%E3%81%AE%E5%AF%84%E4%BB%98%E3%81%A7%E3%81%99")
-    },
-    donateMeWithTwitter(){
-      this.openLink("https://twitter.com/share?text=%40tipmona%20tip%20%40monya_wallet%2039%20%E3%82%82%E3%81%AB%E3%82%83%E3%81%AE%E5%AF%84%E4%BB%98%E3%81%A7%E3%81%99")
-    },
     goToTwitter(id){
       this.openLink("https://twitter.com/"+id)
     },
     openLink(url){
       coinUtil.openUrl(url)
+    },
+    forceUpdate(){
+      if ('serviceWorker' in navigator&&!window.cordova&&!coinUtil.isElectron()) {
+        navigator.serviceWorker.getRegistrations().then(r=>r.forEach(v=>v.update()))
+      }
+      
     }
-  },
-  mounted(){
-    
   }
 })

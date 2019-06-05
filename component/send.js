@@ -1,6 +1,32 @@
+/*
+ MIT License
+
+ Copyright (c) 2018 monya-wallet zenypota
+
+ Permission is hereby granted, free of charge, to any person obtaining a copy
+ of this software and associated documentation files (the "Software"), to deal
+ in the Software without restriction, including without limitation the rights
+ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ copies of the Software, and to permit persons to whom the Software is
+ furnished to do so, subject to the following conditions:
+
+ The above copyright notice and this permission notice shall be included in all
+ copies or substantial portions of the Software.
+
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ SOFTWARE.
+*/
 const coinUtil=require("../js/coinUtil")
 const currencyList=require("../js/currencyList")
-module.exports=require("./send.html")({
+
+const SEARCH_DELAY=500
+
+module.exports=require("../js/lang.js")({ja:require("./ja/send.html"),en:require("./en/send.html")})({
   data(){
     return {
       address:"",
@@ -12,6 +38,7 @@ module.exports=require("./send.html")({
       price:1,
       coinType:"",
       possibility:[],
+      cpTokens:[],
       fiatTicker:this.$store.state.fiat,
       advanced:false,
       label:"",
@@ -19,17 +46,16 @@ module.exports=require("./send.html")({
       txLabel:"",
       verifyResult:true,
       signature:false,
-      utxoStr:""
+      utxoStr:"",
+      signOnly:false,
+
+      cpSearchWaitHandler:null
     }
   },
   store:require("../js/store.js"),
   methods:{
     confirm(){
-      if(!this.address||!this.coinType||isNaN(this.amount*1)||(this.amount*1)<=0||!this.feePerByte||!coinUtil.isValidAddress(this.address)||(this.message&&Buffer.from(this.message, 'utf8').length>40)){
-        
-        this.$ons.notification.alert("正しく入力してね！")
-        return;
-      }
+      
       this.$store.commit("setConfirmation",{
         address:this.address,
         amount:this.amount,
@@ -38,13 +64,19 @@ module.exports=require("./send.html")({
         message:this.message,
         coinType:this.coinType,
         txLabel:this.txLabel,
-        utxoStr:this.utxoStr
+        utxoStr:this.utxoStr,
+        signOnly:this.signOnly
       })
       this.$emit("push",require("./confirm.js"))
     },
     getPrice(){
       coinUtil.getPrice(this.coinType,this.fiatTicker).then(res=>{
         this.price=res
+        if(this.amount){
+          this.calcFiat()
+        }else if(this.fiat){
+          this.calcCur()
+        }
       })
     },
     calcFiat(){
@@ -61,8 +93,35 @@ module.exports=require("./send.html")({
     address(){
       this.$set(this,"possibility",[])
       if(this.address){
+
+        if(this.address[0]==="@"){
+          this.cpTokens=[]
+          clearTimeout(this.cpSearchWaitHandler)
+          this.cpSearchWaitHandler=setTimeout(()=>{
+            this.cpSearchWaitHandler=null
+            currencyList.eachWithPub((cur)=>{
+              if(!cur.counterpartyEndpoint){
+                return
+              }
+              cur.callCP("get_assets_info",{
+                assetsList:[this.address.slice(1).toUpperCase()]
+              }).then(assets=>{
+                if(assets&&assets[0]){
+                  this.cpTokens.push({
+                    token:assets[0].asset_longname||assets[0].asset,
+                    coinId:cur.coinId,
+                    coinName:cur.coinScreenName,
+                    owner:assets[0].owner
+                  })
+                }
+              })
+            })
+          },SEARCH_DELAY)
+          return
+        }
+        
         coinUtil.parseUrl(this.address).then(u=>{
-          if(u.isCoinAddress&&u.isPrefixOk&&u.isValidAddress){
+          if(u.isCoinAddress&&u.isValidAddress){
             const cur=currencyList.get(u.coinId)
             this.coinType=u.coinId
             this.possibility.push({
@@ -80,9 +139,11 @@ module.exports=require("./send.html")({
             this.label=u.label
             this.utxoStr=u.utxo
             return
+          }else if(u.apiName){
+            coinUtil.callAPI(u.apiName,u.apiParam)
+            return
           }else{
             currencyList.eachWithPub((cur)=>{
-              const ver = coinUtil.getAddrVersion(this.address)
               if(cur.isValidAddress(this.address)){
                 this.possibility.push({
                   name:cur.coinScreenName,
@@ -110,8 +171,14 @@ module.exports=require("./send.html")({
   },
   computed:{
     remainingBytes(){
-      return 40-Buffer.from(this.message||"", 'utf8').length
-    }
+      if(this.coinType){
+        return currencyList.get(this.coinType).opReturnLength-Buffer.from(this.message||"", 'utf8').length
+      }else{return 0}
+    },
+    sendable(){
+      return this.address&&this.coinType&&!isNaN(this.amount*1)&&(this.amount*1)>0&&this.feePerByte>=0&&currencyList.get(this.coinType).isValidAddress(this.address)
+    },
+    
   },
   mounted(){
     const url=this.$store.state.sendUrl

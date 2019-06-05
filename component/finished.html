@@ -3,13 +3,14 @@
     <div class="succeeded" data-img="0"></div>
     <p v-if="infoId==='createdWallet'">ウォレットを作成しました！</p>
     <p v-if="infoId==='reset'">ウォレットを消去しました</p>
-    <p v-if="infoId==='sent'">送金しました！トランザクションID:{{payload.txId}}</p>
-    <v-ons-button modifier="large" @click="start">OK</v-ons-button>
+    <p v-if="infoId==='sent'">送金しました！</p>
+    <v-ons-button v-if="infoId==='sent'" modifier="large" @click="openExplorer" class="ok">エクスプローラを開く</v-ons-button>
+    <v-ons-button modifier="large" @click="start" class="ok">OK</v-ons-button>
   </div>
   <v-ons-modal :visible="loading">
       <p style="text-align: center">
         <br><br>
         <div class="spinner"></div>
       </p>
-    </v-ons-modal>
+  </v-ons-modal>
 </v-ons-page>

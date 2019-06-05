@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8"/>
+    <title>もにゃで送金する</title>
+  </head>
+  <body>
+    <header>
+      <div id=title>もにゃ</div>
+    </header>
+    <div id="container">
+      <div id=qrcodewrap>
+        <img id=qrcode>
+      </div>
+      <div id=address>
+        <input id=addressInput readonly=readonly>
+        <div>
+          <span id=amount></span>
+          <span id=unit></span>
+        </div>
+        <div id=message></div>
+        <div id=opreturn></div>
+      </div>
+      <div id=buttons>
+        <a class="button highlight" id=openMonya>もにゃアプリを開く</a>
+        <a class="button " id=notOpen style="display:none">アプリが開かない? Web版を開こう</a>
+        <br>
+        <a class="button highlight" id=openMonyaWeb>Web版を開く</a>
+        <br>
+        <a class=button id=openWallet>ほかのウォレットを開く</a>
+        <br>
+        <a class=button id=download href=https://monya-wallet.github.io >もにゃをダウンロード</a>
+      </div>
+    </div>
+    <script src="dist/dist.js"></script>
+  </body>
+</html>

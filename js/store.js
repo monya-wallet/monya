@@ -1,17 +1,40 @@
+/*
+ MIT License
+
+ Copyright (c) 2018 monya-wallet zenypota
+
+ Permission is hereby granted, free of charge, to any person obtaining a copy
+ of this software and associated documentation files (the "Software"), to deal
+ in the Software without restriction, including without limitation the rights
+ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ copies of the Software, and to permit persons to whom the Software is
+ furnished to do so, subject to the following conditions:
+
+ The above copyright notice and this permission notice shall be included in all
+ copies or substantial portions of the Software.
+
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ SOFTWARE.
+*/
 const Vuex = require("vuex")
 module.exports = new Vuex.Store({
   state: {
     entropy:null,
     confPayload:null,
+    entropySize:0,
     finishNextPage:null,
     easyUnit:false,
     fiat:"jpy",
     showLabelPayload:{},
     tsMode:"relative",
     detail:{},
-    zaifPayEnabled:false,
-    monappyEnabled:false,
-    monapartyEnabled:false,
+    monapartyEnabled:true,
+    enabledExts:[],
     sendUrl:"",
     zaifPayInvoiceId:"",
     hasKeyPairs:false,
@@ -26,11 +49,22 @@ module.exports = new Vuex.Store({
     divisible:false,
     includeUnconfirmedFunds:false,
     utxoStr:"",
-    error:""
+    error:"",
+    extensionSend:{},
+    apiName:"",
+    apiParam:null,
+    answers:[]
+    
   },
   mutations: {
+    setAnswers(state,ent) {
+      state.answers=ent;
+    },
     setEntropy(state,ent) {
       state.entropy=ent;
+    },
+    setEntropySize(state,ent) {
+      state.entropySize=ent|0;
     },
     openSide(state,v) {
       state.openSide=v;
@@ -40,15 +74,13 @@ module.exports = new Vuex.Store({
     },
     setSettings(state,d){
       //d can be incomplete,please be careful
-      state.zaifPayEnabled=d.zaifPay?d.zaifPay.enabled:false
-      state.monappyEnabled=d.monappy?d.monappy.enabled:false
-      state.monapartyEnabled=d.monaparty?d.monaparty.enabled:true
       state.fiat=d.fiat||"jpy"
       state.easyUnit=d.useEasyUnit
       state.tsMode=d.absoluteTime?"absolute":"relative"
       state.bgClass=d.monaparty&&d.monaparty.bgClass||"sand"
       state.monapartyTitle=d.monaparty&&d.monaparty.title||"monacard"
       state.includeUnconfirmedFunds=d.includeUnconfirmedFunds
+      state.enabledExts=d.enabledExts
     },
     setTitle(s,title){
       s.monapartyTitle=title||"monacard"
@@ -62,7 +94,8 @@ module.exports = new Vuex.Store({
         message:payload.message,
         coinType:payload.coinType,
         txLabel:payload.txLabel,
-        utxoStr:payload.utxoStr
+        utxoStr:payload.utxoStr,
+        signOnly:payload.signOnly
       }
     },
     setFinishNextPage(state,pageData){
@@ -87,11 +120,11 @@ module.exports = new Vuex.Store({
       state.detail.coinId=d.coinId
       state.detail.txId=d.txId
     },
+    setUtxo(state,d){
+      state.detail.coinId=d.coinId
+    },
     setSendUrl(state,url){
       state.sendUrl=url||""
-    },
-    setZaifPayInvoiceId(state,id){
-      state.zaifPayInvoiceId=id||""
     },
     setKeyPairsExistence(state,flag){
       state.hasKeyPairs=flag
@@ -108,6 +141,13 @@ module.exports = new Vuex.Store({
     },
     setError(s,e){
       s.error=e
+    },
+    setExtensionSend(s,e){
+      s.extensionSend=e
+    },
+    setAPICall(s,e){
+      s.apiName=e.name
+      s.apiParam=e.param
     }
   }
 })

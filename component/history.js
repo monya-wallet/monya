@@ -1,7 +1,32 @@
+/*
+ MIT License
+
+ Copyright (c) 2018 monya-wallet zenypota
+
+ Permission is hereby granted, free of charge, to any person obtaining a copy
+ of this software and associated documentation files (the "Software"), to deal
+ in the Software without restriction, including without limitation the rights
+ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ copies of the Software, and to permit persons to whom the Software is
+ furnished to do so, subject to the following conditions:
+
+ The above copyright notice and this permission notice shall be included in all
+ copies or substantial portions of the Software.
+
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ SOFTWARE.
+*/
 const currencyList = require("../js/currencyList")
 const coinUtil = require("../js/coinUtil")
 const bcLib = require('bitcoinjs-lib')
-module.exports=require("./history.html")({
+const BigNumber = require('bignumber.js')
+
+module.exports=require("../js/lang.js")({ja:require("./ja/history.html"),en:require("./en/history.html")})({
   data(){
     return {
       curFilter:"mona",
@@ -43,9 +68,7 @@ module.exports=require("./history.html")({
         for(let i=0;i<res.items.length;i++){
           const v=res.items[i]
           const txLbl=data[1][v.txid]
-          //isIn=I sent
-          //!isIn&&isOut=I received
-          //!isOut=Mystery
+
           let aIn=0
           let aOut=0
           let amount=0
@@ -54,13 +77,16 @@ module.exports=require("./history.html")({
               message=""
           for(let j=0;j<v.vin.length;j++){
             if(cur.getIndexFromAddress(v.vin[j].addr)){
-              aIn+=parseFloat(v.vin[j].value)
+              aIn+=v.vin[j].valueSat
             }
           }
+
+          aIn=(new BigNumber(aIn)).dividedBy(100000000).toNumber()
+          
           for(let k=0;k<v.vout.length;k++){
             const vo=v.vout[k]
             const spk=vo.scriptPubKey
-            if(spk.hex.substr(0,2)==="6a"){
+            if(spk.hex&&spk.hex.substr(0,2)==="6a"){
               hasMessage=true
               message=bcLib.script.nullData.output.decode(new Buffer(spk.hex,"hex")).toString('utf8')
             }
@@ -137,7 +163,13 @@ module.exports=require("./history.html")({
       })
       this.$emit("push",require("./txDetail.js"))
     },
-    sub:(a,b)=>(a*100000000-Math.round(b*100000000))/100000000
+    sub:(a,b)=>(a*100000000-Math.round(b*100000000))/100000000,
+    openUtxo(){
+      this.$store.commit("setUtxo",{
+        coinId:this.coinId
+      })
+      this.$emit("push",require("./utxo.js"))
+    }
   },
   mounted(){
     currencyList.eachWithPub(cur=>{
@@ -163,6 +195,3 @@ module.exports=require("./history.html")({
     }
   }
 })
-
-
-

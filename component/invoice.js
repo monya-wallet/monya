@@ -1,15 +1,38 @@
+/*
+ MIT License
+
+ Copyright (c) 2018 monya-wallet zenypota
+
+ Permission is hereby granted, free of charge, to any person obtaining a copy
+ of this software and associated documentation files (the "Software"), to deal
+ in the Software without restriction, including without limitation the rights
+ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ copies of the Software, and to permit persons to whom the Software is
+ furnished to do so, subject to the following conditions:
+
+ The above copyright notice and this permission notice shall be included in all
+ copies or substantial portions of the Software.
+
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ SOFTWARE.
+*/
 const qrcode = require("qrcode")
 const currencyList = require("../js/currencyList")
 const storage = require("../js/storage")
 const coinUtil = require("../js/coinUtil")
-const monappyApi=require("../js/monappyApi")
 
-module.exports=require("./invoice.html")({
+module.exports=require("../js/lang.js")({ja:require("./ja/invoice.html"),en:require("./en/invoice.html")})({
   data(){
     return {
       address:"",
+
       qrDataUrl:"",
-      isNative:false,
+      shareable:coinUtil.shareable(),
       edit:false,
       amount:0,
       message:"",
@@ -21,13 +44,13 @@ module.exports=require("./invoice.html")({
       fiat:0,
       price:0,
       fiatTicker:this.$store.state.fiat,
-      requestMonappy:false,
-      monappyEnabled:false,
-      monappyDestination:"",
+
       orderDlg:false,
+
       orders:[],
       onOrder:[],
-      monappyNotExist:false
+
+      isAddrUrl:false
     }
   },
   store:require("../js/store.js"),
@@ -35,15 +58,17 @@ module.exports=require("./invoice.html")({
     copyAddress(){
       coinUtil.copy(this.url)
     },
-    generateQR(){
-      qrcode.toDataURL(this.url,{
+    generateQR(url){
+      qrcode.toDataURL(url||this.url,{
         errorCorrectionLevel: 'M',
         type: 'image/png'
-      },(err,url)=>{
-        this.qrDataUrl=url
+      },(err,qurl)=>{
+        this.qrDataUrl=qurl
       })
       if(this.currencyIndex!==-1){
         this.currentCurIcon=currencyList.get(this.currency[this.currencyIndex].coinId).icon
+      }else{
+        this.currentCurIcon=currencyList.get("mona").icon
       }
     },
     calcFiat(){
@@ -64,54 +89,36 @@ module.exports=require("./invoice.html")({
         this.price=res
       })
     },
-    zaifPay(){
-      this.$emit("push",require("./zaifPay.js"))
-    },
-    changeMonappy(){
-      this.generateQR()
-      this.monappyNotExist=false
-      if (this.monappyDestination) {
-        monappyApi.getAddress(this.monappyDestination).then(r=>{
-          this.monappyNotExist=!r
-        }).catch(r=>{
-          this.monappyNotExist=true
-        })
-      }
-    },
     share(event){
       const targetRect = event.target.getBoundingClientRect(),
             targetBounds = targetRect.left + ',' + targetRect.top + ',' + targetRect.width + ',' + targetRect.height;
       coinUtil.share({
         url:this.url
       },targetBounds).then(()=>{
-        this.$ons.notification.toast('Shared!', {timeout: 2000})
       }).catch(()=>{
-        this.$ons.notification.toast('Failed...', {timeout: 2000})
+        this.copyAddress()
       })
     },
-    shareOrCopy(e){
-      if (this.isNative) {
-        this.share(e)
-      }else{
-        this.copyAddress()
-      }
+    getLabels(){
+      currencyList.get(this.currency[this.currencyIndex].coinId).getLabels().then(res=>{
+          this.$set(this,"labels",res)
+      })
     }
   },
   computed:{
     url(){
-      if(this.currencyIndex===-1){
-        return "https://monappy.jp/users/send/@"+this.monappyDestination+"?amount="+parseFloat(this.amount)+"&message="+encodeURIComponent(this.message)
-      }
       if(!this.currency[this.currencyIndex]){
-        return ""
+        return
       }
       const cur =currencyList.get(this.currency[this.currencyIndex].coinId)
-      return coinUtil.getBip21(cur.bip21,cur.getAddress(0,this.addressIndex|0),{
+      const url = coinUtil.getBip21(cur.bip21,cur.getAddress(0,this.addressIndex|0),{
         amount:this.amount,
         label:this.labels[this.addressIndex],
         message:this.message,
         "req-opreturn":this.messageOpRet
-      })
+      },this.isAddrUrl)
+      this.generateQR(url)
+      return url
     },
     coinType(){
       if(this.currencyIndex===-1){
@@ -134,15 +141,14 @@ module.exports=require("./invoice.html")({
     currencyIndex(){
       this.generateQR()
       if(this.currencyIndex!==-1){
-        currencyList.get(this.currency[this.currencyIndex].coinId).getLabels().then(res=>{
-          this.$set(this,"labels",res)
-        })
+        this.getLabels()
       }
       this.getPrice()
+      this.fiat=0
+      this.amount=0
     }
   },
-
-  mounted(){
+  created(){
     currencyList.eachWithPub(cur=>{
       this.currency.push({
         coinId:cur.coinId,
@@ -150,17 +156,17 @@ module.exports=require("./invoice.html")({
         name:cur.coinScreenName
       })
     })
+  },
+  mounted(){
     storage.get("settings").then((data)=>{
       if(!data){data={}}
-      this.monappyEnabled=data.monappy&&data.monappy.enabled;
-      this.monappyDestination=(data.monappy&&data.monappy.myUserId)||""
     })
     this.generateQR()
     this.getPrice()
+    this.getLabels()
 
     storage.get("orders").then(r=>{
       this.orders=r||[]
     })
-    this.isNative = !!(window.plugins&&window.plugins.socialsharing)
   }
 })

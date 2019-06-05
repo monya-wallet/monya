@@ -1,10 +1,33 @@
+/*
+ MIT License
+
+ Copyright (c) 2018 monya-wallet zenypota
+
+ Permission is hereby granted, free of charge, to any person obtaining a copy
+ of this software and associated documentation files (the "Software"), to deal
+ in the Software without restriction, including without limitation the rights
+ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ copies of the Software, and to permit persons to whom the Software is
+ furnished to do so, subject to the following conditions:
+
+ The above copyright notice and this permission notice shall be included in all
+ copies or substantial portions of the Software.
+
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ SOFTWARE.
+*/
 const storage = require("../js/storage.js")
 const coinUtil=require("../js/coinUtil")
 const currencyList = require("../js/currencyList")
 const bcLib = require('bitcoinjs-lib')
 const errors = require("../js/errors")
 const BigNumber = require('bignumber.js');
-module.exports=require("./confirm.html")({
+module.exports=require("../js/lang.js")({ja:require("./ja/confirm.html"),en:require("./en/confirm.html")})({
   data(){
     return {
       address:"",
@@ -33,7 +56,7 @@ module.exports=require("./confirm.html")({
   },
   store:require("../js/store.js"),
   mounted(){
-    ["address","amount","fiat","feePerByte","message","coinType","txLabel","utxoStr"].forEach(v=>{
+    ["address","amount","fiat","feePerByte","message","coinType","txLabel","utxoStr","signOnly"].forEach(v=>{
       this[v]=this.$store.state.confPayload[v]
     })
     this.cur=currencyList.get(this.coinType)
@@ -53,14 +76,14 @@ module.exports=require("./confirm.html")({
     }
   },
   methods:{
-    next(){
-      this.loading=true
-      const cur=this.cur
-      if (cur.sound&&this.paySound) {
-        (new Audio(cur.sound)).play()
-      }
-      this.ready=false
-      storage.get("keyPairs").then((cipher)=>{
+    async next(){
+      try{
+        this.loading=true
+        const cur=this.cur
+        
+        this.ready=false
+        const cipher =await storage.get("keyPairs")
+        await coinUtil.shortWait()
         const finalTx=cur.signTx({
           entropyCipher:cipher.entropy,
           password:this.password,
@@ -68,34 +91,43 @@ module.exports=require("./confirm.html")({
           path:this.path
         })
         this.hash=finalTx.toHex()
-        return cur.pushTx(this.hash)
-      }).then((res)=>{
+        if(this.signOnly){
+          throw new errors.SignOnly()
+        }
+        const res = await cur.pushTx(this.hash)
         cur.saveTxLabel(res.txid,{label:this.txLabel,price:parseFloat(this.price)})
-        this.$store.commit("setFinishNextPage",{page:require("./home.js"),infoId:"sent",payload:{
-          txId:res.txid
+        if (cur.sound&&this.paySound) {
+          (new Audio(cur.sound)).play()
+        }
+        this.$store.commit("setFinishNextPage",{infoId:"sent",payload:{
+          txId: res.txid,
+          coinId: this.coinType
         }})
-        this.$emit("replace",require("./finished.js"))
-
-        
-      }).catch(e=>{
+        this.$emit("pop")
+        this.$emit("pop")
+        this.$emit("push",require("./finished.js"))
+      }catch(e){
         this.loading=false
         if(e.request){
           this.$store.commit("setError",e.request.responseText||"Network Error.Please try again")
-          
-        }else{
+        }else if(e instanceof errors.PasswordFailureError){
           this.incorrect=true
           this.ready=true
           setTimeout(()=>{
             this.incorrect=false
           },3000)
+        }else if(e instanceof errors.SignOnly){
+          this.ready=true
+        }else{
+          this.$store.commit("setError",e.message)
         }
-      })
+      }
     },
     requestBiometric(){
       storage.verifyBiometric().then(pwd=>{
         this.password=pwd
       }).catch(()=>{
-        // noop
+        return true
       })
     },
     build(){

@@ -8,13 +8,13 @@
     </v-ons-toolbar-button>
   </custom-bar>
   <v-ons-pull-hook
-      :action="load"
-      @changestate="state = $event.state"
+    :action="load"
+    @changestate="state = $event.state"
     >
-      <span v-show="state === 'initial'">引っ張って更新!</span>
-      <span v-show="state === 'preaction'">今だ！離せ！</span>
-      <span v-show="state === 'action'">Loading...</span>
-    </v-ons-pull-hook>
+    <span v-show="state === 'initial'">引っ張って更新!</span>
+    <span v-show="state === 'preaction'">今だ！離せ！</span>
+    <span v-show="state === 'action'">Loading...</span>
+  </v-ons-pull-hook>
   <div>
     <div id="youHave">
       <div v-show="!loading">
@@ -22,30 +22,31 @@
         <div id="balanceWrap">
           <currency-set :amount="fiatConv" :ticker="fiat" about="true"></currency-set>
         </div>
-        <div v-show="error">エラーが発生したようです。<br>しばらくしてからもう一度お試しください。</div>
+        <div v-show="error">失敗したようです。<br>しばらくしてからもう一度お試しください。</div>
       </div>
       <div v-show="loading" class="spinner"></div>
-    </div>
-    <div id="actionWrap">
-      <div id="actions">
-        <div class="btns" style="color:#d0021c " @click="receive">
-          <v-ons-icon icon="fa-qrcode"></v-ons-icon>
-          <div class="btnLabel">受取</div>
-        </div>
-        <div class="btns" style="color:#7dd321 " @click="send">
-          <v-ons-icon icon="fa-paper-plane"></v-ons-icon>
-          <div class="btnLabel">送金</div>
-        </div>
-        <div class="btns" style="color:#f6a523 " @click="history">
-          <v-ons-icon icon="fa-history"></v-ons-icon>
-          <div class="btnLabel">履歴</div>
-        </div>
-        <div class="btns" style="color:#04c0de " @click="settings">
-          <v-ons-icon icon="fa-cog"></v-ons-icon>
-          <div class="btnLabel">設定</div>
+      <div id="actionWrap">
+        <div id="actions">
+          <div class="btns" style="color:#d0021c" @click="receive">
+            <v-ons-icon icon="fa-qrcode"></v-ons-icon>
+            <div class="btnLabel">受取</div>
+          </div>
+          <div class="btns" style="color:#7dd321" @click="send">
+            <v-ons-icon icon="fa-paper-plane"></v-ons-icon>
+            <div class="btnLabel">送金</div>
+          </div>
+          <div class="btns" style="color:#f6a523" @click="history">
+            <v-ons-icon icon="fa-history"></v-ons-icon>
+            <div class="btnLabel">履歴</div>
+          </div>
+          <div class="btns condMonaparty" style="color:#04c0de" @click="monaparty">
+            <v-ons-icon icon="ion-icecream"></v-ons-icon>
+            <div class="btnLabel">カードで遊ぶ</div>
+          </div>
         </div>
       </div>
     </div>
+    
     <div id="coins">
       <v-ons-list>
         
@@ -53,21 +54,33 @@
           <div class="left">
             <img :src="c.icon"/>
           </div>
-          <div >
-            <div class="screenName">{{c.screenName||"取得失敗"}}</div>
+          <div>
+            <div class="screenName">{{c.error?"取得失敗":c.screenName}}</div>
             <div class="price">
               <currency-set :amount="c.price" :ticker="c.coinId" :fiatTicker="fiat"></currency-set>
             </div>
           </div>
           <div class="w_right">
-            <div class="amount" :class='{unconfirmed:c.unconfirmed}'><currency-set :amount="c.balance" :ticker="c.coinId"></currency-set><span v-show="c.unconfirmed">+{{c.unconfirmed}}待機中</span></div>
+            <div class="amount" :class='{unconfirmed:c.unconfirmed}'><currency-set :amount="c.balance" :ticker="c.coinId"></currency-set><span v-show="c.unconfirmed">{{c.unconfirmed}}待機中</span></div>
             <div class="fiatConv"><currency-set :amount="c.balance*c.price" :ticker="fiat" :easy="isEasy"></currency-set></div>
           </div>
         </v-ons-list-item>
-        <v-ons-list-item @click="goToManageCoin" modifier="tappable chevron">
-          コインを追加
+        <v-ons-list-item v-for="x in extensions" @click="openExt(x.id)" modifier="small">
+          <div class="left"><img :src="x.icon"></div>
+          <div class="center">{{x.name}}</div>
+        </v-ons-list-item>
+        
+        <v-ons-list-item @click="goToManageCoin" modifier="tappable chevron" v-if="!isSingleWallet">
+          <div class="left"><v-ons-icon icon="ion-plus"></v-ons-icon></div>
+          <div class="center">コインを追加</div>
+        </v-ons-list-item>
+
+        <v-ons-list-item modifier="small" id="marquee" v-if="news.content" @click="openNews">
+          <div class="left">お知らせ</div>
+          <div class="center">{{news.content}}</div>
         </v-ons-list-item>
       </v-ons-list>
     </div>
+   
   </div>
 </v-ons-page>

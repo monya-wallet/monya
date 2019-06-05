@@ -1,7 +1,34 @@
+/*
+ MIT License
+
+ Copyright (c) 2018 monya-wallet zenypota
+
+ Permission is hereby granted, free of charge, to any person obtaining a copy
+ of this software and associated documentation files (the "Software"), to deal
+ in the Software without restriction, including without limitation the rights
+ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ copies of the Software, and to permit persons to whom the Software is
+ furnished to do so, subject to the following conditions:
+
+ The above copyright notice and this permission notice shall be included in all
+ copies or substantial portions of the Software.
+
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ SOFTWARE.
+*/
 const currencyList=require("./currencyList")
 const BigNumber = require('bignumber.js');
 const storage = require("../js/storage")
 const axios = require("axios")
+
+const DEFAULT_REGULAR_DUST=70000
+const DEFAULT_MULTISIG_DUST=70000
+
 module.exports=class{
   constructor(opt){
     this.titleId=opt.titleId
@@ -9,6 +36,7 @@ module.exports=class{
     this.titleName=opt.titleName
     this.apiVer=opt.apiVer
     this.apiEndpoint=opt.apiEndpoint
+this.icon=opt.icon
     
     this.cp=currencyList.get(opt.cpCoinId)
   }
@@ -19,35 +47,37 @@ module.exports=class{
     return this.cp.callCPLib(m,p)
   }
   getToken(token){
-    let promises
-    if(token==='XMP'){
-      promises=[
-        Promise.resolve([{
-          asset:"XMP",
-          supply:0,
-          divisible:true,
-          issuer:"MMonapartyMMMMMMMMMMMMMMMMMMMUzGgh",
-          owner:"MMonapartyMMMMMMMMMMMMMMMMMMMUzGgh",
-          locked:true,
-          description:""
-        }]),Promise.resolve([]),Promise.resolve([])
-      ]
+    let tokenProm,d={}
+    if(token===this.cp.counterparty.nativeSymbol){
+      tokenProm=Promise.resolve([{
+        asset:token,
+        supply:0,
+        divisible:true,
+        issuer:"",
+        owner:"",
+        locked:true,
+        description:""
+      }])
     }else{
-      promises=[
-        this.callCP("get_assets_info",{
+      
+      tokenProm=this.callCP("get_assets_info",{
           assetsList:[token]
-        }),this.getCardDetail(token)]
+      })
     }
-    let ret
-    return Promise.all(promises).then(r=>{
-      return {
-        asset:r[0],
-        card:r[1]
+    return tokenProm.then(a=>{
+      d.asset=a
+      if(a.length){
+        return this.getCardDetail(a[0].asset_longname||a[0].asset)
+      }else{
+        return []
       }
+    }).then(b=>{
+      d.card = b
+      return d
     })
   }
   getTokenHistory(token){
-    if(token==='XMP'){
+    if(token===this.cp.counterparty.nativeSymbol){
       return Promise.resolve([])
     }
     return this.callCP("get_asset_history",{
@@ -112,7 +142,11 @@ module.exports=class{
       disable_utxo_locks,
       encoding:"auto",
       extended_tx_info,
-      pubkey:[cur.getPubKey(0,addressIndex)]
+      pubkey:[cur.getPubKey(0,addressIndex)],
+
+
+      regular_dust_size:DEFAULT_REGULAR_DUST,
+      multisig_dust_size:DEFAULT_MULTISIG_DUST
     },param))
   }
   createTx(opt){
@@ -124,8 +158,9 @@ module.exports=class{
     const includeUnconfirmedFunds = opt.includeUnconfirmedFunds
     const password=opt.password
     const memo=opt.memo
-    const feePerByte = opt.feePerByte || this.defaultFeeSatPerByte
+    const feePerByte = opt.feePerByte || this.cp.defaultFeeSatPerByte
     const doNotSendTx = !!opt.doNotSendTx
+    const useEnhancedSend = !!opt.useEnhancedSend
     
     const cur = this.cp
     let hex=""
@@ -139,13 +174,15 @@ module.exports=class{
       destination:dest,
       asset:token,
       quantity:qty.toNumber(),
-      memo
+      memo,
+      use_enhanced_send: useEnhancedSend
     },{
       addressIndex,
       includeUnconfirmedFunds,
       feePerByte,
       disableUtxoLocks:true,
       extendedTxInfo:true
+
     }).then(res=>{
       hex=res.tx_hex
       return storage.get("keyPairs")
@@ -171,7 +208,7 @@ module.exports=class{
     const includeUnconfirmedFunds = opt.includeUnconfirmedFunds
     const password=opt.password
     const description=opt.description
-    const feePerByte = opt.feePerByte || this.defaultFeeSatPerByte
+    const feePerByte = opt.feePerByte || this.cp.defaultFeeSatPerByte
     const transferDest = opt.transferDest
     
     const cur = this.cp
@@ -210,7 +247,7 @@ module.exports=class{
     const addressIndex = opt.addressIndex|0
     const includeUnconfirmedFunds = opt.includeUnconfirmedFunds
     const password=opt.password
-    const feePerByte = opt.feePerByte || this.defaultFeeSatPerByte
+    const feePerByte = opt.feePerByte || this.cp.defaultFeeSatPerByte
     const give_quantity=(opt.giveAmt)|0
     const give_asset=opt.giveToken
     const get_quantity=(opt.getAmt)|0
@@ -251,7 +288,7 @@ module.exports=class{
     const addressIndex = opt.addressIndex|0
     const includeUnconfirmedFunds = opt.includeUnconfirmedFunds
     const password=opt.password
-    const feePerByte = opt.feePerByte || this.defaultFeeSatPerByte
+    const feePerByte = opt.feePerByte || this.cp.defaultFeeSatPerByte
     const offer_hash=opt.txid
     
     const cur = this.cp
@@ -278,9 +315,41 @@ module.exports=class{
       return cur.callCP("broadcast_tx",{signed_tx_hex:signedTx.toHex()})
     })
   }
+  createBroadcast(opt){
+    const addressIndex = opt.addressIndex|0
+    const includeUnconfirmedFunds = opt.includeUnconfirmedFunds
+    const password=opt.password
+    const feePerByte = opt.feePerByte || this.cp.defaultFeeSatPerByte
+    const text=opt.text
+    const timestamp = parseInt(opt.timestamp)
+    const value=parseFloat(opt.value)
+    const fee_fraction =parseFloat(opt.feeFraction)
+    
+    const cur = this.cp
+    let hex=""
+
+    return this.createCommand("order",{
+      source:cur.getAddress(0,addressIndex),
+      text,
+      timestamp,
+      value,
+      fee_fraction
+    },{
+      addressIndex,
+      includeUnconfirmedFunds,
+      feePerByte,disableUtxoLocks:true,
+      extendedTxInfo:true
+    }).then(res=>{
+      hex=res.tx_hex
+      return storage.get("keyPairs")
+    }).then(cipher=>{
+      const signedTx=cur.signTx({
+        hash:hex,
+        password:password,
+        path:[[0,addressIndex]],
+        entropyCipher:cipher.entropy
+      })
+      return cur.callCP("broadcast_tx",{signed_tx_hex:signedTx.toHex()})
+    })
+  }
 }
-
-
-
-
-

@@ -1,0 +1,287 @@
+<v-ons-page data-page="ethBase">
+  <custom-bar :title="networkName" menu="true">
+    <v-ons-toolbar-button @click="getBalance" @click.right="serverDlg=true">
+      <v-ons-icon icon="ion-ios-loop-strong"></v-ons-icon>
+    </v-ons-toolbar-button>
+    <v-ons-toolbar-button @click="option=true" id="ethOption">
+      <v-ons-icon icon="ion-android-more-vertical"></v-ons-icon>
+    </v-ons-toolbar-button>
+  </custom-bar>
+  <v-ons-pull-hook
+    :action="getBalance"
+    @changestate="state = $event.state"
+    >
+    <span v-show="state === 'initial'">引っ張って更新!</span>
+    <span v-show="state === 'preaction'">今だ！離せ！</span>
+    <span v-show="state === 'action'">Loading...</span>
+  </v-ons-pull-hook>
+  <div>
+    <div v-show="address">
+      <div id="simple">
+        <div id="qrArea">
+          <div id="qrcode">
+            <img :src="qrDataAddress" alt="No Address" style="width:100%;height:100%"/>
+          </div>
+          <div class="address">{{address||"読み込み中"}}</div>
+        </div>
+        
+        <v-ons-button @click="copyAddress" modifier="quiet">
+          <v-ons-icon icon="fa-clipboard"></v-ons-icon>
+          アドレスコピー
+        </v-ons-button>
+        <v-ons-button @click="invoiceMenu=true" modifier="quiet">
+          請求する
+        </v-ons-button>
+        
+      </div>
+      <v-ons-list>
+        <v-ons-list-header>残高</v-ons-list-header>
+        <v-ons-list-item @click="sendMenu=true;sendingToken=false">
+          <div class="left">
+            <img :src="networkIcon"/>
+          </div>
+          <div class="center">{{balance}}</div>
+          <div class="right">{{networkSymbol}}</div>
+        </v-ons-list-item>
+
+        <v-ons-list-item @click="sendMenu=true;sendingToken=t" v-for="t in tokens">
+          
+          <div class="center">{{t.balance}}</div>
+          <div class="right">{{t.symbol}}</div>
+        </v-ons-list-item>
+        <v-ons-list-item @click="goToAddTokens" modifier="tappable chevron">
+          <div class="left"><v-ons-icon icon="ion-plus"></v-ons-icon></div>
+          <div class="center">コインを追加</div>
+        </v-ons-list-item>
+      </v-ons-list>
+    </div>
+  </div>
+  <v-ons-modal :visible="loading">
+    <p style="text-align: center">
+      処理中
+      <br><br>
+      <div class="spinner"></div>
+      <br/>
+    </p>
+  </v-ons-modal>
+  <v-ons-alert-dialog
+    modifier="rowfooter"
+    :visible.sync="confirm"
+    >
+    <span slot="title">送金確認</span>
+    <p>{{sendAddress}}</p>
+    <p>{{sendingToken?sendingToken.symbol:networkSymbol}}</p>
+    <p>最大手数料: {{totalGasPrice}} {{networkSymbol}}</p>
+    <p>送金したあとは元に戻すことはできません。</p>
+    <v-ons-input placeholder="パスワード" v-model="password" type="password"></v-ons-input>
+    <template slot="footer">
+      <div class="alert-dialog-button" @click="broadcast">送金</div>
+      <div class="alert-dialog-button" @click="confirm=false">戻る</div>
+    </template>
+  </v-ons-alert-dialog>
+
+  <v-ons-alert-dialog
+    modifier="rowfooter"
+    :visible.sync="serverDlg"
+    >
+    <span slot="title">サーバー変更</span>
+    <p>
+      <v-ons-select v-model="rpcServer" placeholder="" @change="setRpcServer">
+        <option v-for="item in rpcServers" :value="item">{{item}}</option>
+      </v-ons-select>
+    </p>
+    
+    <template slot="footer">
+      <div class="alert-dialog-button" @click="serverDlg=false">閉じる</div>
+    </template>
+  </v-ons-alert-dialog>
+  
+  <v-ons-dialog :visible.sync="sendMenu" cancelable>
+    <v-ons-list>
+      <v-ons-list-item modifier="small" v-show="!sendingToken">
+        <v-ons-button @click="invoiceMenu=true;sendMenu=false" modifier="quiet large">
+          請求する
+        </v-ons-button>
+      </v-ons-list-item>
+      <v-ons-list-item>
+        <v-ons-input placeholder="送金先アドレス" v-model="sendAddress" @change="calcGasLimitFromAddress"></v-ons-input>
+      </v-ons-list-item>
+      <v-ons-list-item>
+        <div class="center">相手に送金する金額</div>
+        <div class="right">
+          <v-ons-input type="number" v-model="sendAmount"></v-ons-input>
+          {{sendingToken?sendingToken.symbol:networkSymbol}}
+        </div>
+      </v-ons-list-item>
+      <v-ons-list-item @click="advanced=true" v-show="!advanced">
+        <div class="left"><v-ons-icon icon="fa-caret-down"></v-ons-icon></div>
+        <div class="center">詳細オプション</div>
+      </v-ons-list-item>
+      <div v-show="advanced">
+        
+        <v-ons-list-item modifier="small">
+          <div class="left">ガスプライス</div>
+          <div class="center">
+            <v-ons-input type="number" v-model.number="sendGasPrice" @change="sendGasPrice = intValue(sendGasPrice)"></v-ons-input>
+          </div>
+          <div class="right">Gwei</div>
+        </v-ons-list-item>
+        <v-ons-list-item modifier="small">
+          <div class="left">ガスリミット</div>
+          <div class="center">
+            <v-ons-input type="number" v-model.number="sendGasLimit" @change="sendGasLimit = intValue(sendGasLimit)"></v-ons-input>
+          </div>
+        </v-ons-list-item>
+        <v-ons-list-item>
+          <div class="left">ガス合計</div>
+          <div class="center">
+            <v-ons-input :value="totalGasPrice" readonly></v-ons-input>
+          </div>
+          <div class="right">{{networkSymbol}}</div>
+        </v-ons-list-item>
+      </div>
+      <v-ons-list-item>
+        <v-ons-button @click="send" modifier="large" :disabled="!isValidAddress||sendAmount===''||!sendGasPrice||!sendGasLimit">送信</v-ons-button>
+      </v-ons-list-item>
+    </v-ons-list>
+  </v-ons-dialog>
+
+
+
+  <v-ons-dialog :visible.sync="invoiceMenu" cancelable>
+    <v-ons-list>
+      <div id="modalQr">
+        <img :src="qrDataUrl" alt="No Address" id="qrcodeImage"/>
+        <div class="url">{{url}}</div>
+      </div>
+      <v-ons-list-item v-if="shareable" modifier="small">
+        <v-ons-button @click="share" modifier="large">
+          <v-ons-icon icon="fa-share-square-o"></v-ons-icon>共有
+        </v-ons-button>
+      </v-ons-list-item>
+      <v-ons-list-item>
+        <div class="center">QRコードの形式</div>
+        <div class="right">
+          <v-ons-select v-model="addressFormat">
+            <option value="url">URL形式</option>
+            <option value="monya">もにゃ互換</option>
+          </v-ons-select>
+        </div>
+      </v-ons-list-item>
+      <v-ons-list-item>
+        <div class="center">請求額</div>
+        <div class="right"><v-ons-input v-model="invAmt" placeholder="請求額" type="number"></v-ons-input>{{networkSymbol}}</div>
+      </v-ons-list-item>
+    </v-ons-list>
+  </v-ons-dialog>
+
+  
+
+  <v-ons-dialog :visible.sync="runContract.show" cancelable>
+    <v-ons-list>
+      <v-ons-list>
+        <v-ons-list-item modifier="small">
+          <div class="center">コントラクトアドレス</div>
+          <div class="right">
+            <v-ons-input placeholder="0x....." v-model="runContract.contractAddress"></v-ons-input>
+          </div>
+        </v-ons-list-item>
+        <v-ons-list-item modifier="small">
+          <textarea class="textarea" style="width:100%" placeholder="JSON Interface" v-model="runContract.abiStr"></textarea>
+        </v-ons-list-item>
+        <v-ons-list-item modifier="small">
+          <v-ons-select v-show="abi" v-model="runContract.fn" @change="runContract.args=[]">
+            <option :value="null">関数を選んでください。</option>
+            <option :value="fn.name" v-for="fn in abi">{{fn.name}}</option>
+          </v-ons-select>
+        </v-ons-list-item>
+        <v-ons-list-item v-for="(input,i) in selectedAbiFn.inputs" v-if="input.name" modifier="small">
+          <div class="center">{{input.name}}</div>
+          <div class="right">
+            <v-ons-input :placeholder="input.type" @input="runContract.args[i]=cast($event.target.value,input.type)"></v-ons-input>
+          </div>
+        </v-ons-list-item>
+        <div v-show="!selectedAbiFn.constant&&abi">
+          <v-ons-list-item modifier="small">
+            <div class="left">ガスプライス</div>
+            <div class="center">
+              <v-ons-input type="number" v-model.number="sendGasPrice" @change="sendGasPrice = intValue(sendGasPrice)"></v-ons-input>
+            </div>
+            <div class="right">Gwei</div>
+          </v-ons-list-item>
+          <v-ons-list-item modifier="small">
+            <div class="left">ガスリミット</div>
+            <div class="center">
+              <v-ons-input type="number" v-model.number="runContract.gasLimit" @change="runContract.gasLimit = intValue(runContract.gasLimit)"></v-ons-input>
+            </div>
+          </v-ons-list-item>
+          <v-ons-list-item modifier="small" v-show="selectedAbiFn.payable">
+            <div class="left">value</div>
+            <div class="center">
+              <v-ons-input type="number" v-model.number="runContract.value" @change="runContract.value = intValue(runContract.value)"></v-ons-input>
+            </div>
+          </v-ons-list-item>
+          <v-ons-list-item modifier="small">
+            <v-ons-input placeholder="パスワード" v-model="runContract.password" type="password"></v-ons-input>
+          </v-ons-list-item>
+          <v-ons-list-header>ガスがかかります。ご注意ください。</v-ons-list-header>
+        </div>
+        <v-ons-list-item>
+          <v-ons-button @click="runMethod" modifier="large">{{loading?"実行中":"実行する"}}</v-ons-button>
+        </v-ons-list-item>
+        <v-ons-list-item v-show="runContract.result">
+          <textarea class="textarea" style="width:100%" placeholder="Result" v-model="runContract.result"></textarea>
+        </v-ons-list-item>
+      </v-ons-list>
+    </v-ons-list>
+    
+  </v-ons-dialog>
+
+  <v-ons-dialog :visible.sync="deployment.show" cancelable>
+    <v-ons-list>
+      <v-ons-list>
+        
+        <v-ons-list-item modifier="small">
+          <textarea class="textarea" style="width:100%" placeholder="Hex Contract Data" v-model="deployment.data"></textarea>
+        </v-ons-list-item>
+        <div>
+          <v-ons-list-item modifier="small">
+            <div class="left">ガスプライス</div>
+            <div class="center">
+              <v-ons-input type="number" v-model.number="sendGasPrice" @change="sendGasPrice = intValue(sendGasPrice)"></v-ons-input>
+            </div>
+            <div class="right">Gwei</div>
+          </v-ons-list-item>
+          <v-ons-list-item modifier="small">
+            <div class="left">ガスリミット</div>
+            <div class="center">
+              <v-ons-input type="number" v-model.number="deployment.gasLimit" @change="runContract.gasLimit = intValue(deployment.gasLimit)"></v-ons-input>
+            </div>
+          </v-ons-list-item>
+          
+          <v-ons-list-item modifier="small">
+            <v-ons-input placeholder="パスワード" v-model="deployment.password" type="password"></v-ons-input>
+          </v-ons-list-item>
+          <v-ons-list-header>ガスがかかります。ご注意ください。</v-ons-list-header>
+        </div>
+        <v-ons-list-item>
+          <v-ons-button @click="deployContract" modifier="large">{{loading?"実行中":"デプロイ"}}</v-ons-button>
+        </v-ons-list-item>
+        <v-ons-list-item v-show="deployment.result">
+          <textarea class="textarea" style="width:100%" placeholder="Result" v-model="deployment.result"></textarea>
+        </v-ons-list-item>
+      </v-ons-list>
+    </v-ons-list>
+    
+  </v-ons-dialog>
+  
+  <v-ons-popover :visible.sync="option" cancelable target="#ethOption" cover-target="true" direction="down">
+    <v-ons-list>
+      <v-ons-list-item @click="option=false;serverDlg=true" modifier="tappable">サーバー変更</v-ons-list-item>
+      <v-ons-list-item @click="openExplorerAccount" modifier="tappable">履歴を見る</v-ons-list-item>
+      <v-ons-list-item @click="option=false;goToAddTokens()" modifier="tappable">トークンを登録</v-ons-list-item>
+      <v-ons-list-item @click="option=false;runContract.show=true" modifier="tappable">コントラクトを実行</v-ons-list-item>
+      <v-ons-list-item @click="option=false;deployment.show=true" modifier="tappable">コントラクトをデプロイ</v-ons-list-item>
+    </v-ons-list>
+  </v-ons-popover>
+</v-ons-page>

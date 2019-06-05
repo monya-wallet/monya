@@ -3,11 +3,11 @@
   <div class="wrap">
     <p>秘密鍵を作成します。以下の注意事項をよく読んで、チェックをしてください</p>
     <ul>
-      <li>秘密鍵は所有するモナコインにアクセスする権利そのものです。</li>
-      <li>12個の英単語を正確に、紙に手書きしてください。</li>
+      <li>秘密鍵は所有するコインにアクセスする権利そのものです。</li>
+      <li>次の画面で表示される英単語を正確に、紙に手書きしてください。</li>
       <li>英単語のスクリーンショットを撮影・コピーしないでください。</li>
-      <li>これを紛失すると、モナコインを使うことはできなくなります。</li>
-      <li>他人に知れ渡ると、モナコインを盗まれる可能性があります。</li>
+      <li>これを紛失すると、コインを使うことはできなくなります。</li>
+      <li>他人に知れ渡ると、コインを盗まれる可能性があります。</li>
       <li>管理が不十分だったことによる責任は利用者自身が負い、他の誰も負いません。</li>
     </ul>
   </div>
@@ -29,6 +29,16 @@
         <v-ons-checkbox input-id="check3" v-model="check3"></v-ons-checkbox>
       </label>
       <label class="center" for="check3">秘密鍵の管理は自己責任であることを理解しました。</label>
+    </v-ons-list-item>
+    <v-ons-list-item>
+      <div class="center">単語数</div>
+      <div class="right">
+        <v-ons-select v-model="entropySize">
+          <option value="16">12単語</option>
+          <option value="24">18単語</option>
+          <option value="32">24単語</option>
+        </v-ons-select>
+      </div>
     </v-ons-list-item>
     <v-ons-list-item><v-ons-button :disabled="!check1||!check2||!check3" @click="next" modifier="large">次へ</v-ons-button></v-ons-list-item>
   </v-ons-list>

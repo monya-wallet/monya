@@ -1,24 +1,51 @@
+/*
+ MIT License
+
+ Copyright (c) 2018 monya-wallet zenypota
+
+ Permission is hereby granted, free of charge, to any person obtaining a copy
+ of this software and associated documentation files (the "Software"), to deal
+ in the Software without restriction, including without limitation the rights
+ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ copies of the Software, and to permit persons to whom the Software is
+ furnished to do so, subject to the following conditions:
+
+ The above copyright notice and this permission notice shall be included in all
+ copies or substantial portions of the Software.
+
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ SOFTWARE.
+*/
 const qrcode = require("qrcode")
 const currencyList = require("../js/currencyList")
 const storage = require("../js/storage")
 const coinUtil = require("../js/coinUtil")
-module.exports=require("./showLabel.html")({
+module.exports=require("../js/lang.js")({ja:require("./ja/showLabel.html"),en:require("./en/showLabel.html")})({
   data(){
     return {
       address:"",
       qrDataUrl:"",
-      isNative:false,
+      shareable:coinUtil.shareable(),
       label:"",
       edit:false,
       balance:0,
       labelInput:"",
-      pubKey:""
+      pubKey:"",
+
+      password:"",
+      incorrect:false,
+      showPrivKeyDlg:false
     }
   },
   store:require("../js/store.js"),
   methods:{
     copyAddress(){
-      coinUtil.copy(currencyList.get(this.$store.state.showLabelPayload.coinId).bip21+":"+this.address)
+      coinUtil.copy(this.address)
     },
     update(){
       if(!this.labelInput){
@@ -33,6 +60,25 @@ module.exports=require("./showLabel.html")({
         this.$store.commit("setLabelToShow",p)
         this.$emit("push",module.exports)
       })
+    },
+    share(event){
+      const targetRect = event.target.getBoundingClientRect(),
+            targetBounds = targetRect.left + ',' + targetRect.top + ',' + targetRect.width + ',' + targetRect.height;
+      coinUtil.share({
+        message:this.address
+      },targetBounds).then(()=>{
+      }).catch(()=>{
+        this.copyAddress()
+      })
+    },
+    async showPrivKey(){
+      const p =this.$store.state.showLabelPayload
+      const cur=currencyList.get(p.coinId)
+      this.showPrivKeyDlg=false
+      const cipher=await storage.get("keyPairs")
+      this.privKey=cur._getKeyPair(cipher.entropy,this.password,p.change,p.index).toWIF()
+      this.password=""
+      
     }
   },
   mounted(){
@@ -61,11 +107,3 @@ module.exports=require("./showLabel.html")({
     })
   }
 })
-
-
-
-
-
-
-
-

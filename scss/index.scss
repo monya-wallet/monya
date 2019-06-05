@@ -1,12 +1,28 @@
-$baseColor:#ffeb47;
-$baseTextColor:#7c5702;
-$currencySelectorHeight:50px;
-$qrCurIconPercent:20%;
-$homeCurIconSize:38px;
-$spinnerSize:90px;
+/*
+    Monya - The easiest cryptocurrency wallet
+    Copyright (C) 2017-2018 MissMonacoin
 
-html{
-  font-size:16px;
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+@import "./param.scss";
+@import "./cond.scss";
+@import "./onsenui-fix.scss";
+
+@import "./custom/styles.css";
+
+html, body{
+  font-size:1em;
 }
 
 .spinner {
@@ -16,37 +32,13 @@ html{
   animation-duration: 4s;
   animation-timing-function: ease;
   animation-iteration-count: infinite;
-  background-image:url(../res/spinner.png);
+  background-image:$spinnerImg;
   background-repeat:no-repeat no-repeat;
   background-position:center center;
   background-size:contain;
   display:inline-block;
 }
-.list-item--small{
-  .list-item--small__left,.list-item--small__center,.list-item--small__right{
-    min-height:0px;
-    padding-top: 4px;
-    padding-bottom: 4px;
-  }
-}
-ons-list-item{
-  .w_right{
-    margin-left:auto;
-    text-align:right;
-  }
-}
 
-.toolbar-button .ons-icon{
-  vertical-align:bottom;
-}
-
-ons-dialog .dialog{
-    max-height:100%;
-    max-width:100%;
-    overflow-y:scroll;
-    overflow-y:auto;
-  
-}
 .shake{
   animation: shake 0.72s cubic-bezier(.36,.07,.19,.97) both;
   transform: translate3d(0, 0, 0);
@@ -55,19 +47,20 @@ ons-dialog .dialog{
   background:transparent;
 }
 
+.currencySet{
+  white-space:nowrap;
+}
+
 [data-page="home"]{
   #youHave{
     width:100%;
     background-color: $baseColor;
     padding: 2% 0%;
     color:$baseTextColor;
-    background-image:url(../res/monacoin.png);
+    background-image:$homeBgImg;
     background-repeat:no-repeat;
-    background-position:bottom right;
+    background-position:top right;
     text-align: center;
-    .label{
-      color: #7b7442;
-    }
     .currencySet{
       margin:5% 0;
       
@@ -82,8 +75,7 @@ ons-dialog .dialog{
     }
   }
   #actionWrap{
-    margin:-10px 20px 20px;
-    
+    margin:-2px 16px 0px;
     position:relative;
     $radiusSize:5px;
     #actions{
@@ -144,6 +136,12 @@ ons-dialog .dialog{
         height:$homeCurIconSize;
       }
     }
+  }
+  #marquee{
+    font-size: 0.85em;
+    color: #666;
+    
+    
   }
 }
 [data-page="manageCoin"]{
@@ -206,7 +204,38 @@ ons-dialog .dialog{
     text-align:center;
   }
 }
-[data-page="showLabel"],[data-page="sweep"],[data-page="receive"],[data-page="history"],[data-page="invoice"]{
+[data-page="utxo"]{
+  .toolbar__right {
+    width: 40%;
+  }
+  ons-list-item{
+    
+    .addr{
+      font-size:0.8em;
+    }
+    .addr.receive{
+      color:#4a2;
+    }
+    .addr.change{
+      color:#29a;
+    }
+    .vout{
+      font-size:0.85em;
+    }
+    .inmatureConfirmation{
+      color:#ff0000;
+    }
+  }
+  .container{
+    text-align:center;
+  }
+}
+#historyJson{
+  width: 100%;
+  min-height: 200px;
+  min-width: 300px;
+}
+[data-page="sweep"],[data-page="receive"],[data-page="history"],[data-page="invoice"]{
   #currencySelector{
     width:100%;
     margin:none;
@@ -231,11 +260,8 @@ ons-dialog .dialog{
     }
   }
 }
-ons-popover .popover__content{
-  text-align:center;
-  min-height:20px;
-}
-[data-page="showLabel"],[data-page="invoice"],[data-page="receive"]{
+
+[data-page="showLabel"],[data-page="invoice"],[data-page="receive"],[data-page="xrp"],[data-page="nem"],[data-page="ethBase"]{
   text-align:center;
   #simple{
     .label{
@@ -281,15 +307,6 @@ ons-popover .popover__content{
     }
   }
 }
-[data-page="invoice"]{
-  .currencyIcon.monappy{
-    background-image:url(../res/monappy.png);
-  }
-  .monappyNotExist{
-    background-color:#fdc;
-  }
-}
-$iconSize:100px;
 [data-page="first"]{
   .page__background{
     background-color:$baseColor;
@@ -306,12 +323,12 @@ $iconSize:100px;
       text-align:center;
       .icon{
         display: inline-block;
-        background-image:url(../res/monya_icon_round_512.png);
+        background-image:$firstIconImg;
         background-position:center center;
         background-repeat:no-repeat;
         background-size:contain;
-        width:$iconSize;
-        height:$iconSize;
+        width:$firstIconSize;
+        height:$firstIconSize;
       }
       .appName{
         font-size:2em;
@@ -354,7 +371,7 @@ $iconSize:100px;
   background-size:contain;
   background-position:center center;
   background-repeat:no-repeat;
-  background-image: url(../res/howToAddHome.png);
+  background-image: url(../res/howToAddHome.jpg);
 }
 [data-page="restorePassphrase"]{
   #wordArea{
@@ -363,14 +380,17 @@ $iconSize:100px;
     .word{
       display:inline-block;
       margin:5px;
-      padding:4px;
+      padding:5px;
       border:#ddd 1px solid;
-      
-      border-radius:3.5px;
+      border-radius:4px;
       .wd{
         color:black;
       }
       .deleteBtn{
+        color:#aaa;
+        vertical-align: middle;
+      }
+      .wordNo{
         color:#aaa;
       }
       input{
@@ -405,11 +425,18 @@ $iconSize:100px;
   }
 }
 [data-page="question"]{
+  #ansBack{
+    position:fixed;
+    bottom:0;
+    left:0;
+    margin:10px;
+    z-index:100;
+  }
   .questionItem{
     text-align:center;
-    padding:3%;
+    padding:1%;
     .questionText{
-      padding:3%;
+      padding:2%;
       border-radius:8px;
       border:1px solid $baseTextColor;
       color:$baseTextColor;
@@ -420,8 +447,11 @@ $iconSize:100px;
         border-radius:6px;
         background-color:$baseColor;
         color:$baseTextColor;
-        margin:8px 0;
-        padding:6px;
+        margin:5px 0;
+        padding:5px;
+        &:active{
+          background-color:darken($baseColor,15%)
+        }
       }
     }
   }
@@ -453,6 +483,10 @@ $iconSize:100px;
     width:100%;
     display:block;
   }
+  .cpCandidate .right{
+    font-size:small;
+    color:#aaa;
+  }
 }
 [data-page="confirm"]{
   .insufficientFund{
@@ -461,9 +495,12 @@ $iconSize:100px;
 }
 
 [data-page="finished"]{
+  .page__background{
+    background-color:#0bd461;
+  }
   .succeeded{
     
-    height:300px;
+    height:256px;
     margin:50px 0;
     
     background-repeat:no-repeat no-repeat;
@@ -472,33 +509,34 @@ $iconSize:100px;
     &[data-img="0"]{
       background-image:url(../res/success.png);
     }
-    &[data-img="1"]{
-      background-image:url(../res/success_wo_mona.png);
-    }
-    &[data-img="2"]{
-      background-image:url(../res/vtc.png);
-    }
   }
   .wrap{
     padding:40px;
     text-align:center;
   }
-}
-[data-page="setPassword"]{
-  ons-input{
-    width:100%
+  .ok{
+    background:none;
+    border:2px solid white;
+    &:active{
+      background-color:rgba(0,0,0,0.2)
+    }
+    margin-bottom: 10px;
+  }
+  p{
+    color:white;
+    -webkit-user-select:text;
+    user-select:text;
   }
 }
-$passwordHeight:35px;
-[data-page="login"]{
+$passwordHeight:30px;
+[data-page="login"],[data-page="xrp"],[data-page="nem"],[data-page="ethBase"]{
   .wrap{
-    padding:40px;
+    padding:35px;
     text-align:center;
     .passwordBox{
       line-height: $passwordHeight;
       font-size:$passwordHeight;
-      display:grid;
-      grid-template-columns: 1fr $passwordHeight;
+      
       background:white;
       border-radius:8px;
       padding:5px;
@@ -507,9 +545,7 @@ $passwordHeight:35px;
         font-size:$passwordHeight;
         background: transparent;
         border: none;
-      }
-      ons-button{
-        line-height: $passwordHeight;
+        width:100%;
       }
       &.incorrect{
         animation: shake 0.72s cubic-bezier(.36,.07,.19,.97) both;
@@ -518,77 +554,18 @@ $passwordHeight:35px;
     }
   }
 }
-$zaifPayLogoSize:200px;
-[data-page="zaifPay"]{
-  .hasNoCredentials{
-    text-align:center;
-    .logo{
-      display: inline-block;
-      width: $zaifPayLogoSize;
-      height: $zaifPayLogoSize;
-      background-image:url(../res/zaifpay.png);
-      background-repeat:no-repeat;
-      background-size:contain;
-      background-position:center center;
-    }
-  }
-}
-[data-page="zaifHealth"]{
-  text-align:center;
-  #score{
-    font-size:xx-large;
-  }
-  #zaifIcon{
-    display: inline-block;
-    width: $zaifPayLogoSize;
-    height: $zaifPayLogoSize;
-    background-repeat:no-repeat;
-    background-size:contain;
-    background-position:center center;
-    
-  }
-}
-[data-page="zaifPayInvoice"]{
-  .label{
-    margin:10px;
-    color: #888;
-  }
-  #qrArea{
-    
-    #qrcode{
-      width: 250px;
-      height: 250px;
-      background-color:#aaa;
-      display:inline-block;
-      margin:10px;
-      position:relative;
-      #qrcodeImage{
-        width:100%;
-        height:100%;
-      }
-      #currentCurIcon{
-        position:absolute;
-        width:$qrCurIconPercent;
-        height:$qrCurIconPercent;
-        top:50%;
-        left:50%;
-        margin-left:-$qrCurIconPercent / 2;
-        margin-top:-$qrCurIconPercent / 2;
-        background-position:center center;
-        background-size:contain;
-        background-repeat:no-repeat;
+[data-page="xrp"],[data-page="nem"],[data-page="ethBase"]{
+  ons-list-item{
+    .left{
+      img{
+        width:$homeCurIconSize;
+        height:$homeCurIconSize;
       }
     }
-    .address{
-      display: block;
-      user-select:text;
-      -webkit-user-select: text;
-      -moz-user-select: text;
-      -ms-user-select: text;
-      word-wrap: break-word;
-      word-break: break-all;
-      white-space: pre-wrap;
-    }
+  }
+  
+  .description{
+    text-align:left;
   }
 }
 
@@ -611,6 +588,11 @@ $zaifPayLogoSize:200px;
       left:0;
       
     }
+  }
+}
+[data-page="signTx"]{
+  textarea,ons-input,ons-select{
+    width:100%;
   }
 }
 [data-page="sign"]{
@@ -642,45 +624,19 @@ $zaifPayLogoSize:200px;
     }
   }
 }
-[data-page="monaparty"]{
-  #wrap{
-    margin:10px;
-    background-color: white;
-    border-radius:3px;
-    ons-select{
-      width:100%;
-    }
-    position:relative;
-    #searchBox{
-      border-top:1px solid #9a7571;
-      height:36px;
-      width:100%;
-      position:relative;
-      input{
-        display:block;
-        width:100%;
-        height:100%;
-        margin:0;
-        border:0;
-        border-radius:3px;
-        box-sizing:border-box;
-        font-size:18px;
-      }
-      ons-button{
-        height:100%;
-        position:absolute;
-        right:0;
-        bottom:0;
-      }
-    }
-  }
+#titleImg{
+  width:$homeCurIconSize;
+  height:$homeCurIconSize;
+}
+[data-page="monaparty"],[data-page="listTokens"]{
+
   #tokens{
     text-align:center;
     .token{
       height:200px;
       width:140px;
       display:inline-block;
-      margin:5px;
+      margin:4px;
       position:relative;
       background-repeat: no-repeat no-repeat;
       background-position:center center;
@@ -697,15 +653,22 @@ $zaifPayLogoSize:200px;
         bottom:0;
         right:0;
         padding:2px;
+        box-sizing: border-box;
         background:rgba(255,255,255,0.8);
         border-radius: 3px 0 0 0;
+        max-width:100%;
         .currencySet{
+          
           .amount{
             display: block;
+            font-size:1.1em
           }
           .ticker{
             display: block;
             font-size:0.7em;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            overflow: hidden;
           }
         }
       }
@@ -715,7 +678,7 @@ $zaifPayLogoSize:200px;
 [data-page="tokenInfo"]{
   #cardArea{
     margin:10px;
-    height:350px;
+    height:500px;
     #card{
       width:100%;
       height:100%;
@@ -728,17 +691,20 @@ $zaifPayLogoSize:200px;
   }
 }
 [data-page="settings"]{
-  .monappyNotExist{
-    background-color:#fdc;
+  .left{
+    img{
+      width:$homeCurIconSize;
+      height:$homeCurIconSize;
+    }
   }
 }
-
-[data-page="customCoin"],[data-page="importExport"]{
+[data-page="importExport"]{
   textarea{
     width: 100%;
+    height:100px;
   }
 }
-[data-page="tokenInfo"],[data-page="monaparty"],[data-page="sendToken"],[data-page="makeToken"],[data-page="dexOrder"]{
+[data-page="tokenInfo"],[data-page="monaparty"],[data-page="listTokens"],[data-page="sendToken"],[data-page="makeToken"],[data-page="dexOrder"]{
   ons-toolbar{
     background:linear-gradient(to bottom, #9e3429 0%,#6b2f27 100%);
     ons-icon,.toolbar__title,.back-button__icon{
@@ -749,18 +715,8 @@ $zaifPayLogoSize:200px;
   .page__background{
     background-size:auto;
   }
-  ons-navigator.sand & .page__background{
+  ons-navigator & .page__background{
     background-image:url(../res/sand.jpg);
-    background-position:center center;
-    background-repeat:repeat;
-  }
-  ons-navigator.washi & .page__background{
-    background-image:url(../res/washi.jpg);
-    background-position:center center;
-    background-repeat:repeat;
-  }
-  ons-navigator.leather & .page__background{
-    background-image:url(../res/leather.jpg);
     background-position:center center;
     background-repeat:repeat;
   }
@@ -776,16 +732,50 @@ $zaifPayLogoSize:200px;
   ons-navigator.blue & .page__background{
     background-color:#123456;
   }
-  ons-input{
-    width:100%;
-  }
   ons-button{
     background:linear-gradient(to bottom, #9e3429 0%,#6b2f27 100%);
   }
 }
 [data-page="atomicswap"]{
-  ons-input{
-    width: 100%;
+  ons-segment{
+    width:100%;
+  }
+}
+
+[data-page="api"]>div{
+  padding:20px;
+  ons-button{
+    margin: 10px 0;
+    display: block;
+  }
+  .text-input{
+    margin:20px 0;
+    display: block;
+    width:100%;
+  }
+  
+}
+#dataToPassApp{
+  width: 100%;
+  min-height: 200px;
+  min-width: 300px;
+}
+#modalQr{
+  text-align:center;
+  width:350px;
+  img{
+    width:250px;
+    height:250px;
+  }
+  .url{
+    display: block;
+    user-select:text;
+    -webkit-user-select: text;
+    -moz-user-select: text;
+    -ms-user-select: text;
+    word-wrap: break-word;
+    word-break: break-all;
+    white-space: pre-wrap;
   }
 }
 
@@ -826,4 +816,3 @@ $zaifPayLogoSize:200px;
     transform: rotatez(360deg);
   }
 }
-

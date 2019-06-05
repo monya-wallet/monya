@@ -1,9 +1,33 @@
+/*
+ MIT License
+
+ Copyright (c) 2018 monya-wallet zenypota
+
+ Permission is hereby granted, free of charge, to any person obtaining a copy
+ of this software and associated documentation files (the "Software"), to deal
+ in the Software without restriction, including without limitation the rights
+ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ copies of the Software, and to permit persons to whom the Software is
+ furnished to do so, subject to the following conditions:
+
+ The above copyright notice and this permission notice shall be included in all
+ copies or substantial portions of the Software.
+
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ SOFTWARE.
+*/
 const currencyList = require("../js/currencyList")
+const storage = require("../js/storage")
 const coinUtil = require("../js/coinUtil")
-module.exports=require("./help.html")({
+module.exports=require("../js/lang.js")({ja:require("./ja/help.html"),en:require("./en/help.html")})({
   data(){
     return {
-
+      question:false
     }
   },
   methods:{
@@ -12,14 +36,6 @@ module.exports=require("./help.html")({
     },
     openLink(url){
        coinUtil.openUrl(url)
-    },
-    mineZeny(){
-      const zny=currencyList.get("zny")
-      if (zny.hdPubNode) {
-        this.openLink("https://missmonacoin.github.io/wasmminer/?h=bitzeny.bluepool.info&p=3333&u="+zny.getAddress(0,0))
-      }else{
-        this.openLink("https://missmonacoin.github.io/wasmminer/")
-      }
     }
   },
   mounted(){

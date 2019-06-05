@@ -1,5 +1,8 @@
 <v-ons-page data-page="history">
   <custom-bar title="履歴" menu="true">
+    <v-ons-toolbar-button @click="openUtxo()">
+      <v-ons-icon icon="fa-bolt"></v-ons-icon>
+    </v-ons-toolbar-button>
     <v-ons-toolbar-button @click="outputJson">
       <v-ons-icon icon="fa-download"></v-ons-icon>
     </v-ons-toolbar-button>
@@ -22,7 +25,7 @@
   <div>
     
     <div id="currencySelector">
-      <v-ons-carousel swipeable overscrollable direction="horizontal" item-height="50px" item-width="50px" :index="currencyIndex">
+      <v-ons-carousel swipeable overscrollable centered direction="horizontal" item-height="50px" item-width="50px" :index="currencyIndex">
         <v-ons-carousel-item v-for="(crc,i) in currency" class="currencyIcon" :style="{'background-image':'url('+crc.icon+')'}" @click="currencyIndex=i">
           <div class="checked" v-show="currencyIndex==i"></div>
         </v-ons-carousel-item>
@@ -56,9 +59,17 @@
         </div>
       </v-ons-list-item>
       <v-ons-list-item v-show="hasMore" @click="loadMore">もっと見る</v-ons-list-item>
+      <v-ons-list-item modifier="small">
+        <div class="center">
+          <v-ons-input placeholder="TXIDを検索" v-model="searchTxId"></v-ons-input>
+        </div>
+        <div class="right">
+          <v-ons-button modifier="quiet" @click="txDetail(searchTxId);searchTxId=''"><v-ons-icon icon="fa-search"></v-ons-icon></v-ons-button>
+        </div>
+      </v-ons-list-item>
     </v-ons-list>
     <v-ons-alert-dialog modifier="rowfooter"
-      :visible.sync="filterDlg"
+      :visible.sync="filterDlg" cancelable
     >
       <span slot="title">絞り込み</span>
       <v-ons-select v-model="currencyIndex">
@@ -69,10 +80,9 @@
         <option value="send">送金</option>
         <option value="receive">受け取り</option>
       </v-ons-select>
-      <v-ons-input placeholder="これ以下の取引を隠す" v-model="threshold"></v-ons-input>
       <br/>
       <v-ons-checkbox v-model="hideDustSend"></v-ons-checkbox>Monapartyっぽい出金を隠す
-      <v-ons-search-input placeholder="TXIDを検索" @change="txDetail(searchTxId)" v-model="searchTxId"></v-ons-search-input>
+      
       <template slot="footer">
         <div class="alert-dialog-button" @click="filterDlg=false">閉じる</div>
       </template>
@@ -82,6 +92,6 @@
                 :visible.sync="outputDlg"
                 >
     <p style="text-align: center">現在表示されている履歴のJSONファイルです。</p>
-    <textarea cols="50" rows="20">{{json}}</textarea>
+    <textarea class="textarea" readonly="readonly" id="historyJson">{{json}}</textarea>
   </v-ons-dialog>
 </v-ons-page>

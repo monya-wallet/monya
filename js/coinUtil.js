@@ -1,11 +1,39 @@
+/*
+ MIT License
+
+ Copyright (c) 2018 monya-wallet zenypota
+
+ Permission is hereby granted, free of charge, to any person obtaining a copy
+ of this software and associated documentation files (the "Software"), to deal
+ in the Software without restriction, including without limitation the rights
+ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ copies of the Software, and to permit persons to whom the Software is
+ furnished to do so, subject to the following conditions:
+
+ The above copyright notice and this permission notice shall be included in all
+ copies or substantial portions of the Software.
+
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ SOFTWARE.
+*/
 const currencyList = require("./currencyList.js")
 const bcLib = require('bitcoinjs-lib')
 const zecLib = require("@missmonacoin/bitcoinjs-lib-zcash")
-const bip39 = require("bip39")
+const bip39 = require("@missmonacoin/bip39-eng")
 const crypto = require('crypto');
-const storage = require("./storage")
 const errors=require("./errors")
 const axios=require("axios")
+const ext = require("./extension.js")
+const BigNumber = require("bignumber.js")
+
+const addressRegExp = /^\w+:(?:\/\/)?(\w{10,255})\??/
+
+const API_PREFIX="api_v1_"
 
 exports.DEFAULT_LABEL_NAME = "Default"
 exports.GAP_LIMIT=20
@@ -37,6 +65,8 @@ exports.getAddrVersion=(addr)=>{
 };
 exports.usdPrice = 0;
 exports.getPrice=(cryptoId,fiatId)=>{
+  // if user selected Nyaan, return 0 immediately
+  if(fiatId === "nyaan") return Promise.resolve(0)
   let currencyPath = []
   let prevId =cryptoId;//reverse seek is not implemented
   while(prevId!==fiatId){
@@ -160,9 +190,15 @@ exports.copy=data=>{
   }
 }
 exports.openUrl=(url)=>{
+  if(exports.isElectron()){
+    window.electronOpenExternal(url)
+    return 
+  }
   if(!window.cordova){
     window.open(url,"_blank")
+    return
   }
+  
   window.cordova.plugins.browsertab.isAvailable(
     result=> {
       if (result)  {
@@ -178,8 +214,19 @@ exports.openUrl=(url)=>{
       window.open(url,"_blank")
     });
 };
-exports.getBip21=(bip21Urn,address,query)=>{
+exports.getBip21=(bip21Urn,address,query,addrUrl=false)=>{
   let queryStr="?"
+  if(addrUrl){
+    query.address = address
+    query.scheme = bip21Urn
+    for(let v in query){
+      if(query[v]){
+        queryStr+=encodeURIComponent(v)+"="+encodeURIComponent(query[v])+"&"
+      }
+    }
+    return "https://monya-wallet.github.io/a/"+queryStr
+  }
+  
   for(let v in query){
     if(query[v]){
       queryStr+=encodeURIComponent(v)+"="+encodeURIComponent(query[v])+"&"
@@ -188,7 +235,7 @@ exports.getBip21=(bip21Urn,address,query)=>{
   return bip21Urn+":"+address+queryStr
 };
 
-exports.parseUrl=url=>new Promise((resolve,reject)=>{
+exports.parseUrl=async url=>{
   const ret = {
     url,
     raw:null,
@@ -203,48 +250,97 @@ exports.parseUrl=url=>new Promise((resolve,reject)=>{
     opReturn:"",
     signature:"",
     label:"",
-    isValidUrl:false
+    isValidUrl:false,
+    extension:null,
+    apiName:"",
+    apiParam:null
   }
   let raw;
   try{
     raw=new URL(url)
   }catch(e){
-    return resolve(ret)
+    return ret
+  }
+  let extraDataFromR=null
+  // required for BitPay invoice
+  if(raw.searchParams.get("r")){
+    extraDataFromR=(await axios.get(raw.searchParams.get("r"),{
+      responseType: 'json',
+      headers: {
+        'Accept': 'application/payment-request, application/bitcoin-paymentrequest'
+      }
+    })).data.outputs[0]
   }
   ret.raw=raw
-  ret.protocol=raw.protocol.slice(0,-1),
+  ret.protocol=raw.protocol.slice(0,-1)
   ret.isValidUrl=true
-  
+  const addrRes = addressRegExp.exec(url)
+  if(addrRes){
+    ret.address=addrRes[1]
+  }else if(extraDataFromR){
+    ret.address=extraDataFromR.address
+  }
+  if(ret.address.slice(0,API_PREFIX.length)===API_PREFIX){
+    ret.apiName=ret.address.slice(API_PREFIX.length)
+    try{
+      ret.apiParam=JSON.parse(raw.searchParams.get("param"))
+    }catch(e){
+      ret.apiParam=null
+    }
+    return ret
+  }
+  ext.each(v=>{
+    if(ret.protocol===v.scheme){
+      ret.extension=v
+    }
+  })
   currencyList.each(v=>{
     if(v.bip21===ret.protocol){
       ret.isCoinAddress=true
       ret.coinId=v.coinId
-      ret.address=raw.pathname
+      
       if (v.isValidAddress(ret.address)) {
         ret.isPrefixOk=true
       }
       ret.isValidAddress=exports.isValidAddress(ret.address)
-      ret.message=raw.searchParams.get("message")
-      ret.label=raw.searchParams.get("label")
-      ret.amount=raw.searchParams.get("amount")
-      ret.opReturn=raw.searchParams.get("req-opreturn")
-      ret.signature=raw.searchParams.get("req-signature")
-      ret.utxo=raw.searchParams.get("req-utxo")
+      
     }
   })
   
-  resolve(ret)
-})
+  ret.message=raw.searchParams.get("message")
+  ret.label=raw.searchParams.get("label")
+  ret.opReturn=raw.searchParams.get("req-opreturn")
+  ret.signature=raw.searchParams.get("req-signature")
+  ret.utxo=raw.searchParams.get("req-utxo")
+  if(extraDataFromR){
+    ret.amount=new BigNumber(extraDataFromR.amount).shift(-8).toString()
+    // Flag isValidAddress true
+    ret.isCoinAddress=true
+    ret.isValidAddress=true
+  }else{
+    ret.amount=raw.searchParams.get("amount")
+  }
+  return ret
+}
+let apiCb
+exports.callAPI=(name,param)=>{
+  apiCb(name,param)
+}
+
+exports.setAPICallback = cb=>{
+  apiCb=cb
+}
 
 exports.proxyUrl=url=>{
   if(exports.isNative()){
     return url
   }else{
-    return 'https://zaif-status.herokuapp.com/proxy/?u='+encodeURIComponent(url)
+    url = 'https://do00v6pih5.execute-api.us-east-2.amazonaws.com/dev?url=' + encodeURIComponent(url)
+    return url
   }
 }
 exports.shortWait=()=>new Promise(r=>{
-  setTimeout(r,150)
+  setTimeout(r,140)
 })
 exports._url=""
 exports._urlCb=null
@@ -288,12 +384,26 @@ exports.buildBuilderfromPubKeyTx=(transaction,network)=>{
   })
   return txb
 }
-
-exports.isNative = ()=>window.cordova&&window.cordova.platformId!=="browser"
+exports.isCordovaNative=()=>(window.cordova&&window.cordova.platformId!=="browser")
+exports.isElectron=()=>(window.process && window.process.type)
+exports.isNative = ()=>(exports.isCordovaNative()||exports.isElectron())
+exports.shareable=()=>window.plugins&&window.plugins.socialsharing||navigator.share
 exports.share = (option,pos)=> new Promise((resolve,reject)=>{
-  if(!window.plugins.socialsharing){
-    return
+  if(!window.plugins||!window.plugins.socialsharing){
+    if(navigator.share){
+      return navigator.share({
+        title:option.subject,
+        text:option.message,
+        url:option.url
+      })
+    }else{
+      return reject()
+    }
   }
   window.plugins.socialsharing.setIPadPopupCoordinates(pos)
   window.plugins.socialsharing.shareWithOptions(option,resolve,reject)
 })
+
+exports.getNews=()=>{
+  return axios.get("https://monya-wallet.github.io/news.json").then(r=>r.data.news)
+}
