@@ -252,31 +252,32 @@ const defaultCoins = [{
   opReturnLength: 83,
   isAtomicSwapAvailable: true
 }, {
-  coinScreenName: j ? "フジコイン" : "FujiCoin",
+  coinScreenName: j ? "富士コイン" : "Fujicoin",
   coinId: "fjc",
   unit: "FJC",
-  unitEasy: j ? "フジコイン" : "FujiCoin",
+  unitEasy: j ? "富士コイン" : "Fujicoin",
   bip44: {
     coinType: 75,
     account: 0
   },
   bip21: "fujicoin",
-  defaultFeeSatPerByte: 200,
+  defaultFeeSatPerByte: 20000,
   icon: require("../res/coins/fjc.png"),
   apiEndpoints: [{
-    url: "http://explorer.fujicoin.org/api",
-    explorer: "http://explorer.fujicoin.org",
+    url: "https://explorer.fujicoin.org/api",
+    explorer: "https://explorer.fujicoin.org",
     type:"blockbook"
   }],
   network: {
-    messagePrefix: '\x19Fujicoin Signed Message:\n',
+    messagePrefix: '\x19FujiCoin Signed Message:\n',
     bip32: {
       public: 0x0488b21e,
       private: 0x0488ade4
     },
     pubKeyHash: 36,
     scriptHash: 16,
-    wif: 164
+    wif: 164,
+    bech32: "fc"
   },
   enableSegwit: false,
   price: {
