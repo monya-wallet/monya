@@ -70,7 +70,7 @@ const defaultCoins = [{
     },
     pubKeyHash: 50,
     scriptHash: 55,
-    wif: 178, //new wif
+    wif: 176, //new wif
     bech32: "mona"
   },
   sound: require("../res/coins/paySound/mona.m4a"),
