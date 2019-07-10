@@ -45,10 +45,6 @@ const defaultCoins = [{
     explorer: "https://blockbook.electrum-mona.org",
     type:"blockbook"
   },{
-    url: "https://mona.blockbook.zenypota.net/api",
-    explorer: "https://mona.blockbook.zenypota.net",
-    type: "blockbook"
-  },{
     url: "https://mona.blockbook.ovh/api",
     explorer: "https://mona.blockbook.ovh",
     type: "blockbook"
@@ -103,10 +99,6 @@ const defaultCoins = [{
   defaultFeeSatPerByte: 150,
   icon: require("../res/coins/zny.png"),
   apiEndpoints: [{
-    url: "https://zeny.blockbook.zenypota.net/api",
-    explorer: "https://zeny.blockbook.zenypota.net",
-    type: "blockbook"
-  },{
     url: "https://zny.blockbook.ovh/api",
     explorer: "https://zny.blockbook.ovh",
     type: "blockbook"
