@@ -44,6 +44,11 @@
         </v-ons-list-item>
         <v-ons-list-header>請求書</v-ons-list-header>
         <v-ons-list-item modifier="tappable chevron" @click="createInvoice">請求書のQRコードを作る</v-ons-list-item>
+        <v-ons-list-header>お釣りアドレス</v-ons-list-header>
+        <v-ons-list-item>
+            <div class="center">残高</div>
+            <div class="right">{{changeBalance}}</div>
+        </v-ons-list-item>
       </v-ons-list>
     </div>
     <v-ons-alert-dialog modifier="rowfooter"

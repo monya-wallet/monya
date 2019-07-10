@@ -40,7 +40,8 @@ module.exports=require("../js/lang.js")({ja:require("./ja/receive.html"),en:requ
       dialogVisible:false,
       labelInput:"",
       maxLabel:coinUtil.GAP_LIMIT,
-      state:"initial"
+      state:"initial",
+      changeBalance: 0
     }
   },
   store:require("../js/store.js"),
@@ -108,12 +109,20 @@ module.exports=require("../js/lang.js")({ja:require("./ja/receive.html"),en:requ
       }).catch(()=>{
         this.copyAddress()
       })
+    },
+    getChangeBalance(){
+      const coinId = this.currency[this.currencyIndex].coinId
+      const cur = currencyList.get(coinId)
+      cur.getChangeBalance(false, false).then(v => {
+        this.changeBalance = v.balance
+      })
     }
   },
   watch:{
     currencyIndex(){
       this.getMainAddress()
       this.getLabels()
+      this.getChangeBalance()
     }
   },
   created(){
@@ -126,5 +135,6 @@ module.exports=require("../js/lang.js")({ja:require("./ja/receive.html"),en:requ
     })
     this.getMainAddress()
     this.getLabels()
+    this.getChangeBalance()
   }
 })
