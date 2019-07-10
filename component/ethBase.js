@@ -114,7 +114,7 @@ module.exports=function(option){
     store:require("../js/store.js"),
     methods:{
       
-      getBalance(done=()=>{}){
+      getBalance(){
         if(!this.address){
           return
         }
@@ -141,7 +141,6 @@ module.exports=function(option){
           for (let i = 0; i < balances.length; i++) {
             this.$set(this.tokens[i],"balance",+(new BigNumber(balances[i])).shift(-this.tokens[i].decimals))
           }
-          done()
         }).catch(e=>{
           this.loading=false
           this.$store.commit("setError","Server Error: "+e.message)
@@ -229,15 +228,16 @@ module.exports=function(option){
           return web3.eth.accounts.privateKeyToAccount("0x"+hdkey.fromMasterSeed(seed).derivePath(HD_DERIVATION_PATH).getWallet().getPrivateKey().toString("hex")).signTransaction(this.unsignedTx)
         }).then(signedTx=>{
           return web3.eth.sendSignedTransaction(signedTx.rawTransaction).on('transactionHash', txhash=>{
-            this.sendAddress=""
+          this.sendAddress=""
           this.sendAmount=""
           this.password=""
           this.unsignedTx=null
-          this.loading=false
-          this.$store.commit("setFinishNextPage",{page:require("./home.js"),infoId:"sent",payload:{
-            txId:txhash
+          this.$store.commit("setFinishNextPage",{infoId:"sent",payload:{
+            txId:txhash,
+            coinId: "eth"
           }})
-          this.$emit("replace",require("./finished.js"))
+          this.$emit("push",require("./finished.js"))
+          this.loading=false
           })
         }).catch(e=>{
           this.loading=false

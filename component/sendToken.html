@@ -24,7 +24,7 @@
       </v-ons-list-item>
       
       <v-ons-list-item><v-ons-input type="password" placeholder="Password" v-model="password"></v-ons-input></v-ons-list-item>
-      <v-ons-list-item><v-ons-button @click="createTx" modifier="large" :disabled="!dest||!sendAmount||!password">送る</v-ons-button></v-ons-list-item>
+      <v-ons-list-item><v-ons-button @click="next" modifier="large" :disabled="!dest||!sendAmount||!password">送る</v-ons-button></v-ons-list-item>
 
       <v-ons-list-item v-show="!advanced" @click="advanced=true">
         <div class="left"><v-ons-icon icon="fa-caret-down"></v-ons-icon></div>

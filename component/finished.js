@@ -46,7 +46,13 @@ module.exports=require("../js/lang.js")({ja:require("./ja/finished.html"),en:req
     },
 
     openExplorer(){
-      currencyList.get(this.payload.coinId).openExplorer({txId:this.payload.txId});
+      if (this.payload.coinId === "monaparty") {
+        coinUtil.openUrl("https://mpchain.info/tx/" + this.payload.txId)
+      } else if (this.payload.coinId === "eth") {
+        coinUtil.openUrl("https://etherscan.io/tx/" + this.payload.txId)
+      } else {
+        currencyList.get(this.payload.coinId).openExplorer({txId:this.payload.txId});
+      }
     }
   },
   computed:{
