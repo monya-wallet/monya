@@ -91,6 +91,7 @@ module.exports=require("../js/lang.js")({ja:require("./ja/showLabel.html"),en:re
     this.labelInput=p.name
     this.address=cur.getAddress(p.change,p.index)
     this.pubKey=cur.getPubKey(p.change,p.index)
+
     qrcode.toDataURL(cur.bip21+":"+this.address,{
       errorCorrectionLevel: 'M',
       type: 'image/png'

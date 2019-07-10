@@ -148,6 +148,7 @@ module.exports=class{
       this.changeIndex=newestAddr?
         this.getIndexFromAddress(newestAddr)[1]%coinUtil.GAP_LIMIT_FOR_CHANGE
       :-1
+
       return {
         balance:d.balance,
         unconfirmed:d.unconfirmed
