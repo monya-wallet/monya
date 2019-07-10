@@ -70,15 +70,15 @@ const defaultCoins = [{
     },
     pubKeyHash: 50,
     scriptHash: 55,
-    wif: 176, //new wif
+    wif: 176,
     bech32: "mona"
   },
   sound: require("../res/coins/paySound/mona.m4a"),
   enableSegwit: false,
   price: {
-    url: "https://public.bitbank.cc/mona_jpy/ticker",
+    url: "https://crypto-price-api.herokuapp.com/price/mona",
     json: true,
-    jsonPath: '$.data.last',
+    jsonPath: '$.price.jpy',
     fiat: "jpy"
   },
   confirmations: 6,
@@ -127,13 +127,14 @@ const defaultCoins = [{
     },
     pubKeyHash: 81,
     scriptHash: 5,
-    wif: 128,bech32:"sz"
+    wif: 128,
+    bech32:"bz"
   },
   enableSegwit: false,
   price: {
-    url: "https://api.coingecko.com/api/v3/simple/price?ids=bitzeny&vs_currencies=jpy",
+    url: "https://crypto-price-api.herokuapp.com/price/zny",
     json: true,
-    jsonPath: '$.bitzeny.jpy',
+    jsonPath: '$.price.jpy',
     fiat: "jpy"
   },
   sound: require("../res/coins/paySound/zny.m4a"),
