@@ -614,41 +614,6 @@ const defaultCoins = [{
   opReturnLength: 80,
   isAtomicSwapAvailable: true
 }, {
-  coinScreenName: j ? "野獣コイン" : "Yajucoin",
-  coinId: "yaju",
-  unit: "YAJU",
-  unitEasy: "¥",
-  bip44: {
-    coinType: 2005,
-    account: 0
-  },
-  bip21: "yajucoin",
-  defaultFeeSatPerByte: 50,
-  icon: require("../res/coins/yaju.png"),
-  apiEndpoints: [{
-    url: "https://yaju.monacoin.ml/api",
-    explorer: "https://yaju.monacoin.ml",
-    type:"insight"
-  },{
-    url: "https://yaju2.monacoin.ml/api",
-    explorer: "https://yaju.monacoin.ml",
-    type:"insight"
-  }],
-  network: {
-    messagePrefix: '\x19YAJUCOIN Signed Message:\n',
-    bip32: {
-      public: 0x0488b21e,
-      private: 0x0488ade4
-    },
-    pubKeyHash: 78,
-    scriptHash: 85, // n
-    wif: 206
-  },
-  enableSegwit: false,
-  lib: "blk",
-  opReturnLength: 0,
-  isAtomicSwapAvailable: false
-},{
   coinScreenName: j ? "NEETCOIN" : "NeetCoin",
   coinId: "neet",
   unit: "NEET",
