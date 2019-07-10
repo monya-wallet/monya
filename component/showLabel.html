@@ -34,7 +34,7 @@
           <div class="center">公開鍵</div>
           <div class="right"><v-ons-input :value="pubKey" readonly=readonly></v-ons-input></div>
         </v-ons-list-item>
-        <v-ons-list-item modifier="chevron tappable" @click="showPrivKeyDlg=true">
+        <v-ons-list-item modifier="chevron tappable" @click="showPrivKeyDlg=true" v-show="!privKey">
             秘密鍵を表示する
         </v-ons-list-item>
         <v-ons-list-item v-show="privKey">
@@ -68,5 +68,5 @@
         <div class="alert-dialog-button" @click="edit = false">やめる</div>
         <div class="alert-dialog-button" @click="update">追加</div>
       </template>
-    </v-ons-alert-dialog>
+  </v-ons-alert-dialog>
 </v-ons-page>

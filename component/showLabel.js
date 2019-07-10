@@ -36,10 +36,9 @@ module.exports=require("../js/lang.js")({ja:require("./ja/showLabel.html"),en:re
       balance:0,
       labelInput:"",
       pubKey:"",
-
       password:"",
       incorrect:false,
-      showPrivKeyDlg:false
+      showPrivKeyDlg:false,
     }
   },
   store:require("../js/store.js"),
@@ -78,7 +77,6 @@ module.exports=require("../js/lang.js")({ja:require("./ja/showLabel.html"),en:re
       const cipher=await storage.get("keyPairs")
       this.privKey=cur._getKeyPair(cipher.entropy,this.password,p.change,p.index).toWIF()
       this.password=""
-      
     }
   },
   mounted(){
