@@ -421,7 +421,7 @@ const defaultCoins = [{
   opReturnLength: 83,
   isAtomicSwapAvailable: false
 }, {
-  coinScreenName: j ? "ビットコインキャッシュ" : "Bitcoin Cash",
+  coinScreenName: j ? "ビットコインキャッシュ ABC" : "Bitcoin Cash ABC",
   coinId: "bch",
   unit: "BCH",
   unitEasy: j ? "ビッチ" : "BitCh",
