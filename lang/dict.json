@@ -2391,30 +2391,6 @@
     "ja": "テスター",
     "en": "Tester"
   },
-  "エロんぱん 様": {
-    "ja": "エロんぱん 様",
-    "en": "Love エロんぱん"
-  },
-  "BitZeny神社 様": {
-    "ja": "BitZeny神社 様",
-    "en": "Love BitZeny神社"
-  },
-  "侍日本代表 様": {
-    "ja": "侍日本代表 様",
-    "en": "Love 侍日本代表"
-  },
-  "tomotomo9696 様": {
-    "ja": "tomotomo9696 様",
-    "en": "Love tomotomo9696"
-  },
-  "Haiyan 様": {
-    "ja": "Haiyan 様",
-    "en": "Love Haiyan"
-  },
-  "hitobb 様": {
-    "ja": "hitobb 様",
-    "en": "Love hitobb"
-  },
   "公式Twitterに掲載依頼をしていただければ追加させていただきます": {
     "ja": "に掲載依頼をしていただければ追加させていただきます",
     "en": "I will add it if you can request publication on official Twitter."
@@ -2430,5 +2406,13 @@
   "未使用残高がありません。": {
     "ja": "未使用残高がありません。",
     "en": "There is no unspent balance in your wallet."
+  },
+  "公式サポート": {
+    "ja": "公式サポーター",
+    "en": "Official Supporter"
+  },
+  "エクスプローラを開く": {
+    "ja": "エクスプローラを開く",
+    "en": "Open explorer"
   }
 }
