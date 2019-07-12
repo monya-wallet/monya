@@ -13,9 +13,10 @@
             <v-ons-input v-model="txLabel" placeholder="名称未設定" @change="saveTxLabel"></v-ons-input>
           </div>
         </v-ons-list-item>
-        <v-ons-list-item v-show="!decodedCPMessage">
+        <v-ons-list-item v-show="!decodedCPMessage" @click="messageBinary=!messageBinary">
           <div class="center">メッセージ</div>
-          <div class="right" v-if="message">{{message}}</div>
+          <div class="right" v-if="message&&messageBinary">{{message}}</div>
+          <div class="right" v-if="message&&!messageBinary">{{hexMessage}}</div>
           <div class="right" v-if="!message">(メッセージ無し)</div>
         </v-ons-list-item>
         <v-ons-list-item v-show="decodedCPMessage">

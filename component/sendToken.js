@@ -47,27 +47,35 @@ module.exports=require("../js/lang.js")({ja:require("./ja/sendToken.html"),en:re
   },
   store:require("../js/store.js"),
   methods:{
-    
-    createTx(){
-      this.loading=true
-      titleList.get(this.titleId).createTx({
-        divisible:this.divisible,
-        sendAmount:this.sendAmount,
-        addressIndex:this.addressIndex,
-        dest:this.dest,
-        token:this.token,
-        includeUnconfirmedFunds:this.$store.state.includeUnconfirmedFunds,
-        password:this.password,
-        memo:this.sendMemo,
-        feePerByte:this.feePerByte,
-        useEnhancedSend:!this.sendWithSmall
-      }).then(r=>{
+    async next(){
+      try {
+        this.loading=true
+        titleList.get(this.titleId).createTx({
+          divisible:this.divisible,
+          sendAmount:this.sendAmount,
+          addressIndex:this.addressIndex,
+          dest:this.dest,
+          token:this.token,
+          includeUnconfirmedFunds:this.$store.state.includeUnconfirmedFunds,
+          password:this.password,
+          memo:this.sendMemo,
+          feePerByte:this.feePerByte,
+          useEnhancedSend:!this.sendWithSmall
+        }).then(r=>{
+          this.$store.commit("setFinishNextPage",{page: require("./monaparty.js"), infoId:"sent",payload:{
+            txId: r,
+            coinId: 'monaparty'
+          }})
+          this.$emit("push", require("./finished.js"))
+          this.loading=false
+        }).catch(e=>{
+          this.loading=false
+          this.$store.commit("setError", e.message)
+        })
+      } catch (e) {
         this.loading=false
-        this.$ons.notification.alert("Sent.Transaction ID is: "+r)
-      }).catch(e=>{
-        this.loading=false
-        this.$store.commit("setError",e.message)
-      })
+        this.$store.commit("setError", e.message)
+      }
     },
     
     getAddrLabel(){

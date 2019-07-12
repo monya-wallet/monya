@@ -26,7 +26,7 @@ require('onsenui/css/onsenui-core.min.css')
 require('onsenui/css/onsen-css-components.min.css')
 require('babel-polyfill')
 if(!window.cordova){
-  require('../res/cordova-plugin-qrscanner-lib.min.js')
+  window.QRScanner = require('../res/cordova-plugin-qrscanner-lib.min.js')
 }
 const Vue = require("vue/dist/vue.runtime.min")
 const VueOnsen = require('vue-onsenui')

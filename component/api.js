@@ -44,6 +44,29 @@ const apis={
       })
     }
   },
+  getMultipleAddress:{
+    type:"normal",
+    name:j?"アドレスの要求":"request your addresses",
+    props:{
+      addresses:"Coins" // btc:0,mona:0,zny:0
+    },
+    onAllowed(props){
+      const ret=[]
+      const addrKey=props.addresses.split(",")
+      for(let i=0;i<addrKey.length;i++){
+        const [coinId,addrIndex]=addrKey[i].split(":")
+        const cur=currencyList.get(coinId)
+        ret.push({
+          [coinId]: {
+           address:cur.getAddress(0,parseInt(addrIndex,10)),
+           pubKey:cur.getPubKey(0,parseInt(addrIndex,10)),
+           addrIndex:addrIndex,           
+          }
+        })
+      }
+      return Promise.resolve({result:JSON.stringify(ret)})
+    }
+  },
   signTx:{
     type:"password",
     name:j?"マルチシグトランザクション署名":"Sign Multisig transaction",

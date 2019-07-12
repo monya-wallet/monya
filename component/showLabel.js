@@ -36,10 +36,9 @@ module.exports=require("../js/lang.js")({ja:require("./ja/showLabel.html"),en:re
       balance:0,
       labelInput:"",
       pubKey:"",
-
       password:"",
       incorrect:false,
-      showPrivKeyDlg:false
+      showPrivKeyDlg:false,
     }
   },
   store:require("../js/store.js"),
@@ -78,7 +77,6 @@ module.exports=require("../js/lang.js")({ja:require("./ja/showLabel.html"),en:re
       const cipher=await storage.get("keyPairs")
       this.privKey=cur._getKeyPair(cipher.entropy,this.password,p.change,p.index).toWIF()
       this.password=""
-      
     }
   },
   mounted(){
@@ -93,6 +91,7 @@ module.exports=require("../js/lang.js")({ja:require("./ja/showLabel.html"),en:re
     this.labelInput=p.name
     this.address=cur.getAddress(p.change,p.index)
     this.pubKey=cur.getPubKey(p.change,p.index)
+
     qrcode.toDataURL(cur.bip21+":"+this.address,{
       errorCorrectionLevel: 'M',
       type: 'image/png'

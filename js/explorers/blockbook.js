@@ -44,14 +44,15 @@ module.exports = class BlockbookExplorer {
                 // add asm
                 vin.scriptSig.asm = bitcoin.script.toASM(Buffer.from(vin.scriptSig.hex, 'hex'));
                 // convert value to satoshis/watanabes
-                data.valueSat = +new BigNumber(data.value).times(100000000);
+                data.valueSat = +new BigNumber(vin.value).times(100000000);
                 // and to decimal
-                data.value = +data.value;
+                data.value = +vin.value;
             }
             for (let vout of data.vout) {
                 // add asm
                 vout.scriptPubKey.asm = bitcoin.script.toASM(Buffer.from(vout.scriptPubKey.hex, 'hex'));
             }
+            return data;
         });
     }
 
@@ -116,7 +117,11 @@ module.exports = class BlockbookExplorer {
             method: "GET"
         }).then(res => res.data).then(data => {
             if (propName) {
+              if (propName === "balance") {
+                return new BigNumber(data[propName]).times(100000000).toNumber();
+              } else {
                 return data[propName];
+              }
             } else {
                 if (noTxList) {
                     delete data.transactions;

@@ -148,6 +148,7 @@ module.exports=class{
       this.changeIndex=newestAddr?
         this.getIndexFromAddress(newestAddr)[1]%coinUtil.GAP_LIMIT_FOR_CHANGE
       :-1
+
       return {
         balance:d.balance,
         unconfirmed:d.unconfirmed
@@ -386,19 +387,33 @@ module.exports=class{
       
       this.getUtxos(param,option.includeUnconfirmedFunds).then(res=>{
         const path=[]
-        const { inputs, outputs, fee } = coinSelect(res.utxos, targets, feeRate)
+
+        let { inputs, outputs, fee } = coinSelect(res.utxos, targets, feeRate)
+        
         if (!inputs || !outputs) throw new errors.NoSolutionError()
+
         inputs.forEach(input => {
+          if (this.coinId === "kuma") {
+              Object.assign(input, {
+                value: input.value / 100
+              });                
+          }
+
           const vin = txb.addInput(input.txId, input.vout)
           txb.inputs[vin].value=input.value
           path.push(this.getIndexFromAddress(input.address))
-          
         })
+
         outputs.forEach(output => {
-          if (!output.address) {
-            output.address = this.getAddress(1,(this.changeIndex+1)%coinUtil.GAP_LIMIT_FOR_CHANGE)
+          if (this.coinId === "kuma") {
+            Object.assign(output, {
+              value: output.value / 100
+            });
           }
 
+          if (!output.address) {
+            output.address = this.getAddress(1, (this.changeIndex+1) % coinUtil.GAP_LIMIT_FOR_CHANGE)
+          }
           txb.addOutput(output.address, output.value)
         })
         

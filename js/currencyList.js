@@ -45,10 +45,6 @@ const defaultCoins = [{
     explorer: "https://blockbook.electrum-mona.org",
     type:"blockbook"
   },{
-    url: "https://mona.blockbook.zenypota.net/api",
-    explorer: "https://mona.blockbook.zenypota.net",
-    type: "blockbook"
-  },{
     url: "https://mona.blockbook.ovh/api",
     explorer: "https://mona.blockbook.ovh",
     type: "blockbook"
@@ -70,15 +66,15 @@ const defaultCoins = [{
     },
     pubKeyHash: 50,
     scriptHash: 55,
-    wif: 178, //new wif
+    wif: 176,
     bech32: "mona"
   },
   sound: require("../res/coins/paySound/mona.m4a"),
   enableSegwit: false,
   price: {
-    url: "https://public.bitbank.cc/mona_jpy/ticker",
+    url: "https://crypto-price-api.herokuapp.com/price/mona",
     json: true,
-    jsonPath: '$.data.last',
+    jsonPath: '$.price.jpy',
     fiat: "jpy"
   },
   confirmations: 6,
@@ -103,10 +99,6 @@ const defaultCoins = [{
   defaultFeeSatPerByte: 150,
   icon: require("../res/coins/zny.png"),
   apiEndpoints: [{
-    url: "https://zeny.blockbook.zenypota.net/api",
-    explorer: "https://zeny.blockbook.zenypota.net",
-    type: "blockbook"
-  },{
     url: "https://zny.blockbook.ovh/api",
     explorer: "https://zny.blockbook.ovh",
     type: "blockbook"
@@ -127,13 +119,14 @@ const defaultCoins = [{
     },
     pubKeyHash: 81,
     scriptHash: 5,
-    wif: 128,bech32:"sz"
+    wif: 128,
+    bech32:"bz"
   },
   enableSegwit: false,
   price: {
-    url: "https://api.coingecko.com/api/v3/simple/price?ids=bitzeny&vs_currencies=jpy",
+    url: "https://crypto-price-api.herokuapp.com/price/zny",
     json: true,
-    jsonPath: '$.bitzeny.jpy',
+    jsonPath: '$.price.jpy',
     fiat: "jpy"
   },
   sound: require("../res/coins/paySound/zny.m4a"),
@@ -190,7 +183,12 @@ const defaultCoins = [{
     fiat: "jpy"
   },
   confirmations: 6,
-  counterparty:{endpoints: ["https://wallet.counterwallet.io/_api"],nativeSymbol:"XCP"},
+  counterparty:{
+    endpoints: [
+      "https://wallet.counterwallet.io/_api"
+    ],
+    nativeSymbol:"XCP"
+  },
   opReturnLength: 83,
   isAtomicSwapAvailable: true
 }, {
@@ -247,41 +245,122 @@ const defaultCoins = [{
   opReturnLength: 83,
   isAtomicSwapAvailable: true
 }, {
-  coinScreenName: j ? "フジコイン" : "FujiCoin",
+  coinScreenName: j ? "富士コイン" : "Fujicoin",
   coinId: "fjc",
   unit: "FJC",
-  unitEasy: j ? "フジコイン" : "FujiCoin",
+  unitEasy: j ? "富士コイン" : "Fujicoin",
   bip44: {
     coinType: 75,
     account: 0
   },
   bip21: "fujicoin",
-  defaultFeeSatPerByte: 200,
+  defaultFeeSatPerByte: 20000,
   icon: require("../res/coins/fjc.png"),
   apiEndpoints: [{
-    url: "http://explorer.fujicoin.org/api",
-    explorer: "http://explorer.fujicoin.org",
+    url: "https://explorer.fujicoin.org/api",
+    explorer: "https://explorer.fujicoin.org",
     type:"blockbook"
-  },{
-    url: "https://fuji.blockbook.ovh/api",
-    explorer: "https://fuji.blockbook.ovh",
-    type: "blockbook"
   }],
   network: {
-    messagePrefix: '\x19Fujicoin Signed Message:\n',
+    messagePrefix: '\x19FujiCoin Signed Message:\n',
     bip32: {
       public: 0x0488b21e,
       private: 0x0488ade4
     },
     pubKeyHash: 36,
     scriptHash: 16,
-    wif: 164
+    wif: 164,
+    bech32: "fc"
   },
   enableSegwit: false,
   price: {
     url: "https://min-api.cryptocompare.com/data/price?fsym=FJC&tsyms=JPY",
     json: true,
     jsonPath: '$.JPY',
+    fiat: "jpy"
+  },
+  confirmations: 6,
+  opReturnLength: 83,
+  isAtomicSwapAvailable: true
+}, {
+  coinScreenName:"クマコイン",
+  coinId:"kuma",
+  unit:"KUMA",
+  unitEasy:"クマ",
+  bip44:{
+    coinType:2000, //not from slip44, if it is not in slip44, set from 2000
+    account:0
+  },
+  bip21:"kumacoin",
+  defaultFeeSatPerByte: 20000, //will implement dynamic fee
+  icon:require("../res/coins/kuma.png"),
+  apiEndpoints: [{
+    url: "https://kumabook.electrum-mona.org/api",
+    explorer: "https://kumabook.electrum-mona.org",
+    type: "blockbook"
+  },{
+    url: "https://namuyan.tk/MultiLightBlockExplorer/apis.php?data=kuma/api",
+    explorer: "https://namuyan.tk/MultiLightBlockExplorer/index.php?page=selectcoin&coin=kuma",
+    type: "insight"
+  }],
+  network:{
+    messagePrefix: '\x19KumaCoin Signed Message:\n',
+    bip32: {
+      public: 0x0488b21e,
+      private: 0x0488ade4
+    },
+    pubKeyHash: 45,
+    scriptHash: 8,
+    wif: 173
+  },
+  enableSegwit:false,
+  lib: "blk",
+  price: {
+    url: "https://api.coingecko.com/api/v3/simple/price?ids=kumacoin&vs_currencies=jpy",
+    json: true,
+    jsonPath: '$.kumacoin.jpy',
+    fiat: "jpy"
+  },
+  confirmations:6,
+  opReturnLength: 0,
+  isAtomicSwapAvailable: false
+}, {
+  coinScreenName: j ? "ビップスターコイン" : "VIPSTARCOIN",
+  coinId: "vips",
+  unit: "VIPS",
+  unitEasy: j ? "ビップス" : "VIPS",
+  bip44: {
+    coinType: 1919,
+    account: 0
+  },
+  bip21: "vipstarcoin",
+  defaultFeeSatPerByte: 150,
+  icon: require("../res/coins/vips.png"),
+  apiEndpoints: [{
+    url: "https://insight.vipstarco.in/api",
+    explorer: "https://insight.vipstarco.in",
+    type: "insight"
+  },{
+    url: "https://vips.blockbook.japanesecoin-pool.work/api",
+    explorer: "https://vips.blockbook.japanesecoin-pool.work",
+    type: "blockbook"
+  }],
+  network: {
+    messagePrefix: '\x1cVIPSTARCOIN Signed Message:\n',
+    bip32: {
+      public: 0x0488b21e,
+      private: 0x0488ade4
+    },
+    pubKeyHash: 70,
+    scriptHash: 50,
+    wif: 128,
+    bech32:"vips"
+  },
+  enableSegwit: false,
+  price: {
+    url: "https://api.coingecko.com/api/v3/simple/price?ids=vipstarcoin&vs_currencies=jpy",
+    json: true,
+    jsonPath: '$.vipstarcoin.jpy',
     fiat: "jpy"
   },
   confirmations: 6,
@@ -342,7 +421,7 @@ const defaultCoins = [{
   opReturnLength: 83,
   isAtomicSwapAvailable: false
 }, {
-  coinScreenName: j ? "ビットコインキャッシュ" : "Bitcoin Cash",
+  coinScreenName: j ? "ビットコインキャッシュ ABC" : "Bitcoin Cash ABC",
   coinId: "bch",
   unit: "BCH",
   unitEasy: j ? "ビッチ" : "BitCh",
@@ -395,28 +474,28 @@ const defaultCoins = [{
   opReturnLength: 83, // change after hard fork,
   isAtomicSwapAvailable: true
 }, {
-  "coinScreenName": j ? "コト" : "Koto",
-  "coinId": "koto",
-  "unit": "KOTO",
-  "unitEasy": j ? "コト" : "Koto",
-  "bip44": {
-    "coinType": 2001,
-    "account": 0
+  coinScreenName: j ? "コト" : "Koto",
+  coinId: "koto",
+  unit: "KOTO",
+  unitEasy: j ? "コト" : "Koto",
+  bip44: {
+    coinType: 2001,
+    account: 0
   },
-  "bip21": "koto",
-  "defaultFeeSatPerByte": 200,
-  "icon": require("../res/coins/koto.png"),
-  "network": {
-    "messagePrefix": "\u0015Koto Signed Message:\n",
-    "bip32": {
-      "public": 76067358,
-      "private": 76066276
+  bip21: "koto",
+  defaultFeeSatPerByte: 200,
+  icon: require("../res/coins/koto.png"),
+  network: {
+    messagePrefix: "\u0015Koto Signed Message:\n",
+    bip32: {
+      public: 76067358,
+      private: 76066276
     },
-    "pubKeyHash": 6198,
-    "scriptHash": 6203,
-    "txversion": 4,
-    "versionGroupId": 0x9023E50A,
-    "wif": 128
+    pubKeyHash: 6198,
+    scriptHash: 6203,
+    txversion: 4,
+    versionGroupId: 0x9023E50A,
+    wif: 128
   },
   price: {
     url: "https://api.coingecko.com/api/v3/simple/price?ids=koto&vs_currencies=jpy",
@@ -424,10 +503,10 @@ const defaultCoins = [{
     jsonPath: '$.koto.jpy',
     fiat: "jpy"
   },
-  "enableSegwit": false,
-  "confirmations": 6,
-  "lib": "zec",
-  "apiEndpoints": [{
+  enableSegwi: false,
+  confirmations: 6,
+  lib: "zec",
+  apiEndpoints: [{
     url: "https://blockbook.kotocoin.info/api",
     explorer: "https://blockbook.kotocoin.info",
     type: "blockbook"
@@ -443,30 +522,30 @@ const defaultCoins = [{
   opReturnLength: 80,
   isAtomicSwapAvailable: true
 }, {
-  "coinScreenName": j ? "ダッシュ" : "Dash",
-  "coinId": "dash",
-  "unit": "DASH",
-  "unitEasy": j ? "ダッシュ" : "Dash",
-  "bip44": {
-    "coinType": 5,
-    "account": 0
+  coinScreenName: j ? "ダッシュ" : "Dash",
+  coinId: "dash",
+  unit: "DASH",
+  unitEasy: j ? "ダッシュ" : "Dash",
+  bip44: {
+    coinType: 5,
+    account: 0
   },
-  "bip21": "dash",
-  "defaultFeeSatPerByte": 200,
-  "icon": require("../res/coins/dash.png"),
-  "network": {
-    "messagePrefix": "\u0019DarkCoin Signed Message:\n",
-    "bip32": {
-      "public": 76067358,
-      "private": 76066276
+  bip21: "dash",
+  defaultFeeSatPerByte: 200,
+  icon: require("../res/coins/dash.png"),
+  network: {
+    messagePrefix: "\u0019DarkCoin Signed Message:\n",
+    bip32: {
+      public: 76067358,
+      private: 76066276
     },
-    "pubKeyHash": 76,
-    "scriptHash": 16,
-    "wif": 204
+    pubKeyHash: 76,
+    scriptHash: 16,
+    wif: 204
   },
-  "enableSegwit": false,
-  "confirmations": 6,
-  "apiEndpoints": [{
+  enableSegwit: false,
+  confirmations: 6,
+  apiEndpoints: [{
     url: "https://dash1.trezor.io/api",
     explorer: "https://dash1.trezor.io",
     type: "blockbook",
@@ -488,32 +567,32 @@ const defaultCoins = [{
   opReturnLength: 83,
   isAtomicSwapAvailable: true
 }, {
-  "coinScreenName": j ? "ジーキャッシュ" : "Zcash",
-  "coinId": "zec",
-  "unit": "ZEC",
-  "unitEasy": "Zcash",
-  "bip44": {
-    "coinType": 133,
-    "account": 0
+  coinScreenName: j ? "ジーキャッシュ" : "Zcash",
+  coinId: "zec",
+  unit: "ZEC",
+  unitEasy: "Zcash",
+  bip44: {
+    coinType: 133,
+    account: 0
   },
-  "bip21": "zcash",
-  "defaultFeeSatPerByte": 200,
-  "icon": require("../res/coins/zec.png"),
-  "network": {
-    "messagePrefix": "\u0016Zcash Signed Message:\n",
-    "bip32": {
-      "public": 76067358,
-      "private": 76066276
+  bip21: "zcash",
+  defaultFeeSatPerByte: 200,
+  icon: require("../res/coins/zec.png"),
+  network: {
+    messagePrefix: "\u0016Zcash Signed Message:\n",
+    bip32: {
+      public: 76067358,
+      private: 76066276
     },
-    "pubKeyHash": 7352,
-    "scriptHash": 7357,
-    "txversion": 4,
-    "versionGroupId": 0x892F2085,
-    "wif": 128
+    pubKeyHash: 7352,
+    scriptHash: 7357,
+    txversion: 4,
+    versionGroupId: 0x892F2085,
+    wif: 128
   },
-  "apiEndpoints": [{
-    "url": "https://zcash.blockexplorer.com/api",
-    "explorer": "https://zcash.blockexplorer.com",
+  apiEndpoints: [{
+    url: "https://zcash.blockexplorer.com/api",
+    explorer: "https://zcash.blockexplorer.com",
     type:"insight"
   },{
     url: "https://zcashnetwork.info/api",
@@ -528,41 +607,6 @@ const defaultCoins = [{
   opReturnLength: 80,
   isAtomicSwapAvailable: true
 }, {
-  coinScreenName: j ? "野獣コイン" : "Yajucoin",
-  coinId: "yaju",
-  unit: "YAJU",
-  unitEasy: "¥",
-  bip44: {
-    coinType: 2005,
-    account: 0
-  },
-  bip21: "yajucoin",
-  defaultFeeSatPerByte: 50,
-  icon: require("../res/coins/yaju.png"),
-  apiEndpoints: [{
-    url: "https://yaju.monacoin.ml/api",
-    explorer: "https://yaju.monacoin.ml",
-    type:"insight"
-  },{
-    url: "https://yaju2.monacoin.ml/api",
-    explorer: "https://yaju.monacoin.ml",
-    type:"insight"
-  }],
-  network: {
-    messagePrefix: '\x19YAJUCOIN Signed Message:\n',
-    bip32: {
-      public: 0x0488b21e,
-      private: 0x0488ade4
-    },
-    pubKeyHash: 78,
-    scriptHash: 85, // n
-    wif: 206
-  },
-  enableSegwit: false,
-  lib: "blk",
-  opReturnLength: 0,
-  isAtomicSwapAvailable: false
-},{
   coinScreenName: j ? "NEETCOIN" : "NeetCoin",
   coinId: "neet",
   unit: "NEET",
@@ -599,8 +643,7 @@ const defaultCoins = [{
   },
   opReturnLength: 0,
   isAtomicSwapAvailable: false
-}
-                     ]
+}]
 
 
 const coins = {}
