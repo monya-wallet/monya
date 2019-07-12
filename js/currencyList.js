@@ -358,10 +358,10 @@ const defaultCoins = [{
   },
   enableSegwit: false,
   price: {
-    url: "https://api.crypto-bridge.org/api/v1/ticker",
+    url: "https://api.coingecko.com/api/v3/simple/price?ids=vipstarcoin&vs_currencies=jpy",
     json: true,
-    jsonPath: '$[?(@.id=="VIPS_BTC")].last',
-    fiat: "btc"
+    jsonPath: '$.vipstarcoin.jpy',
+    fiat: "jpy"
   },
   confirmations: 6,
   opReturnLength: 83,
