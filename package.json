@@ -30,10 +30,10 @@
     "qs": "^6.5.1",
     "ripple-keypairs": "^0.10.1",
     "ripple-lib": "^0.22.0",
-    "vue": "^2.5.13",
+    "vue": "2.5.13",
     "vue-onsenui": "^2.5.0",
     "vuex": "^3.0.1",
-    "web3": "^1.0.0-beta.34"
+    "web3": "1.0.0-beta.34"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.0.0-beta.36",
@@ -66,7 +66,7 @@
     "uglify-es": "^3.3.3",
     "uglifyjs-webpack-plugin": "^1.2.5",
     "url-loader": "^0.5.9",
-    "vue-template-compiler": "^2.5.13",
+    "vue-template-compiler": "2.5.13",
     "vue-template-loader": "^0.4.1",
     "webpack": "^4.12.0",
     "webpack-stream": "^4.0.3"
