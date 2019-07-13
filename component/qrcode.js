@@ -142,7 +142,7 @@ module.exports=require("../js/lang.js")({ja:require("./ja/qrcode.html"),en:requi
             return
           }
           QRScanner.destroy(()=>{
-            this.parse(t.result)
+            this.parse(t.result || t)
           })
         })
 
