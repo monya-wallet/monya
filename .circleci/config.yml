@@ -56,7 +56,7 @@ jobs:
   publish:
     docker:
       # specify the version you desire here
-      - image: circleci/android:api-28-node8-alpha
+      - image: circleci/android:api-27-node8-alpha
     working_directory: ~/repo
 
     steps:
@@ -92,7 +92,7 @@ jobs:
           wget https://services.gradle.org/distributions/gradle-4.1-bin.zip -qO gradle.zip
           sudo unzip gradle.zip -d /opt
           export PATH="$PATH:/opt/gradle-4.1/bin/"
-          sdkmanager tools "build-tools;26.0.2" "platform-tools" "platforms;android-26" "platforms;android-25" "platforms;android-28"
+          sdkmanager tools "build-tools;26.0.2" "platform-tools" "platforms;android-26" "platforms;android-25"
           cd cordovaProj
           npm i
           cordova platform add android
