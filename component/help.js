@@ -21,24 +21,25 @@
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  SOFTWARE.
 */
-const currencyList = require("../js/currencyList")
-const storage = require("../js/storage")
-const coinUtil = require("../js/coinUtil")
-module.exports=require("../js/lang.js")({ja:require("./ja/help.html"),en:require("./en/help.html")})({
-  data(){
+const currencyList = require("../js/currencyList");
+const storage = require("../js/storage");
+const coinUtil = require("../js/coinUtil");
+module.exports = require("../js/lang.js")({
+  ja: require("./ja/help.html"),
+  en: require("./en/help.html")
+})({
+  data() {
     return {
-      question:false
-    }
+      question: false
+    };
   },
-  methods:{
-    about(){
-      this.$emit("push",require("./about.js"))
+  methods: {
+    about() {
+      this.$emit("push", require("./about.js"));
     },
-    openLink(url){
-       coinUtil.openUrl(url)
+    openLink(url) {
+      coinUtil.openUrl(url);
     }
   },
-  mounted(){
-    
-  }
-})
+  mounted() {}
+});
