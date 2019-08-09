@@ -105,6 +105,11 @@ const defaultCoins = [
     icon: require("../res/coins/zny.png"),
     apiEndpoints: [
       {
+        url: "https://bitzeny-blockbook.ilmango.work/api",
+        explorer: "https://bitzeny-blockbook.ilmango.work",
+        type: "blockbook"
+      },
+      {
         url: "https://zny.blockbook.ovh/api",
         explorer: "https://zny.blockbook.ovh",
         type: "blockbook"
