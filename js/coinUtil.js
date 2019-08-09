@@ -45,10 +45,15 @@ exports.isValidAddress = addr => {
     return true;
   } catch (e) {
     try {
-      zecLib.address.fromBase58Check(addr);
+      bcLib.address.fromBech32(addr);
       return true;
-    } catch (e2) {
-      return false;
+    } catch (e) {
+      try {
+        zecLib.address.fromBase58Check(addr);
+        return true;
+      } catch (e) {
+        return false;
+      }
     }
   }
 };
