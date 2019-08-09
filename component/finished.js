@@ -21,46 +21,52 @@
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  SOFTWARE.
 */
-const coinUtil = require("../js/coinUtil.js")
-const currencyList = require("../js/currencyList.js")
-module.exports=require("../js/lang.js")({ja:require("./ja/finished.html"),en:require("./en/finished.html")})({
-  data(){
+const coinUtil = require("../js/coinUtil.js");
+const currencyList = require("../js/currencyList.js");
+module.exports = require("../js/lang.js")({
+  ja: require("./ja/finished.html"),
+  en: require("./en/finished.html")
+})({
+  data() {
     return {
-      loading:false
-    }
+      loading: false
+    };
   },
-  store:require("../js/store.js"),
-  methods:{
-    start(){
-      this.loading=true
-      coinUtil.shortWait().then(()=>{
-        this.loading=false
-        if(this.$store.state.finishNextPage.page){
-          this.$emit("replace",this.$store.state.finishNextPage.page)
-        }else{
-          this.$emit("pop")
+  store: require("../js/store.js"),
+  methods: {
+    start() {
+      this.loading = true;
+      coinUtil.shortWait().then(() => {
+        this.loading = false;
+        if (this.$store.state.finishNextPage.page) {
+          this.$emit("replace", this.$store.state.finishNextPage.page);
+        } else {
+          this.$emit("pop");
         }
-        this.$store.commit("setFinishNextPage",{infoId:"",payload:{}})
-      })
-      
+        this.$store.commit("setFinishNextPage", { infoId: "", payload: {} });
+      });
     },
 
-    openExplorer(){
+    openExplorer() {
       if (this.payload.coinId === "monaparty") {
-        coinUtil.openUrl("https://mpchain.info/tx/" + this.payload.txId)
+        coinUtil.openUrl("https://mpchain.info/tx/" + this.payload.txId);
       } else if (this.payload.coinId === "eth") {
-        coinUtil.openUrl("https://etherscan.io/tx/" + this.payload.txId)
+        coinUtil.openUrl("https://etherscan.io/tx/" + this.payload.txId);
       } else {
-        currencyList.get(this.payload.coinId).openExplorer({txId:this.payload.txId});
+        currencyList
+          .get(this.payload.coinId)
+          .openExplorer({ txId: this.payload.txId });
       }
     }
   },
-  computed:{
-    infoId(){
-      return this.$store.state.finishNextPage?this.$store.state.finishNextPage.infoId:""
+  computed: {
+    infoId() {
+      return this.$store.state.finishNextPage
+        ? this.$store.state.finishNextPage.infoId
+        : "";
     },
-    payload(){
-      return this.$store.state.finishNextPage.payload
+    payload() {
+      return this.$store.state.finishNextPage.payload;
     }
   }
-})
+});

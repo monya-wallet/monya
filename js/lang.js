@@ -21,12 +21,15 @@
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  SOFTWARE.
 */
-module.exports = function(o){
-  return o[window.localStorage.lang||
-           (o[navigator.language]?
-            navigator.language:"ja")]
-}
+module.exports = function(o) {
+  return o[
+    window.localStorage.lang ||
+      (o[navigator.language] ? navigator.language : "ja")
+  ];
+};
 
-module.exports.getLang = function(){
-  return (""+(window.localStorage.lang||navigator.language.slice(0,2))).toLowerCase()
-}
+module.exports.getLang = function() {
+  return (
+    "" + (window.localStorage.lang || navigator.language.slice(0, 2))
+  ).toLowerCase();
+};

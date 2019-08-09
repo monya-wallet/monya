@@ -21,83 +21,93 @@
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  SOFTWARE.
 */
-const currencyList = require("../js/currencyList")
-const coinUtil = require("../js/coinUtil")
-const bcLib = require('bitcoinjs-lib')
-const BigNumber = require('bignumber.js')
+const currencyList = require("../js/currencyList");
+const coinUtil = require("../js/coinUtil");
+const bcLib = require("bitcoinjs-lib");
+const BigNumber = require("bignumber.js");
 
-module.exports=require("../js/lang.js")({ja:require("./ja/utxo.html"),en:require("./en/utxo.html")})({
-  data(){
+module.exports = require("../js/lang.js")({
+  ja: require("./ja/utxo.html"),
+  en: require("./en/utxo.html")
+})({
+  data() {
     return {
-      utxos:[],
-      currency:this.$store.state.detail.coinId||"mona",
-      currencyIndex:0,
-      txs:[],
-      state:"initial",
-      error:false,
-      noData:false,
-      hasMore:false,
-      json:"",
-      threshold:0,
-      totalItems:0,
-      enablePullHook:true
-    }
+      utxos: [],
+      currency: this.$store.state.detail.coinId || "mona",
+      currencyIndex: 0,
+      txs: [],
+      state: "initial",
+      error: false,
+      noData: false,
+      hasMore: false,
+      json: "",
+      threshold: 0,
+      totalItems: 0,
+      enablePullHook: true
+    };
   },
-  store:require("../js/store.js"),
-  methods:{
-    load(done){
-      this.noData=false
-      this.error=false
-      const cur =currencyList.get(this.currency)
-      const recv=cur.getReceiveAddr();
-      const chng=cur.getChangeAddr();
-      cur.getUtxos(Array.prototype.concat.call(recv,chng),true).then(data=>{
-        if(!data.utxos.length){
-          this.noData=true
-          typeof(done)==='function'&&done()
-          return;
-        }
-        this.utxos=data.utxos.map(a=>{
-          a.balance=(new BigNumber(a.value)).dividedBy(100000000).toNumber();
-          // immature?
-          a.inmatureConfirmation=!a.confirmations||a.confirmations<cur.confirmations;
-          a.isChange=recv.indexOf(a.address)>=0;
-          return a;
+  store: require("../js/store.js"),
+  methods: {
+    load(done) {
+      this.noData = false;
+      this.error = false;
+      const cur = currencyList.get(this.currency);
+      const recv = cur.getReceiveAddr();
+      const chng = cur.getChangeAddr();
+      cur
+        .getUtxos(Array.prototype.concat.call(recv, chng), true)
+        .then(data => {
+          if (!data.utxos.length) {
+            this.noData = true;
+            typeof done === "function" && done();
+            return;
+          }
+          this.utxos = data.utxos.map(a => {
+            a.balance = new BigNumber(a.value).dividedBy(100000000).toNumber();
+            // immature?
+            a.inmatureConfirmation =
+              !a.confirmations || a.confirmations < cur.confirmations;
+            a.isChange = recv.indexOf(a.address) >= 0;
+            return a;
+          });
+          typeof done === "function" && done();
+        })
+        .catch(() => {
+          this.error = true;
+          typeof done === "function" && done();
         });
-        typeof(done)==='function'&&done()
-      }).catch(()=>{
-        this.error=true
-        typeof(done)==='function'&&done()
+    },
+    pullToLoad(done) {
+      this.reset();
+      this.load(done);
+    },
+    reset() {
+      this.utxos = [];
+      this.hasMore = false;
+    },
+    txDetail(txId) {
+      if (!txId) {
+        return;
+      }
+      this.$store.commit("setTxDetail", {
+        txId,
+        coinId: this.coinId
       });
+      this.$emit("push", require("./txDetail.js"));
     },
-    pullToLoad(done){
-      this.reset()
-      this.load(done)
-    },
-    reset(){
-      this.utxos=[]
-      this.hasMore=false
-    },
-    txDetail(txId){
-      if(!txId){return }
-      this.$store.commit("setTxDetail",{
-        txId,coinId:this.coinId
-      })
-      this.$emit("push",require("./txDetail.js"))
-    },
-    addressClass(addr){
-      const addrTuple=currencyList.get(this.coinId).getIndexFromAddress(addr)
-      if(!addrTuple)return ""
-      if(parseInt(addrTuple[0],10)===0)return "receive"
-      if(parseInt(addrTuple[0],10)===1)return "change"
+    addressClass(addr) {
+      const addrTuple = currencyList.get(this.coinId).getIndexFromAddress(addr);
+      if (!addrTuple) return "";
+      if (parseInt(addrTuple[0], 10) === 0) return "receive";
+      if (parseInt(addrTuple[0], 10) === 1) return "change";
     }
   },
-  mounted(){
-    this.load()
+  mounted() {
+    this.load();
   },
-  computed:{
-    coinId(){
-      return this.currency
+  computed: {
+    coinId() {
+      return this.currency;
     }
   }
-})
+});
