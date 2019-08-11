@@ -27,10 +27,14 @@ const crypto = require("crypto");
 const storage = require("../js/storage.js");
 const errors = require("../js/errors");
 const template = require("../lang/template.json");
+const zxcvbn = require("zxcvbn");
 
 const ext = require("../js/extension.js");
 
-const blacklist = ["123456", "114514", "password", "password2"];
+// minimum required password score (exclusive)
+// change here if you need
+const requiredScore = 2;
+
 module.exports = require("../js/lang.js")({
   ja: require("./ja/setPassword.html"),
   en: require("./en/setPassword.html")
@@ -61,8 +65,11 @@ module.exports = require("../js/lang.js")({
       ) {
         return;
       }
-      if (blacklist.indexOf(this.password) >= 0) {
-        this.$ons.notification.alert(this.password + "は禁止!");
+      const strengthScore = zxcvbn(this.password).score;
+      if (strengthScore < requiredScore) {
+        this.$ons.notification.alert(
+          `${this.password}は禁止! (${strengthScore} < ${requiredScore})`
+        );
         return;
       }
       this.loading = true;
