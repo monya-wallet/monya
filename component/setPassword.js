@@ -53,8 +53,7 @@ module.exports = require("../js/lang.js")({
       encrypt: false,
       encrypted: false,
       answers: this.$store.state.answers,
-      passwordScore: 0,
-      requiredScore
+      passwordScore: 0
     };
   },
   store: require("../js/store.js"),
