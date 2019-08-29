@@ -755,6 +755,19 @@ $passwordHeight:30px;
   }
   
 }
+[data-page="setPassword"]{
+  ons-progress-bar[mode="weak"]{
+    .progress-bar__primary,.progress-bar--material__primary{
+      background-color:red;
+    }
+  }
+  ons-progress-bar[mode="strong"]{
+    .progress-bar__primary,.progress-bar--material__primary{
+      background-color:green;
+    }
+  }
+}
+
 #dataToPassApp{
   width: 100%;
   min-height: 200px;

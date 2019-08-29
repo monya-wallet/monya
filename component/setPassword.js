@@ -53,7 +53,8 @@ module.exports = require("../js/lang.js")({
       encrypt: false,
       encrypted: false,
       answers: this.$store.state.answers,
-      passwordScore: 0
+      passwordScore: 0,
+      meterColor: "weak"
     };
   },
   store: require("../js/store.js"),
@@ -139,6 +140,7 @@ module.exports = require("../js/lang.js")({
   watch: {
     password(p) {
       this.passwordScore = zxcvbn(p).score;
+      this.meterColor = this.passwordScore < requiredScore ? "weak" : "strong";
     }
   },
   created() {
