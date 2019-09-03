@@ -67,8 +67,7 @@
           </div>
         </v-ons-list-item>
         <v-ons-list-item v-show="sendNegative">
-          <div class="center">
-          </div>
+          <div class="center warning">警告: 全額を送金しようとしています。送金先をよく確かめて下さい!</div>
         </v-ons-list-item>
         
         <v-ons-list-item><v-ons-button modifier="large" @click="confirm" :disabled="!sendable">確認画面へ</v-ons-button></v-ons-list-item>

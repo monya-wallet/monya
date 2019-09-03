@@ -54,7 +54,8 @@ module.exports = require("../js/lang.js")({
       loading: true,
       incorrect: false,
       paySound: false,
-      hash: ""
+      hash: "",
+      sendNegative: false
     };
   },
   store: require("../js/store.js"),
@@ -72,6 +73,7 @@ module.exports = require("../js/lang.js")({
     ].forEach(v => {
       this[v] = this.$store.state.confPayload[v];
     });
+    this.sendNegative = +this.amount < 0;
     this.cur = currencyList.get(this.coinType);
     this.$nextTick(this.build);
     currencyList
