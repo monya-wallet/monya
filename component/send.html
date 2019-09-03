@@ -66,6 +66,10 @@
             <currency-set :ticker="fiatTicker"></currency-set>
           </div>
         </v-ons-list-item>
+        <v-ons-list-item v-show="sendNegative">
+          <div class="center">
+          </div>
+        </v-ons-list-item>
         
         <v-ons-list-item><v-ons-button modifier="large" @click="confirm" :disabled="!sendable">確認画面へ</v-ons-button></v-ons-list-item>
         
