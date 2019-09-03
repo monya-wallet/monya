@@ -19,7 +19,7 @@
     "bitcoinjs-lib": "^3.2.0",
     "bitcoinjs-message": "^2.0.0",
     "buffer": "^5.0.8",
-    "coinselect": "^3.1.11",
+    "coinselect": "git+https://github.com/nao20010128/coinselect.git",
     "cordova-plugin-qrscanner": "^2.5.0",
     "ethereumjs-wallet": "^0.6.0",
     "instascan": "^1.0.0",
