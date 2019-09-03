@@ -25,6 +25,7 @@ const bcLib = require("bitcoinjs-lib");
 const axios = require("axios");
 const BigNumber = require("bignumber.js");
 const coinSelect = require("coinselect");
+const coinSelectSplit = require("coinselect/split");
 const bcMsg = require("bitcoinjs-message");
 const bip39 = require("@missmonacoin/bip39-eng");
 const qs = require("qs");
@@ -793,7 +794,7 @@ module.exports = class {
         return r.data.result;
       });
   }
-  sweep(priv, addr, fee, ignoreVersion = false) {
+  sweep(priv, addr, feeRate, ignoreVersion = false) {
     if (ignoreVersion) {
       const orig = bs58check.decode(priv);
       const hash = orig.slice(1);
@@ -806,13 +807,13 @@ module.exports = class {
     const keyPair = this.lib.ECPair.fromWIF(priv, this.network);
     return this.getUtxos([keyPair.getAddress()]).then(r => {
       const txb = new this.lib.TransactionBuilder(this.network);
+      const { outputs } = coinSelectSplit(r.utxos, [{}], feeRate);
       r.utxos.forEach((v, i) => {
         txb.addInput(v.txId, v.vout);
       });
-      txb.addOutput(
-        addr,
-        +new BigNumber(r.balance).minus(fee).times(100000000)
-      );
+      alert(JSON.stringify(r.utxos));
+      alert(JSON.stringify(outputs));
+      txb.addOutput(addr, outputs[0].value);
       r.utxos.forEach((v, i) => {
         if (this.enableSegwit) {
           const redeemScript = this.lib.script.witnessPubKeyHash.output.encode(
