@@ -23,6 +23,7 @@
     "cordova-plugin-qrscanner": "^2.5.0",
     "ethereumjs-wallet": "^0.6.0",
     "instascan": "^1.0.0",
+    "lodash": "^4.17.15",
     "nem-sdk": "^1.6.4",
     "onsenui": "^2.10.0",
     "pump": "^2.0.0",

@@ -25,6 +25,7 @@ const currencyList = require("./currencyList");
 const BigNumber = require("bignumber.js");
 const storage = require("../js/storage");
 const axios = require("axios");
+const _ = require("lodash");
 
 const DEFAULT_REGULAR_DUST = 70000;
 const DEFAULT_MULTISIG_DUST = 70000;
@@ -89,31 +90,36 @@ module.exports = class {
     });
   }
   getCardDetailV1(token) {
-    if (Array.isArray(token)) {
-      token = token.join(",");
+    if (typeof token === "string") {
+      token = token.split(",");
     }
-    return axios
-      .get(this.apiEndpoint + "/card_detail.php?assets=" + token)
-      .then(r => {
-        const arr = [];
-        if (!r.data.error) {
-          r.data.details.forEach(k => {
-            arr.push({
-              description: k.add_description,
-              asset: k.asset,
-              assetCommonName: k.asset_common_name,
-              assetLongName: k.asset_longname,
-              cardName: k.card_name,
-              imageUrl: k.imgur_url,
-              ownerName: k.owner_name,
-              twitterId: k.tw_id,
-              twitterScreenName: k.tw_name,
-              timestamp: parseInt(k.update_time, 10)
-            });
+    const promises = _.chunk(token, 20)
+      .map(ss => ss.join(","))
+      .map(tok => {
+        return axios
+          .get(this.apiEndpoint + "/card_detail.php?assets=" + tok)
+          .then(r => {
+            const arr = [];
+            if (!r.data.error) {
+              r.data.details.forEach(k => {
+                arr.push({
+                  description: k.add_description,
+                  asset: k.asset,
+                  assetCommonName: k.asset_common_name,
+                  assetLongName: k.asset_longname,
+                  cardName: k.card_name,
+                  imageUrl: k.imgur_url,
+                  ownerName: k.owner_name,
+                  twitterId: k.tw_id,
+                  twitterScreenName: k.tw_name,
+                  timestamp: parseInt(k.update_time, 10)
+                });
+              });
+            } //error but ignore because other promise stop
+            return arr;
           });
-        } //error but ignore because other promise stop
-        return arr;
       });
+    return Promise.all(promises).then(_.flatten);
   }
   getCardDetailV2(token) {
     if (Array.isArray(token)) {
