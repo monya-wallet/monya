@@ -792,7 +792,7 @@ module.exports = class {
         return r.data.result;
       });
   }
-  sweep(priv, addr, fee, ignoreVersion = false) {
+  sweep(priv, addr, feeRate, ignoreVersion = false) {
     if (ignoreVersion) {
       const orig = bs58check.decode(priv);
       const hash = orig.slice(1);
@@ -805,13 +805,11 @@ module.exports = class {
     const keyPair = this.lib.ECPair.fromWIF(priv, this.network);
     return this.getUtxos([keyPair.getAddress()]).then(r => {
       const txb = new this.lib.TransactionBuilder(this.network);
+      const { outputs } = coinSelectSplit(r.utxos, [{}], +feeRate);
       r.utxos.forEach((v, i) => {
         txb.addInput(v.txId, v.vout);
       });
-      txb.addOutput(
-        addr,
-        +new BigNumber(r.balance).minus(fee).times(100000000)
-      );
+      txb.addOutput(addr, outputs[0].value);
       r.utxos.forEach((v, i) => {
         if (this.enableSegwit) {
           const redeemScript = this.lib.script.witnessPubKeyHash.output.encode(
