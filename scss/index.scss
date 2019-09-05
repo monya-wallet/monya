@@ -479,9 +479,14 @@ html, body{
 }
 
 [data-page="send"]{
-  ons-list-item ons-input{
-    width:100%;
-    display:block;
+  ons-list-item{
+    ons-input{
+      width:100%;
+      display:block;
+    }
+    .warning{
+      color:#f00;
+    }
   }
   .cpCandidate .right{
     font-size:small;
@@ -491,6 +496,11 @@ html, body{
 [data-page="confirm"]{
   .insufficientFund{
     color:red;
+  }
+  ons-list-item{
+    .warning{
+      color:#f00;
+    }
   }
 }
 

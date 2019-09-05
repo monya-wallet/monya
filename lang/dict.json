@@ -2434,5 +2434,9 @@
   "おそらく安全": {
     "ja": "おそらく安全",
     "en": "Probably safe"
+  },
+  "警告: 全額を送金しようとしています。送金先をよく確かめて下さい!": {
+    "ja": "警告: 全額を送金しようとしています。送金先をよく確かめて下さい!",
+    "en": "Warning: You are going to send all funds in the wallet. Make sure to double-check destination!"
   }
 }

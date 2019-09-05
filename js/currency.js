@@ -25,6 +25,7 @@ const bcLib = require("bitcoinjs-lib");
 const axios = require("axios");
 const BigNumber = require("bignumber.js");
 const coinSelect = require("coinselect");
+const coinSelectSplit = require("coinselect/split");
 const bcMsg = require("bitcoinjs-message");
 const bip39 = require("@missmonacoin/bip39-eng");
 const qs = require("qs");
@@ -461,8 +462,7 @@ module.exports = class {
       throw new errors.HDNodeNotFoundError();
     }
     return new Promise((resolve, reject) => {
-      const targets = option.targets;
-      const feeRate = option.feeRate;
+      const { targets, feeRate, split } = option;
 
       const txb = new this.lib.TransactionBuilder(this.network);
 
@@ -477,11 +477,9 @@ module.exports = class {
         .then(res => {
           const path = [];
 
-          let { inputs, outputs, fee } = coinSelect(
-            res.utxos,
-            targets,
-            feeRate
-          );
+          let { inputs, outputs, fee } = split
+            ? coinSelectSplit(res.utxos, targets, feeRate)
+            : coinSelect(res.utxos, targets, feeRate);
 
           if (!inputs || !outputs) throw new errors.NoSolutionError();
 
@@ -518,7 +516,8 @@ module.exports = class {
             balance: res.balance,
             utxos: inputs,
             path,
-            fee
+            fee,
+            outputs
           });
         })
         .catch(reject);
