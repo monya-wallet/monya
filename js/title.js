@@ -95,30 +95,29 @@ module.exports = class {
     }
     const promises = _.chunk(token, 20)
       .map(ss => ss.join(","))
-      .map(tok => {
-        return axios
+      .map(tok =>
+        axios
           .get(this.apiEndpoint + "/card_detail.php?assets=" + tok)
-          .then(r => {
-            const arr = [];
-            if (!r.data.error) {
-              r.data.details.forEach(k => {
-                arr.push({
-                  description: k.add_description,
-                  asset: k.asset,
-                  assetCommonName: k.asset_common_name,
-                  assetLongName: k.asset_longname,
-                  cardName: k.card_name,
-                  imageUrl: k.imgur_url,
-                  ownerName: k.owner_name,
-                  twitterId: k.tw_id,
-                  twitterScreenName: k.tw_name,
-                  timestamp: parseInt(k.update_time, 10)
-                });
-              });
-            } //error but ignore because other promise stop
-            return arr;
-          });
-      });
+          .then(({ data }) => {
+            // ignore errors to prevent from stopping other promise
+            if (!data.error) {
+              return data.details.map(k => ({
+                description: k.add_description,
+                asset: k.asset,
+                assetCommonName: k.asset_common_name,
+                assetLongName: k.asset_longname,
+                cardName: k.card_name,
+                imageUrl: k.imgur_url,
+                ownerName: k.owner_name,
+                twitterId: k.tw_id,
+                twitterScreenName: k.tw_name,
+                timestamp: parseInt(k.update_time, 10)
+              }));
+            } else {
+              return [];
+            }
+          })
+      );
     return Promise.all(promises).then(_.flatten);
   }
   getCardDetailV2(token) {
