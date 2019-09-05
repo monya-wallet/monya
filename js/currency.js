@@ -807,12 +807,10 @@ module.exports = class {
     const keyPair = this.lib.ECPair.fromWIF(priv, this.network);
     return this.getUtxos([keyPair.getAddress()]).then(r => {
       const txb = new this.lib.TransactionBuilder(this.network);
-      const { outputs } = coinSelectSplit(r.utxos, [{}], feeRate);
+      const { outputs } = coinSelectSplit(r.utxos, [{}], +feeRate);
       r.utxos.forEach((v, i) => {
         txb.addInput(v.txId, v.vout);
       });
-      alert(JSON.stringify(r.utxos));
-      alert(JSON.stringify(outputs));
       txb.addOutput(addr, outputs[0].value);
       r.utxos.forEach((v, i) => {
         if (this.enableSegwit) {
