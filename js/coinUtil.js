@@ -47,11 +47,11 @@ exports.isValidAddress = addr => {
     try {
       bcLib.address.fromBech32(addr);
       return true;
-    } catch (e) {
+    } catch (e1) {
       try {
         zecLib.address.fromBase58Check(addr);
         return true;
-      } catch (e) {
+      } catch (e2) {
         return false;
       }
     }
