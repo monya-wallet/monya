@@ -200,7 +200,7 @@ module.exports = require("../js/lang.js")({
         this.address &&
         this.coinType &&
         !isNaN(this.amount * 1) &&
-        this.amount * 1 != 0 /* Allow negative value to be set here */ &&
+        this.amount * 1 !== 0 /* Allow negative value to be set here */ &&
         this.feePerByte >= 0 &&
         currencyList.get(this.coinType).isValidAddress(this.address)
       );
