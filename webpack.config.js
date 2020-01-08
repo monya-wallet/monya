@@ -1,78 +1,103 @@
-const webpack = require("webpack")
+const webpack = require("webpack");
 const Uglify = require("uglifyjs-webpack-plugin");
 
 module.exports = {
-  context: __dirname ,
+  context: __dirname,
   entry: "./js/main.js",
   output: {
-    path:__dirname,
-    filename:"./dist/dist.js"
+    path: __dirname,
+    filename: "./dist/dist.js"
   },
   node: {
-    fs: 'empty',net:"empty","tls":"empty"
+    fs: "empty",
+    net: "empty",
+    tls: "empty"
   },
-  mode:"production",
+  mode: "production",
   module: {
     rules: [
       {
         test: /\.js$/,
         exclude: /node_modules\/(?!(bech32|ripple-lib))/,
         use: {
-          loader: 'babel-loader',
+          loader: "babel-loader",
           options: {
-            presets: ['env'],
-            plugins:["syntax-dynamic-import"]
+            presets: ["@babel/preset-env"],
+            plugins: ["@babel/plugin-syntax-dynamic-import"]
           }
         }
-        },{
+      },
+      {
         test: /\.scss$/,
-        use:[{
-          loader: "style-loader" // creates style nodes from JS strings
-        }, {
-          loader: "css-loader", // translates CSS into CommonJS
-          options:{
-            minimize:true
+        use: [
+          {
+            loader: "style-loader" // creates style nodes from JS strings
+          },
+          {
+            loader: "css-loader", // translates CSS into CommonJS
+            options: {
+              minimize: true
+            }
+          },
+          {
+            loader: "sass-loader" // compiles Sass to CSS
           }
-        }, {
-          loader: "sass-loader" // compiles Sass to CSS
-        }]
-      },{
-        test: /\.css$/, use:[{
-          loader: "style-loader" // creates style nodes from JS strings
-        }, {
-          loader: "css-loader" // translates CSS into CommonJS
-        }]
-      },{
+        ]
+      },
+      {
+        test: /\.css$/,
+        use: [
+          {
+            loader: "style-loader" // creates style nodes from JS strings
+          },
+          {
+            loader: "css-loader" // translates CSS into CommonJS
+          }
+        ]
+      },
+      {
         test: /\.html$/,
-        use: 'vue-template-loader'
-      },{
+        use: "vue-template-loader"
+      },
+      {
         test: /\.(eot|svg|ttf|woff|woff2|png|jpg|gif|m4a)$/,
         use: [
           {
-            loader: 'file-loader',
-            options:{
-              outputPath:"dist/assets/"
+            loader: "file-loader",
+            options: {
+              outputPath: "dist/assets/"
             }
           }
         ]
       }
     ]
   },
-  optimization:{
+  optimization: {
     minimizer: [
       new Uglify({
-        uglifyOptions:{
-          mangle:{
+        uglifyOptions: {
+          mangle: {
             safari10: true,
-            reserved:[
+            reserved: [
               //bitcoinjs-lib
-              'BigInteger','ECPair','Point'
+              "BigInteger",
+              "ECPair",
+              "Point",
               //ripple-lib
-              ,'_', 'RippleError', 'RippledError', 'UnexpectedError',
-              'LedgerVersionError', 'ConnectionError', 'NotConnectedError',
-              'DisconnectedError', 'TimeoutError', 'ResponseFormatError',
-              'ValidationError', 'NotFoundError', 'MissingLedgerHistoryError',
-              'PendingLedgerVersionError'
+              "_",
+              "RippleError",
+              "RippledError",
+              "UnexpectedError",
+              "LedgerVersionError",
+              "ConnectionError",
+              "NotConnectedError",
+              "DisconnectedError",
+              "TimeoutError",
+              "ResponseFormatError",
+              "ValidationError",
+              "NotFoundError",
+              "MissingLedgerHistoryError",
+              "PendingLedgerVersionError"
             ]
           }
         }
