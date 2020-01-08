@@ -2414,5 +2414,29 @@
   "エクスプローラを開く": {
     "ja": "エクスプローラを開く",
     "en": "Open explorer"
+  },
+  "とても簡単": {
+    "ja": "とても簡単",
+    "en": "Too easy"
+  },
+  "簡単": {
+    "ja": "簡単",
+    "en": "Easy"
+  },
+  "やや推測できる": {
+    "ja": "やや推測できる",
+    "en": "Guessable"
+  },
+  "推測しづらい": {
+    "ja": "推測しづらい",
+    "en": "Difficult"
+  },
+  "おそらく安全": {
+    "ja": "おそらく安全",
+    "en": "Probably safe"
+  },
+  "警告: 全額を送金しようとしています。送金先をよく確かめて下さい!": {
+    "ja": "警告: 全額を送金しようとしています。送金先をよく確かめて下さい!",
+    "en": "Warning: You are going to send all funds in the wallet. Make sure to double-check destination!"
   }
 }

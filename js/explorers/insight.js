@@ -14,7 +14,11 @@ module.exports = class InsightExplorer {
         rawtx: hex
       }),
       method: "POST"
-    }).then(res => res.data);
+    })
+      .then(res => res.data)
+      .catch(e => {
+        throw e.response.data;
+      });
   }
 
   getTxs(from, to, addrs) {

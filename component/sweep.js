@@ -37,18 +37,18 @@ module.exports = require("../js/lang.js")({
       currencyIndex: 0,
       private: "",
       address: "",
-      fee: 0.0005,
+      feeRate: 0,
       loose: false
     };
   },
   store: require("../js/store.js"),
   methods: {
     send() {
-      if (this.private && this.address && this.fee) {
+      if (this.private && this.address && this.feeRate) {
         const cur = currencyList.get(this.currency[this.currencyIndex].coinId);
         try {
           cur
-            .sweep(this.private, this.address, this.fee, this.loose)
+            .sweep(this.private, this.address, this.feeRate, this.loose)
             .then(res => {
               cur.saveTxLabel(res.txid, {
                 label: this.txLabel,
@@ -79,11 +79,9 @@ module.exports = require("../js/lang.js")({
   },
   watch: {
     currencyIndex() {
-      this.fee =
-        (currencyList.get(this.currency[this.currencyIndex].coinId)
-          .defaultFeeSatPerByte *
-          226) /
-        100000000;
+      this.feeRate = currencyList.get(
+        this.currency[this.currencyIndex].coinId
+      ).defaultFeeSatPerByte;
     }
   },
   computed: {
@@ -102,7 +100,9 @@ module.exports = require("../js/lang.js")({
         }
         const keyPair = cur.lib.ECPair.fromWIF(priv, cur.network);
         return keyPair.getAddress();
-      } catch (e) {}
+      } catch (e) {
+        this.$store.commit("setError", "The address could not be derived.");
+      }
     }
   },
   created() {

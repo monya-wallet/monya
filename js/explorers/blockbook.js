@@ -13,9 +13,13 @@ module.exports = class BlockbookExplorer {
     return axios({
       url: this.apiEndpoint + "/sendtx/" + hex,
       method: "GET"
-    }).then(res => ({
-      txid: res.data.result
-    }));
+    })
+      .then(res => ({
+        txid: res.data.result
+      }))
+      .catch(e => {
+        throw e.response.data;
+      });
   }
 
   getTxs(from, to, addrs) {

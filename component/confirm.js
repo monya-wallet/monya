@@ -54,7 +54,8 @@ module.exports = require("../js/lang.js")({
       loading: true,
       incorrect: false,
       paySound: false,
-      hash: ""
+      hash: "",
+      sendNegative: false
     };
   },
   store: require("../js/store.js"),
@@ -72,6 +73,7 @@ module.exports = require("../js/lang.js")({
     ].forEach(v => {
       this[v] = this.$store.state.confPayload[v];
     });
+    this.sendNegative = +this.amount < 0;
     this.cur = currencyList.get(this.coinType);
     this.$nextTick(this.build);
     currencyList
@@ -163,15 +165,21 @@ module.exports = require("../js/lang.js")({
     },
     build() {
       const cur = this.cur;
-      const targets = [
-        {
+      const split = +this.amount < 0;
+      const targets = [];
+      if (split) {
+        targets.push({
+          address: this.address
+        });
+      } else {
+        targets.push({
           address: this.address,
           value: new BigNumber(this.amount)
             .times(100000000)
             .round()
             .toNumber()
-        }
-      ];
+        });
+      }
       if (this.message) {
         targets.push({
           address: bcLib.script.nullData.output.encode(
@@ -186,12 +194,16 @@ module.exports = require("../js/lang.js")({
           this.paySound = data.paySound;
           return cur.buildTransaction({
             targets,
+            split,
             feeRate: this.feePerByte,
             includeUnconfirmedFunds: data.includeUnconfirmedFunds,
             utxoStr: this.utxoStr
           });
         })
         .then(d => {
+          if (split) {
+            this.amount = new BigNumber(d.outputs[0].value).div(100000000);
+          }
           this.fee = new BigNumber(d.fee).div(100000000);
           this.utxosToShow = d.utxos;
           this.path = d.path;
@@ -204,6 +216,9 @@ module.exports = require("../js/lang.js")({
         })
         .then(price => {
           this.price = price;
+          if (split) {
+            this.fiat = new BigNumber(this.amount).times(price);
+          }
         })
         .catch(e => {
           this.ready = false;

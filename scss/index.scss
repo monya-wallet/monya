@@ -479,9 +479,14 @@ html, body{
 }
 
 [data-page="send"]{
-  ons-list-item ons-input{
-    width:100%;
-    display:block;
+  ons-list-item{
+    ons-input{
+      width:100%;
+      display:block;
+    }
+    .warning{
+      color:#f00;
+    }
   }
   .cpCandidate .right{
     font-size:small;
@@ -491,6 +496,11 @@ html, body{
 [data-page="confirm"]{
   .insufficientFund{
     color:red;
+  }
+  ons-list-item{
+    .warning{
+      color:#f00;
+    }
   }
 }
 
@@ -755,6 +765,19 @@ $passwordHeight:30px;
   }
   
 }
+[data-page="setPassword"]{
+  ons-progress-bar[mode="weak"]{
+    .progress-bar__primary,.progress-bar--material__primary{
+      background-color:red;
+    }
+  }
+  ons-progress-bar[mode="strong"]{
+    .progress-bar__primary,.progress-bar--material__primary{
+      background-color:green;
+    }
+  }
+}
+
 #dataToPassApp{
   width: 100%;
   min-height: 200px;

@@ -40,6 +40,9 @@
         <v-ons-list-item>
           <v-ons-input placeholder="パスワード" v-model="password" type="password"></v-ons-input>
         </v-ons-list-item>
+        <v-ons-list-item v-show="sendNegative">
+          <div class="center warning">警告: 全額を送金しようとしています。送金先をよく確かめて下さい!</div>
+        </v-ons-list-item>
         <v-ons-list-item>
           <v-ons-button :class="{shake:incorrect}" modifier="large" @click="next" :disabled="!((ready||utxoStr)&&password)">送金</v-ons-button>
         </v-ons-list-item>

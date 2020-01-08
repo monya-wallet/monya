@@ -1,5 +1,5 @@
-const fs = require('fs')
-const path = require("path")
+const fs = require("fs");
+const path = require("path");
 
 const replaceText = `/*
  MIT License
@@ -23,17 +23,23 @@ const replaceText = `/*
  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  SOFTWARE.
-*/`
+*/`;
 
-const regexp = (/^\/\*(.|[\n\r])*?Monya - The easiest cryptocurrency wallet(.|[\n\r])*?\*\//g)
+const regexp = /^\/\*(.|[\n\r])*?Monya - The easiest cryptocurrency wallet(.|[\n\r])*?\*\//g;
 
 let res;
-let dir=fs.readdirSync(path.join(process.cwd(),process.argv[2])).filter((v)=>v.slice(-2)==="js")
-dir.forEach(v=>{
-  let read=fs.readFileSync(path.join(process.cwd(),process.argv[2],v),"utf8")
+let dir = fs
+  .readdirSync(path.join(process.cwd(), process.argv[2]))
+  .filter(v => v.slice(-2) === "js");
+dir.forEach(v => {
+  let read = fs.readFileSync(
+    path.join(process.cwd(), process.argv[2], v),
+    "utf8"
+  );
 
-  let writing = read.replace(regexp,replaceText)
+  let writing = read.replace(regexp, replaceText);
 
-  fs.writeFileSync(path.join(process.cwd(),process.argv[2],v),writing,{encoding:"utf8"})
-})
-
+  fs.writeFileSync(path.join(process.cwd(), process.argv[2], v), writing, {
+    encoding: "utf8"
+  });
+});
