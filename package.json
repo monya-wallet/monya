@@ -1,114 +1,114 @@
 {
-    "name": "@missmonacoin/monya",
-    "version": "3.2.1",
-    "description": "<p style=\"text-align:center\">",
-    "main": "dist/dist.js",
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/monya-wallet/monya.git"
-    },
-    "dependencies": {
-        "@babel/polyfill": "^7.7.0",
-        "@missmonacoin/bip39-eng": "^2.5.0",
-        "@missmonacoin/bitcoincashjs-lib": "^1.0.1",
-        "@missmonacoin/bitcoinjs-lib-zcash": "^2.0.0",
-        "@missmonacoin/blackcoinjs-lib": "^1.0.0",
-        "ajv": "^6.10.2",
-        "axios": "^0.18.1",
-        "bignumber.js": "^5.0.0",
-        "bitcoinjs-lib": "^3.2.0",
-        "bitcoinjs-message": "^2.1.0",
-        "buffer": "^5.4.3",
-        "coinselect": "git+https://github.com/nao20010128/coinselect.git",
-        "cordova-plugin-qrscanner": "^2.6.2",
-        "ethereumjs-wallet": "^0.6.0",
-        "instascan": "^1.0.0",
-        "lodash": "^4.17.15",
-        "nem-sdk": "^1.6.4",
-        "onsenui": "^2.10.10",
-        "pump": "^2.0.0",
-        "qrcode": "^1.4.4",
-        "qs": "^6.9.1",
-        "ripple-keypairs": "^0.10.1",
-        "ripple-lib": "^0.22.0",
-        "vue": "2.5.13",
-        "vue-onsenui": "^2.6.2",
-        "vuex": "^3.1.2",
-        "web3": "^1.2.4",
-        "zxcvbn": "^4.4.2"
-    },
-    "devDependencies": {
-        "@babel/core": "^7.7.7",
-        "@babel/plugin-proposal-class-properties": "^7.7.4",
-        "@babel/plugin-proposal-json-strings": "^7.7.4",
-        "@babel/plugin-syntax-dynamic-import": "^7.7.4",
-        "@babel/plugin-syntax-import-meta": "^7.7.4",
-        "@babel/preset-env": "^7.7.7",
-        "babel-eslint": "^9.0.0",
-        "babel-loader": "^8.0.0",
-        "browser-sync": "^2.26.7",
-        "css-loader": "^0.28.11",
-        "eslint": "^4.19.1",
-        "eslint-config-airbnb-base": "^12.0.1",
-        "eslint-plugin-import": "^2.19.1",
-        "file-loader": "^1.1.11",
-        "gulp": "^3.9.1",
-        "gulp-eslint": "^4.0.0",
-        "gulp-imagemin": "^4.1.0",
-        "gulp-plumber": "^1.1.0",
-        "gulp-uglify": "^3.0.2",
-        "html-loader": "^0.5.1",
-        "husky": "^3.1.0",
-        "jsonpath": "^1.0.2",
-        "lint-staged": "^9.5.0",
-        "node-notifier": "^5.4.3",
-        "node-sass": "^4.13.0",
-        "prettier": "^1.19.1",
-        "run-sequence": "^2.1.0",
-        "sass-loader": "^7.3.1",
-        "style-loader": "^0.21.0",
-        "sync-request": "^5.0.0",
-        "uglify-es": "^3.3.3",
-        "uglifyjs-webpack-plugin": "^1.2.5",
-        "url-loader": "^0.5.9",
-        "vue-template-compiler": "2.5.13",
-        "vue-template-loader": "^0.4.1",
-        "webpack": "^4.41.5",
-        "webpack-cli": "^3.3.10",
-        "webpack-stream": "^4.0.3"
-    },
-    "scripts": {
-        "start": "gulp",
-        "lint": "prettier --write 'component/*.js'; prettier --write 'js/*.js'",
-        "build": "gulp prod",
-        "build:cordova": "echo 'cordova command is deprecated';gulp prod",
-        "postinstall": "cd ./node_modules/nem-sdk;npm install ajv@6.3.0;cd ../../node_modules/har-validator;npm install ajv@6.3.0"
-    },
-    "author": "monya-wallet",
-    "license": "MIT",
-    "bugs": {
-        "url": "https://github.com/monya-wallet/monya/issues"
-    },
-    "homepage": "https://github.com/monya-wallet/monya#readme",
-    "directories": {
-        "doc": "docs"
-    },
-    "keywords": [
-        "wallet",
-        "cryptocurrency",
-        "cordova",
-        "vue.js"
-    ],
-    "husky": {
-        "hooks": {
-            "pre-commit": "lint-staged"
-        }
-    },
-    "lint-staged": {
-        "*.js": [
-            "prettier --write",
-            "eslint --fix",
-            "git add"
-        ]
-    }
+	"name": "@missmonacoin/monya",
+	"version": "3.2.1",
+	"description": "<p style=\"text-align:center\">",
+	"main": "dist/dist.js",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/monya-wallet/monya.git"
+	},
+	"dependencies": {
+		"@babel/polyfill": "^7.7.0",
+		"@missmonacoin/bip39-eng": "^2.5.0",
+		"@missmonacoin/bitcoincashjs-lib": "^1.0.1",
+		"@missmonacoin/bitcoinjs-lib-zcash": "^1.0.4",
+		"@missmonacoin/blackcoinjs-lib": "^1.0.0",
+		"ajv": "^6.10.2",
+		"axios": "^0.18.1",
+		"bignumber.js": "^5.0.0",
+		"bitcoinjs-lib": "^3.2.0",
+		"bitcoinjs-message": "^2.1.0",
+		"buffer": "^5.4.3",
+		"coinselect": "git+https://github.com/nao20010128/coinselect.git",
+		"cordova-plugin-qrscanner": "^2.6.2",
+		"ethereumjs-wallet": "^0.6.0",
+		"instascan": "^1.0.0",
+		"lodash": "^4.17.15",
+		"nem-sdk": "^1.6.4",
+		"onsenui": "^2.10.10",
+		"pump": "^2.0.0",
+		"qrcode": "^1.4.4",
+		"qs": "^6.9.1",
+		"ripple-keypairs": "^0.10.1",
+		"ripple-lib": "^0.22.0",
+		"vue": "2.5.13",
+		"vue-onsenui": "^2.6.2",
+		"vuex": "^3.1.2",
+		"web3": "^1.2.4",
+		"zxcvbn": "^4.4.2"
+	},
+	"devDependencies": {
+		"@babel/core": "^7.7.7",
+		"@babel/plugin-proposal-class-properties": "^7.7.4",
+		"@babel/plugin-proposal-json-strings": "^7.7.4",
+		"@babel/plugin-syntax-dynamic-import": "^7.7.4",
+		"@babel/plugin-syntax-import-meta": "^7.7.4",
+		"@babel/preset-env": "^7.7.7",
+		"babel-eslint": "^9.0.0",
+		"babel-loader": "^8.0.0",
+		"browser-sync": "^2.26.7",
+		"css-loader": "^0.28.11",
+		"eslint": "^4.19.1",
+		"eslint-config-airbnb-base": "^12.0.1",
+		"eslint-plugin-import": "^2.19.1",
+		"file-loader": "^1.1.11",
+		"gulp": "^3.9.1",
+		"gulp-eslint": "^4.0.0",
+		"gulp-imagemin": "^4.1.0",
+		"gulp-plumber": "^1.1.0",
+		"gulp-uglify": "^3.0.2",
+		"html-loader": "^0.5.1",
+		"husky": "^3.1.0",
+		"jsonpath": "^1.0.2",
+		"lint-staged": "^9.5.0",
+		"node-notifier": "^5.4.3",
+		"node-sass": "^4.13.0",
+		"prettier": "^1.19.1",
+		"run-sequence": "^2.1.0",
+		"sass-loader": "^7.3.1",
+		"style-loader": "^0.21.0",
+		"sync-request": "^5.0.0",
+		"uglify-es": "^3.3.3",
+		"uglifyjs-webpack-plugin": "^1.2.5",
+		"url-loader": "^0.5.9",
+		"vue-template-compiler": "2.5.13",
+		"vue-template-loader": "^0.4.1",
+		"webpack": "^4.41.5",
+		"webpack-cli": "^3.3.10",
+		"webpack-stream": "^4.0.3"
+	},
+	"scripts": {
+		"start": "gulp",
+		"lint": "prettier --write 'component/*.js'; prettier --write 'js/*.js'",
+		"build": "gulp prod",
+		"build:cordova": "echo 'cordova command is deprecated';gulp prod",
+		"postinstall": "cd ./node_modules/nem-sdk;npm install ajv@6.3.0;cd ../../node_modules/har-validator;npm install ajv@6.3.0"
+	},
+	"author": "monya-wallet",
+	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/monya-wallet/monya/issues"
+	},
+	"homepage": "https://github.com/monya-wallet/monya#readme",
+	"directories": {
+		"doc": "docs"
+	},
+	"keywords": [
+		"wallet",
+		"cryptocurrency",
+		"cordova",
+		"vue.js"
+	],
+	"husky": {
+		"hooks": {
+			"pre-commit": "lint-staged"
+		}
+	},
+	"lint-staged": {
+		"*.js": [
+			"prettier --write",
+			"eslint --fix",
+			"git add"
+		]
+	}
 }
