@@ -908,8 +908,8 @@ module.exports = class {
   }
   openExplorer(opt) {
     const urls = this.apiHost.explorerUrls(opt);
-    for (let i in urls) {
-      coinUtil.openUrl(urls[i]);
-    }
+    urls.map((url, index) => {
+      coinUtil.openUrl(urls[index]);
+    });
   }
 };

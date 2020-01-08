@@ -281,13 +281,15 @@ exports.parseUrl = async url => {
   let extraDataFromR = null;
   // required for BitPay invoice
   if (raw.searchParams.get("r")) {
-    extraDataFromR = (await axios.get(raw.searchParams.get("r"), {
-      responseType: "json",
-      headers: {
-        Accept:
-          "application/payment-request, application/bitcoin-paymentrequest"
-      }
-    })).data.outputs[0];
+    extraDataFromR = (
+      await axios.get(raw.searchParams.get("r"), {
+        responseType: "json",
+        headers: {
+          Accept:
+            "application/payment-request, application/bitcoin-paymentrequest"
+        }
+      })
+    ).data.outputs[0];
   }
   ret.raw = raw;
   ret.protocol = raw.protocol.slice(0, -1);

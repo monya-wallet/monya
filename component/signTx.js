@@ -126,12 +126,10 @@ module.exports = require("../js/lang.js")({
   computed: {
     multisigAddr() {
       try {
-        return currencyList
-          .get(this.coinId)
-          .getMultisig(
-            this.pubs.map(v => Buffer.from(v, "hex")),
-            this.neededSig
-          ).address;
+        return currencyList.get(this.coinId).getMultisig(
+          this.pubs.map(v => Buffer.from(v, "hex")),
+          this.neededSig
+        ).address;
       } catch (e) {
         return;
       }

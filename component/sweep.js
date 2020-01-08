@@ -100,7 +100,9 @@ module.exports = require("../js/lang.js")({
         }
         const keyPair = cur.lib.ECPair.fromWIF(priv, cur.network);
         return keyPair.getAddress();
-      } catch (e) {}
+      } catch (e) {
+        this.$store.commit("setError", "The address could not be derived.");
+      }
     }
   },
   created() {
