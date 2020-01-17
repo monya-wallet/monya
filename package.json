@@ -62,7 +62,7 @@
 		"jsonpath": "^1.0.2",
 		"lint-staged": "^9.5.0",
 		"node-notifier": "^5.4.3",
-		"node-sass": "^4.13.0",
+		"node-sass": "^4.13.1",
 		"prettier": "^1.19.1",
 		"run-sequence": "^2.1.0",
 		"sass-loader": "^7.3.1",
