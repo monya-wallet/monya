@@ -130,7 +130,7 @@ exports.decrypt = (cipher, password) => {
 };
 
 exports.makePairsAndEncrypt = option =>
-  new Promise((resolve, reject) => {
+  new Promise(resolve => {
     let seed;
     let entropy;
     if (option.entropy) {
@@ -161,7 +161,7 @@ exports.makePairsAndEncrypt = option =>
   });
 
 exports.decryptKeys = option =>
-  new Promise((resolve, reject) => {
+  new Promise(resolve => {
     let seed = bip39.mnemonicToSeed(
       bip39.entropyToMnemonic(
         exports.decrypt(option.entropyCipher, option.password)
