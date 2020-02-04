@@ -109,7 +109,7 @@ try {
   height = JSON.parse(
     request(
       "GET",
-      "https://mona.insight.monaco-ex.org/insight-api-monacoin/sync"
+      "https://insight.electrum-mona.org/insight-api-monacoin/sync"
     ).getBody("utf8")
   ).blockChainHeight;
 } catch (e) {

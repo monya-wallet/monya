@@ -420,33 +420,28 @@ const defaultCoins = [
     icon: require("../res/coins/btcsw.png"),
     apiEndpoints: [
       {
-        url: "https://btc-bitcore4.trezor.io/api",
-        explorer: "https://btc-bitcore4.trezor.io",
-        type: "blockbook",
-        proxy: true
-      },
-      {
         url: "https://btc1.trezor.io/api",
         explorer: "https://btc1.trezor.io",
         type: "blockbook",
         proxy: true
       },
       {
-        explorer: "https://explorer.bitcoin.com/btc",
-        url: "https://explorer.bitcoin.com/api/btc",
-        type: "insight"
+        url: "https://btc2.trezor.io/api",
+        explorer: "https://btc2.trezor.io",
+        type: "blockbook",
+        proxy: true
       },
       {
-        explorer: "https://insight.bitpay.com",
-        url: "https://insight.bitpay.com/api",
-        type: "insight"
+        url: "https://btc3.trezor.io/api",
+        explorer: "https://btc3.trezor.io",
+        type: "blockbook",
+        proxy: true
       }
     ],
     network: {
       messagePrefix: "\x18Bitcoin Signed Message:\n",
       bip32: {
         public: 0x0488b21e,
-
         private: 0x0488ade4
       },
       pubKeyHash: 0, // 1

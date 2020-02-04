@@ -2438,5 +2438,33 @@
   "警告: 全額を送金しようとしています。送金先をよく確かめて下さい!": {
     "ja": "警告: 全額を送金しようとしています。送金先をよく確かめて下さい!",
     "en": "Warning: You are going to send all funds in the wallet. Make sure to double-check destination!"
+  },
+  "公式サポーター": {
+    "ja": "公式サポーター",
+    "en": "Official Supporter"
+  },
+  "めろんぱん": {
+    "ja": "めろんぱん",
+    "en": "Meronpan"
+  },
+  "侍日本代表": {
+    "ja": "侍日本代表",
+    "en": "Samurai Nihon Daihyou"
+  },
+  "警告": {
+    "ja": "警告",
+    "en": "warning"
+  },
+  "全額を送金しようとしています。送金先をよく確かめて下さい": {
+    "ja": "全額を送金しようとしています。送金先をよく確かめて下さい",
+    "en": "I am trying to remit the full amount. Please confirm the remittance destination"
+  },
+  "お釣りアドレス": {
+    "ja": "お釣りアドレス",
+    "en": "Fishing address"
+  },
+  "一般": {
+    "ja": "一般",
+    "en": "general"
   }
 }

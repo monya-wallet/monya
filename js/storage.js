@@ -51,11 +51,11 @@ exports.get = key =>
   });
 
 exports.hasData = () =>
-  new Promise((resolve, reject) => {
+  new Promise(resolve => {
     resolve(!!localStorage.getItem(KEY_NAME));
   });
 exports.dataState = () =>
-  new Promise((resolve, reject) => {
+  new Promise(resolve => {
     const stored = localStorage.getItem(KEY_NAME);
     if (stored) {
       try {
@@ -77,7 +77,7 @@ exports.set = (key, value) =>
     return exports.setAll(res);
   });
 exports.getAll = () =>
-  new Promise((resolve, reject) => {
+  new Promise(resolve => {
     let stored = localStorage.getItem(KEY_NAME);
     if (password) {
       stored = exports.decryptData(stored, password);
@@ -93,7 +93,8 @@ exports.getAll = () =>
 exports.setAll = obj =>
   new Promise((resolve, reject) => {
     if (!obj) {
-      throw new Error("parameter is empty");
+      reject(new Error("parameter is empty"));
+      return;
     }
     let dataToStore = JSON.stringify(obj);
     if (password) {
@@ -104,7 +105,7 @@ exports.setAll = obj =>
   });
 
 exports.erase = () =>
-  new Promise((resolve, reject) => {
+  new Promise(resolve => {
     localStorage.setItem(KEY_NAME, "");
     password = null;
     resolve();
@@ -121,7 +122,7 @@ exports.setEncryption = pw =>
   });
 
 exports.setPassword = pw =>
-  new Promise((resolve, reject) => {
+  new Promise(resolve => {
     let stored = localStorage.getItem(KEY_NAME);
     if (stored) {
       exports.decryptData(stored, pw);
@@ -193,6 +194,6 @@ exports.changeLang = lang => {
   }
 };
 exports.getLang = () =>
-  new Promise((resolve, reject) => {
+  new Promise(resolve => {
     resolve(localStorage.getItem("lang"));
   });
