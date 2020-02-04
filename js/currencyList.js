@@ -369,7 +369,7 @@ const defaultCoins = [
       account: 0
     },
     bip21: "vipstarcoin",
-    defaultFeeSatPerByte: 150,
+    defaultFeeSatPerByte: 400,
     icon: require("../res/coins/vips.png"),
     apiEndpoints: [
       {
