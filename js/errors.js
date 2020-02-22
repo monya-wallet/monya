@@ -45,3 +45,4 @@ exports.PasswordFailureError = createError("PasswordFailureError");
 exports.ParameterNotFoundError = createError("ParameterNotFoundError");
 exports.SignOnly = createError("SignOnly");
 exports.AddressNotFoundError = createError("AddressNotFoundError");
+exports.DecodeError = createError("DecodeError", "Failed to decode");
