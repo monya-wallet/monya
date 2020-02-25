@@ -67,6 +67,12 @@ module.exports = require("../js/lang.js")({
       ) {
         return;
       }
+      if (this.passwordScore < requiredScore) {
+        this.$ons.notification.alert(
+          `${this.password}は禁止! (${this.passwordScore} < ${requiredScore})`
+        );
+        return;
+      }
       this.loading = true;
       let cipherPromise = null;
       if (this.change) {
@@ -132,7 +138,10 @@ module.exports = require("../js/lang.js")({
     }
   },
   watch: {
-    password(p) {}
+    password(p) {
+      this.passwordScore = zxcvbn(p).score;
+      this.meterColor = this.passwordScore < requiredScore ? "weak" : "strong";
+    }
   },
   created() {
     if (this.$store.state.entropy) {

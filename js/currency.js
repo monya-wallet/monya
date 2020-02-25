@@ -647,15 +647,7 @@ module.exports = class {
     };
   }
   verifyMessage(m, a, s) {
-    if (this.bip44) {
-      // verify with P2PKH address
-      return bcMsg.verify(m, a, s, this.network.messagePrefix);
-    }
-
-    if (this.bip49) {
-      // verify with P2SH-wrapped-P2WPKH address
-      return bcMsg.verify(m, a, s, this.network.messagePrefix);
-    }
+    return bcMsg.verify(m, a, s, this.network.messagePrefix);
   }
   pushTx(hex) {
     if (this.dummy) {
