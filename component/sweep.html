@@ -27,7 +27,7 @@
         <div class="center">手数料</div>
         <div class="right"><v-ons-input placeholder="手数料" v-model="feeRate"></v-ons-input> sat/B</div>
       </v-ons-list-item>
-      <v-ons-list-item><v-ons-button @click="send" modifier="large">送信</v-ons-button></v-ons-list-item>
+      <v-ons-list-item><v-ons-button @click="send" modifier="large" :disabled="!wifAddr || !address">送信</v-ons-button></v-ons-list-item>
     </v-ons-list>
   </div>
 </v-ons-page>

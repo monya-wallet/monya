@@ -44,31 +44,32 @@ module.exports = require("../js/lang.js")({
   store: require("../js/store.js"),
   methods: {
     send() {
-      if (this.private && this.address && this.feeRate) {
-        const cur = currencyList.get(this.currency[this.currencyIndex].coinId);
-        try {
-          cur
-            .sweep(this.private, this.address, this.feeRate, this.loose)
-            .then(res => {
-              cur.saveTxLabel(res.txid, {
-                label: this.txLabel,
-                price: parseFloat(this.price)
-              });
-              this.$store.commit("setFinishNextPage", {
-                page: require("./home.js"),
-                infoId: "sent",
-                payload: {
-                  txId: res.txid
-                }
-              });
-              this.$emit("replace", require("./finished.js"));
-            })
-            .catch(e => {
-              this.$store.commit("setError", e);
+      if (!this.private || !this.address || !this.feeRate) {
+        return;
+      }
+      const cur = currencyList.get(this.currency[this.currencyIndex].coinId);
+      try {
+        cur
+          .sweep(this.private, this.address, this.feeRate, this.loose)
+          .then(res => {
+            cur.saveTxLabel(res.txid, {
+              label: this.txLabel,
+              price: parseFloat(this.price)
             });
-        } catch (e) {
-          this.$store.commit("setError", "Invalid private key or address");
-        }
+            this.$store.commit("setFinishNextPage", {
+              page: require("./home.js"),
+              infoId: "sent",
+              payload: {
+                txId: res.txid
+              }
+            });
+            this.$emit("replace", require("./finished.js"));
+          })
+          .catch(e => {
+            this.$store.commit("setError", e.message);
+          });
+      } catch (e) {
+        this.$store.commit("setError", "Invalid private key or address");
       }
     },
     getDefaultAddress() {
@@ -86,9 +87,13 @@ module.exports = require("../js/lang.js")({
   },
   computed: {
     wifAddr() {
+      let priv = this.private;
+      if (!priv) {
+        return "";
+      }
       try {
         const cur = currencyList.get(this.currency[this.currencyIndex].coinId);
-        let priv = this.private;
+
         if (this.loose) {
           const orig = bs58check.decode(priv);
           const hash = orig.slice(1);
@@ -101,7 +106,7 @@ module.exports = require("../js/lang.js")({
         const keyPair = cur.lib.ECPair.fromWIF(priv, cur.network);
         return keyPair.getAddress();
       } catch (e) {
-        this.$store.commit("setError", "The address could not be derived.");
+        return "";
       }
     }
   },
