@@ -292,9 +292,7 @@ module.exports = class {
     if (!this.hdPubNode) {
       throw new errors.HDNodeNotFoundError();
     }
-    if (typeof index !== "number") {
-      index = this.receiveIndex;
-    }
+
     const keyPair = this.hdPubNode.derive(change).derive(index).keyPair;
     const witnessPubKey = this.lib.script.witnessPubKeyHash.output.encode(
       this.lib.crypto.hash160(keyPair.getPublicKeyBuffer())
@@ -313,9 +311,7 @@ module.exports = class {
     if (!this.hdPubNode) {
       throw new errors.HDNodeNotFoundError();
     }
-    if (typeof index !== "number") {
-      index = this.receiveIndex;
-    }
+
     const keyPair = this.hdPubNode.derive(change).derive(index).keyPair;
     const redeemScript = this.lib.script.witnessPubKeyHash.output.encode(
       this.lib.crypto.hash160(keyPair.getPublicKeyBuffer())
@@ -625,9 +621,21 @@ module.exports = class {
   }
   signMessage(m, entropyCipher, password, path) {
     const kp = this._getKeyPair(entropyCipher, password, path[0], path[1]);
-    return bcMsg
-      .sign(m, kp.d.toBuffer(32), kp.compressed, this.network.messagePrefix)
-      .toString("base64");
+
+    if (this.bip44) {
+      // sign with P2PKH address
+      return bcMsg
+        .sign(m, kp.d.toBuffer(32), kp.compressed, this.network.messagePrefix)
+        .toString("base64");
+    }
+    if (this.bip49) {
+      // sign with P2SH-wrapped-P2WPKH address
+      return bcMsg
+        .sign(m, kp.d.toBuffer(32), kp.compressed, this.network.messagePrefix, {
+          segwitType: "p2sh(p2wpkh)"
+        })
+        .toString("base64");
+    }
   }
   signHash(hash, entropyCipher, password, path) {
     const kp = this._getKeyPair(entropyCipher, password, path[0], path[1]);
