@@ -712,7 +712,98 @@ const defaultCoins = [
     },
     opReturnLength: 0,
     isAtomicSwapAvailable: false
-  }
+  },
+  {
+    coinScreenName: j ? "おもてなしコイン" : "Omotenashicoin",
+    coinId: "mtns",
+    unit: "MTNS",
+    unitEasy: j ? "おもてなしコイン" : "Omotenashicoin",
+    bip44: {
+      coinType: 341,
+      account: 0
+    },
+    bip21: "",
+    defaultFeeSatPerByte: 1000, //will implement dynamic fee
+    icon: require("../res/coins/mtns.png"),
+    apiEndpoints: [
+      {
+        url: "https://hashexplorer.net/api",
+        explorer: "https://hashexplorer.net",
+        type: "insight"
+      },
+      {
+        url: "https://mtns.chainview.site/api",
+        explorer: "https://mtns.chainview.site",
+        type: "blockbook",
+        proxy: true
+      }
+    ],
+    network: {
+      messagePrefix: "\x18MtnsNet Signed Message:\n",
+      bip32: {
+        public: 0x03a39555,
+        private: 0x03a395da
+      },
+      pubKeyHash: 63,
+      scriptHash: 18,
+      wif: 191
+    },
+    enableSegwit: false,
+    lib: "",
+    price: {
+      url:
+        "https://api.coingecko.com/api/v3/simple/price?ids=omotenashicoin&vs_currencies=jpy",
+      json: true,
+      jsonPath: "$.omotenashicoin.jpy",
+      fiat: "jpy"
+    },
+    confirmations: 6,
+    opReturnLength: 83,
+    isAtomicSwapAvailable: false
+  }/*,
+  {
+    coinScreenName: j ? "おもてなしコイン(Testnet)" : "Omotenashicoin Testnet",
+    coinId: "tmtns",
+    unit: "tMTNS",
+    unitEasy: j ? "おもてなしコイン(Testnet)" : "Omotenashicoin Testnet",
+    bip44: {
+      coinType: 1,
+      account: 0
+    },
+    bip21: "",
+    defaultFeeSatPerByte: 1000,
+    icon: require("../res/coins/mtns_testnet.png"),
+    apiEndpoints: [
+      {
+        url: "https://mtnstestnet.chainview.site/api",
+        explorer: "https://mtnstestnet.chainview.site",
+        type: "blockbook",
+        proxy: true
+      }
+    ],
+    network: {
+      messagePrefix: "\x18MtnsNet Signed Message:\n",
+      bip32: {
+        public: 0x04346B01,
+        private: 0x04346B86
+      },
+      pubKeyHash: 83,
+      scriptHash: 18,
+      wif: 193,
+    },
+    enableSegwit: false,
+    lib: "",
+    price: {
+      url:
+        "https://api.coingecko.com/api/v3/simple/price?ids=omotenashicoin&vs_currencies=jpy",
+      json: true,
+      jsonPath: "$.omotenashicoin.jpy",
+      fiat: "jpy"
+    },
+    confirmations: 6,
+    opReturnLength: 83,
+    isAtomicSwapAvailable: false
+  }*/
 ];
 
 const coins = {};
