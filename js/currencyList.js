@@ -722,7 +722,7 @@ const defaultCoins = [
       coinType: 341,
       account: 0
     },
-    bip21: "",
+    bip21: "omotenashicoin",
     defaultFeeSatPerByte: 1000, //will implement dynamic fee
     icon: require("../res/coins/mtns.png"),
     apiEndpoints: [
@@ -770,7 +770,7 @@ const defaultCoins = [
       coinType: 1,
       account: 0
     },
-    bip21: "",
+    bip21: "omotenashicoin",
     defaultFeeSatPerByte: 1000,
     icon: require("../res/coins/mtns_testnet.png"),
     apiEndpoints: [
