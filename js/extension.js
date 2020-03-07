@@ -78,7 +78,9 @@ const extensions = {
           networkSymbol: "ETH",
           bip44DerivationPath: "m/44'/60'/0'/0/0",
           chainId: 1,
-          rpcServers: ["https://mainnet.infura.io/iRUhBHOZ7VZdrEq1yQZd"],
+          rpcServers: [
+            "https://mainnet.infura.io/v3/e68a5c486079484395f5215d9d8ca001"
+          ],
           explorer: "https://etherscan.io/address/"
         })
       ),
@@ -139,11 +141,7 @@ const extensions = {
           networkSymbol: "ETC",
           bip44DerivationPath: "m/44'/61'/0'/0/0",
           chainId: 61,
-          rpcServers: [
-            "https://node.classicexplorer.org",
-            "https://mew.epool.io",
-            "https://etc-geth.0xinfra.com"
-          ],
+          rpcServers: ["https://www.ethercluster.com/etc"],
           explorer: "http://gastracker.io/addr/"
         })
       ),
