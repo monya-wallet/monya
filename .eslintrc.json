@@ -9,7 +9,6 @@
     "VueOnsen": true
   },
   "extends": "eslint:recommended",
-  "parser": null,
   "rules": {
     "no-void": 1,
     "no-undef": 2,
@@ -43,9 +42,8 @@
     "no-ex-assign": 2,
     "no-duplicate-case": 2,
     "no-fallthrough": 1,
-    "no-extend-native": 2,
     "arrow-spacing": 0,
-    "no-extend-native":1
+    "no-extend-native": 1
   },
   "parser": "babel-eslint",
   "parserOptions": {
