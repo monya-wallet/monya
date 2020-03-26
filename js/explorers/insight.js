@@ -21,7 +21,12 @@ module.exports = class InsightExplorer {
       });
   }
 
-  getTxs(from, to, addrs) {
+  // third parameter should be:
+  // {
+  //   addresses: [...list of address...]
+  //   xpub: "xpub..."
+  // }
+  getTxs(from, to, { addresses }) {
     return axios({
       url: this.apiEndpoint + "/addrs/txs",
       data: qs.stringify({
@@ -30,7 +35,7 @@ module.exports = class InsightExplorer {
         noSpent: 0,
         from,
         to,
-        addrs: addrs.join(",")
+        addrs: addresses.join(",")
       }),
       method: "POST"
     }).then(res => res.data);
