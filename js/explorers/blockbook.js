@@ -16,9 +16,7 @@ module.exports = class BlockbookExplorer {
       .then(res => ({
         txid: res.data.result
       }))
-      .catch(e => {
-        throw e.response.data;
-      });
+      .catch(e => Promise.reject(e.response.data));
   }
 
   // third parameter should be:

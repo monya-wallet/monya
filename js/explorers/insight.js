@@ -16,9 +16,7 @@ module.exports = class InsightExplorer {
       method: "POST"
     })
       .then(res => res.data)
-      .catch(e => {
-        throw e.response.data;
-      });
+      .catch(e => Promise.reject(e.response.data));
   }
 
   // third parameter should be:
