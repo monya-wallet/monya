@@ -26,7 +26,7 @@ module.exports = class BlockbookExplorer {
   // }
   getTxs(from, to, { xpub }) {
     const pageSize = to - from;
-    const page = from / 20 + 1;
+    const page = Math.floor(from / pageSize) + 1;
     return axios({
       url: `${this.apiEndpoint}/xpub/${xpub}?page=${page}&pageSize=${pageSize}&details=txs`,
       method: "GET"
