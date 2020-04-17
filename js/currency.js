@@ -661,11 +661,10 @@ module.exports = class {
       return Promise.resolve();
     }
     return this.retryWithApiSwitch(() =>
-      this.apiHost.getTxs(
-        from,
-        to,
-        this.getReceiveAddr().concat(this.getChangeAddr())
-      )
+      this.apiHost.getTxs(from, to, {
+        addresses: this.getReceiveAddr().concat(this.getChangeAddr()),
+        xpub: this.hdPubNode.toBase58()
+      })
     );
   }
 

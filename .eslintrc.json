@@ -43,7 +43,7 @@
     "no-duplicate-case": 2,
     "no-fallthrough": 1,
     "arrow-spacing": 0,
-    "no-extend-native":1
+    "no-extend-native": 1
   },
   "parser": "babel-eslint",
   "parserOptions": {
