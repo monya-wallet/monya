@@ -79,10 +79,10 @@
 	},
 	"scripts": {
 		"start": "gulp",
-		"lint": "prettier --write 'component/*.js'; prettier --write 'js/*.js'",
+		"lint": "prettier --write \"component/*.js\" && prettier --write \"js/*.js\"",
 		"build": "gulp prod",
-		"build:cordova": "echo 'cordova command is deprecated';gulp prod",
-		"postinstall": "cd ./node_modules/nem-sdk;npm install ajv@6.3.0;cd ../../node_modules/har-validator;npm install ajv@6.3.0"
+		"build:cordova": "echo 'cordova command is deprecated' && gulp prod",
+		"postinstall": "cd ./node_modules/nem-sdk && npm install ajv@6.3.0 && cd ../../node_modules/har-validator && npm install ajv@6.3.0"
 	},
 	"author": "monya-wallet",
 	"license": "MIT",
