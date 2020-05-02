@@ -48,14 +48,13 @@ module.exports = require("../js/lang.js")({
     },
 
     openExplorer() {
+      const txId = this.$store.state.finishNextPage.payload.txId;
       if (this.payload.coinId === "monaparty") {
-        coinUtil.openUrl("https://mpchain.info/tx/" + this.payload.txId);
+        coinUtil.openUrl("https://mpchain.info/tx/" + txId);
       } else if (this.payload.coinId === "eth") {
-        coinUtil.openUrl("https://etherscan.io/tx/" + this.payload.txId);
+        coinUtil.openUrl("https://etherscan.io/tx/" + txId);
       } else {
-        currencyList
-          .get(this.payload.coinId)
-          .openExplorer({ txId: this.payload.txId });
+        currencyList.get(this.payload.coinId).openExplorer({ txId });
       }
     }
   },

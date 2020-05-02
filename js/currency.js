@@ -292,9 +292,7 @@ module.exports = class {
     if (!this.hdPubNode) {
       throw new errors.HDNodeNotFoundError();
     }
-    if (typeof index !== "number") {
-      index = this.receiveIndex;
-    }
+
     const keyPair = this.hdPubNode.derive(change).derive(index).keyPair;
     const witnessPubKey = this.lib.script.witnessPubKeyHash.output.encode(
       this.lib.crypto.hash160(keyPair.getPublicKeyBuffer())
@@ -313,9 +311,7 @@ module.exports = class {
     if (!this.hdPubNode) {
       throw new errors.HDNodeNotFoundError();
     }
-    if (typeof index !== "number") {
-      index = this.receiveIndex;
-    }
+
     const keyPair = this.hdPubNode.derive(change).derive(index).keyPair;
     const redeemScript = this.lib.script.witnessPubKeyHash.output.encode(
       this.lib.crypto.hash160(keyPair.getPublicKeyBuffer())
@@ -625,9 +621,21 @@ module.exports = class {
   }
   signMessage(m, entropyCipher, password, path) {
     const kp = this._getKeyPair(entropyCipher, password, path[0], path[1]);
-    return bcMsg
-      .sign(m, kp.d.toBuffer(32), kp.compressed, this.network.messagePrefix)
-      .toString("base64");
+
+    if (this.bip44) {
+      // sign with P2PKH address
+      return bcMsg
+        .sign(m, kp.d.toBuffer(32), kp.compressed, this.network.messagePrefix)
+        .toString("base64");
+    }
+    if (this.bip49) {
+      // sign with P2SH-wrapped-P2WPKH address
+      return bcMsg
+        .sign(m, kp.d.toBuffer(32), kp.compressed, this.network.messagePrefix, {
+          segwitType: "p2sh(p2wpkh)"
+        })
+        .toString("base64");
+    }
   }
   signHash(hash, entropyCipher, password, path) {
     const kp = this._getKeyPair(entropyCipher, password, path[0], path[1]);
@@ -653,11 +661,10 @@ module.exports = class {
       return Promise.resolve();
     }
     return this.retryWithApiSwitch(() =>
-      this.apiHost.getTxs(
-        from,
-        to,
-        this.getReceiveAddr().concat(this.getChangeAddr())
-      )
+      this.apiHost.getTxs(from, to, {
+        addresses: this.getReceiveAddr().concat(this.getChangeAddr()),
+        xpub: this.hdPubNode.toBase58()
+      })
     );
   }
 
@@ -802,13 +809,21 @@ module.exports = class {
       hash.copy(payload, 1);
       priv = bs58check.encode(payload);
     }
-    const keyPair = this.lib.ECPair.fromWIF(priv, this.network);
+    let keyPair;
+    try {
+      keyPair = this.lib.ECPair.fromWIF(priv, this.network);
+    } catch (e) {
+      throw new errors.DecodeError("Failed to decode WIF");
+    }
     return this.getUtxos([keyPair.getAddress()]).then(r => {
       const txb = new this.lib.TransactionBuilder(this.network);
       const { outputs } = coinSelectSplit(r.utxos, [{}], +feeRate);
       r.utxos.forEach((v, i) => {
         txb.addInput(v.txId, v.vout);
       });
+      if (!outputs || outputs.length == 0) {
+        throw new errors.AddressNotFoundError("No address or balance");
+      }
       txb.addOutput(addr, outputs[0].value);
       r.utxos.forEach((v, i) => {
         if (this.enableSegwit) {
@@ -844,7 +859,17 @@ module.exports = class {
             this.lib.Transaction.SIGHASH_ALL,
             v.value,
             null,
-            true
+            3
+          );
+        } else if (this.libName === "zec" && this.network.txversion === 4) {
+          txb.sign(
+            i,
+            keyPair,
+            null,
+            this.lib.Transaction.SIGHASH_ALL,
+            v.value,
+            null,
+            4
           );
         } else {
           txb.sign(i, keyPair);

@@ -116,7 +116,7 @@ module.exports = function(option) {
     },
     store: require("../js/store.js"),
     methods: {
-      getBalance() {
+      getBalance(done) {
         if (!this.address) {
           return;
         }
@@ -125,7 +125,6 @@ module.exports = function(option) {
         web3.eth
           .getBalance(this.address)
           .then(balanceWei => {
-            this.loading = false;
             this.balanceWei = balanceWei;
             return web3.eth.getGasPrice();
           })
@@ -158,10 +157,13 @@ module.exports = function(option) {
                 +new BigNumber(balances[i]).shift(-this.tokens[i].decimals)
               );
             }
+            this.loading = false;
+            done && done();
           })
           .catch(e => {
             this.loading = false;
             this.$store.commit("setError", "Server Error: " + e.message);
+            done && done();
           });
       },
       copyAddress() {

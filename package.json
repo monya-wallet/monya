@@ -19,7 +19,7 @@
 		"bitcoinjs-lib": "^3.2.0",
 		"bitcoinjs-message": "^2.1.0",
 		"buffer": "^5.4.3",
-		"coinselect": "git+https://github.com/nao20010128/coinselect.git",
+		"coinselect": "git+https://github.com/monya-wallet/coinselect.git#44480df06446c41bffc483ff42673db327d4efec",
 		"cordova-plugin-qrscanner": "^2.6.2",
 		"ethereumjs-wallet": "^0.6.0",
 		"instascan": "^1.0.0",
@@ -79,10 +79,10 @@
 	},
 	"scripts": {
 		"start": "gulp",
-		"lint": "prettier --write 'component/*.js'; prettier --write 'js/*.js'",
+		"lint": "prettier --write \"component/*.js\" && prettier --write \"js/*.js\"",
 		"build": "gulp prod",
-		"build:cordova": "echo 'cordova command is deprecated';gulp prod",
-		"postinstall": "cd ./node_modules/nem-sdk;npm install ajv@6.3.0;cd ../../node_modules/har-validator;npm install ajv@6.3.0"
+		"build:cordova": "echo 'cordova command is deprecated' && gulp prod",
+		"postinstall": "cd ./node_modules/nem-sdk && npm install ajv@6.3.0 && cd ../../node_modules/har-validator && npm install ajv@6.3.0"
 	},
 	"author": "monya-wallet",
 	"license": "MIT",

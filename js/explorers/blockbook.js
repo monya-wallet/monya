@@ -1,7 +1,6 @@
 const axios = require("axios");
 const bitcoin = require("bitcoinjs-lib");
 const BigNumber = require("bignumber.js");
-const qs = require("qs");
 
 module.exports = class BlockbookExplorer {
   constructor(endpoint, explorer) {
@@ -17,13 +16,34 @@ module.exports = class BlockbookExplorer {
       .then(res => ({
         txid: res.data.result
       }))
-      .catch(e => {
-        throw e.response.data;
-      });
+      .catch(e => Promise.reject(e.response.data));
   }
 
-  getTxs(from, to, addrs) {
-    return Promise.reject(new Error("Missing implementation: getTxs"));
+  // third parameter should be:
+  // {
+  //   addresses: [...list of address...]
+  //   xpub: "xpub..."
+  // }
+  getTxs(from, to, { xpub }) {
+    const pageSize = to - from;
+    const page = Math.floor(from / pageSize) + 1;
+    return axios({
+      url: `${this.apiEndpoint}/xpub/${xpub}?page=${page}&pageSize=${pageSize}&details=txs`,
+      method: "GET"
+    })
+      .then(res => res.data)
+      .then(data => {
+        const items = (data.txs || []).map(this.__transformTransaction);
+        return {
+          items,
+          totalItems:
+            typeof data.txAppearances === "number"
+              ? data.txAppearances + data.unconfirmedTxApperances
+              : items.length,
+          from,
+          to
+        };
+      });
   }
 
   getTx(txId) {
@@ -32,38 +52,7 @@ module.exports = class BlockbookExplorer {
       method: "GET"
     })
       .then(res => res.data)
-      .then(data => {
-        // diff <(wget -qO- https://blockbook.electrum-mona.org/api/tx/ae3fda4b6ec6bb87c9df003f558e4391a00320de2350d8cb0954c9bdb5a85cd5 | jq -S) <(wget -qO- https://mona.chainsight.info/api/tx/ae3fda4b6ec6bb87c9df003f558e4391a00320de2350d8cb0954c9bdb5a85cd5 | jq -S) -u
-        const tx = bitcoin.Transaction.fromHex(data.hex);
-        // add sizes
-        data.size = tx.byteLength();
-        data.vsize = tx.virtualSize();
-        // copy time
-        data.time = data.blocktime;
-        // convert valueOut, valueIn, fees to decimal
-        data.valueOut = +data.valueOut;
-        data.valueIn = +data.valueIn;
-        data.fees = +data.fees;
-        for (let vin of data.vin) {
-          // choose address
-          vin.addr = vin.addresses[0];
-          // add asm
-          vin.scriptSig.asm = bitcoin.script.toASM(
-            Buffer.from(vin.scriptSig.hex, "hex")
-          );
-          // convert value to satoshis/watanabes
-          data.valueSat = +new BigNumber(vin.value).times(100000000);
-          // and to decimal
-          data.value = +vin.value;
-        }
-        for (let vout of data.vout) {
-          // add asm
-          vout.scriptPubKey.asm = bitcoin.script.toASM(
-            Buffer.from(vout.scriptPubKey.hex, "hex")
-          );
-        }
-        return data;
-      });
+      .then(this.__transformTransaction);
   }
 
   getBlocks() {
@@ -160,5 +149,38 @@ module.exports = class BlockbookExplorer {
       urls.push(this.explorer + "/block/" + opt.blockHash);
     }
     return urls;
+  }
+
+  __transformTransaction(data) {
+    // diff <(wget -qO- https://blockbook.electrum-mona.org/api/tx/ae3fda4b6ec6bb87c9df003f558e4391a00320de2350d8cb0954c9bdb5a85cd5 | jq -S) <(wget -qO- https://mona.chainsight.info/api/tx/ae3fda4b6ec6bb87c9df003f558e4391a00320de2350d8cb0954c9bdb5a85cd5 | jq -S) -u
+    const tx = bitcoin.Transaction.fromHex(data.hex);
+    // add sizes
+    data.size = tx.byteLength();
+    data.vsize = tx.virtualSize();
+    // copy time
+    data.time = data.blocktime;
+    // convert valueOut, valueIn, fees to decimal
+    data.valueOut = +data.valueOut;
+    data.valueIn = +data.valueIn;
+    data.fees = +data.fees;
+    for (let vin of data.vin) {
+      // choose address
+      vin.addr = vin.addresses[0];
+      // add asm
+      vin.scriptSig.asm =
+        vin.scriptSig.hex &&
+        bitcoin.script.toASM(Buffer.from(vin.scriptSig.hex, "hex"));
+      // convert value to satoshis/watanabes
+      data.valueSat = +new BigNumber(vin.value).times(100000000);
+      // and to decimal
+      data.value = +vin.value;
+    }
+    for (let vout of data.vout) {
+      // add asm
+      vout.scriptPubKey.asm = bitcoin.script.toASM(
+        Buffer.from(vout.scriptPubKey.hex, "hex")
+      );
+    }
+    return data;
   }
 };
