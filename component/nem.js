@@ -50,7 +50,7 @@ const icons = {
 };
 
 let endpoint = nem.model.objects.create("endpoint")(
-  "https://shibuya.supernode.me",
+  "https://aqualife1.supernode.me",
   7891
 );
 
@@ -84,7 +84,7 @@ module.exports = require("../js/lang.js")({
       balances: null,
       history: null,
       message: "",
-      server: "shibuya.supernode.me:7891",
+      server: "aqualife1.supernode.me:7891",
       confirm: false,
       price: 1,
       serverDlg: false,
@@ -376,7 +376,7 @@ module.exports = require("../js/lang.js")({
     },
     getPrice() {
       axios({
-        url: "https://apiv2.bitcoinaverage.com/indices/crypto/ticker/XEMBTC",
+        url: "https://api.zaif.jp/api/1/ticker/xem_btc",
         method: "GET"
       })
         .then(res => {
@@ -403,14 +403,14 @@ module.exports = require("../js/lang.js")({
       );
     },
     openExplorer(txId) {
-      coinUtil.openUrl("http:///explorer.nemchina.com/#/s_tx?hash=" + txId);
+      coinUtil.openUrl("http:///explorer.nemtool.com/#/s_tx?hash=" + txId);
     },
     setServer() {
       const spl = this.server.split(":");
       if (!spl[1]) {
-        this.server = "shibuya.supernode.me:7891";
+        this.server = "aqualife1.supernode.me:7891";
         endpoint = nem.model.objects.create("endpoint")(
-          "https://shibuya.supernode.me",
+          "https://aqualife1.supernode.me",
           7891
         );
         return;
