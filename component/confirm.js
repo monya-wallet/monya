@@ -212,7 +212,9 @@ module.exports = require("../js/lang.js")({
           this.ready = true;
           this.loading = false;
           this.requestBiometric();
-          return coinUtil.getPrice(cur.coinId, this.$store.state.fiat);
+          return coinUtil
+            .getPrice(cur.coinId, this.$store.state.fiat)
+            .catch(() => NaN);
         })
         .then(price => {
           this.price = price;
