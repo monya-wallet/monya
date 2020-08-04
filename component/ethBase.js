@@ -231,11 +231,14 @@ module.exports = function(option) {
               tx.data = contract.methods
                 .transfer(
                   this.sendAddress,
-                  +new BigNumber(this.sendAmount).shift(
-                    this.sendingToken.decimals
+                  web3.utils.numberToHex(
+                    +new BigNumber(this.sendAmount).shift(
+                      this.sendingToken.decimals
+                    )
                   )
                 )
                 .encodeABI();
+              
             } else {
               tx.to = this.sendAddress;
               tx.value = web3.utils.numberToHex(
