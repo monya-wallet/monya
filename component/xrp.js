@@ -78,38 +78,41 @@ module.exports = require("../js/lang.js")({
         .then(b => {
           this.$set(this, "balances", b);
           this.loading = false;
-          return this.api.getTransactions(this.address, {
-            minLedgerVersion: 7400000
+          this.plzActivate = false;
+          return this.api.request("account_tx", {
+            account: this.address,
+            limit: 20
           });
         })
         .then(h => {
-          this.$set(
-            this,
-            "history",
-            h.map(v => {
-              let ret = {
-                type: "unknown" //default is unknown
-              };
-              if (v.specification.source) {
-                if (v.specification.source.address === this.address) {
-                  ret.type = "send";
-                } else if (
-                  v.specification.destination.address === this.address
-                ) {
-                  ret.type = "receive";
-                }
-                ret.srcAddr = v.specification.source.address;
-                ret.destAddr = v.specification.destination.address;
-                ret.balanceChange = v.outcome.balanceChanges[this.address];
+          const history = h.transactions.map(({ tx }) => {
+            let ret = {
+              type: "unknown" //default is unknown
+            };
+            if (tx.TransactionType === "Payment") {
+              if (tx.Account === this.address) {
+                ret.type = "send";
+              } else if (tx.Destination === this.address) {
+                ret.type = "receive";
               }
-              return ret;
-            })
-          );
-          this.plzActivate = false;
+              ret.srcAddr = tx.Account;
+              ret.destAddr = tx.Destination;
+              if (tx.Amount.currency) {
+                ret.amount = tx.Amount;
+              } else {
+                ret.amount = {
+                  value: tx.Amount / 1e6,
+                  currency: "XRP"
+                };
+              }
+            }
+            return ret;
+          });
+          this.$set(this, "history", history);
         })
         .catch(e => {
           this.loading = false;
-          if (e.message === "actNotFound") {
+          if (e && e.data && e.data.error === "actNotFound") {
             this.plzActivate = true;
             return;
           }
@@ -224,8 +227,8 @@ module.exports = require("../js/lang.js")({
 
           this.$store.commit("setError", e.message);
         });
-      this.api.on("error", (code, msg, data) => {
-        this.$store.commit("setError", code + ":" + msg);
+      this.api.on("error", ({ error, type, value }) => {
+        this.$store.commit("setError", error);
       });
     },
     getPrice() {

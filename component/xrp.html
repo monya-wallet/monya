@@ -84,9 +84,9 @@
           <div class="left" v-if="h.type==='unknown'">非対応のコマンド</div>
           <div class="center" v-if="h.type==='send'">{{h.destAddr}}</div>
           <div class="center" v-if="h.type==='receive'">{{h.srcAddr}}</div>
-          <div class="right">
+          <div class="right" v-if="h.type!=='unknown'">
             
-            <currency-set v-for="ch in h.balanceChange" :amount="ch.value" :ticker="ch.currency" :notKnown="true"></currency-set></div>
+            <currency-set :amount="h.amount.value" :ticker="h.amount.currency" :notKnown="true" ></currency-set></div>
         </v-ons-list-item>
         <v-ons-list-item @click="serverDlg=true">
           サーバー変更
