@@ -78,9 +78,9 @@ const defaultCoins = [
     sound: require("../res/coins/paySound/mona.m4a"),
     enableSegwit: false,
     price: {
-      url: "https://crypto-price-api.herokuapp.com/price/mona",
+      url: "https://api.coingecko.com/api/v3/simple/price?ids=monacoin&vs_currencies=jpy",
       json: true,
-      jsonPath: "$.price.jpy",
+      jsonPath: "$.monacoin.jpy",
       fiat: "jpy"
     },
     confirmations: 6,
@@ -138,9 +138,9 @@ const defaultCoins = [
     },
     enableSegwit: false,
     price: {
-      url: "https://crypto-price-api.herokuapp.com/price/zny",
+      url: "https://api.coingecko.com/api/v3/simple/price?ids=bitzeny&vs_currencies=jpy",
       json: true,
-      jsonPath: "$.price.jpy",
+      jsonPath: "$.bitzeny.jpy",
       fiat: "jpy"
     },
     sound: require("../res/coins/paySound/zny.m4a"),
