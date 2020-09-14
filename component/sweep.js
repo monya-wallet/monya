@@ -35,7 +35,8 @@ module.exports = require("../js/lang.js")({
     return {
       currency: [],
       currencyIndex: 0,
-      queries: [{ private: "", address: "", loose: false }],
+      address: "",
+      queries: [{ private: "", loose: false }],
       feeRate: 0,
       details: false
     };
@@ -47,9 +48,11 @@ module.exports = require("../js/lang.js")({
         return;
       }
       const cur = currencyList.get(this.currency[this.currencyIndex].coinId);
+      const loose = this.queries.some(a => a.loose);
+      const keys = this.queries.map(a => a.private);
       try {
         cur
-          .sweep(this.private, this.address, this.feeRate, this.loose)
+          .sweep(keys, this.address, this.feeRate, loose)
           .then(res => {
             cur.saveTxLabel(res.txid, {
               label: this.txLabel,
@@ -59,7 +62,8 @@ module.exports = require("../js/lang.js")({
               page: require("./home.js"),
               infoId: "sent",
               payload: {
-                txId: res.txid
+                txId: res.txid,
+                coinId: this.currency[this.currencyIndex].coinId
               }
             });
             this.$emit("replace", require("./finished.js"));
@@ -77,7 +81,7 @@ module.exports = require("../js/lang.js")({
         .getAddress(0, 0);
     },
     addPrivate() {
-      this.queries.push({ private: "", address: "", loose: false });
+      this.queries.push({ private: "", loose: false });
     },
     removePrivate(idx) {
       this.queries.splice(idx, 1);
