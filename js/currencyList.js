@@ -705,10 +705,10 @@ const defaultCoins = [
     enableSegwit: false,
     lib: "blk",
     price: {
-      url: "https://api.crypto-bridge.org/api/v1/ticker",
+      url: "https://api.coingecko.com/api/v3/simple/price?ids=neetcoin&vs_currencies=jpy",
       json: true,
-      jsonPath: '$[?(@.id=="NEET_BTC")].last',
-      fiat: "btc"
+      jsonPath: "$.neetcoin.jpy",
+      fiat: "jpy"
     },
     opReturnLength: 0,
     isAtomicSwapAvailable: false
