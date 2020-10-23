@@ -1,6 +1,6 @@
 {
 	"name": "@missmonacoin/monya",
-	"version": "3.9.9",
+	"version": "3.10.0",
 	"description": "<p style=\"text-align:center\">",
 	"main": "dist/dist.js",
 	"repository": {
@@ -11,7 +11,7 @@
 		"@babel/polyfill": "^7.7.0",
 		"@missmonacoin/bip39-eng": "^2.5.0",
 		"@missmonacoin/bitcoincashjs-lib": "^1.0.1",
-		"@missmonacoin/bitcoinjs-lib-zcash": "^1.0.4",
+		"@missmonacoin/bitcoinjs-lib-zcash": "^1.0.5",
 		"@missmonacoin/blackcoinjs-lib": "^1.0.0",
 		"ajv": "^6.10.2",
 		"axios": "^0.18.1",
@@ -19,7 +19,7 @@
 		"bitcoinjs-lib": "^3.2.0",
 		"bitcoinjs-message": "^2.1.0",
 		"buffer": "^5.4.3",
-		"coinselect": "git+https://github.com/monya-wallet/coinselect.git#44480df06446c41bffc483ff42673db327d4efec",
+		"coinselect": "^3.1.12",
 		"cordova-plugin-qrscanner": "^2.6.2",
 		"ethereumjs-wallet": "^0.6.0",
 		"instascan": "^1.0.0",
