@@ -381,6 +381,11 @@ const defaultCoins = [
         url: "https://vips.blockbook.japanesecoin-pool.work/api",
         explorer: "https://vips.blockbook.japanesecoin-pool.work",
         type: "blockbook"
+      },
+      {
+        url: "https://insight.vipstar.be/api",
+        explorer: "https://insight.vipstar.be",
+        type: "insight"
       }
     ],
     network: {
