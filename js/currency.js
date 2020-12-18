@@ -56,6 +56,7 @@ module.exports = class {
     this.icon = opt.icon;
     this.bip21 = opt.bip21;
     this.defaultFeeSatPerByte = opt.defaultFeeSatPerByte;
+    this.maxFeeSatPerByte = opt.defaultFeeSatPerByte * 25;
     this.confirmations = opt.confirmations || 6;
     this.sound = opt.sound || "";
     this.counterparty = opt.counterparty;
@@ -460,7 +461,7 @@ module.exports = class {
     return new Promise((resolve, reject) => {
       const { targets, feeRate, split } = option;
 
-      const txb = new this.lib.TransactionBuilder(this.network);
+      const txb = new this.lib.TransactionBuilder(this.network, this.maxFeeSatPerByte);
 
       let param;
       if (option.utxoStr) {
@@ -816,12 +817,12 @@ module.exports = class {
       throw new errors.DecodeError("Failed to decode WIF");
     }
     return this.getUtxos([keyPair.getAddress()]).then(r => {
-      const txb = new this.lib.TransactionBuilder(this.network);
+      const txb = new this.lib.TransactionBuilder(this.network, this.maxFeeSatPerByte);
       const { outputs } = coinSelectSplit(r.utxos, [{}], +feeRate);
       r.utxos.forEach((v, i) => {
         txb.addInput(v.txId, v.vout);
       });
-      if (!outputs || outputs.length == 0) {
+      if (!outputs || outputs.length === 0) {
         throw new errors.AddressNotFoundError("No address or balance");
       }
       txb.addOutput(addr, outputs[0].value);
