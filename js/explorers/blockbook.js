@@ -1,16 +1,23 @@
 const axios = require("axios");
 const bitcoin = require("bitcoinjs-lib");
 const BigNumber = require("bignumber.js");
+const coinUtil = require("../coinUtil");
 
 module.exports = class BlockbookExplorer {
-  constructor(endpoint, explorer) {
+  constructor(endpoint, explorer, proxy) {
     this.apiEndpoint = endpoint;
     this.explorer = explorer;
+    this.proxy = proxy;
   }
-
+  proxyUrl(url) {
+    if (this.proxy) {
+      return coinUtil.proxyUrl(url);
+    }
+    return url;
+  }
   pushTx(hex) {
     return axios({
-      url: this.apiEndpoint + "/sendtx/" + hex,
+      url: this.proxyUrl(this.apiEndpoint + "/sendtx/" + hex),
       method: "GET"
     })
       .then(res => ({
@@ -28,7 +35,9 @@ module.exports = class BlockbookExplorer {
     const pageSize = to - from;
     const page = Math.floor(from / pageSize) + 1;
     return axios({
-      url: `${this.apiEndpoint}/xpub/${xpub}?page=${page}&pageSize=${pageSize}&details=txs`,
+      url: this.proxyUrl(
+        `${this.apiEndpoint}/xpub/${xpub}?page=${page}&pageSize=${pageSize}&details=txs`
+      ),
       method: "GET"
     })
       .then(res => res.data)
@@ -48,7 +57,7 @@ module.exports = class BlockbookExplorer {
 
   getTx(txId) {
     return axios({
-      url: this.apiEndpoint + "/tx/" + txId,
+      url: this.proxyUrl(this.apiEndpoint + "/tx/" + txId),
       method: "GET"
     })
       .then(res => res.data)
@@ -58,7 +67,7 @@ module.exports = class BlockbookExplorer {
   getBlocks() {
     const blockAmount = 3;
     return axios({
-      url: this.apiEndpoint + "/",
+      url: this.proxyUrl(this.apiEndpoint + "/"),
       method: "GET"
     })
       .then(res => res.data.blockbook.bestHeight)
@@ -67,7 +76,9 @@ module.exports = class BlockbookExplorer {
         for (let i = 0; i < blockAmount; i++) {
           hashPromise.push(
             axios({
-              url: this.apiEndpoint + "/block-index/" + (highest - i),
+              url: this.proxyUrl(
+                this.apiEndpoint + "/block-index/" + (highest - i)
+              ),
               method: "GET"
             }).then(res => res.data.blockHash)
           );
@@ -79,7 +90,7 @@ module.exports = class BlockbookExplorer {
         for (let i = 0; i < blockAmount; i++) {
           blockPromise.push(
             axios({
-              url: this.apiEndpoint + "/block/" + hashes[i],
+              url: this.proxyUrl(this.apiEndpoint + "/block/" + hashes[i]),
               method: "GET"
             }).then(res => res.data)
           );
@@ -95,7 +106,7 @@ module.exports = class BlockbookExplorer {
       const addr_ = addr;
       eachUtxoPromise.push(
         axios({
-          url: this.apiEndpoint + "/utxo/" + addr,
+          url: this.proxyUrl(this.apiEndpoint + "/utxo/" + addr),
           method: "GET"
         })
           .then(res => res.data)
@@ -117,7 +128,7 @@ module.exports = class BlockbookExplorer {
 
   getAddressProp(propName, address, noTxList) {
     return axios({
-      url: this.apiEndpoint + "/address/" + address,
+      url: this.proxyUrl(this.apiEndpoint + "/address/" + address),
       method: "GET"
     })
       .then(res => res.data)

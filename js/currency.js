@@ -461,7 +461,10 @@ module.exports = class {
     return new Promise((resolve, reject) => {
       const { targets, feeRate, split } = option;
 
-      const txb = new this.lib.TransactionBuilder(this.network, this.maxFeeSatPerByte);
+      const txb = new this.lib.TransactionBuilder(
+        this.network,
+        this.maxFeeSatPerByte
+      );
 
       let param;
       if (option.utxoStr) {
@@ -817,7 +820,10 @@ module.exports = class {
       throw new errors.DecodeError("Failed to decode WIF");
     }
     return this.getUtxos([keyPair.getAddress()]).then(r => {
-      const txb = new this.lib.TransactionBuilder(this.network, this.maxFeeSatPerByte);
+      const txb = new this.lib.TransactionBuilder(
+        this.network,
+        this.maxFeeSatPerByte
+      );
       const { outputs } = coinSelectSplit(r.utxos, [{}], +feeRate);
       r.utxos.forEach((v, i) => {
         txb.addInput(v.txId, v.vout);
@@ -889,11 +895,7 @@ module.exports = class {
     }
     this.apiIndex = index % this.apiEndpoints.length;
     const a = this.apiEndpoints[this.apiIndex];
-    if (a.proxy) {
-      this.apiEndpoint = coinUtil.proxyUrl(a.url);
-    } else {
-      this.apiEndpoint = a.url;
-    }
+    this.apiEndpoint = a.url;
     if (a.explorer) {
       this.explorer = a.explorer;
     }
@@ -903,7 +905,8 @@ module.exports = class {
     this.apiHost = explorer.getByType(
       a.type || "insight",
       this.apiEndpoint,
-      a.explorer
+      a.explorer,
+      a.proxy
     );
   }
   getAddrVersion(addr) {
