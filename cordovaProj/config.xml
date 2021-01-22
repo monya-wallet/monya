@@ -24,7 +24,7 @@
     <preference name="DisallowOverscroll" value="true" />
     <platform name="android">
         <preference name="android-minSdkVersion" value="21" />
-        <preference name="android-targetSdkVersion" value="28" />
+        <preference name="android-targetSdkVersion" value="29" />
         <allow-intent href="market:*" />
         <preference name="SplashShowOnlyFirstTime" value="false" />
         <preference name="SplashMaintainAspectRatio" value="true" />
