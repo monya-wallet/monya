@@ -78,7 +78,8 @@ const defaultCoins = [
     sound: require("../res/coins/paySound/mona.m4a"),
     enableSegwit: false,
     price: {
-      url: "https://api.coingecko.com/api/v3/simple/price?ids=monacoin&vs_currencies=jpy",
+      url:
+        "https://api.coingecko.com/api/v3/simple/price?ids=monacoin&vs_currencies=jpy",
       json: true,
       jsonPath: "$.monacoin.jpy",
       fiat: "jpy"
@@ -138,7 +139,8 @@ const defaultCoins = [
     },
     enableSegwit: false,
     price: {
-      url: "https://api.coingecko.com/api/v3/simple/price?ids=bitzeny&vs_currencies=jpy",
+      url:
+        "https://api.coingecko.com/api/v3/simple/price?ids=bitzeny&vs_currencies=jpy",
       json: true,
       jsonPath: "$.bitzeny.jpy",
       fiat: "jpy"
@@ -161,25 +163,14 @@ const defaultCoins = [
     icon: require("../res/coins/btc.png"),
     apiEndpoints: [
       {
-        url: "https://btc-bitcore4.trezor.io/api",
-        explorer: "https://btc-bitcore4.trezor.io",
-        type: "blockbook",
-        proxy: true
-      },
-      {
         url: "https://btc1.trezor.io/api",
         explorer: "https://btc1.trezor.io",
         type: "blockbook",
         proxy: true
       },
       {
-        explorer: "https://explorer.bitcoin.com/btc",
-        url: "https://explorer.bitcoin.com/api/btc",
-        type: "insight"
-      },
-      {
-        explorer: "https://insight.bitpay.com",
-        url: "https://insight.bitpay.com/api",
+        explorer: "https://bitpay.com/insight/#/BTC/mainnet",
+        url: "https://api.bitcore.io/api/BTC/mainnet",
         type: "insight"
       }
     ],
@@ -238,11 +229,6 @@ const defaultCoins = [
       {
         url: "https://insight.litecore.io/api",
         explorer: "https://insight.litecore.io",
-        type: "insight"
-      },
-      {
-        explorer: "https://ltc.coin.space",
-        url: "https://ltc.coin.space/api",
         type: "insight"
       }
     ],
@@ -381,6 +367,11 @@ const defaultCoins = [
         url: "https://vips.blockbook.japanesecoin-pool.work/api",
         explorer: "https://vips.blockbook.japanesecoin-pool.work",
         type: "blockbook"
+      },
+      {
+        url: "https://insight.vipstar.be/api",
+        explorer: "https://insight.vipstar.be",
+        type: "insight"
       }
     ],
     network: {
@@ -488,16 +479,6 @@ const defaultCoins = [
         url: "https://bch2.trezor.io/api",
         type: "blockbook",
         proxy: true
-      },
-      {
-        explorer: "https://explorer.bitcoin.com/bch",
-        url: "https://explorer.bitcoin.com/api/bch",
-        type: "insight"
-      },
-      {
-        explorer: "https://cash.monacoin.ml/insight",
-        url: "https://cash.monacoin.ml/insight-api",
-        type: "insight"
       }
     ],
     network: {
@@ -705,10 +686,11 @@ const defaultCoins = [
     enableSegwit: false,
     lib: "blk",
     price: {
-      url: "https://api.crypto-bridge.org/api/v1/ticker",
+      url:
+        "https://api.coingecko.com/api/v3/simple/price?ids=neetcoin&vs_currencies=jpy",
       json: true,
-      jsonPath: '$[?(@.id=="NEET_BTC")].last',
-      fiat: "btc"
+      jsonPath: "$.neetcoin.jpy",
+      fiat: "jpy"
     },
     opReturnLength: 0,
     isAtomicSwapAvailable: false

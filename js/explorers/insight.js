@@ -1,15 +1,22 @@
 const axios = require("axios");
 const qs = require("qs");
+const coinUtil = require("../coinUtil");
 
 module.exports = class InsightExplorer {
-  constructor(endpoint, explorer) {
+  constructor(endpoint, explorer, proxy) {
     this.apiEndpoint = endpoint;
     this.explorer = explorer;
+    this.proxy = proxy;
   }
-
+  proxyUrl(url) {
+    if (this.proxy) {
+      return coinUtil.proxyUrl(url);
+    }
+    return url;
+  }
   pushTx(hex) {
     return axios({
-      url: this.apiEndpoint + "/tx/send",
+      url: this.proxyUrl(this.apiEndpoint + "/tx/send"),
       data: qs.stringify({
         rawtx: hex
       }),
@@ -26,7 +33,7 @@ module.exports = class InsightExplorer {
   // }
   getTxs(from, to, { addresses }) {
     return axios({
-      url: this.apiEndpoint + "/addrs/txs",
+      url: this.proxyUrl(this.apiEndpoint + "/addrs/txs"),
       data: qs.stringify({
         noAsm: 1,
         noScriptSig: 1,
@@ -41,14 +48,14 @@ module.exports = class InsightExplorer {
 
   getTx(txId) {
     return axios({
-      url: this.apiEndpoint + "/tx/" + txId,
+      url: this.proxyUrl(this.apiEndpoint + "/tx/" + txId),
       method: "GET"
     }).then(res => res.data);
   }
 
   getBlocks() {
     return axios({
-      url: this.apiEndpoint + "/blocks?limit=3",
+      url: this.proxyUrl(this.apiEndpoint + "/blocks?limit=3"),
       json: true,
       method: "GET"
     }).then(r => r.data.blocks);
@@ -56,7 +63,9 @@ module.exports = class InsightExplorer {
 
   getUtxos(addressList) {
     return axios({
-      url: this.apiEndpoint + "/addrs/" + addressList.join(",") + "/utxo",
+      url: this.proxyUrl(
+        this.apiEndpoint + "/addrs/" + addressList.join(",") + "/utxo"
+      ),
       json: true,
       method: "GET"
     }).then(res => res.data);
