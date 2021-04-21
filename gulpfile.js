@@ -12,91 +12,87 @@ const request = require("sync-request");
 const fs = require("fs");
 
 const browserSync = function(cb) {
-  browser.init(
-    {
-      server: {
-        baseDir: "./"
-      },
-      open: false
+  browser.init({
+    server: {
+      baseDir: "./"
     },
-    cb
-  );
+    open: false
+  });
 };
 
 const reload = function() {
   browser.reload();
 };
 
-const lint = gulp
-  .src(["component/*.js", "js/*.js"])
-  .pipe(
-    plumber({
-      errorHandler: function(error) {
-        const taskName = "eslint";
-        const title = "[task]" + taskName + " " + error.plugin;
-        const errorMsg = "error: " + error.message;
-        // console.error(title + "\n" + errorMsg);
-      }
-    })
-  )
-  .pipe(eslint({ useEslintrc: true })) // .eslintrc を参照
-  .pipe(eslint.format())
-  .pipe(eslint.failOnError())
-  .pipe(plumber.stop());
+const lint = function() {
+  return gulp
+    .src(["component/*.js", "js/*.js"])
+    .pipe(
+      plumber({
+        errorHandler: function(error) {
+          const taskName = "eslint";
+          const title = "[task]" + taskName + " " + error.plugin;
+          const errorMsg = "error: " + error.message;
+          // console.error(title + "\n" + errorMsg);
+        }
+      })
+    )
+    .pipe(eslint({ useEslintrc: true })) // .eslintrc を参照
+    .pipe(eslint.format())
+    .pipe(eslint.failOnError())
+    .pipe(plumber.stop());
+};
 
-const webpackTask = gulp
-  .src("js/main.js")
-  .pipe(webpack(require("./webpack.config.dev"), require("webpack")))
-  .pipe(gulp.dest("./"));
+const webpackTask = function() {
+  return gulp
+    .src("js/main.js")
+    .pipe(webpack(require("./webpack.config.dev"), require("webpack")))
+    .pipe(gulp.dest("./"));
+};
 
-const webpackProd = gulp
-  .src("js/main.js")
-  .pipe(webpack(require("./webpack.config"), require("webpack")))
-  .pipe(gulp.dest("./"));
+const webpackProd = function() {
+  return gulp
+    .src("js/main.js")
+    .pipe(webpack(require("./webpack.config"), require("webpack")))
+    .pipe(gulp.dest("./"));
+};
 
-const webpackCordova = gulp
-  .src("js/main.js")
-  .pipe(webpack(require("./webpack.config.cordova"), require("webpack")))
-  .pipe(gulp.dest("./cordovaProj/www"));
+const webpackCordova = function() {
+  return gulp
+    .src("js/main.js")
+    .pipe(webpack(require("./webpack.config.cordova"), require("webpack")))
+    .pipe(gulp.dest("./cordovaProj/www"));
+};
 
 const watch = function() {
   gulp.watch("dist/dist.js", reload);
   gulp.watch("component/*.html", translate);
 };
 
-const setAssetsCordova = gulp
-  .src(["dist/assets/**"])
-  .pipe(gulp.dest("./cordovaProj/www/dist/assets"));
+const setAssetsCordova = function() {
+  return gulp
+    .src(["dist/assets/**"])
+    .pipe(gulp.dest("./cordovaProj/www/dist/assets"));
+};
 
-const setDocs = gulp.src(["dist/**"]).pipe(gulp.dest("./docs/wallet/dist"));
+const setDocs = function() {
+  return gulp.src(["dist/**"]).pipe(gulp.dest("./docs/wallet/dist"));
+};
 
-const setChrome = gulp
-  .src(["dist/**"])
-  .pipe(gulp.dest("./chrome_extension/dist"));
+const setChrome = function() {
+  return gulp.src(["dist/**"]).pipe(gulp.dest("./chrome_extension/dist"));
+};
 
-const setElectron = gulp
-  .src(["dist/**"])
-  .pipe(gulp.dest("./electron/src/dist"));
+const setElectron = function() {
+  return gulp.src(["dist/**"]).pipe(gulp.dest("./electron/src/dist"));
+};
 
-const compressImage = gulp
-  .src(["dist/assets/*.png"])
-  .pipe(imagemin())
-  .pipe(gulp.dest("./dist/assets"));
-
-const _default = gulp.series(
-  translate,
-  gulp.parallel(browserSync, webpack, watch)
-);
-
-const prod = gulp.series(
-  translate,
-  gulp.parallel(lint, webpackProd, webpackCordova),
-  compressImage,
-  serviceWorker,
-  gulp.parallel(setDocs, setChrome, setElectron, setAssetsCordova)
-);
-
-const cordova = gulp.series(translate, webpackCordova, compressImage);
+const compressImage = function() {
+  return gulp
+    .src(["dist/assets/*.png"])
+    .pipe(imagemin())
+    .pipe(gulp.dest("./dist/assets"));
+};
 
 let height;
 try {
@@ -110,37 +106,43 @@ try {
   height = null;
 }
 
-const translateJa = gulp
-  .src("component/*.html")
-  .pipe(
-    translator.translate({
-      lang: "ja",
-      dictFile: ["../lang/template.json", "../lang/dict.json"],
-      dict: {
-        "<!--t:Timestamp-->": height
-      }
-    })
-  )
-  .pipe(gulp.dest("./component/ja"));
+const translateJa = function() {
+  return gulp
+    .src("component/*.html")
+    .pipe(
+      translator.translate({
+        lang: "ja",
+        dictFile: ["../lang/template.json", "../lang/dict.json"],
+        dict: {
+          "<!--t:Timestamp-->": height
+        }
+      })
+    )
+    .pipe(gulp.dest("./component/ja"));
+};
 
-const addWord = gulp.src("component/*.html").pipe(
-  translator.addWord({
-    dictFile: "../lang/dict.json"
-  })
-);
-
-const translateEn = gulp
-  .src("component/*.html")
-  .pipe(
-    translator.translate({
-      lang: "en",
-      dictFile: ["../lang/template.json", "../lang/dict.json"],
-      dict: {
-        "<!--t:Timestamp-->": height
-      }
+const addWord = function() {
+  return gulp.src("component/*.html").pipe(
+    translator.addWord({
+      dictFile: "../lang/dict.json"
     })
-  )
-  .pipe(gulp.dest("./component/en"));
+  );
+};
+
+const translateEn = function() {
+  return gulp
+    .src("component/*.html")
+    .pipe(
+      translator.translate({
+        lang: "en",
+        dictFile: ["../lang/template.json", "../lang/dict.json"],
+        dict: {
+          "<!--t:Timestamp-->": height
+        }
+      })
+    )
+    .pipe(gulp.dest("./component/en"));
+};
 
 const serviceWorker = function() {
   const files = fs.readdirSync("./dist/assets").filter(n => n[0] !== ".");
@@ -160,6 +162,21 @@ const serviceWorker = function() {
 };
 
 const translate = gulp.series(translateJa, translateEn);
+
+const _default = gulp.series(
+  translate,
+  gulp.parallel(browserSync, webpackTask, watch)
+);
+
+const prod = gulp.series(
+  translate,
+  gulp.parallel(lint, webpackProd, webpackCordova),
+  compressImage,
+  serviceWorker,
+  gulp.parallel(setDocs, setChrome, setElectron, setAssetsCordova)
+);
+
+const cordova = gulp.series(translate, webpackCordova, compressImage);
 
 module.exports = {
   browserSync,
