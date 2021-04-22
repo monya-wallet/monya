@@ -22,6 +22,11 @@ jobs:
             ${{ runner.OS }}-
       - name: Install deps
         run: npm ci
+      - name: upload web
+        uses: actions/upload-artifact@v2
+        with:
+          name: web.apk
+          path: docs/wallet
       - name: push dev
         if: github.ref == 'refs/heads/master'
         continue-on-error: true
@@ -48,6 +53,10 @@ jobs:
           git commit -m "[ci skip] build on circle ci"
           git push origin master
           cd ..
+      - uses: actions/setup-java@v2
+        with:
+          distribution: "adopt" # See 'Supported distributions' for available options
+          java-version: "11"
       - name: cordova build
         run: |
           sudo npm i -g cordova@7.1.0
@@ -65,8 +74,3 @@ jobs:
         with:
           name: android-release-unsigned.apk
           path: cordovaProj/platforms/android/build/outputs/apk/android-release-unsigned.apk
-      - name: upload web
-        uses: actions/upload-artifact@v2
-        with:
-          name: web.apk
-          path: docs/wallet
