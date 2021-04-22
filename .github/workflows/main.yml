@@ -23,7 +23,7 @@ jobs:
       - name: Install deps
         run: npm ci
       - name: build site
-        run: npm run start
+        run: npm run build
       - name: upload web
         uses: actions/upload-artifact@v2
         with:
