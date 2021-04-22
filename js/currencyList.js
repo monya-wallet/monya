@@ -154,10 +154,9 @@ const defaultCoins = [
     icon: require("../res/coins/btc.png"),
     apiEndpoints: [
       {
-        url: "https://btc1.trezor.io/api",
-        explorer: "https://btc1.trezor.io",
-        type: "blockbook",
-        proxy: true
+        url: "https://mainnet-explorer.wakiyamap.dev/api",
+        explorer: "https://mainnet-explorer.wakiyamap.dev",
+        type: "blockbook"
       },
       {
         explorer: "https://bitpay.com/insight/#/BTC/mainnet",
