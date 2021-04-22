@@ -59,14 +59,11 @@ jobs:
         with:
           distribution: "adopt" # See 'Supported distributions' for available options
           java-version: "8"
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v2
       - name: cordova build
         run: |
           sudo npm i -g cordova@7.1.0
-          wget https://services.gradle.org/distributions/gradle-4.1-bin.zip -qO gradle.zip
-          sudo unzip gradle.zip -d /opt
-          export PATH="$PATH:/opt/gradle-4.1/bin/"
-          sudo echo $ANDROID_SDK_LICENSE_VOLUMES > $ANDROID_HOME/licenses/android-sdk-license
-          sdkmanager tools "build-tools;28.0.3" "platform-tools" "platforms;android-28"
           cd cordovaProj
           npm i
           cordova platform add android
