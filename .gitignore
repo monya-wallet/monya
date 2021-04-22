@@ -8,6 +8,7 @@ cordovaProj/www/dist
 docs/wallet/dist
 !.circleci
 .*
+!.github
 component/ja
 component/en
 cordovaProj/node_modules
