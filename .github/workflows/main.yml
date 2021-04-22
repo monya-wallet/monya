@@ -22,6 +22,8 @@ jobs:
             ${{ runner.OS }}-
       - name: Install deps
         run: npm ci
+      - name: build site
+        run: npm run start
       - name: upload web
         uses: actions/upload-artifact@v2
         with:
