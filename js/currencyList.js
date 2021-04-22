@@ -47,11 +47,7 @@ const defaultCoins = [
         explorer: "https://blockbook.electrum-mona.org",
         type: "blockbook"
       },
-      {
-        url: "https://mona.blockbook.ovh/api",
-        explorer: "https://mona.blockbook.ovh",
-        type: "blockbook"
-      },
+
       {
         url: "https://insight.electrum-mona.org/insight-api-monacoin",
         explorer: "https://insight.electrum-mona.org/insight",
@@ -108,11 +104,6 @@ const defaultCoins = [
       {
         url: "https://bitzeny-blockbook.ilmango.work/api",
         explorer: "https://bitzeny-blockbook.ilmango.work",
-        type: "blockbook"
-      },
-      {
-        url: "https://zny.blockbook.ovh/api",
-        explorer: "https://zny.blockbook.ovh",
         type: "blockbook"
       },
       {
@@ -542,11 +533,6 @@ const defaultCoins = [
       {
         url: "https://blockbook.kotocoin.info/api",
         explorer: "https://blockbook.kotocoin.info",
-        type: "blockbook"
-      },
-      {
-        url: "https://koto.blockbook.ovh/api",
-        explorer: "https://koto.blockbook.ovh",
         type: "blockbook"
       },
       {
