@@ -47,11 +47,7 @@ const defaultCoins = [
         explorer: "https://blockbook.electrum-mona.org",
         type: "blockbook"
       },
-      {
-        url: "https://mona.blockbook.ovh/api",
-        explorer: "https://mona.blockbook.ovh",
-        type: "blockbook"
-      },
+
       {
         url: "https://insight.electrum-mona.org/insight-api-monacoin",
         explorer: "https://insight.electrum-mona.org/insight",
@@ -111,11 +107,6 @@ const defaultCoins = [
         type: "blockbook"
       },
       {
-        url: "https://zny.blockbook.ovh/api",
-        explorer: "https://zny.blockbook.ovh",
-        type: "blockbook"
-      },
-      {
         url: "https://zenyinsight.tomotomo9696.xyz/api",
         explorer: "https://zenyinsight.tomotomo9696.xyz",
         type: "insight"
@@ -163,10 +154,9 @@ const defaultCoins = [
     icon: require("../res/coins/btc.png"),
     apiEndpoints: [
       {
-        url: "https://btc1.trezor.io/api",
-        explorer: "https://btc1.trezor.io",
-        type: "blockbook",
-        proxy: true
+        url: "https://mainnet-explorer.wakiyamap.dev/api",
+        explorer: "https://mainnet-explorer.wakiyamap.dev",
+        type: "blockbook"
       },
       {
         explorer: "https://bitpay.com/insight/#/BTC/mainnet",
@@ -542,11 +532,6 @@ const defaultCoins = [
       {
         url: "https://blockbook.kotocoin.info/api",
         explorer: "https://blockbook.kotocoin.info",
-        type: "blockbook"
-      },
-      {
-        url: "https://koto.blockbook.ovh/api",
-        explorer: "https://koto.blockbook.ovh",
         type: "blockbook"
       },
       {
