@@ -349,8 +349,13 @@ const defaultCoins = [
     icon: require("../res/coins/vips.png"),
     apiEndpoints: [
       {
-        url: "https://insight.vipstarco.in/api",
-        explorer: "https://insight.vipstarco.in",
+        url: "https://insight.vipstarcoin.jp/api",
+        explorer: "https://insight.vipstarcoin.jp",
+        type: "insight"
+      },
+      {
+        url: "https://insight.nezirin.net/api",
+        explorer: "https://insight.nezirin.net",
         type: "insight"
       },
       {
