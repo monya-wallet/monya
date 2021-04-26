@@ -53,9 +53,15 @@ jobs:
           git commit -m "[ci skip] build on circle ci"
           git push origin master
           cd ..
+      - uses: actions/setup-java@v2
+        with:
+          distribution: "adopt" # See 'Supported distributions' for available options
+          java-version: "8"
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v2
       - name: cordova build
         run: |
-          sudo npm i -g cordova
+          sudo npm i -g cordova@7
           cd cordovaProj
           npm i
           cordova platform add android
