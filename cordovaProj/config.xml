@@ -121,10 +121,10 @@
     <plugin name="cordova-plugin-x-socialsharing" spec="^5.6.3">
         <variable name="ANDROID_SUPPORT_V4_VERSION" value="24.1.1+" />
     </plugin>
-    <plugin name="cordova-clipboard-monya" spec="@missmonacoin/cordova-clipboard@^1.1.7" />
-    <plugin name="cordova-plugin-browsertab" spec="@missmonacoin/cordova-plugin-browsertab-monya@^0.2.1">
+    <plugin name="cordova-clipboard-monya" spec="@missmonacoin/cordova-clipboard" />
+    <plugin name="cordova-plugin-browsertab" spec="@missmonacoin/cordova-plugin-browsertab-monya">
         <variable name="CUSTOM_TAB_COLOR_RGB" value="#ffffff" />
     </plugin>
-    <plugin name="cordova-plugin-qrscanner-monya" spec="@missmonacoin/cordova-plugin-qrscanner@^2.5.7" />
+    <plugin name="cordova-plugin-qrscanner-monya" spec="@missmonacoin/cordova-plugin-qrscanner" />
     <engine name="android" spec="~6.4.0" />
 </widget>
