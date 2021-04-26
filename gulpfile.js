@@ -1,39 +1,38 @@
-let gulp = require("gulp");
-let runSequence = require("run-sequence");
-let browser = require("browser-sync").create();
-let webpack = require("webpack-stream");
-let plumber = require("gulp-plumber");
-let eslint = require("gulp-eslint");
-let uglifyes = require("uglify-es");
-let composer = require("gulp-uglify/composer");
-let pump = require("pump");
-let translator = require("./util/translator.js");
-let imagemin = require("gulp-imagemin");
-let minify = composer(uglifyes, console);
-let request = require("sync-request");
-let fs = require("fs");
-gulp.task("browserSync", function() {
+const gulp = require("gulp");
+const browser = require("browser-sync").create();
+const webpack = require("webpack-stream");
+const plumber = require("gulp-plumber");
+const eslint = require("gulp-eslint");
+const uglifyes = require("uglify-es");
+const composer = require("gulp-uglify/composer");
+const translator = require("./util/translator.js");
+const imagemin = require("gulp-imagemin");
+const minify = composer(uglifyes, console);
+const request = require("sync-request");
+const fs = require("fs");
+
+const browserSync = function(cb) {
   browser.init({
     server: {
       baseDir: "./"
     },
     open: false
   });
-});
+};
 
-gulp.task("reload", function() {
+const reload = function() {
   browser.reload();
-});
+};
 
-gulp.task("lint", function() {
-  gulp
+const lint = function() {
+  return gulp
     .src(["component/*.js", "js/*.js"])
     .pipe(
       plumber({
         errorHandler: function(error) {
-          let taskName = "eslint";
-          let title = "[task]" + taskName + " " + error.plugin;
-          let errorMsg = "error: " + error.message;
+          const taskName = "eslint";
+          const title = "[task]" + taskName + " " + error.plugin;
+          const errorMsg = "error: " + error.message;
           // console.error(title + "\n" + errorMsg);
         }
       })
@@ -42,68 +41,59 @@ gulp.task("lint", function() {
     .pipe(eslint.format())
     .pipe(eslint.failOnError())
     .pipe(plumber.stop());
-});
-gulp.task("webpack", function() {
+};
+
+const webpackTask = function() {
   return gulp
     .src("js/main.js")
     .pipe(webpack(require("./webpack.config.dev"), require("webpack")))
     .pipe(gulp.dest("./"));
-});
-gulp.task("webpackProd", function() {
+};
+
+const webpackProd = function() {
   return gulp
     .src("js/main.js")
     .pipe(webpack(require("./webpack.config"), require("webpack")))
     .pipe(gulp.dest("./"));
-});
-gulp.task("webpackCordova", function() {
+};
+
+const webpackCordova = function() {
   return gulp
     .src("js/main.js")
     .pipe(webpack(require("./webpack.config.cordova"), require("webpack")))
     .pipe(gulp.dest("./cordovaProj/www"));
-});
-gulp.task("watch", function() {
-  gulp.watch("dist/dist.js", ["reload"]);
-  gulp.watch("component/*.html", ["translate"]);
-});
+};
 
-gulp.task("setAssetsCordova", function() {
+const watch = function() {
+  gulp.watch("dist/dist.js", reload);
+  gulp.watch("component/*.html", translate);
+};
+
+const setAssetsCordova = function() {
   return gulp
     .src(["dist/assets/**"])
     .pipe(gulp.dest("./cordovaProj/www/dist/assets"));
-});
+};
 
-gulp.task("setDocs", function() {
+const setDocs = function() {
   return gulp.src(["dist/**"]).pipe(gulp.dest("./docs/wallet/dist"));
-});
-gulp.task("setChrome", function() {
+};
+
+const setChrome = function() {
   return gulp.src(["dist/**"]).pipe(gulp.dest("./chrome_extension/dist"));
-});
-gulp.task("setElectron", function() {
+};
+
+const setElectron = function() {
   return gulp.src(["dist/**"]).pipe(gulp.dest("./electron/src/dist"));
-});
-gulp.task("compressImage", function() {
+};
+
+const compressImage = function() {
   return gulp
     .src(["dist/assets/*.png"])
     .pipe(imagemin())
     .pipe(gulp.dest("./dist/assets"));
-});
+};
 
-gulp.task("default", function(cb) {
-  return runSequence("translate", ["browserSync", "webpack", "watch"], cb);
-});
-gulp.task("prod", function(cb) {
-  return runSequence(
-    "translate",
-    ["lint", "webpackProd", "webpackCordova"],
-    "compressImage",
-    "serviceWorker",
-    ["setDocs", "setChrome", "setElectron", "setAssetsCordova"],
-    cb
-  );
-});
-gulp.task("cordova", function(cb) {
-  return runSequence("translate", "webpackCordova", "compressImage", cb);
-});
 let height;
 try {
   height = JSON.parse(
@@ -115,7 +105,8 @@ try {
 } catch (e) {
   height = null;
 }
-gulp.task("translateJa", function(cb) {
+
+const translateJa = function() {
   return gulp
     .src("component/*.html")
     .pipe(
@@ -128,15 +119,17 @@ gulp.task("translateJa", function(cb) {
       })
     )
     .pipe(gulp.dest("./component/ja"));
-});
-gulp.task("addWord", function(cb) {
+};
+
+const addWord = function() {
   return gulp.src("component/*.html").pipe(
     translator.addWord({
       dictFile: "../lang/dict.json"
     })
   );
-});
-gulp.task("translateEn", function(cb) {
+};
+
+const translateEn = function() {
   return gulp
     .src("component/*.html")
     .pipe(
@@ -149,9 +142,10 @@ gulp.task("translateEn", function(cb) {
       })
     )
     .pipe(gulp.dest("./component/en"));
-});
-gulp.task("serviceWorker", function(cb) {
-  let files = fs.readdirSync("./dist/assets").filter(n => n[0] !== ".");
+};
+
+const serviceWorker = function() {
+  const files = fs.readdirSync("./dist/assets").filter(n => n[0] !== ".");
   return gulp
     .src("js/sw.js")
     .pipe(
@@ -165,8 +159,44 @@ gulp.task("serviceWorker", function(cb) {
     )
     .pipe(minify({}))
     .pipe(gulp.dest("./dist"));
-});
+};
 
-gulp.task("translate", function(cb) {
-  return runSequence("translateJa", "translateEn", cb);
-});
+const translate = gulp.series(translateJa, translateEn);
+
+const _default = gulp.series(
+  translate,
+  gulp.parallel(browserSync, webpackTask, watch)
+);
+
+const prod = gulp.series(
+  translate,
+  gulp.parallel(lint, webpackProd, webpackCordova),
+  compressImage,
+  serviceWorker,
+  gulp.parallel(setDocs, setChrome, setElectron, setAssetsCordova)
+);
+
+const cordova = gulp.series(translate, webpackCordova, compressImage);
+
+module.exports = {
+  browserSync,
+  reload,
+  lint,
+  webpack: webpackTask,
+  webpackProd,
+  webpackCordova,
+  watch,
+  setAssetsCordova,
+  setDocs,
+  setChrome,
+  setElectron,
+  compressImage,
+  default: _default,
+  prod,
+  cordova,
+  translateJa,
+  addWord,
+  translateEn,
+  serviceWorker,
+  translate
+};
