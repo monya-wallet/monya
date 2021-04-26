@@ -6,7 +6,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     container:
-      image: circleci/android:api-29-node
+      image: circleci/android:api-28-node
       options: "-u 0"
     steps:
       - uses: actions/checkout@v2
@@ -55,7 +55,7 @@ jobs:
           cd ..
       - name: cordova build
         run: |
-          sudo npm i -g cordova@7.1.0
+          sudo npm i -g cordova
           cd cordovaProj
           npm i
           cordova platform add android
