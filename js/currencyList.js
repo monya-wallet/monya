@@ -406,20 +406,13 @@ const defaultCoins = [
     icon: require("../res/coins/btcsw.png"),
     apiEndpoints: [
       {
+        url: "https://mainnet-explorer.wakiyamap.dev/api",
+        explorer: "https://mainnet-explorer.wakiyamap.dev",
+        type: "blockbook"
+      },
+      {
         url: "https://btc1.trezor.io/api",
         explorer: "https://btc1.trezor.io",
-        type: "blockbook",
-        proxy: true
-      },
-      {
-        url: "https://btc2.trezor.io/api",
-        explorer: "https://btc2.trezor.io",
-        type: "blockbook",
-        proxy: true
-      },
-      {
-        url: "https://btc3.trezor.io/api",
-        explorer: "https://btc3.trezor.io",
         type: "blockbook",
         proxy: true
       }
