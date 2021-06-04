@@ -804,26 +804,37 @@ module.exports = class {
       });
   }
   sweep(priv, addr, feeRate, ignoreVersion = false) {
+    if (!Array.isArray(priv)) {
+      priv = [priv];
+    }
     if (ignoreVersion) {
-      const orig = bs58check.decode(priv);
-      const hash = orig.slice(1);
-      const version = this.network.wif;
-      const payload = Buffer.allocUnsafe(orig.length);
-      payload.writeUInt8(version, 0);
-      hash.copy(payload, 1);
-      priv = bs58check.encode(payload);
+      for (const idx in priv) {
+        const orig = bs58check.decode(priv[idx]);
+        const hash = orig.slice(1);
+        const version = this.network.wif;
+        const payload = Buffer.allocUnsafe(orig.length);
+        payload.writeUInt8(version, 0);
+        hash.copy(payload, 1);
+        priv[idx] = bs58check.encode(payload);
+      }
     }
-    let keyPair;
-    try {
-      keyPair = this.lib.ECPair.fromWIF(priv, this.network);
-    } catch (e) {
-      throw new errors.DecodeError("Failed to decode WIF");
+    // this achieves:
+    // - calculate an address only once for each KPs
+    // - lookup KP from address
+    // this replaces old keyPairs, as
+    //     addresses can be obtained by `Object.keys(addressToKeyPair)`
+    //     and keypairs by `Object.values(addressToKeyPair)`
+    const addressToKeyPair = {};
+    for (const item of priv) {
+      try {
+        const kp = this.lib.ECPair.fromWIF(item, this.network);
+        addressToKeyPair[kp.getAddress()] = kp;
+      } catch (e) {
+        throw new errors.DecodeError("Failed to decode WIF");
+      }
     }
-    return this.getUtxos([keyPair.getAddress()]).then(r => {
-      const txb = new this.lib.TransactionBuilder(
-        this.network,
-        this.maxFeeSatPerByte
-      );
+    return this.getUtxos(Object.keys(addressToKeyPair)).then(r => {
+      const txb = new this.lib.TransactionBuilder(this.network);
       const { outputs } = coinSelectSplit(r.utxos, [{}], +feeRate);
       r.utxos.forEach((v, i) => {
         txb.addInput(v.txId, v.vout);
@@ -833,6 +844,8 @@ module.exports = class {
       }
       txb.addOutput(addr, outputs[0].value);
       r.utxos.forEach((v, i) => {
+        const address = v.address;
+        const keyPair = addressToKeyPair[address];
         if (this.enableSegwit) {
           const redeemScript = this.lib.script.witnessPubKeyHash.output.encode(
             this.lib.crypto.hash160(keyPair.getPublicKeyBuffer())
