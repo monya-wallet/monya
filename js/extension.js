@@ -79,7 +79,8 @@ const extensions = {
           bip44DerivationPath: "m/44'/60'/0'/0/0",
           chainId: 1,
           rpcServers: [
-            "https://mainnet.infura.io/v3/e68a5c486079484395f5215d9d8ca001"
+            "https://mainnet.infura.io/v3/e68a5c486079484395f5215d9d8ca001",
+            "https://os-eth.missmonacoin.org/"
           ],
           explorer: "https://etherscan.io/address/"
         })

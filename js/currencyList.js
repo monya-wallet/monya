@@ -43,6 +43,11 @@ const defaultCoins = [
     icon: require("../res/coins/mona.png"),
     apiEndpoints: [
       {
+        url: "https://os-mona.missmonacoin.org/api",
+        explorer: "https://os-mona.missmonacoin.org",
+        type: "blockbook"
+      },
+      {
         url: "https://blockbook.electrum-mona.org/api",
         explorer: "https://blockbook.electrum-mona.org",
         type: "blockbook"
@@ -153,6 +158,11 @@ const defaultCoins = [
     defaultFeeSatPerByte: 100,
     icon: require("../res/coins/btc.png"),
     apiEndpoints: [
+      {
+        url: "https://os-btc.missmonacoin.org/api",
+        explorer: "https://os-btc.missmonacoin.org",
+        type: "blockbook"
+      },
       {
         url: "https://mainnet-explorer.wakiyamap.dev/api",
         explorer: "https://mainnet-explorer.wakiyamap.dev",
