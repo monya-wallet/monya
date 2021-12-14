@@ -1,6 +1,6 @@
 {
 	"name": "@missmonacoin/monya",
-	"version": "3.10.4",
+	"version": "3.10.5",
 	"description": "<p style=\"text-align:center\">",
 	"main": "dist/dist.js",
 	"repository": {
@@ -14,7 +14,7 @@
 		"@missmonacoin/bitcoinjs-lib-zcash": "^1.0.6",
 		"@missmonacoin/blackcoinjs-lib": "^1.0.0",
 		"ajv": "^6.10.2",
-		"axios": "^0.21.1",
+		"axios": "^0.21.2",
 		"bignumber.js": "^5.0.0",
 		"bitcoinjs-lib": "^3.2.0",
 		"bitcoinjs-message": "^2.1.0",
