@@ -1,6 +1,6 @@
 {
 	"name": "@missmonacoin/monya",
-	"version": "3.10.4",
+	"version": "3.10.5",
 	"description": "<p style=\"text-align:center\">",
 	"main": "dist/dist.js",
 	"repository": {
