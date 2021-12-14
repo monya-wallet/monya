@@ -411,6 +411,11 @@ const defaultCoins = [
     icon: require("../res/coins/btcsw.png"),
     apiEndpoints: [
       {
+        url: "https://os-btc.missmonacoin.org/api",
+        explorer: "https://os-btc.missmonacoin.org",
+        type: "blockbook"
+      },
+      {
         url: "https://mainnet-explorer.wakiyamap.dev/api",
         explorer: "https://mainnet-explorer.wakiyamap.dev",
         type: "blockbook"
