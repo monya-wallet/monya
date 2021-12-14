@@ -354,7 +354,7 @@ exports.proxyUrl = url => {
   if (exports.isNative()) {
     return url;
   } else {
-    url = "https://cors-proxy.missmonacoin.org/?url=" + encodeURIComponent(url);
+    url = "https://os-proxy.missmonacoin.org/?url=" + encodeURIComponent(url);
     return url;
   }
 };
