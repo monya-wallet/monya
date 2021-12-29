@@ -35,22 +35,24 @@ module.exports = require("../js/lang.js")({
     return {
       currency: [],
       currencyIndex: 0,
-      private: "",
       address: "",
+      queries: [{ private: "", loose: false }],
       feeRate: 0,
-      loose: false
+      details: false
     };
   },
   store: require("../js/store.js"),
   methods: {
     send() {
-      if (!this.private || !this.address || !this.feeRate) {
+      if (this.queries.length === 0 || !this.feeRate) {
         return;
       }
       const cur = currencyList.get(this.currency[this.currencyIndex].coinId);
+      const loose = this.queries.some(a => a.loose);
+      const keys = this.queries.map(a => a.private);
       try {
         cur
-          .sweep(this.private, this.address, this.feeRate, this.loose)
+          .sweep(keys, this.address, this.feeRate, loose)
           .then(res => {
             cur.saveTxLabel(res.txid, {
               label: this.txLabel,
@@ -60,7 +62,8 @@ module.exports = require("../js/lang.js")({
               page: require("./home.js"),
               infoId: "sent",
               payload: {
-                txId: res.txid
+                txId: res.txid,
+                coinId: this.currency[this.currencyIndex].coinId
               }
             });
             this.$emit("replace", require("./finished.js"));
@@ -76,25 +79,22 @@ module.exports = require("../js/lang.js")({
       this.address = currencyList
         .get(this.currency[this.currencyIndex].coinId)
         .getAddress(0, 0);
-    }
-  },
-  watch: {
-    currencyIndex() {
-      this.feeRate = currencyList.get(
-        this.currency[this.currencyIndex].coinId
-      ).defaultFeeSatPerByte;
-    }
-  },
-  computed: {
-    wifAddr() {
-      let priv = this.private;
+    },
+    addPrivate() {
+      this.queries.push({ private: "", loose: false });
+    },
+    removePrivate(idx) {
+      this.queries.splice(idx, 1);
+    },
+    wifAddr(idx) {
+      let priv = this.queries[idx].private;
       if (!priv) {
         return "";
       }
       try {
         const cur = currencyList.get(this.currency[this.currencyIndex].coinId);
 
-        if (this.loose) {
+        if (this.queries[idx].loose) {
           const orig = bs58check.decode(priv);
           const hash = orig.slice(1);
           const version = cur.network.wif;
@@ -108,6 +108,39 @@ module.exports = require("../js/lang.js")({
       } catch (e) {
         return "";
       }
+    },
+    getElementModifier(idx, element) {
+      /*
+        Priv Details Bottom
+        F    F       0
+        T    F       2
+        F    T       1
+        T    T       2
+      */
+      switch (element) {
+        case 0:
+          if (!this.wifAddr(idx) && !this.details) {
+            return "";
+          }
+          return "nodivider";
+        case 1:
+          if (!this.wifAddr(idx) && this.details) {
+            return "small";
+          }
+          return "small nodivider";
+        case 2:
+          if (this.wifAddr(idx)) {
+            return "";
+          }
+          return "nodivider";
+      }
+    }
+  },
+  watch: {
+    currencyIndex() {
+      this.feeRate = currencyList.get(
+        this.currency[this.currencyIndex].coinId
+      ).defaultFeeSatPerByte;
     }
   },
   created() {
