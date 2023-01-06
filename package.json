@@ -24,7 +24,7 @@
 		"ethereumjs-wallet": "^0.6.0",
 		"instascan": "^1.0.0",
 		"lodash": "^4.17.15",
-		"nem-sdk": "^1.6.4",
+		"nem-sdk": "^1.6.11",
 		"onsenui": "^2.10.10",
 		"qrcode": "^1.4.4",
 		"qs": "^6.9.1",
@@ -73,7 +73,7 @@
 		"vue-template-loader": "^0.4.1",
 		"webpack": "^4.41.5",
 		"webpack-cli": "^3.3.10",
-		"webpack-stream": "^4.0.3"
+		"webpack-stream": "^7.0.0"
 	},
 	"scripts": {
 		"start": "gulp",
