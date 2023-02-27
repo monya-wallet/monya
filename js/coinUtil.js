@@ -354,9 +354,7 @@ exports.proxyUrl = url => {
   if (exports.isNative()) {
     return url;
   } else {
-    url =
-      "https://do00v6pih5.execute-api.us-east-2.amazonaws.com/dev?url=" +
-      encodeURIComponent(url);
+    url = "https://os-proxy.missmonacoin.org/?url=" + encodeURIComponent(url);
     return url;
   }
 };

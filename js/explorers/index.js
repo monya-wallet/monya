@@ -3,8 +3,8 @@ const expTypes = {
   blockbook: require("./blockbook")
 };
 
-function getByType(type, url, explorer) {
-  return new expTypes[type](url, explorer);
+function getByType(type, url, explorer, proxy) {
+  return new expTypes[type](url, explorer, proxy);
 }
 module.exports = {
   getByType
