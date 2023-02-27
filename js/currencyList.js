@@ -146,6 +146,48 @@ const defaultCoins = [
     isAtomicSwapAvailable: true
   },
   {
+    coinScreenName: j ? "ベルコイン" : "Bellcoin",
+    coinId: "bell",
+    unit: "BELL",
+    unitEasy: j ? "ベル" : "Bell",
+    bip44: {
+      coinType: 25252,
+      account: 0
+    },
+    bip21: "bellcoin",
+    defaultFeeSatPerByte: 150,
+    icon: require("../res/coins/bell.png"),
+    apiEndpoints: [
+      {
+        url: "https://blockbook-bellcoin.web4u.jp/api",
+        explorer: "https://blockbook-bellcoin.web4u.jp",
+        type: "blockbook"
+      }
+    ],
+    network: {
+      messagePrefix: "\x19Bellcoin Signed Message:\n",
+      bip32: {
+        public: 0x0488b21e,
+        private: 0x0488ade4
+      },
+      pubKeyHash: 25,
+      scriptHash: 85,
+      wif: 128,
+      bech32: "bm"
+    },
+    enableSegwit: false,
+    price: {
+      url:
+        "https://api.coingecko.com/api/v3/simple/price?ids=bellcoin&vs_currencies=jpy",
+      json: true,
+      jsonPath: "$.bellcoin.jpy",
+      fiat: "jpy"
+    },
+    confirmations: 6,
+    opReturnLength: 83,
+    isAtomicSwapAvailable: true
+  },
+  {
     coinScreenName: j ? "ビットコイン" : "Bitcoin",
     coinId: "btc",
     unit: "BTC",
