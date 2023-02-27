@@ -159,13 +159,8 @@ const defaultCoins = [
     icon: require("../res/coins/bell.png"),
     apiEndpoints: [
       {
-        url: "https://bellcoin-blockbook.ilmango.work/api",
-        explorer: "https://bellcoin-blockbook.ilmango.work",
-        type: "blockbook"
-      },
-      {
-        url: "https://bell.blockbook.ovh/api",
-        explorer: "https://bell.blockbook.ovh",
+        url: "https://blockbook-bellcoin.web4u.jp/api",
+        explorer: "https://blockbook-bellcoin.web4u.jp",
         type: "blockbook"
       }
     ],
