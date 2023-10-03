@@ -46,7 +46,7 @@
 		"babel-eslint": "^9.0.0",
 		"babel-loader": "^8.0.0",
 		"browser-sync": "^2.26.7",
-		"css-loader": "^0.28.11",
+		"css-loader": "^6.8.1",
 		"eslint": "^4.19.1",
 		"eslint-config-airbnb-base": "^12.0.1",
 		"eslint-plugin-import": "^2.19.1",
@@ -70,7 +70,7 @@
 		"uglifyjs-webpack-plugin": "^1.2.5",
 		"url-loader": "^0.5.9",
 		"vue-template-compiler": "2.5.13",
-		"vue-template-loader": "^0.4.1",
+		"vue-template-loader": "^1.1.0",
 		"webpack": "^4.41.5",
 		"webpack-cli": "^3.3.10",
 		"webpack-stream": "^4.0.3"
